@@ -1,0 +1,2995 @@
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"Thermistor.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.global	__aeabi_idiv
+  18              		.section	.text.Thermistor_GetResistance,"ax",%progbits
+  19              		.align	2
+  20              		.global	Thermistor_GetResistance
+  21              		.code	16
+  22              		.thumb_func
+  23              		.type	Thermistor_GetResistance, %function
+  24              	Thermistor_GetResistance:
+  25              	.LFB1:
+  26              		.file 1 ".\\Generated_Source\\PSoC4\\Thermistor.c"
+   1:.\Generated_Source\PSoC4/Thermistor.c **** /*******************************************************************************
+   2:.\Generated_Source\PSoC4/Thermistor.c **** * File Name: Thermistor.c
+   3:.\Generated_Source\PSoC4/Thermistor.c **** * Version 1.20
+   4:.\Generated_Source\PSoC4/Thermistor.c **** *
+   5:.\Generated_Source\PSoC4/Thermistor.c **** * Description:
+   6:.\Generated_Source\PSoC4/Thermistor.c **** *  This file provides the source code to the API for the ThermistorCalc
+   7:.\Generated_Source\PSoC4/Thermistor.c **** *  Component.
+   8:.\Generated_Source\PSoC4/Thermistor.c **** *
+   9:.\Generated_Source\PSoC4/Thermistor.c **** * Note:
+  10:.\Generated_Source\PSoC4/Thermistor.c **** *  None.
+  11:.\Generated_Source\PSoC4/Thermistor.c **** *
+  12:.\Generated_Source\PSoC4/Thermistor.c **** ********************************************************************************
+  13:.\Generated_Source\PSoC4/Thermistor.c **** * Copyright 2013, Cypress Semiconductor Corporation.  All rights reserved.
+  14:.\Generated_Source\PSoC4/Thermistor.c **** * You may use this file only in accordance with the license, terms, conditions,
+  15:.\Generated_Source\PSoC4/Thermistor.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  16:.\Generated_Source\PSoC4/Thermistor.c **** * the software package with which this file was provided.
+  17:.\Generated_Source\PSoC4/Thermistor.c **** *******************************************************************************/
+  18:.\Generated_Source\PSoC4/Thermistor.c **** 
+  19:.\Generated_Source\PSoC4/Thermistor.c **** #include "Thermistor.h"
+  20:.\Generated_Source\PSoC4/Thermistor.c **** 
+  21:.\Generated_Source\PSoC4/Thermistor.c **** 
+  22:.\Generated_Source\PSoC4/Thermistor.c **** /*******************************************************************************
+  23:.\Generated_Source\PSoC4/Thermistor.c **** * Function Name: Thermistor_GetResistance
+  24:.\Generated_Source\PSoC4/Thermistor.c **** ********************************************************************************
+  25:.\Generated_Source\PSoC4/Thermistor.c **** *
+  26:.\Generated_Source\PSoC4/Thermistor.c **** * Summary:
+  27:.\Generated_Source\PSoC4/Thermistor.c **** *  The digital values of the voltages across the reference resistor and the
+  28:.\Generated_Source\PSoC4/Thermistor.c **** *  thermistor are passed to this function as parameters. The function returns
+  29:.\Generated_Source\PSoC4/Thermistor.c **** *  the resistance, based on the voltage values.
+  30:.\Generated_Source\PSoC4/Thermistor.c **** *
+  31:.\Generated_Source\PSoC4/Thermistor.c **** * Parameters:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 2
+
+
+  32:.\Generated_Source\PSoC4/Thermistor.c **** *  vReference: the voltage across the reference resistor;
+  33:.\Generated_Source\PSoC4/Thermistor.c **** *  vThermistor: the voltage across the thermistor.
+  34:.\Generated_Source\PSoC4/Thermistor.c **** *  The ratio of these two voltages is used by this function. Therefore, the
+  35:.\Generated_Source\PSoC4/Thermistor.c **** *  units for both parameters must be the same.
+  36:.\Generated_Source\PSoC4/Thermistor.c **** *
+  37:.\Generated_Source\PSoC4/Thermistor.c **** * Return:
+  38:.\Generated_Source\PSoC4/Thermistor.c **** *  The return value is the resistance across the thermistor. The value returned
+  39:.\Generated_Source\PSoC4/Thermistor.c **** *  is the resistance in Ohms.
+  40:.\Generated_Source\PSoC4/Thermistor.c **** *
+  41:.\Generated_Source\PSoC4/Thermistor.c **** *******************************************************************************/
+  42:.\Generated_Source\PSoC4/Thermistor.c **** uint32 Thermistor_GetResistance(int16 vReference, int16 vThermistor)
+  43:.\Generated_Source\PSoC4/Thermistor.c ****                                       
+  44:.\Generated_Source\PSoC4/Thermistor.c **** {
+  27              		.loc 1 44 0
+  28              		.cfi_startproc
+  29              	.LVL0:
+  30 0000 08B5     		push	{r3, lr}
+  31              		.cfi_def_cfa_offset 8
+  32              		.cfi_offset 3, -8
+  33              		.cfi_offset 14, -4
+  34 0002 021C     		mov	r2, r0
+  45:.\Generated_Source\PSoC4/Thermistor.c ****     int32 resT;
+  46:.\Generated_Source\PSoC4/Thermistor.c ****     int16 temp;
+  47:.\Generated_Source\PSoC4/Thermistor.c **** 
+  48:.\Generated_Source\PSoC4/Thermistor.c ****     /* Calculate thermistor resistance from the voltages */
+  49:.\Generated_Source\PSoC4/Thermistor.c ****     resT = Thermistor_REF_RESISTOR * ((int32)vThermistor);
+  35              		.loc 1 49 0
+  36 0004 084B     		ldr	r3, .L4
+  37 0006 5943     		mul	r1, r3
+  38              	.LVL1:
+  50:.\Generated_Source\PSoC4/Thermistor.c ****     if (vReference < 0)
+  39              		.loc 1 50 0
+  40 0008 0028     		cmp	r0, #0
+  41 000a 05DA     		bge	.L2
+  51:.\Generated_Source\PSoC4/Thermistor.c ****     {
+  52:.\Generated_Source\PSoC4/Thermistor.c ****         temp = -vReference;
+  42              		.loc 1 52 0
+  43 000c 4342     		neg	r3, r0
+  44 000e 9BB2     		uxth	r3, r3
+  45              	.LVL2:
+  53:.\Generated_Source\PSoC4/Thermistor.c ****         temp = (int16)((uint16)((uint16)temp >> 1u));
+  46              		.loc 1 53 0
+  47 0010 5B08     		lsr	r3, r3, #1
+  48              	.LVL3:
+  54:.\Generated_Source\PSoC4/Thermistor.c ****         temp = -temp;
+  49              		.loc 1 54 0
+  50 0012 5B42     		neg	r3, r3
+  51              	.LVL4:
+  52 0014 9BB2     		uxth	r3, r3
+  53              	.LVL5:
+  54 0016 01E0     		b	.L3
+  55              	.LVL6:
+  56              	.L2:
+  55:.\Generated_Source\PSoC4/Thermistor.c ****     }
+  56:.\Generated_Source\PSoC4/Thermistor.c ****     else
+  57:.\Generated_Source\PSoC4/Thermistor.c ****     {
+  58:.\Generated_Source\PSoC4/Thermistor.c ****         temp = (int16)((uint16)((uint16)vReference >> 1u));
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 3
+
+
+  57              		.loc 1 58 0
+  58 0018 83B2     		uxth	r3, r0
+  59 001a 5B08     		lsr	r3, r3, #1
+  60              	.LVL7:
+  61              	.L3:
+  59:.\Generated_Source\PSoC4/Thermistor.c ****     }
+  60:.\Generated_Source\PSoC4/Thermistor.c ****     resT += temp;
+  62              		.loc 1 60 0
+  63 001c 1BB2     		sxth	r3, r3
+  64 001e 5818     		add	r0, r3, r1
+  65              	.LVL8:
+  61:.\Generated_Source\PSoC4/Thermistor.c ****     resT /= vReference;
+  66              		.loc 1 61 0
+  67 0020 111C     		mov	r1, r2
+  68 0022 FFF7FEFF 		bl	__aeabi_idiv
+  69              	.LVL9:
+  62:.\Generated_Source\PSoC4/Thermistor.c **** 
+  63:.\Generated_Source\PSoC4/Thermistor.c ****     /* The ordering of Reference resistor value is specifically designed to keep the result from ov
+  64:.\Generated_Source\PSoC4/Thermistor.c ****     return ((uint32)((uint32)resT << Thermistor_REF_RES_SHIFT));
+  65:.\Generated_Source\PSoC4/Thermistor.c **** }
+  70              		.loc 1 65 0
+  71              		@ sp needed
+  72 0026 08BD     		pop	{r3, pc}
+  73              	.L5:
+  74              		.align	2
+  75              	.L4:
+  76 0028 10270000 		.word	10000
+  77              		.cfi_endproc
+  78              	.LFE1:
+  79              		.size	Thermistor_GetResistance, .-Thermistor_GetResistance
+  80              		.section	.text.Thermistor_GetTemperature,"ax",%progbits
+  81              		.align	2
+  82              		.global	Thermistor_GetTemperature
+  83              		.code	16
+  84              		.thumb_func
+  85              		.type	Thermistor_GetTemperature, %function
+  86              	Thermistor_GetTemperature:
+  87              	.LFB2:
+  66:.\Generated_Source\PSoC4/Thermistor.c **** 
+  67:.\Generated_Source\PSoC4/Thermistor.c **** 
+  68:.\Generated_Source\PSoC4/Thermistor.c **** /*******************************************************************************
+  69:.\Generated_Source\PSoC4/Thermistor.c **** * Function Name: Thermistor_GetTemperature
+  70:.\Generated_Source\PSoC4/Thermistor.c **** ********************************************************************************
+  71:.\Generated_Source\PSoC4/Thermistor.c **** *
+  72:.\Generated_Source\PSoC4/Thermistor.c **** * Summary:
+  73:.\Generated_Source\PSoC4/Thermistor.c **** *  The value of the thermistor resistance is passed to this function as a
+  74:.\Generated_Source\PSoC4/Thermistor.c **** *  parameter. The function returns the temperature, based on the resistance
+  75:.\Generated_Source\PSoC4/Thermistor.c **** *  value. The method used to calculate the temperature is dependent on whether
+  76:.\Generated_Source\PSoC4/Thermistor.c **** *  Equation or LUT was selected in the Customizer.
+  77:.\Generated_Source\PSoC4/Thermistor.c **** *
+  78:.\Generated_Source\PSoC4/Thermistor.c **** * Parameters:
+  79:.\Generated_Source\PSoC4/Thermistor.c **** *  resT: the resistance across the thermistor in Ohms.
+  80:.\Generated_Source\PSoC4/Thermistor.c **** *
+  81:.\Generated_Source\PSoC4/Thermistor.c **** * Return:
+  82:.\Generated_Source\PSoC4/Thermistor.c **** *  The return value is the temperature in 1/100ths of degrees C. For example,
+  83:.\Generated_Source\PSoC4/Thermistor.c **** *  the return value is 2345, when the actual temperature is 23.45 degrees C.
+  84:.\Generated_Source\PSoC4/Thermistor.c **** *
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 4
+
+
+  85:.\Generated_Source\PSoC4/Thermistor.c **** *******************************************************************************/
+  86:.\Generated_Source\PSoC4/Thermistor.c **** int16 Thermistor_GetTemperature(uint32 resT) 
+  87:.\Generated_Source\PSoC4/Thermistor.c **** {
+  88              		.loc 1 87 0
+  89              		.cfi_startproc
+  90              	.LVL10:
+  91 0000 30B5     		push	{r4, r5, lr}
+  92              		.cfi_def_cfa_offset 12
+  93              		.cfi_offset 4, -12
+  94              		.cfi_offset 5, -8
+  95              		.cfi_offset 14, -4
+  96              	.LVL11:
+  88:.\Generated_Source\PSoC4/Thermistor.c ****     int16 tempTR;
+  89:.\Generated_Source\PSoC4/Thermistor.c ****     static const uint32 CYCODE Thermistor_LUT[] = { 419380u, 416455u, 413552u, 410671u, 407812u, 40
+  90:.\Generated_Source\PSoC4/Thermistor.c ****  396593u, 393842u, 391111u, 388401u, 385711u, 383042u, 380393u, 377764u, 375155u, 372566u, 369996u,
+  91:.\Generated_Source\PSoC4/Thermistor.c ****  362402u, 359909u, 357435u, 354979u, 352542u, 350123u, 347722u, 345339u, 342974u, 340627u, 338298u,
+  92:.\Generated_Source\PSoC4/Thermistor.c ****  331413u, 329153u, 326909u, 324682u, 322471u, 320278u, 318100u, 315939u, 313793u, 311664u, 309551u,
+  93:.\Generated_Source\PSoC4/Thermistor.c ****  303304u, 301252u, 299216u, 297195u, 295189u, 293198u, 291221u, 289259u, 287311u, 285378u, 283459u,
+  94:.\Generated_Source\PSoC4/Thermistor.c ****  277787u, 275924u, 274074u, 272239u, 270416u, 268608u, 266812u, 265029u, 263260u, 261503u, 259760u,
+  95:.\Generated_Source\PSoC4/Thermistor.c ****  254605u, 252912u, 251231u, 249562u, 247906u, 246261u, 244629u, 243008u, 241399u, 239802u, 238217u,
+  96:.\Generated_Source\PSoC4/Thermistor.c ****  233529u, 231989u, 230460u, 228942u, 227435u, 225939u, 224454u, 222979u, 221515u, 220062u, 218619u,
+  97:.\Generated_Source\PSoC4/Thermistor.c ****  214352u, 212950u, 211558u, 210177u, 208805u, 207443u, 206090u, 204748u, 203415u, 202091u, 200777u,
+  98:.\Generated_Source\PSoC4/Thermistor.c ****  196891u, 195614u, 194346u, 193087u, 191837u, 190596u, 189364u, 188141u, 186926u, 185720u, 184522u,
+  99:.\Generated_Source\PSoC4/Thermistor.c ****  180980u, 179816u, 178660u, 177513u, 176373u, 175241u, 174118u, 173002u, 171895u, 170795u, 169702u,
+ 100:.\Generated_Source\PSoC4/Thermistor.c ****  166471u, 165409u, 164355u, 163308u, 162268u, 161236u, 160210u, 159192u, 158181u, 157178u, 156181u,
+ 101:.\Generated_Source\PSoC4/Thermistor.c ****  153231u, 152262u, 151299u, 150343u, 149394u, 148451u, 147515u, 146586u, 145662u, 144745u, 143835u,
+ 102:.\Generated_Source\PSoC4/Thermistor.c ****  141141u, 140255u, 139376u, 138503u, 137635u, 136774u, 135918u, 135069u, 134225u, 133387u, 132555u,
+ 103:.\Generated_Source\PSoC4/Thermistor.c ****  130092u, 129283u, 128479u, 127680u, 126887u, 126099u, 125317u, 124540u, 123769u, 123002u, 122241u,
+ 104:.\Generated_Source\PSoC4/Thermistor.c ****  119989u, 119248u, 118512u, 117782u, 117056u, 116335u, 115620u, 114909u, 114202u, 113501u, 112804u,
+ 105:.\Generated_Source\PSoC4/Thermistor.c ****  110743u, 110065u, 109391u, 108722u, 108058u, 107398u, 106743u, 106091u, 105445u, 104802u, 104164u,
+ 106:.\Generated_Source\PSoC4/Thermistor.c ****  102276u, 101655u, 101038u, 100425u, 99816u, 99212u, 98611u, 98014u, 97422u, 96833u, 96248u, 95668u
+ 107:.\Generated_Source\PSoC4/Thermistor.c ****  93948u, 93382u, 92821u, 92263u, 91708u, 91158u, 90610u, 90067u, 89527u, 88991u, 88458u, 87929u, 87
+ 108:.\Generated_Source\PSoC4/Thermistor.c ****  85847u, 85335u, 84826u, 84321u, 83819u, 83320u, 82825u, 82333u, 81844u, 81358u, 80876u, 80396u, 79
+ 109:.\Generated_Source\PSoC4/Thermistor.c ****  78510u, 78046u, 77585u, 77127u, 76672u, 76220u, 75771u, 75325u, 74882u, 74442u, 74004u, 73570u, 73
+ 110:.\Generated_Source\PSoC4/Thermistor.c ****  71859u, 71439u, 71021u, 70605u, 70193u, 69783u, 69376u, 68971u, 68569u, 68169u, 67772u, 67378u, 66
+ 111:.\Generated_Source\PSoC4/Thermistor.c ****  65826u, 65444u, 65065u, 64688u, 64313u, 63941u, 63571u, 63204u, 62839u, 62476u, 62116u, 61758u, 61
+ 112:.\Generated_Source\PSoC4/Thermistor.c ****  60348u, 60001u, 59656u, 59314u, 58973u, 58635u, 58299u, 57965u, 57634u, 57304u, 56976u, 56651u, 56
+ 113:.\Generated_Source\PSoC4/Thermistor.c ****  55369u, 55054u, 54741u, 54429u, 54120u, 53812u, 53507u, 53203u, 52902u, 52602u, 52304u, 52008u, 51
+ 114:.\Generated_Source\PSoC4/Thermistor.c ****  50842u, 50555u, 50270u, 49986u, 49705u, 49425u, 49147u, 48871u, 48596u, 48323u, 48052u, 47782u, 47
+ 115:.\Generated_Source\PSoC4/Thermistor.c ****  46721u, 46459u, 46200u, 45942u, 45685u, 45430u, 45177u, 44925u, 44675u, 44426u, 44179u, 43934u, 43
+ 116:.\Generated_Source\PSoC4/Thermistor.c ****  42966u, 42728u, 42492u, 42257u, 42023u, 41790u, 41560u, 41330u, 41102u, 40875u, 40650u, 40426u, 40
+ 117:.\Generated_Source\PSoC4/Thermistor.c ****  39544u, 39327u, 39111u, 38896u, 38683u, 38471u, 38260u, 38051u, 37843u, 37636u, 37431u, 37226u, 37
+ 118:.\Generated_Source\PSoC4/Thermistor.c ****  36421u, 36223u, 36026u, 35830u, 35635u, 35442u, 35249u, 35058u, 34868u, 34679u, 34492u, 34305u, 34
+ 119:.\Generated_Source\PSoC4/Thermistor.c ****  33570u, 33389u, 33209u, 33030u, 32852u, 32675u, 32499u, 32325u, 32151u, 31978u, 31807u, 31636u, 31
+ 120:.\Generated_Source\PSoC4/Thermistor.c ****  30964u, 30799u, 30634u, 30470u, 30308u, 30146u, 29985u, 29826u, 29667u, 29509u, 29352u, 29196u, 29
+ 121:.\Generated_Source\PSoC4/Thermistor.c ****  28581u, 28430u, 28279u, 28130u, 27981u, 27833u, 27686u, 27540u, 27394u, 27250u, 27106u, 26964u, 26
+ 122:.\Generated_Source\PSoC4/Thermistor.c ****  26401u, 26262u, 26124u, 25987u, 25851u, 25715u, 25581u, 25447u, 25314u, 25181u, 25050u, 24919u, 24
+ 123:.\Generated_Source\PSoC4/Thermistor.c ****  24404u, 24276u, 24150u, 24025u, 23900u, 23776u, 23652u, 23530u, 23408u, 23286u, 23166u, 23046u, 22
+ 124:.\Generated_Source\PSoC4/Thermistor.c ****  22573u, 22457u, 22341u, 22226u, 22111u, 21997u, 21884u, 21772u, 21660u, 21549u, 21438u, 21328u, 21
+ 125:.\Generated_Source\PSoC4/Thermistor.c ****  20894u, 20787u, 20681u, 20576u, 20470u, 20366u, 20262u, 20159u, 20056u, 19954u, 19853u, 19752u, 19
+ 126:.\Generated_Source\PSoC4/Thermistor.c ****  19353u, 19255u, 19158u, 19061u, 18964u, 18868u, 18773u, 18678u, 18584u, 18490u, 18397u, 18304u, 18
+ 127:.\Generated_Source\PSoC4/Thermistor.c ****  17938u, 17848u, 17758u, 17669u, 17581u, 17492u, 17405u, 17318u, 17231u, 17145u, 17059u, 16974u, 16
+ 128:.\Generated_Source\PSoC4/Thermistor.c ****  16638u, 16555u, 16472u, 16390u, 16309u, 16228u, 16147u, 16067u, 15987u, 15908u, 15829u, 15751u, 15
+ 129:.\Generated_Source\PSoC4/Thermistor.c ****  15441u, 15365u, 15289u, 15214u, 15139u, 15064u, 14990u, 14916u, 14843u, 14770u, 14697u, 14625u, 14
+ 130:.\Generated_Source\PSoC4/Thermistor.c ****  14340u, 14270u, 14200u, 14131u, 14062u, 13993u, 13924u, 13857u, 13789u, 13722u, 13655u, 13588u, 13
+ 131:.\Generated_Source\PSoC4/Thermistor.c ****  13326u, 13261u, 13197u, 13133u, 13069u, 13006u, 12943u, 12880u, 12818u, 12756u, 12695u, 12633u, 12
+ 132:.\Generated_Source\PSoC4/Thermistor.c ****  12391u, 12332u, 12273u, 12214u, 12155u, 12096u, 12038u, 11981u, 11923u, 11866u, 11809u, 11753u, 11
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 5
+
+
+ 133:.\Generated_Source\PSoC4/Thermistor.c ****  11530u, 11475u, 11420u, 11365u, 11311u, 11257u, 11204u, 11151u, 11098u, 11045u, 10992u, 10940u, 10
+ 134:.\Generated_Source\PSoC4/Thermistor.c ****  10734u, 10684u, 10633u, 10583u, 10533u, 10483u, 10434u, 10384u, 10335u, 10287u, 10238u, 10190u, 10
+ 135:.\Generated_Source\PSoC4/Thermistor.c ****  10000u, 9953u, 9906u, 9860u, 9814u, 9768u, 9722u, 9677u, 9631u, 9586u, 9542u, 9497u, 9453u, 9409u,
+ 136:.\Generated_Source\PSoC4/Thermistor.c ****  9235u, 9192u, 9149u, 9107u, 9065u, 9023u, 8981u, 8939u, 8898u, 8857u, 8816u, 8775u, 8734u, 8694u, 
+ 137:.\Generated_Source\PSoC4/Thermistor.c ****  8535u, 8496u, 8457u, 8418u, 8379u, 8341u, 8302u, 8264u, 8226u, 8189u, 8151u, 8114u, 8077u, 8040u, 
+ 138:.\Generated_Source\PSoC4/Thermistor.c ****  7894u, 7858u, 7822u, 7787u, 7751u, 7716u, 7681u, 7646u, 7611u, 7577u, 7542u, 7508u, 7474u, 7440u, 
+ 139:.\Generated_Source\PSoC4/Thermistor.c ****  7306u, 7273u, 7241u, 7208u, 7175u, 7143u, 7111u, 7079u, 7047u, 7015u, 6984u, 6953u, 6921u, 6890u, 
+ 140:.\Generated_Source\PSoC4/Thermistor.c ****  6768u, 6737u, 6707u, 6677u, 6647u, 6618u, 6588u, 6559u, 6530u, 6501u, 6472u, 6443u, 6414u, 6386u, 
+ 141:.\Generated_Source\PSoC4/Thermistor.c ****  6273u, 6245u, 6218u, 6190u, 6163u, 6136u, 6108u, 6081u, 6055u, 6028u, 6001u, 5975u, 5949u, 5922u, 
+ 142:.\Generated_Source\PSoC4/Thermistor.c ****  5819u, 5793u, 5768u, 5743u, 5717u, 5692u, 5668u, 5643u, 5618u, 5593u, 5569u, 5545u, 5521u, 5496u, 
+ 143:.\Generated_Source\PSoC4/Thermistor.c ****  5401u, 5378u, 5354u, 5331u, 5308u, 5285u, 5262u, 5239u, 5217u, 5194u, 5172u, 5149u, 5127u, 5105u, 
+ 144:.\Generated_Source\PSoC4/Thermistor.c ****  5017u, 4996u, 4974u, 4953u, 4931u, 4910u, 4889u, 4868u, 4847u, 4826u, 4806u, 4785u, 4765u, 4744u, 
+ 145:.\Generated_Source\PSoC4/Thermistor.c ****  4664u, 4644u, 4624u, 4604u, 4585u, 4565u, 4546u, 4526u, 4507u, 4488u, 4469u, 4450u, 4431u, 4412u, 
+ 146:.\Generated_Source\PSoC4/Thermistor.c ****  4338u, 4320u, 4301u, 4283u, 4265u, 4247u, 4229u, 4211u, 4194u, 4176u, 4158u, 4141u, 4123u, 4106u, 
+ 147:.\Generated_Source\PSoC4/Thermistor.c ****  4038u, 4021u, 4004u, 3987u, 3970u, 3954u, 3937u, 3921u, 3904u, 3888u, 3872u, 3856u, 3840u, 3824u, 
+ 148:.\Generated_Source\PSoC4/Thermistor.c ****  3761u, 3745u, 3729u, 3714u, 3699u, 3683u, 3668u, 3653u, 3638u, 3623u, 3608u, 3593u, 3578u, 3563u, 
+ 149:.\Generated_Source\PSoC4/Thermistor.c ****  3505u, 3490u, 3476u, 3462u, 3448u, 3433u, 3419u, 3405u, 3391u, 3377u, 3364u, 3350u, 3336u, 3322u, 
+ 150:.\Generated_Source\PSoC4/Thermistor.c ****  3269u, 3255u, 3242u, 3229u, 3216u, 3203u, 3190u, 3177u, 3164u, 3151u, 3138u, 3125u, 3113u, 3100u, 
+ 151:.\Generated_Source\PSoC4/Thermistor.c ****  3050u, 3038u, 3026u, 3013u, 3001u, 2989u, 2977u, 2965u, 2953u, 2941u, 2929u, 2918u, 2906u, 2894u, 
+ 152:.\Generated_Source\PSoC4/Thermistor.c ****  2848u, 2837u, 2825u, 2814u, 2803u, 2792u, 2780u, 2769u, 2758u, 2747u, 2736u, 2726u, 2715u, 2704u, 
+ 153:.\Generated_Source\PSoC4/Thermistor.c ****  2661u, 2651u, 2640u, 2630u, 2619u, 2609u, 2599u, 2588u, 2578u, 2568u, 2558u, 2548u, 2538u, 2528u, 
+ 154:.\Generated_Source\PSoC4/Thermistor.c ****  2488u, 2478u, 2468u, 2459u, 2449u, 2439u, 2430u, 2420u, 2411u, 2401u, 2392u, 2383u, 2373u, 2364u, 
+ 155:.\Generated_Source\PSoC4/Thermistor.c ****  2327u, 2318u, 2309u, 2300u, 2291u, 2282u, 2274u, 2265u, 2256u, 2247u, 2239u, 2230u, 2221u, 2213u, 
+ 156:.\Generated_Source\PSoC4/Thermistor.c ****  2179u, 2170u, 2162u, 2153u, 2145u, 2137u, 2129u, 2120u, 2112u, 2104u, 2096u, 2088u, 2080u, 2072u, 
+ 157:.\Generated_Source\PSoC4/Thermistor.c ****  2040u, 2033u, 2025u, 2017u, 2009u, 2002u, 1994u, 1986u, 1979u, 1971u, 1964u, 1956u, 1949u, 1941u, 
+ 158:.\Generated_Source\PSoC4/Thermistor.c ****  1912u, 1905u, 1898u, 1890u, 1883u, 1876u, 1869u, 1862u, 1855u, 1848u, 1841u, 1834u, 1827u, 1820u, 
+ 159:.\Generated_Source\PSoC4/Thermistor.c ****  1793u, 1786u, 1780u, 1773u, 1766u, 1760u, 1753u, 1746u, 1740u, 1733u, 1727u, 1720u, 1714u, 1708u, 
+ 160:.\Generated_Source\PSoC4/Thermistor.c ****  1682u, 1676u, 1670u, 1663u, 1657u, 1651u, 1645u, 1639u, 1633u, 1627u, 1621u, 1615u, 1609u, 1603u, 
+ 161:.\Generated_Source\PSoC4/Thermistor.c ****  1579u, 1573u, 1567u, 1562u, 1556u, 1550u, 1544u, 1539u, 1533u, 1527u, 1522u, 1516u, 1511u, 1505u, 
+ 162:.\Generated_Source\PSoC4/Thermistor.c ****  1483u, 1478u, 1472u, 1467u, 1462u, 1456u, 1451u, 1446u, 1440u, 1435u, 1430u, 1425u, 1419u, 1414u, 
+ 163:.\Generated_Source\PSoC4/Thermistor.c ****  1394u, 1389u, 1384u, 1379u, 1374u, 1369u, 1364u, 1359u, 1354u, 1349u, 1344u, 1339u, 1334u, 1330u, 
+ 164:.\Generated_Source\PSoC4/Thermistor.c ****  1311u, 1306u, 1301u, 1296u, 1292u, 1287u, 1283u, 1278u, 1273u, 1269u, 1264u, 1260u, 1255u, 1251u, 
+ 165:.\Generated_Source\PSoC4/Thermistor.c ****  1233u, 1229u, 1224u, 1220u, 1215u, 1211u, 1207u, 1203u, 1198u, 1194u, 1190u, 1186u, 1181u, 1177u, 
+ 166:.\Generated_Source\PSoC4/Thermistor.c ****  1161u, 1156u, 1152u, 1148u, 1144u, 1140u, 1136u, 1132u, 1128u, 1124u, 1120u, 1116u, 1112u, 1108u, 
+ 167:.\Generated_Source\PSoC4/Thermistor.c ****  1093u, 1089u, 1085u, 1081u, 1078u, 1074u, 1070u, 1066u, 1063u, 1059u, 1055u, 1052u, 1048u, 1044u, 
+ 168:.\Generated_Source\PSoC4/Thermistor.c ****  1030u, 1026u, 1023u, 1019u, 1016u, 1012u, 1009u, 1005u, 1002u, 998u, 995u, 991u, 988u, 984u, 981u,
+ 169:.\Generated_Source\PSoC4/Thermistor.c ****  967u, 964u, 961u, 958u, 954u, 951u, 948u, 944u, 941u, 938u, 935u, 932u, 928u, 925u, 922u, 919u, 91
+ 170:.\Generated_Source\PSoC4/Thermistor.c ****  903u, 900u, 897u, 894u, 891u, 888u, 885u, 882u, 879u, 876u, 873u, 870u, 867u, 864u, 861u, 858u, 85
+ 171:.\Generated_Source\PSoC4/Thermistor.c ****  844u, 841u, 838u, 835u, 832u, 830u, 827u, 824u, 821u, 819u, 816u, 813u, 810u, 808u, 805u, 802u, 79
+ 172:.\Generated_Source\PSoC4/Thermistor.c ****  789u, 786u, 784u, 781u, 778u, 776u, 773u, 771u, 768u, 765u, 763u, 760u, 758u, 755u, 753u, 750u, 74
+ 173:.\Generated_Source\PSoC4/Thermistor.c ****  738u, 735u, 733u, 731u, 728u, 726u, 723u, 721u, 719u, 716u, 714u, 712u, 709u, 707u, 705u, 702u, 70
+ 174:.\Generated_Source\PSoC4/Thermistor.c ****  691u, 689u, 686u, 684u, 682u, 680u, 677u, 675u, 673u, 671u, 669u, 666u, 664u, 662u, 660u, 658u, 65
+ 175:.\Generated_Source\PSoC4/Thermistor.c ****  647u, 645u, 643u, 641u, 639u, 637u, 635u, 633u, 630u, 628u, 626u, 624u, 622u, 620u, 618u, 616u, 61
+ 176:.\Generated_Source\PSoC4/Thermistor.c ****  606u, 605u, 603u, 601u, 599u, 597u, 595u, 593u, 591u, 589u, 587u, 585u, 584u, 582u, 580u, 578u, 57
+ 177:.\Generated_Source\PSoC4/Thermistor.c ****  569u, 567u, 565u, 563u, 562u, 560u, 558u, 556u, 555u, 553u, 551u, 549u, 548u, 546u, 544u, 542u, 54
+ 178:.\Generated_Source\PSoC4/Thermistor.c ****  534u, 532u, 530u, 529u, 527u, 525u, 524u, 522u, 521u, 519u, 517u, 516u, 514u, 512u, 511u, 509u, 50
+ 179:.\Generated_Source\PSoC4/Thermistor.c ****  501u, 500u, 498u, 497u, 495u, 494u, 492u, 490u, 489u, 487u, 486u, 484u, 483u, 481u, 480u, 478u, 47
+ 180:.\Generated_Source\PSoC4/Thermistor.c ****  471u, 470u, 468u, 467u, 465u, 464u, 462u, 461u, 459u, 458u, 457u, 455u, 454u, 452u, 451u, 450u, 44
+ 181:.\Generated_Source\PSoC4/Thermistor.c ****  443u, 441u, 440u, 439u, 437u, 436u, 435u, 433u, 432u, 431u, 429u, 428u, 427u, 426u, 424u, 423u, 42
+ 182:.\Generated_Source\PSoC4/Thermistor.c ****  417u, 415u, 414u, 413u, 412u, 410u, 409u, 408u, 407u, 405u, 404u, 403u, 402u, 400u, 399u, 398u, 39
+ 183:.\Generated_Source\PSoC4/Thermistor.c ****  392u, 391u, 390u, 389u, 387u, 386u, 385u, 384u, 383u, 382u, 381u, 379u, 378u, 377u, 376u, 375u, 37
+ 184:.\Generated_Source\PSoC4/Thermistor.c ****  369u, 368u, 367u, 366u, 365u, 364u, 363u, 362u, 361u, 360u, 358u, 357u, 356u, 355u, 354u, 353u, 35
+ 185:.\Generated_Source\PSoC4/Thermistor.c ****  348u, 347u, 346u, 345u, 344u, 343u, 342u, 341u, 340u, 339u, 338u, 337u, 336u, 335u, 334u, 333u, 33
+ 186:.\Generated_Source\PSoC4/Thermistor.c ****  328u, 327u, 326u, 325u, 324u, 323u, 322u, 321u, 321u, 320u, 319u, 318u, 317u, 316u, 315u, 314u, 31
+ 187:.\Generated_Source\PSoC4/Thermistor.c ****  310u, 309u, 308u, 307u, 306u, 305u, 304u, 303u, 302u, 302u, 301u, 300u, 299u, 298u, 297u, 296u, 29
+ 188:.\Generated_Source\PSoC4/Thermistor.c ****  292u, 291u, 291u, 290u, 289u, 288u, 287u, 286u, 286u, 285u, 284u, 283u, 282u, 281u, 281u, 280u, 27
+ 189:.\Generated_Source\PSoC4/Thermistor.c ****  276u, 275u, 274u, 274u, 273u, 272u, 271u, 271u, 270u, 269u, 268u, 267u, 267u, 266u, 265u, 264u, 26
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 6
+
+
+ 190:.\Generated_Source\PSoC4/Thermistor.c ****  261u, 260u };
+ 191:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 192:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 193:.\Generated_Source\PSoC4/Thermistor.c ****     #if (Thermistor_IMPLEMENTATION == Thermistor_EQUATION_METHOD)
+ 194:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 195:.\Generated_Source\PSoC4/Thermistor.c ****         float32 stEqn;
+ 196:.\Generated_Source\PSoC4/Thermistor.c ****         float32 logrT;
+ 197:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 198:.\Generated_Source\PSoC4/Thermistor.c ****         /* Calculate thermistor resistance from the voltages */
+ 199:.\Generated_Source\PSoC4/Thermistor.c ****         #if(!CY_PSOC3)
+ 200:.\Generated_Source\PSoC4/Thermistor.c ****             logrT = (float32)log((float64)resT);
+ 201:.\Generated_Source\PSoC4/Thermistor.c ****         #else
+ 202:.\Generated_Source\PSoC4/Thermistor.c ****             logrT = log((float32)resT);
+ 203:.\Generated_Source\PSoC4/Thermistor.c ****         #endif  /* (!CY_PSOC3) */
+ 204:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 205:.\Generated_Source\PSoC4/Thermistor.c ****         /* Calculate temperature from the resistance of thermistor using Steinhart-Hart Equation */
+ 206:.\Generated_Source\PSoC4/Thermistor.c ****         #if(!CY_PSOC3)
+ 207:.\Generated_Source\PSoC4/Thermistor.c ****             stEqn = (float32)(Thermistor_THA + (Thermistor_THB * logrT) + 
+ 208:.\Generated_Source\PSoC4/Thermistor.c ****                              (Thermistor_THC * pow((float64)logrT, (float32)3)));
+ 209:.\Generated_Source\PSoC4/Thermistor.c ****         #else
+ 210:.\Generated_Source\PSoC4/Thermistor.c ****             stEqn = (float32)(Thermistor_THA + (Thermistor_THB * logrT) + 
+ 211:.\Generated_Source\PSoC4/Thermistor.c ****                              (Thermistor_THC * pow(logrT, (float32)3)));
+ 212:.\Generated_Source\PSoC4/Thermistor.c ****         #endif  /* (!CY_PSOC3) */
+ 213:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 214:.\Generated_Source\PSoC4/Thermistor.c ****         tempTR = (int16)((float32)((((1.0 / stEqn) - Thermistor_K2C) * (float32)Thermistor_SCALE) +
+ 215:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 216:.\Generated_Source\PSoC4/Thermistor.c ****     #else /* Thermistor_IMPLEMENTATION == Thermistor_LUT_METHOD */
+ 217:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 218:.\Generated_Source\PSoC4/Thermistor.c ****         uint16 mid;
+ 219:.\Generated_Source\PSoC4/Thermistor.c ****         uint16 first = 0u;
+ 220:.\Generated_Source\PSoC4/Thermistor.c ****         uint16 last = Thermistor_LUT_SIZE - 1u;
+  97              		.loc 1 220 0
+  98 0002 2149     		ldr	r1, .L16
+ 219:.\Generated_Source\PSoC4/Thermistor.c ****         uint16 last = Thermistor_LUT_SIZE - 1u;
+  99              		.loc 1 219 0
+ 100 0004 0024     		mov	r4, #0
+ 221:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 222:.\Generated_Source\PSoC4/Thermistor.c ****         /* Calculate temperature from the resistance of thermistor by using the LUT */
+ 223:.\Generated_Source\PSoC4/Thermistor.c ****         while (first < last)
+ 101              		.loc 1 223 0
+ 102 0006 13E0     		b	.L7
+ 103              	.LVL12:
+ 104              	.L13:
+ 224:.\Generated_Source\PSoC4/Thermistor.c ****         {
+ 225:.\Generated_Source\PSoC4/Thermistor.c ****             mid = (first + last) >> 1u;
+ 105              		.loc 1 225 0
+ 106 0008 6318     		add	r3, r4, r1
+ 107 000a 5B10     		asr	r3, r3, #1
+ 108 000c 9AB2     		uxth	r2, r3
+ 109              	.LVL13:
+ 226:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 227:.\Generated_Source\PSoC4/Thermistor.c ****             if ((0u == mid) || ((Thermistor_LUT_SIZE - 1u) == mid) || (resT == Thermistor_LUT[mid])
+ 110              		.loc 1 227 0
+ 111 000e 002A     		cmp	r2, #0
+ 112 0010 11D0     		beq	.L10
+ 113              		.loc 1 227 0 is_stmt 0 discriminator 1
+ 114 0012 1D4D     		ldr	r5, .L16
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 7
+
+
+ 115 0014 AA42     		cmp	r2, r5
+ 116 0016 0ED0     		beq	.L10
+ 117              		.loc 1 227 0 discriminator 2
+ 118 0018 1B04     		lsl	r3, r3, #16
+ 119 001a 9B0B     		lsr	r3, r3, #14
+ 120 001c 1B4D     		ldr	r5, .L16+4
+ 121 001e 5B59     		ldr	r3, [r3, r5]
+ 122 0020 8342     		cmp	r3, r0
+ 123 0022 08D0     		beq	.L10
+ 228:.\Generated_Source\PSoC4/Thermistor.c ****             {
+ 229:.\Generated_Source\PSoC4/Thermistor.c ****                 last = mid;
+ 230:.\Generated_Source\PSoC4/Thermistor.c ****                 break;
+ 231:.\Generated_Source\PSoC4/Thermistor.c ****             }
+ 232:.\Generated_Source\PSoC4/Thermistor.c ****             else if (Thermistor_LUT[mid] > resT)
+ 124              		.loc 1 232 0 is_stmt 1
+ 125 0024 02D9     		bls	.L11
+ 233:.\Generated_Source\PSoC4/Thermistor.c ****             {
+ 234:.\Generated_Source\PSoC4/Thermistor.c ****                 first = mid + 1u;
+ 126              		.loc 1 234 0
+ 127 0026 0132     		add	r2, r2, #1
+ 128              	.LVL14:
+ 129 0028 94B2     		uxth	r4, r2
+ 130              	.LVL15:
+ 131 002a 01E0     		b	.L7
+ 132              	.LVL16:
+ 133              	.L11:
+ 235:.\Generated_Source\PSoC4/Thermistor.c ****             }
+ 236:.\Generated_Source\PSoC4/Thermistor.c ****             else /* (Thermistor_LUT[mid] < resT) */
+ 237:.\Generated_Source\PSoC4/Thermistor.c ****             {
+ 238:.\Generated_Source\PSoC4/Thermistor.c ****                 last = mid - 1u;
+ 134              		.loc 1 238 0
+ 135 002c 511E     		sub	r1, r2, #1
+ 136              	.LVL17:
+ 137 002e 89B2     		uxth	r1, r1
+ 138              	.LVL18:
+ 139              	.L7:
+ 223:.\Generated_Source\PSoC4/Thermistor.c ****         {
+ 140              		.loc 1 223 0
+ 141 0030 8C42     		cmp	r4, r1
+ 142 0032 E9D3     		bcc	.L13
+ 143 0034 0A1C     		mov	r2, r1
+ 144              	.L10:
+ 145              	.LVL19:
+ 239:.\Generated_Source\PSoC4/Thermistor.c ****             }
+ 240:.\Generated_Source\PSoC4/Thermistor.c ****         }
+ 241:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 242:.\Generated_Source\PSoC4/Thermistor.c ****         /* Calculation the closest entry in the LUT */
+ 243:.\Generated_Source\PSoC4/Thermistor.c ****         if ((Thermistor_LUT[last] > resT) && (last < (Thermistor_LUT_SIZE - 1u)) &&
+ 146              		.loc 1 243 0
+ 147 0036 9300     		lsl	r3, r2, #2
+ 148 0038 1449     		ldr	r1, .L16+4
+ 149 003a 5B58     		ldr	r3, [r3, r1]
+ 150 003c 8342     		cmp	r3, r0
+ 151 003e 0DD9     		bls	.L14
+ 152              		.loc 1 243 0 is_stmt 0 discriminator 1
+ 153 0040 1349     		ldr	r1, .L16+8
+ 154 0042 8A42     		cmp	r2, r1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 8
+
+
+ 155 0044 0AD8     		bhi	.L14
+ 244:.\Generated_Source\PSoC4/Thermistor.c ****            ((Thermistor_LUT[last] - resT) > (resT - Thermistor_LUT[last + 1u])))
+ 156              		.loc 1 244 0 is_stmt 1 discriminator 2
+ 157 0046 1C1A     		sub	r4, r3, r0
+ 158              	.LVL20:
+ 159 0048 511C     		add	r1, r2, #1
+ 160 004a 8900     		lsl	r1, r1, #2
+ 161 004c 0F4D     		ldr	r5, .L16+4
+ 162 004e 4959     		ldr	r1, [r1, r5]
+ 163 0050 411A     		sub	r1, r0, r1
+ 243:.\Generated_Source\PSoC4/Thermistor.c ****            ((Thermistor_LUT[last] - resT) > (resT - Thermistor_LUT[last + 1u])))
+ 164              		.loc 1 243 0 discriminator 2
+ 165 0052 8C42     		cmp	r4, r1
+ 166 0054 02D9     		bls	.L14
+ 245:.\Generated_Source\PSoC4/Thermistor.c ****         {
+ 246:.\Generated_Source\PSoC4/Thermistor.c ****             last++;
+ 167              		.loc 1 246 0
+ 168 0056 0132     		add	r2, r2, #1
+ 169              	.LVL21:
+ 170 0058 92B2     		uxth	r2, r2
+ 171              	.LVL22:
+ 172 005a 0DE0     		b	.L15
+ 173              	.L14:
+ 247:.\Generated_Source\PSoC4/Thermistor.c ****         }
+ 248:.\Generated_Source\PSoC4/Thermistor.c ****         else if ((Thermistor_LUT[last] < resT) && (last > 0u) &&
+ 174              		.loc 1 248 0
+ 175 005c 9842     		cmp	r0, r3
+ 176 005e 0BD9     		bls	.L15
+ 177              		.loc 1 248 0 is_stmt 0 discriminator 1
+ 178 0060 002A     		cmp	r2, #0
+ 179 0062 09D0     		beq	.L15
+ 249:.\Generated_Source\PSoC4/Thermistor.c ****                 ((Thermistor_LUT[last - 1u] - resT) < (resT - Thermistor_LUT[last])))
+ 180              		.loc 1 249 0 is_stmt 1 discriminator 2
+ 181 0064 511E     		sub	r1, r2, #1
+ 182 0066 8900     		lsl	r1, r1, #2
+ 183 0068 084C     		ldr	r4, .L16+4
+ 184 006a 0959     		ldr	r1, [r1, r4]
+ 185 006c 091A     		sub	r1, r1, r0
+ 186 006e C01A     		sub	r0, r0, r3
+ 187              	.LVL23:
+ 248:.\Generated_Source\PSoC4/Thermistor.c ****                 ((Thermistor_LUT[last - 1u] - resT) < (resT - Thermistor_LUT[last])))
+ 188              		.loc 1 248 0 discriminator 2
+ 189 0070 8142     		cmp	r1, r0
+ 190 0072 01D2     		bcs	.L15
+ 250:.\Generated_Source\PSoC4/Thermistor.c ****         {
+ 251:.\Generated_Source\PSoC4/Thermistor.c ****             last--;
+ 191              		.loc 1 251 0
+ 192 0074 013A     		sub	r2, r2, #1
+ 193              	.LVL24:
+ 194 0076 92B2     		uxth	r2, r2
+ 195              	.LVL25:
+ 196              	.L15:
+ 252:.\Generated_Source\PSoC4/Thermistor.c ****         }
+ 253:.\Generated_Source\PSoC4/Thermistor.c ****         else
+ 254:.\Generated_Source\PSoC4/Thermistor.c ****         {
+ 255:.\Generated_Source\PSoC4/Thermistor.c ****             /* Closest entry in the LUT already found */
+ 256:.\Generated_Source\PSoC4/Thermistor.c ****         }
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 9
+
+
+ 257:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 258:.\Generated_Source\PSoC4/Thermistor.c ****         tempTR = Thermistor_MIN_TEMP + (int16)((uint16)(last * Thermistor_ACCURACY));
+ 197              		.loc 1 258 0
+ 198 0078 9300     		lsl	r3, r2, #2
+ 199 007a D218     		add	r2, r2, r3
+ 200              	.LVL26:
+ 201 007c 5000     		lsl	r0, r2, #1
+ 202 007e 054B     		ldr	r3, .L16+12
+ 203 0080 9C46     		mov	ip, r3
+ 204 0082 6044     		add	r0, r0, ip
+ 205              	.LVL27:
+ 259:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 260:.\Generated_Source\PSoC4/Thermistor.c ****     #endif /* (Thermistor_IMPLEMENTATION == Thermistor_EQUATION_METHOD) */
+ 261:.\Generated_Source\PSoC4/Thermistor.c **** 
+ 262:.\Generated_Source\PSoC4/Thermistor.c ****     return (tempTR);
+ 206              		.loc 1 262 0
+ 207 0084 00B2     		sxth	r0, r0
+ 263:.\Generated_Source\PSoC4/Thermistor.c **** }
+ 208              		.loc 1 263 0
+ 209              		@ sp needed
+ 210 0086 30BD     		pop	{r4, r5, pc}
+ 211              	.L17:
+ 212              		.align	2
+ 213              	.L16:
+ 214 0088 72060000 		.word	1650
+ 215 008c 00000000 		.word	.LANCHOR0
+ 216 0090 71060000 		.word	1649
+ 217 0094 60F0FFFF 		.word	-4000
+ 218              		.cfi_endproc
+ 219              	.LFE2:
+ 220              		.size	Thermistor_GetTemperature, .-Thermistor_GetTemperature
+ 221              		.section	.rodata
+ 222              		.align	2
+ 223              		.set	.LANCHOR0,. + 0
+ 224              		.type	Thermistor_LUT.4761, %object
+ 225              		.size	Thermistor_LUT.4761, 6604
+ 226              	Thermistor_LUT.4761:
+ 227 0000 34660600 		.word	419380
+ 228 0004 C75A0600 		.word	416455
+ 229 0008 704F0600 		.word	413552
+ 230 000c 2F440600 		.word	410671
+ 231 0010 04390600 		.word	407812
+ 232 0014 EF2D0600 		.word	404975
+ 233 0018 F0220600 		.word	402160
+ 234 001c 06180600 		.word	399366
+ 235 0020 310D0600 		.word	396593
+ 236 0024 72020600 		.word	393842
+ 237 0028 C7F70500 		.word	391111
+ 238 002c 31ED0500 		.word	388401
+ 239 0030 AFE20500 		.word	385711
+ 240 0034 42D80500 		.word	383042
+ 241 0038 E9CD0500 		.word	380393
+ 242 003c A4C30500 		.word	377764
+ 243 0040 73B90500 		.word	375155
+ 244 0044 56AF0500 		.word	372566
+ 245 0048 4CA50500 		.word	369996
+ 246 004c 559B0500 		.word	367445
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 10
+
+
+ 247 0050 72910500 		.word	364914
+ 248 0054 A2870500 		.word	362402
+ 249 0058 E57D0500 		.word	359909
+ 250 005c 3B740500 		.word	357435
+ 251 0060 A36A0500 		.word	354979
+ 252 0064 1E610500 		.word	352542
+ 253 0068 AB570500 		.word	350123
+ 254 006c 4A4E0500 		.word	347722
+ 255 0070 FB440500 		.word	345339
+ 256 0074 BE3B0500 		.word	342974
+ 257 0078 93320500 		.word	340627
+ 258 007c 7A290500 		.word	338298
+ 259 0080 72200500 		.word	335986
+ 260 0084 7B170500 		.word	333691
+ 261 0088 950E0500 		.word	331413
+ 262 008c C1050500 		.word	329153
+ 263 0090 FDFC0400 		.word	326909
+ 264 0094 4AF40400 		.word	324682
+ 265 0098 A7EB0400 		.word	322471
+ 266 009c 16E30400 		.word	320278
+ 267 00a0 94DA0400 		.word	318100
+ 268 00a4 23D20400 		.word	315939
+ 269 00a8 C1C90400 		.word	313793
+ 270 00ac 70C10400 		.word	311664
+ 271 00b0 2FB90400 		.word	309551
+ 272 00b4 FDB00400 		.word	307453
+ 273 00b8 DBA80400 		.word	305371
+ 274 00bc C8A00400 		.word	303304
+ 275 00c0 C4980400 		.word	301252
+ 276 00c4 D0900400 		.word	299216
+ 277 00c8 EB880400 		.word	297195
+ 278 00cc 15810400 		.word	295189
+ 279 00d0 4E790400 		.word	293198
+ 280 00d4 95710400 		.word	291221
+ 281 00d8 EB690400 		.word	289259
+ 282 00dc 4F620400 		.word	287311
+ 283 00e0 C25A0400 		.word	285378
+ 284 00e4 43530400 		.word	283459
+ 285 00e8 D24B0400 		.word	281554
+ 286 00ec 70440400 		.word	279664
+ 287 00f0 1B3D0400 		.word	277787
+ 288 00f4 D4350400 		.word	275924
+ 289 00f8 9A2E0400 		.word	274074
+ 290 00fc 6F270400 		.word	272239
+ 291 0100 50200400 		.word	270416
+ 292 0104 40190400 		.word	268608
+ 293 0108 3C120400 		.word	266812
+ 294 010c 450B0400 		.word	265029
+ 295 0110 5C040400 		.word	263260
+ 296 0114 7FFD0300 		.word	261503
+ 297 0118 B0F60300 		.word	259760
+ 298 011c EDEF0300 		.word	258029
+ 299 0120 37E90300 		.word	256311
+ 300 0124 8DE20300 		.word	254605
+ 301 0128 F0DB0300 		.word	252912
+ 302 012c 5FD50300 		.word	251231
+ 303 0130 DACE0300 		.word	249562
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 11
+
+
+ 304 0134 62C80300 		.word	247906
+ 305 0138 F5C10300 		.word	246261
+ 306 013c 95BB0300 		.word	244629
+ 307 0140 40B50300 		.word	243008
+ 308 0144 F7AE0300 		.word	241399
+ 309 0148 BAA80300 		.word	239802
+ 310 014c 89A20300 		.word	238217
+ 311 0150 639C0300 		.word	236643
+ 312 0154 48960300 		.word	235080
+ 313 0158 39900300 		.word	233529
+ 314 015c 358A0300 		.word	231989
+ 315 0160 3C840300 		.word	230460
+ 316 0164 4E7E0300 		.word	228942
+ 317 0168 6B780300 		.word	227435
+ 318 016c 93720300 		.word	225939
+ 319 0170 C66C0300 		.word	224454
+ 320 0174 03670300 		.word	222979
+ 321 0178 4B610300 		.word	221515
+ 322 017c 9E5B0300 		.word	220062
+ 323 0180 FB550300 		.word	218619
+ 324 0184 62500300 		.word	217186
+ 325 0188 D44A0300 		.word	215764
+ 326 018c 50450300 		.word	214352
+ 327 0190 D63F0300 		.word	212950
+ 328 0194 663A0300 		.word	211558
+ 329 0198 01350300 		.word	210177
+ 330 019c A52F0300 		.word	208805
+ 331 01a0 532A0300 		.word	207443
+ 332 01a4 0A250300 		.word	206090
+ 333 01a8 CC1F0300 		.word	204748
+ 334 01ac 971A0300 		.word	203415
+ 335 01b0 6B150300 		.word	202091
+ 336 01b4 49100300 		.word	200777
+ 337 01b8 300B0300 		.word	199472
+ 338 01bc 21060300 		.word	198177
+ 339 01c0 1B010300 		.word	196891
+ 340 01c4 1EFC0200 		.word	195614
+ 341 01c8 2AF70200 		.word	194346
+ 342 01cc 3FF20200 		.word	193087
+ 343 01d0 5DED0200 		.word	191837
+ 344 01d4 84E80200 		.word	190596
+ 345 01d8 B4E30200 		.word	189364
+ 346 01dc EDDE0200 		.word	188141
+ 347 01e0 2EDA0200 		.word	186926
+ 348 01e4 78D50200 		.word	185720
+ 349 01e8 CAD00200 		.word	184522
+ 350 01ec 25CC0200 		.word	183333
+ 351 01f0 88C70200 		.word	182152
+ 352 01f4 F4C20200 		.word	180980
+ 353 01f8 68BE0200 		.word	179816
+ 354 01fc E4B90200 		.word	178660
+ 355 0200 69B50200 		.word	177513
+ 356 0204 F5B00200 		.word	176373
+ 357 0208 89AC0200 		.word	175241
+ 358 020c 26A80200 		.word	174118
+ 359 0210 CAA30200 		.word	173002
+ 360 0214 779F0200 		.word	171895
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 12
+
+
+ 361 0218 2B9B0200 		.word	170795
+ 362 021c E6960200 		.word	169702
+ 363 0220 AA920200 		.word	168618
+ 364 0224 758E0200 		.word	167541
+ 365 0228 478A0200 		.word	166471
+ 366 022c 21860200 		.word	165409
+ 367 0230 03820200 		.word	164355
+ 368 0234 EC7D0200 		.word	163308
+ 369 0238 DC790200 		.word	162268
+ 370 023c D4750200 		.word	161236
+ 371 0240 D2710200 		.word	160210
+ 372 0244 D86D0200 		.word	159192
+ 373 0248 E5690200 		.word	158181
+ 374 024c FA650200 		.word	157178
+ 375 0250 15620200 		.word	156181
+ 376 0254 375E0200 		.word	155191
+ 377 0258 605A0200 		.word	154208
+ 378 025c 8F560200 		.word	153231
+ 379 0260 C6520200 		.word	152262
+ 380 0264 034F0200 		.word	151299
+ 381 0268 474B0200 		.word	150343
+ 382 026c 92470200 		.word	149394
+ 383 0270 E3430200 		.word	148451
+ 384 0274 3B400200 		.word	147515
+ 385 0278 9A3C0200 		.word	146586
+ 386 027c FE380200 		.word	145662
+ 387 0280 69350200 		.word	144745
+ 388 0284 DB310200 		.word	143835
+ 389 0288 532E0200 		.word	142931
+ 390 028c D12A0200 		.word	142033
+ 391 0290 55270200 		.word	141141
+ 392 0294 DF230200 		.word	140255
+ 393 0298 70200200 		.word	139376
+ 394 029c 071D0200 		.word	138503
+ 395 02a0 A3190200 		.word	137635
+ 396 02a4 46160200 		.word	136774
+ 397 02a8 EE120200 		.word	135918
+ 398 02ac 9D0F0200 		.word	135069
+ 399 02b0 510C0200 		.word	134225
+ 400 02b4 0B090200 		.word	133387
+ 401 02b8 CB050200 		.word	132555
+ 402 02bc 90020200 		.word	131728
+ 403 02c0 5BFF0100 		.word	130907
+ 404 02c4 2CFC0100 		.word	130092
+ 405 02c8 03F90100 		.word	129283
+ 406 02cc DFF50100 		.word	128479
+ 407 02d0 C0F20100 		.word	127680
+ 408 02d4 A7EF0100 		.word	126887
+ 409 02d8 93EC0100 		.word	126099
+ 410 02dc 85E90100 		.word	125317
+ 411 02e0 7CE60100 		.word	124540
+ 412 02e4 79E30100 		.word	123769
+ 413 02e8 7AE00100 		.word	123002
+ 414 02ec 81DD0100 		.word	122241
+ 415 02f0 8DDA0100 		.word	121485
+ 416 02f4 9ED70100 		.word	120734
+ 417 02f8 B5D40100 		.word	119989
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 13
+
+
+ 418 02fc D0D10100 		.word	119248
+ 419 0300 F0CE0100 		.word	118512
+ 420 0304 16CC0100 		.word	117782
+ 421 0308 40C90100 		.word	117056
+ 422 030c 6FC60100 		.word	116335
+ 423 0310 A4C30100 		.word	115620
+ 424 0314 DDC00100 		.word	114909
+ 425 0318 1ABE0100 		.word	114202
+ 426 031c 5DBB0100 		.word	113501
+ 427 0320 A4B80100 		.word	112804
+ 428 0324 F1B50100 		.word	112113
+ 429 0328 41B30100 		.word	111425
+ 430 032c 97B00100 		.word	110743
+ 431 0330 F1AD0100 		.word	110065
+ 432 0334 4FAB0100 		.word	109391
+ 433 0338 B2A80100 		.word	108722
+ 434 033c 1AA60100 		.word	108058
+ 435 0340 86A30100 		.word	107398
+ 436 0344 F7A00100 		.word	106743
+ 437 0348 6B9E0100 		.word	106091
+ 438 034c E59B0100 		.word	105445
+ 439 0350 62990100 		.word	104802
+ 440 0354 E4960100 		.word	104164
+ 441 0358 6B940100 		.word	103531
+ 442 035c F5910100 		.word	102901
+ 443 0360 848F0100 		.word	102276
+ 444 0364 178D0100 		.word	101655
+ 445 0368 AE8A0100 		.word	101038
+ 446 036c 49880100 		.word	100425
+ 447 0370 E8850100 		.word	99816
+ 448 0374 8C830100 		.word	99212
+ 449 0378 33810100 		.word	98611
+ 450 037c DE7E0100 		.word	98014
+ 451 0380 8E7C0100 		.word	97422
+ 452 0384 417A0100 		.word	96833
+ 453 0388 F8770100 		.word	96248
+ 454 038c B4750100 		.word	95668
+ 455 0390 73730100 		.word	95091
+ 456 0394 35710100 		.word	94517
+ 457 0398 FC6E0100 		.word	93948
+ 458 039c C66C0100 		.word	93382
+ 459 03a0 956A0100 		.word	92821
+ 460 03a4 67680100 		.word	92263
+ 461 03a8 3C660100 		.word	91708
+ 462 03ac 16640100 		.word	91158
+ 463 03b0 F2610100 		.word	90610
+ 464 03b4 D35F0100 		.word	90067
+ 465 03b8 B75D0100 		.word	89527
+ 466 03bc 9F5B0100 		.word	88991
+ 467 03c0 8A590100 		.word	88458
+ 468 03c4 79570100 		.word	87929
+ 469 03c8 6B550100 		.word	87403
+ 470 03cc 61530100 		.word	86881
+ 471 03d0 5A510100 		.word	86362
+ 472 03d4 574F0100 		.word	85847
+ 473 03d8 574D0100 		.word	85335
+ 474 03dc 5A4B0100 		.word	84826
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 14
+
+
+ 475 03e0 61490100 		.word	84321
+ 476 03e4 6B470100 		.word	83819
+ 477 03e8 78450100 		.word	83320
+ 478 03ec 89430100 		.word	82825
+ 479 03f0 9D410100 		.word	82333
+ 480 03f4 B43F0100 		.word	81844
+ 481 03f8 CE3D0100 		.word	81358
+ 482 03fc EC3B0100 		.word	80876
+ 483 0400 0C3A0100 		.word	80396
+ 484 0404 30380100 		.word	79920
+ 485 0408 57360100 		.word	79447
+ 486 040c 81340100 		.word	78977
+ 487 0410 AE320100 		.word	78510
+ 488 0414 DE300100 		.word	78046
+ 489 0418 112F0100 		.word	77585
+ 490 041c 472D0100 		.word	77127
+ 491 0420 802B0100 		.word	76672
+ 492 0424 BC290100 		.word	76220
+ 493 0428 FB270100 		.word	75771
+ 494 042c 3D260100 		.word	75325
+ 495 0430 82240100 		.word	74882
+ 496 0434 CA220100 		.word	74442
+ 497 0438 14210100 		.word	74004
+ 498 043c 621F0100 		.word	73570
+ 499 0440 B21D0100 		.word	73138
+ 500 0444 051C0100 		.word	72709
+ 501 0448 5B1A0100 		.word	72283
+ 502 044c B3180100 		.word	71859
+ 503 0450 0F170100 		.word	71439
+ 504 0454 6D150100 		.word	71021
+ 505 0458 CD130100 		.word	70605
+ 506 045c 31120100 		.word	70193
+ 507 0460 97100100 		.word	69783
+ 508 0464 000F0100 		.word	69376
+ 509 0468 6B0D0100 		.word	68971
+ 510 046c D90B0100 		.word	68569
+ 511 0470 490A0100 		.word	68169
+ 512 0474 BC080100 		.word	67772
+ 513 0478 32070100 		.word	67378
+ 514 047c AA050100 		.word	66986
+ 515 0480 25040100 		.word	66597
+ 516 0484 A2020100 		.word	66210
+ 517 0488 22010100 		.word	65826
+ 518 048c A4FF0000 		.word	65444
+ 519 0490 29FE0000 		.word	65065
+ 520 0494 B0FC0000 		.word	64688
+ 521 0498 39FB0000 		.word	64313
+ 522 049c C5F90000 		.word	63941
+ 523 04a0 53F80000 		.word	63571
+ 524 04a4 E4F60000 		.word	63204
+ 525 04a8 77F50000 		.word	62839
+ 526 04ac 0CF40000 		.word	62476
+ 527 04b0 A4F20000 		.word	62116
+ 528 04b4 3EF10000 		.word	61758
+ 529 04b8 DAEF0000 		.word	61402
+ 530 04bc 78EE0000 		.word	61048
+ 531 04c0 19ED0000 		.word	60697
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 15
+
+
+ 532 04c4 BCEB0000 		.word	60348
+ 533 04c8 61EA0000 		.word	60001
+ 534 04cc 08E90000 		.word	59656
+ 535 04d0 B2E70000 		.word	59314
+ 536 04d4 5DE60000 		.word	58973
+ 537 04d8 0BE50000 		.word	58635
+ 538 04dc BBE30000 		.word	58299
+ 539 04e0 6DE20000 		.word	57965
+ 540 04e4 22E10000 		.word	57634
+ 541 04e8 D8DF0000 		.word	57304
+ 542 04ec 90DE0000 		.word	56976
+ 543 04f0 4BDD0000 		.word	56651
+ 544 04f4 08DC0000 		.word	56328
+ 545 04f8 C6DA0000 		.word	56006
+ 546 04fc 87D90000 		.word	55687
+ 547 0500 49D80000 		.word	55369
+ 548 0504 0ED70000 		.word	55054
+ 549 0508 D5D50000 		.word	54741
+ 550 050c 9DD40000 		.word	54429
+ 551 0510 68D30000 		.word	54120
+ 552 0514 34D20000 		.word	53812
+ 553 0518 03D10000 		.word	53507
+ 554 051c D3CF0000 		.word	53203
+ 555 0520 A6CE0000 		.word	52902
+ 556 0524 7ACD0000 		.word	52602
+ 557 0528 50CC0000 		.word	52304
+ 558 052c 28CB0000 		.word	52008
+ 559 0530 02CA0000 		.word	51714
+ 560 0534 DDC80000 		.word	51421
+ 561 0538 BBC70000 		.word	51131
+ 562 053c 9AC60000 		.word	50842
+ 563 0540 7BC50000 		.word	50555
+ 564 0544 5EC40000 		.word	50270
+ 565 0548 42C30000 		.word	49986
+ 566 054c 29C20000 		.word	49705
+ 567 0550 11C10000 		.word	49425
+ 568 0554 FBBF0000 		.word	49147
+ 569 0558 E7BE0000 		.word	48871
+ 570 055c D4BD0000 		.word	48596
+ 571 0560 C3BC0000 		.word	48323
+ 572 0564 B4BB0000 		.word	48052
+ 573 0568 A6BA0000 		.word	47782
+ 574 056c 9AB90000 		.word	47514
+ 575 0570 90B80000 		.word	47248
+ 576 0574 88B70000 		.word	46984
+ 577 0578 81B60000 		.word	46721
+ 578 057c 7BB50000 		.word	46459
+ 579 0580 78B40000 		.word	46200
+ 580 0584 76B30000 		.word	45942
+ 581 0588 75B20000 		.word	45685
+ 582 058c 76B10000 		.word	45430
+ 583 0590 79B00000 		.word	45177
+ 584 0594 7DAF0000 		.word	44925
+ 585 0598 83AE0000 		.word	44675
+ 586 059c 8AAD0000 		.word	44426
+ 587 05a0 93AC0000 		.word	44179
+ 588 05a4 9EAB0000 		.word	43934
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 16
+
+
+ 589 05a8 AAAA0000 		.word	43690
+ 590 05ac B7A90000 		.word	43447
+ 591 05b0 C6A80000 		.word	43206
+ 592 05b4 D6A70000 		.word	42966
+ 593 05b8 E8A60000 		.word	42728
+ 594 05bc FCA50000 		.word	42492
+ 595 05c0 11A50000 		.word	42257
+ 596 05c4 27A40000 		.word	42023
+ 597 05c8 3EA30000 		.word	41790
+ 598 05cc 58A20000 		.word	41560
+ 599 05d0 72A10000 		.word	41330
+ 600 05d4 8EA00000 		.word	41102
+ 601 05d8 AB9F0000 		.word	40875
+ 602 05dc CA9E0000 		.word	40650
+ 603 05e0 EA9D0000 		.word	40426
+ 604 05e4 0B9D0000 		.word	40203
+ 605 05e8 2E9C0000 		.word	39982
+ 606 05ec 529B0000 		.word	39762
+ 607 05f0 789A0000 		.word	39544
+ 608 05f4 9F990000 		.word	39327
+ 609 05f8 C7980000 		.word	39111
+ 610 05fc F0970000 		.word	38896
+ 611 0600 1B970000 		.word	38683
+ 612 0604 47960000 		.word	38471
+ 613 0608 74950000 		.word	38260
+ 614 060c A3940000 		.word	38051
+ 615 0610 D3930000 		.word	37843
+ 616 0614 04930000 		.word	37636
+ 617 0618 37920000 		.word	37431
+ 618 061c 6A910000 		.word	37226
+ 619 0620 9F900000 		.word	37023
+ 620 0624 D58F0000 		.word	36821
+ 621 0628 0D8F0000 		.word	36621
+ 622 062c 458E0000 		.word	36421
+ 623 0630 7F8D0000 		.word	36223
+ 624 0634 BA8C0000 		.word	36026
+ 625 0638 F68B0000 		.word	35830
+ 626 063c 338B0000 		.word	35635
+ 627 0640 728A0000 		.word	35442
+ 628 0644 B1890000 		.word	35249
+ 629 0648 F2880000 		.word	35058
+ 630 064c 34880000 		.word	34868
+ 631 0650 77870000 		.word	34679
+ 632 0654 BC860000 		.word	34492
+ 633 0658 01860000 		.word	34305
+ 634 065c 48850000 		.word	34120
+ 635 0660 8F840000 		.word	33935
+ 636 0664 D8830000 		.word	33752
+ 637 0668 22830000 		.word	33570
+ 638 066c 6D820000 		.word	33389
+ 639 0670 B9810000 		.word	33209
+ 640 0674 06810000 		.word	33030
+ 641 0678 54800000 		.word	32852
+ 642 067c A37F0000 		.word	32675
+ 643 0680 F37E0000 		.word	32499
+ 644 0684 457E0000 		.word	32325
+ 645 0688 977D0000 		.word	32151
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 17
+
+
+ 646 068c EA7C0000 		.word	31978
+ 647 0690 3F7C0000 		.word	31807
+ 648 0694 947B0000 		.word	31636
+ 649 0698 EB7A0000 		.word	31467
+ 650 069c 427A0000 		.word	31298
+ 651 06a0 9B790000 		.word	31131
+ 652 06a4 F4780000 		.word	30964
+ 653 06a8 4F780000 		.word	30799
+ 654 06ac AA770000 		.word	30634
+ 655 06b0 06770000 		.word	30470
+ 656 06b4 64760000 		.word	30308
+ 657 06b8 C2750000 		.word	30146
+ 658 06bc 21750000 		.word	29985
+ 659 06c0 82740000 		.word	29826
+ 660 06c4 E3730000 		.word	29667
+ 661 06c8 45730000 		.word	29509
+ 662 06cc A8720000 		.word	29352
+ 663 06d0 0C720000 		.word	29196
+ 664 06d4 71710000 		.word	29041
+ 665 06d8 D7700000 		.word	28887
+ 666 06dc 3E700000 		.word	28734
+ 667 06e0 A56F0000 		.word	28581
+ 668 06e4 0E6F0000 		.word	28430
+ 669 06e8 776E0000 		.word	28279
+ 670 06ec E26D0000 		.word	28130
+ 671 06f0 4D6D0000 		.word	27981
+ 672 06f4 B96C0000 		.word	27833
+ 673 06f8 266C0000 		.word	27686
+ 674 06fc 946B0000 		.word	27540
+ 675 0700 026B0000 		.word	27394
+ 676 0704 726A0000 		.word	27250
+ 677 0708 E2690000 		.word	27106
+ 678 070c 54690000 		.word	26964
+ 679 0710 C6680000 		.word	26822
+ 680 0714 38680000 		.word	26680
+ 681 0718 AC670000 		.word	26540
+ 682 071c 21670000 		.word	26401
+ 683 0720 96660000 		.word	26262
+ 684 0724 0C660000 		.word	26124
+ 685 0728 83650000 		.word	25987
+ 686 072c FB640000 		.word	25851
+ 687 0730 73640000 		.word	25715
+ 688 0734 ED630000 		.word	25581
+ 689 0738 67630000 		.word	25447
+ 690 073c E2620000 		.word	25314
+ 691 0740 5D620000 		.word	25181
+ 692 0744 DA610000 		.word	25050
+ 693 0748 57610000 		.word	24919
+ 694 074c D5600000 		.word	24789
+ 695 0750 54600000 		.word	24660
+ 696 0754 D35F0000 		.word	24531
+ 697 0758 545F0000 		.word	24404
+ 698 075c D45E0000 		.word	24276
+ 699 0760 565E0000 		.word	24150
+ 700 0764 D95D0000 		.word	24025
+ 701 0768 5C5D0000 		.word	23900
+ 702 076c E05C0000 		.word	23776
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 18
+
+
+ 703 0770 645C0000 		.word	23652
+ 704 0774 EA5B0000 		.word	23530
+ 705 0778 705B0000 		.word	23408
+ 706 077c F65A0000 		.word	23286
+ 707 0780 7E5A0000 		.word	23166
+ 708 0784 065A0000 		.word	23046
+ 709 0788 8F590000 		.word	22927
+ 710 078c 18590000 		.word	22808
+ 711 0790 A2580000 		.word	22690
+ 712 0794 2D580000 		.word	22573
+ 713 0798 B9570000 		.word	22457
+ 714 079c 45570000 		.word	22341
+ 715 07a0 D2560000 		.word	22226
+ 716 07a4 5F560000 		.word	22111
+ 717 07a8 ED550000 		.word	21997
+ 718 07ac 7C550000 		.word	21884
+ 719 07b0 0C550000 		.word	21772
+ 720 07b4 9C540000 		.word	21660
+ 721 07b8 2D540000 		.word	21549
+ 722 07bc BE530000 		.word	21438
+ 723 07c0 50530000 		.word	21328
+ 724 07c4 E3520000 		.word	21219
+ 725 07c8 76520000 		.word	21110
+ 726 07cc 0A520000 		.word	21002
+ 727 07d0 9E510000 		.word	20894
+ 728 07d4 33510000 		.word	20787
+ 729 07d8 C9500000 		.word	20681
+ 730 07dc 60500000 		.word	20576
+ 731 07e0 F64F0000 		.word	20470
+ 732 07e4 8E4F0000 		.word	20366
+ 733 07e8 264F0000 		.word	20262
+ 734 07ec BF4E0000 		.word	20159
+ 735 07f0 584E0000 		.word	20056
+ 736 07f4 F24D0000 		.word	19954
+ 737 07f8 8D4D0000 		.word	19853
+ 738 07fc 284D0000 		.word	19752
+ 739 0800 C34C0000 		.word	19651
+ 740 0804 5F4C0000 		.word	19551
+ 741 0808 FC4B0000 		.word	19452
+ 742 080c 994B0000 		.word	19353
+ 743 0810 374B0000 		.word	19255
+ 744 0814 D64A0000 		.word	19158
+ 745 0818 754A0000 		.word	19061
+ 746 081c 144A0000 		.word	18964
+ 747 0820 B4490000 		.word	18868
+ 748 0824 55490000 		.word	18773
+ 749 0828 F6480000 		.word	18678
+ 750 082c 98480000 		.word	18584
+ 751 0830 3A480000 		.word	18490
+ 752 0834 DD470000 		.word	18397
+ 753 0838 80470000 		.word	18304
+ 754 083c 24470000 		.word	18212
+ 755 0840 C8460000 		.word	18120
+ 756 0844 6D460000 		.word	18029
+ 757 0848 12460000 		.word	17938
+ 758 084c B8450000 		.word	17848
+ 759 0850 5E450000 		.word	17758
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 19
+
+
+ 760 0854 05450000 		.word	17669
+ 761 0858 AD440000 		.word	17581
+ 762 085c 54440000 		.word	17492
+ 763 0860 FD430000 		.word	17405
+ 764 0864 A6430000 		.word	17318
+ 765 0868 4F430000 		.word	17231
+ 766 086c F9420000 		.word	17145
+ 767 0870 A3420000 		.word	17059
+ 768 0874 4E420000 		.word	16974
+ 769 0878 F9410000 		.word	16889
+ 770 087c A5410000 		.word	16805
+ 771 0880 51410000 		.word	16721
+ 772 0884 FE400000 		.word	16638
+ 773 0888 AB400000 		.word	16555
+ 774 088c 58400000 		.word	16472
+ 775 0890 06400000 		.word	16390
+ 776 0894 B53F0000 		.word	16309
+ 777 0898 643F0000 		.word	16228
+ 778 089c 133F0000 		.word	16147
+ 779 08a0 C33E0000 		.word	16067
+ 780 08a4 733E0000 		.word	15987
+ 781 08a8 243E0000 		.word	15908
+ 782 08ac D53D0000 		.word	15829
+ 783 08b0 873D0000 		.word	15751
+ 784 08b4 393D0000 		.word	15673
+ 785 08b8 EB3C0000 		.word	15595
+ 786 08bc 9E3C0000 		.word	15518
+ 787 08c0 513C0000 		.word	15441
+ 788 08c4 053C0000 		.word	15365
+ 789 08c8 B93B0000 		.word	15289
+ 790 08cc 6E3B0000 		.word	15214
+ 791 08d0 233B0000 		.word	15139
+ 792 08d4 D83A0000 		.word	15064
+ 793 08d8 8E3A0000 		.word	14990
+ 794 08dc 443A0000 		.word	14916
+ 795 08e0 FB390000 		.word	14843
+ 796 08e4 B2390000 		.word	14770
+ 797 08e8 69390000 		.word	14697
+ 798 08ec 21390000 		.word	14625
+ 799 08f0 D9380000 		.word	14553
+ 800 08f4 92380000 		.word	14482
+ 801 08f8 4B380000 		.word	14411
+ 802 08fc 04380000 		.word	14340
+ 803 0900 BE370000 		.word	14270
+ 804 0904 78370000 		.word	14200
+ 805 0908 33370000 		.word	14131
+ 806 090c EE360000 		.word	14062
+ 807 0910 A9360000 		.word	13993
+ 808 0914 64360000 		.word	13924
+ 809 0918 21360000 		.word	13857
+ 810 091c DD350000 		.word	13789
+ 811 0920 9A350000 		.word	13722
+ 812 0924 57350000 		.word	13655
+ 813 0928 14350000 		.word	13588
+ 814 092c D2340000 		.word	13522
+ 815 0930 91340000 		.word	13457
+ 816 0934 4F340000 		.word	13391
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 20
+
+
+ 817 0938 0E340000 		.word	13326
+ 818 093c CD330000 		.word	13261
+ 819 0940 8D330000 		.word	13197
+ 820 0944 4D330000 		.word	13133
+ 821 0948 0D330000 		.word	13069
+ 822 094c CE320000 		.word	13006
+ 823 0950 8F320000 		.word	12943
+ 824 0954 50320000 		.word	12880
+ 825 0958 12320000 		.word	12818
+ 826 095c D4310000 		.word	12756
+ 827 0960 97310000 		.word	12695
+ 828 0964 59310000 		.word	12633
+ 829 0968 1C310000 		.word	12572
+ 830 096c E0300000 		.word	12512
+ 831 0970 A3300000 		.word	12451
+ 832 0974 67300000 		.word	12391
+ 833 0978 2C300000 		.word	12332
+ 834 097c F12F0000 		.word	12273
+ 835 0980 B62F0000 		.word	12214
+ 836 0984 7B2F0000 		.word	12155
+ 837 0988 402F0000 		.word	12096
+ 838 098c 062F0000 		.word	12038
+ 839 0990 CD2E0000 		.word	11981
+ 840 0994 932E0000 		.word	11923
+ 841 0998 5A2E0000 		.word	11866
+ 842 099c 212E0000 		.word	11809
+ 843 09a0 E92D0000 		.word	11753
+ 844 09a4 B12D0000 		.word	11697
+ 845 09a8 792D0000 		.word	11641
+ 846 09ac 412D0000 		.word	11585
+ 847 09b0 0A2D0000 		.word	11530
+ 848 09b4 D32C0000 		.word	11475
+ 849 09b8 9C2C0000 		.word	11420
+ 850 09bc 652C0000 		.word	11365
+ 851 09c0 2F2C0000 		.word	11311
+ 852 09c4 F92B0000 		.word	11257
+ 853 09c8 C42B0000 		.word	11204
+ 854 09cc 8F2B0000 		.word	11151
+ 855 09d0 5A2B0000 		.word	11098
+ 856 09d4 252B0000 		.word	11045
+ 857 09d8 F02A0000 		.word	10992
+ 858 09dc BC2A0000 		.word	10940
+ 859 09e0 882A0000 		.word	10888
+ 860 09e4 552A0000 		.word	10837
+ 861 09e8 212A0000 		.word	10785
+ 862 09ec EE290000 		.word	10734
+ 863 09f0 BC290000 		.word	10684
+ 864 09f4 89290000 		.word	10633
+ 865 09f8 57290000 		.word	10583
+ 866 09fc 25290000 		.word	10533
+ 867 0a00 F3280000 		.word	10483
+ 868 0a04 C2280000 		.word	10434
+ 869 0a08 90280000 		.word	10384
+ 870 0a0c 5F280000 		.word	10335
+ 871 0a10 2F280000 		.word	10287
+ 872 0a14 FE270000 		.word	10238
+ 873 0a18 CE270000 		.word	10190
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 21
+
+
+ 874 0a1c 9E270000 		.word	10142
+ 875 0a20 6F270000 		.word	10095
+ 876 0a24 3F270000 		.word	10047
+ 877 0a28 10270000 		.word	10000
+ 878 0a2c E1260000 		.word	9953
+ 879 0a30 B2260000 		.word	9906
+ 880 0a34 84260000 		.word	9860
+ 881 0a38 56260000 		.word	9814
+ 882 0a3c 28260000 		.word	9768
+ 883 0a40 FA250000 		.word	9722
+ 884 0a44 CD250000 		.word	9677
+ 885 0a48 9F250000 		.word	9631
+ 886 0a4c 72250000 		.word	9586
+ 887 0a50 46250000 		.word	9542
+ 888 0a54 19250000 		.word	9497
+ 889 0a58 ED240000 		.word	9453
+ 890 0a5c C1240000 		.word	9409
+ 891 0a60 95240000 		.word	9365
+ 892 0a64 69240000 		.word	9321
+ 893 0a68 3E240000 		.word	9278
+ 894 0a6c 13240000 		.word	9235
+ 895 0a70 E8230000 		.word	9192
+ 896 0a74 BD230000 		.word	9149
+ 897 0a78 93230000 		.word	9107
+ 898 0a7c 69230000 		.word	9065
+ 899 0a80 3F230000 		.word	9023
+ 900 0a84 15230000 		.word	8981
+ 901 0a88 EB220000 		.word	8939
+ 902 0a8c C2220000 		.word	8898
+ 903 0a90 99220000 		.word	8857
+ 904 0a94 70220000 		.word	8816
+ 905 0a98 47220000 		.word	8775
+ 906 0a9c 1E220000 		.word	8734
+ 907 0aa0 F6210000 		.word	8694
+ 908 0aa4 CE210000 		.word	8654
+ 909 0aa8 A6210000 		.word	8614
+ 910 0aac 7E210000 		.word	8574
+ 911 0ab0 57210000 		.word	8535
+ 912 0ab4 30210000 		.word	8496
+ 913 0ab8 09210000 		.word	8457
+ 914 0abc E2200000 		.word	8418
+ 915 0ac0 BB200000 		.word	8379
+ 916 0ac4 95200000 		.word	8341
+ 917 0ac8 6E200000 		.word	8302
+ 918 0acc 48200000 		.word	8264
+ 919 0ad0 22200000 		.word	8226
+ 920 0ad4 FD1F0000 		.word	8189
+ 921 0ad8 D71F0000 		.word	8151
+ 922 0adc B21F0000 		.word	8114
+ 923 0ae0 8D1F0000 		.word	8077
+ 924 0ae4 681F0000 		.word	8040
+ 925 0ae8 431F0000 		.word	8003
+ 926 0aec 1E1F0000 		.word	7966
+ 927 0af0 FA1E0000 		.word	7930
+ 928 0af4 D61E0000 		.word	7894
+ 929 0af8 B21E0000 		.word	7858
+ 930 0afc 8E1E0000 		.word	7822
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 22
+
+
+ 931 0b00 6B1E0000 		.word	7787
+ 932 0b04 471E0000 		.word	7751
+ 933 0b08 241E0000 		.word	7716
+ 934 0b0c 011E0000 		.word	7681
+ 935 0b10 DE1D0000 		.word	7646
+ 936 0b14 BB1D0000 		.word	7611
+ 937 0b18 991D0000 		.word	7577
+ 938 0b1c 761D0000 		.word	7542
+ 939 0b20 541D0000 		.word	7508
+ 940 0b24 321D0000 		.word	7474
+ 941 0b28 101D0000 		.word	7440
+ 942 0b2c EE1C0000 		.word	7406
+ 943 0b30 CD1C0000 		.word	7373
+ 944 0b34 AC1C0000 		.word	7340
+ 945 0b38 8A1C0000 		.word	7306
+ 946 0b3c 691C0000 		.word	7273
+ 947 0b40 491C0000 		.word	7241
+ 948 0b44 281C0000 		.word	7208
+ 949 0b48 071C0000 		.word	7175
+ 950 0b4c E71B0000 		.word	7143
+ 951 0b50 C71B0000 		.word	7111
+ 952 0b54 A71B0000 		.word	7079
+ 953 0b58 871B0000 		.word	7047
+ 954 0b5c 671B0000 		.word	7015
+ 955 0b60 481B0000 		.word	6984
+ 956 0b64 291B0000 		.word	6953
+ 957 0b68 091B0000 		.word	6921
+ 958 0b6c EA1A0000 		.word	6890
+ 959 0b70 CB1A0000 		.word	6859
+ 960 0b74 AD1A0000 		.word	6829
+ 961 0b78 8E1A0000 		.word	6798
+ 962 0b7c 701A0000 		.word	6768
+ 963 0b80 511A0000 		.word	6737
+ 964 0b84 331A0000 		.word	6707
+ 965 0b88 151A0000 		.word	6677
+ 966 0b8c F7190000 		.word	6647
+ 967 0b90 DA190000 		.word	6618
+ 968 0b94 BC190000 		.word	6588
+ 969 0b98 9F190000 		.word	6559
+ 970 0b9c 82190000 		.word	6530
+ 971 0ba0 65190000 		.word	6501
+ 972 0ba4 48190000 		.word	6472
+ 973 0ba8 2B190000 		.word	6443
+ 974 0bac 0E190000 		.word	6414
+ 975 0bb0 F2180000 		.word	6386
+ 976 0bb4 D5180000 		.word	6357
+ 977 0bb8 B9180000 		.word	6329
+ 978 0bbc 9D180000 		.word	6301
+ 979 0bc0 81180000 		.word	6273
+ 980 0bc4 65180000 		.word	6245
+ 981 0bc8 4A180000 		.word	6218
+ 982 0bcc 2E180000 		.word	6190
+ 983 0bd0 13180000 		.word	6163
+ 984 0bd4 F8170000 		.word	6136
+ 985 0bd8 DC170000 		.word	6108
+ 986 0bdc C1170000 		.word	6081
+ 987 0be0 A7170000 		.word	6055
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 23
+
+
+ 988 0be4 8C170000 		.word	6028
+ 989 0be8 71170000 		.word	6001
+ 990 0bec 57170000 		.word	5975
+ 991 0bf0 3D170000 		.word	5949
+ 992 0bf4 22170000 		.word	5922
+ 993 0bf8 08170000 		.word	5896
+ 994 0bfc EE160000 		.word	5870
+ 995 0c00 D5160000 		.word	5845
+ 996 0c04 BB160000 		.word	5819
+ 997 0c08 A1160000 		.word	5793
+ 998 0c0c 88160000 		.word	5768
+ 999 0c10 6F160000 		.word	5743
+ 1000 0c14 55160000 		.word	5717
+ 1001 0c18 3C160000 		.word	5692
+ 1002 0c1c 24160000 		.word	5668
+ 1003 0c20 0B160000 		.word	5643
+ 1004 0c24 F2150000 		.word	5618
+ 1005 0c28 D9150000 		.word	5593
+ 1006 0c2c C1150000 		.word	5569
+ 1007 0c30 A9150000 		.word	5545
+ 1008 0c34 91150000 		.word	5521
+ 1009 0c38 78150000 		.word	5496
+ 1010 0c3c 61150000 		.word	5473
+ 1011 0c40 49150000 		.word	5449
+ 1012 0c44 31150000 		.word	5425
+ 1013 0c48 19150000 		.word	5401
+ 1014 0c4c 02150000 		.word	5378
+ 1015 0c50 EA140000 		.word	5354
+ 1016 0c54 D3140000 		.word	5331
+ 1017 0c58 BC140000 		.word	5308
+ 1018 0c5c A5140000 		.word	5285
+ 1019 0c60 8E140000 		.word	5262
+ 1020 0c64 77140000 		.word	5239
+ 1021 0c68 61140000 		.word	5217
+ 1022 0c6c 4A140000 		.word	5194
+ 1023 0c70 34140000 		.word	5172
+ 1024 0c74 1D140000 		.word	5149
+ 1025 0c78 07140000 		.word	5127
+ 1026 0c7c F1130000 		.word	5105
+ 1027 0c80 DB130000 		.word	5083
+ 1028 0c84 C5130000 		.word	5061
+ 1029 0c88 AF130000 		.word	5039
+ 1030 0c8c 99130000 		.word	5017
+ 1031 0c90 84130000 		.word	4996
+ 1032 0c94 6E130000 		.word	4974
+ 1033 0c98 59130000 		.word	4953
+ 1034 0c9c 43130000 		.word	4931
+ 1035 0ca0 2E130000 		.word	4910
+ 1036 0ca4 19130000 		.word	4889
+ 1037 0ca8 04130000 		.word	4868
+ 1038 0cac EF120000 		.word	4847
+ 1039 0cb0 DA120000 		.word	4826
+ 1040 0cb4 C6120000 		.word	4806
+ 1041 0cb8 B1120000 		.word	4785
+ 1042 0cbc 9D120000 		.word	4765
+ 1043 0cc0 88120000 		.word	4744
+ 1044 0cc4 74120000 		.word	4724
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 24
+
+
+ 1045 0cc8 60120000 		.word	4704
+ 1046 0ccc 4C120000 		.word	4684
+ 1047 0cd0 38120000 		.word	4664
+ 1048 0cd4 24120000 		.word	4644
+ 1049 0cd8 10120000 		.word	4624
+ 1050 0cdc FC110000 		.word	4604
+ 1051 0ce0 E9110000 		.word	4585
+ 1052 0ce4 D5110000 		.word	4565
+ 1053 0ce8 C2110000 		.word	4546
+ 1054 0cec AE110000 		.word	4526
+ 1055 0cf0 9B110000 		.word	4507
+ 1056 0cf4 88110000 		.word	4488
+ 1057 0cf8 75110000 		.word	4469
+ 1058 0cfc 62110000 		.word	4450
+ 1059 0d00 4F110000 		.word	4431
+ 1060 0d04 3C110000 		.word	4412
+ 1061 0d08 29110000 		.word	4393
+ 1062 0d0c 17110000 		.word	4375
+ 1063 0d10 04110000 		.word	4356
+ 1064 0d14 F2100000 		.word	4338
+ 1065 0d18 E0100000 		.word	4320
+ 1066 0d1c CD100000 		.word	4301
+ 1067 0d20 BB100000 		.word	4283
+ 1068 0d24 A9100000 		.word	4265
+ 1069 0d28 97100000 		.word	4247
+ 1070 0d2c 85100000 		.word	4229
+ 1071 0d30 73100000 		.word	4211
+ 1072 0d34 62100000 		.word	4194
+ 1073 0d38 50100000 		.word	4176
+ 1074 0d3c 3E100000 		.word	4158
+ 1075 0d40 2D100000 		.word	4141
+ 1076 0d44 1B100000 		.word	4123
+ 1077 0d48 0A100000 		.word	4106
+ 1078 0d4c F90F0000 		.word	4089
+ 1079 0d50 E80F0000 		.word	4072
+ 1080 0d54 D70F0000 		.word	4055
+ 1081 0d58 C60F0000 		.word	4038
+ 1082 0d5c B50F0000 		.word	4021
+ 1083 0d60 A40F0000 		.word	4004
+ 1084 0d64 930F0000 		.word	3987
+ 1085 0d68 820F0000 		.word	3970
+ 1086 0d6c 720F0000 		.word	3954
+ 1087 0d70 610F0000 		.word	3937
+ 1088 0d74 510F0000 		.word	3921
+ 1089 0d78 400F0000 		.word	3904
+ 1090 0d7c 300F0000 		.word	3888
+ 1091 0d80 200F0000 		.word	3872
+ 1092 0d84 100F0000 		.word	3856
+ 1093 0d88 000F0000 		.word	3840
+ 1094 0d8c F00E0000 		.word	3824
+ 1095 0d90 E00E0000 		.word	3808
+ 1096 0d94 D00E0000 		.word	3792
+ 1097 0d98 C00E0000 		.word	3776
+ 1098 0d9c B10E0000 		.word	3761
+ 1099 0da0 A10E0000 		.word	3745
+ 1100 0da4 910E0000 		.word	3729
+ 1101 0da8 820E0000 		.word	3714
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 25
+
+
+ 1102 0dac 730E0000 		.word	3699
+ 1103 0db0 630E0000 		.word	3683
+ 1104 0db4 540E0000 		.word	3668
+ 1105 0db8 450E0000 		.word	3653
+ 1106 0dbc 360E0000 		.word	3638
+ 1107 0dc0 270E0000 		.word	3623
+ 1108 0dc4 180E0000 		.word	3608
+ 1109 0dc8 090E0000 		.word	3593
+ 1110 0dcc FA0D0000 		.word	3578
+ 1111 0dd0 EB0D0000 		.word	3563
+ 1112 0dd4 DC0D0000 		.word	3548
+ 1113 0dd8 CE0D0000 		.word	3534
+ 1114 0ddc BF0D0000 		.word	3519
+ 1115 0de0 B10D0000 		.word	3505
+ 1116 0de4 A20D0000 		.word	3490
+ 1117 0de8 940D0000 		.word	3476
+ 1118 0dec 860D0000 		.word	3462
+ 1119 0df0 780D0000 		.word	3448
+ 1120 0df4 690D0000 		.word	3433
+ 1121 0df8 5B0D0000 		.word	3419
+ 1122 0dfc 4D0D0000 		.word	3405
+ 1123 0e00 3F0D0000 		.word	3391
+ 1124 0e04 310D0000 		.word	3377
+ 1125 0e08 240D0000 		.word	3364
+ 1126 0e0c 160D0000 		.word	3350
+ 1127 0e10 080D0000 		.word	3336
+ 1128 0e14 FA0C0000 		.word	3322
+ 1129 0e18 ED0C0000 		.word	3309
+ 1130 0e1c DF0C0000 		.word	3295
+ 1131 0e20 D20C0000 		.word	3282
+ 1132 0e24 C50C0000 		.word	3269
+ 1133 0e28 B70C0000 		.word	3255
+ 1134 0e2c AA0C0000 		.word	3242
+ 1135 0e30 9D0C0000 		.word	3229
+ 1136 0e34 900C0000 		.word	3216
+ 1137 0e38 830C0000 		.word	3203
+ 1138 0e3c 760C0000 		.word	3190
+ 1139 0e40 690C0000 		.word	3177
+ 1140 0e44 5C0C0000 		.word	3164
+ 1141 0e48 4F0C0000 		.word	3151
+ 1142 0e4c 420C0000 		.word	3138
+ 1143 0e50 350C0000 		.word	3125
+ 1144 0e54 290C0000 		.word	3113
+ 1145 0e58 1C0C0000 		.word	3100
+ 1146 0e5c 0F0C0000 		.word	3087
+ 1147 0e60 030C0000 		.word	3075
+ 1148 0e64 F70B0000 		.word	3063
+ 1149 0e68 EA0B0000 		.word	3050
+ 1150 0e6c DE0B0000 		.word	3038
+ 1151 0e70 D20B0000 		.word	3026
+ 1152 0e74 C50B0000 		.word	3013
+ 1153 0e78 B90B0000 		.word	3001
+ 1154 0e7c AD0B0000 		.word	2989
+ 1155 0e80 A10B0000 		.word	2977
+ 1156 0e84 950B0000 		.word	2965
+ 1157 0e88 890B0000 		.word	2953
+ 1158 0e8c 7D0B0000 		.word	2941
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 26
+
+
+ 1159 0e90 710B0000 		.word	2929
+ 1160 0e94 660B0000 		.word	2918
+ 1161 0e98 5A0B0000 		.word	2906
+ 1162 0e9c 4E0B0000 		.word	2894
+ 1163 0ea0 430B0000 		.word	2883
+ 1164 0ea4 370B0000 		.word	2871
+ 1165 0ea8 2C0B0000 		.word	2860
+ 1166 0eac 200B0000 		.word	2848
+ 1167 0eb0 150B0000 		.word	2837
+ 1168 0eb4 090B0000 		.word	2825
+ 1169 0eb8 FE0A0000 		.word	2814
+ 1170 0ebc F30A0000 		.word	2803
+ 1171 0ec0 E80A0000 		.word	2792
+ 1172 0ec4 DC0A0000 		.word	2780
+ 1173 0ec8 D10A0000 		.word	2769
+ 1174 0ecc C60A0000 		.word	2758
+ 1175 0ed0 BB0A0000 		.word	2747
+ 1176 0ed4 B00A0000 		.word	2736
+ 1177 0ed8 A60A0000 		.word	2726
+ 1178 0edc 9B0A0000 		.word	2715
+ 1179 0ee0 900A0000 		.word	2704
+ 1180 0ee4 850A0000 		.word	2693
+ 1181 0ee8 7A0A0000 		.word	2682
+ 1182 0eec 700A0000 		.word	2672
+ 1183 0ef0 650A0000 		.word	2661
+ 1184 0ef4 5B0A0000 		.word	2651
+ 1185 0ef8 500A0000 		.word	2640
+ 1186 0efc 460A0000 		.word	2630
+ 1187 0f00 3B0A0000 		.word	2619
+ 1188 0f04 310A0000 		.word	2609
+ 1189 0f08 270A0000 		.word	2599
+ 1190 0f0c 1C0A0000 		.word	2588
+ 1191 0f10 120A0000 		.word	2578
+ 1192 0f14 080A0000 		.word	2568
+ 1193 0f18 FE090000 		.word	2558
+ 1194 0f1c F4090000 		.word	2548
+ 1195 0f20 EA090000 		.word	2538
+ 1196 0f24 E0090000 		.word	2528
+ 1197 0f28 D6090000 		.word	2518
+ 1198 0f2c CC090000 		.word	2508
+ 1199 0f30 C2090000 		.word	2498
+ 1200 0f34 B8090000 		.word	2488
+ 1201 0f38 AE090000 		.word	2478
+ 1202 0f3c A4090000 		.word	2468
+ 1203 0f40 9B090000 		.word	2459
+ 1204 0f44 91090000 		.word	2449
+ 1205 0f48 87090000 		.word	2439
+ 1206 0f4c 7E090000 		.word	2430
+ 1207 0f50 74090000 		.word	2420
+ 1208 0f54 6B090000 		.word	2411
+ 1209 0f58 61090000 		.word	2401
+ 1210 0f5c 58090000 		.word	2392
+ 1211 0f60 4F090000 		.word	2383
+ 1212 0f64 45090000 		.word	2373
+ 1213 0f68 3C090000 		.word	2364
+ 1214 0f6c 33090000 		.word	2355
+ 1215 0f70 2A090000 		.word	2346
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 27
+
+
+ 1216 0f74 21090000 		.word	2337
+ 1217 0f78 17090000 		.word	2327
+ 1218 0f7c 0E090000 		.word	2318
+ 1219 0f80 05090000 		.word	2309
+ 1220 0f84 FC080000 		.word	2300
+ 1221 0f88 F3080000 		.word	2291
+ 1222 0f8c EA080000 		.word	2282
+ 1223 0f90 E2080000 		.word	2274
+ 1224 0f94 D9080000 		.word	2265
+ 1225 0f98 D0080000 		.word	2256
+ 1226 0f9c C7080000 		.word	2247
+ 1227 0fa0 BF080000 		.word	2239
+ 1228 0fa4 B6080000 		.word	2230
+ 1229 0fa8 AD080000 		.word	2221
+ 1230 0fac A5080000 		.word	2213
+ 1231 0fb0 9C080000 		.word	2204
+ 1232 0fb4 94080000 		.word	2196
+ 1233 0fb8 8B080000 		.word	2187
+ 1234 0fbc 83080000 		.word	2179
+ 1235 0fc0 7A080000 		.word	2170
+ 1236 0fc4 72080000 		.word	2162
+ 1237 0fc8 69080000 		.word	2153
+ 1238 0fcc 61080000 		.word	2145
+ 1239 0fd0 59080000 		.word	2137
+ 1240 0fd4 51080000 		.word	2129
+ 1241 0fd8 48080000 		.word	2120
+ 1242 0fdc 40080000 		.word	2112
+ 1243 0fe0 38080000 		.word	2104
+ 1244 0fe4 30080000 		.word	2096
+ 1245 0fe8 28080000 		.word	2088
+ 1246 0fec 20080000 		.word	2080
+ 1247 0ff0 18080000 		.word	2072
+ 1248 0ff4 10080000 		.word	2064
+ 1249 0ff8 08080000 		.word	2056
+ 1250 0ffc 00080000 		.word	2048
+ 1251 1000 F8070000 		.word	2040
+ 1252 1004 F1070000 		.word	2033
+ 1253 1008 E9070000 		.word	2025
+ 1254 100c E1070000 		.word	2017
+ 1255 1010 D9070000 		.word	2009
+ 1256 1014 D2070000 		.word	2002
+ 1257 1018 CA070000 		.word	1994
+ 1258 101c C2070000 		.word	1986
+ 1259 1020 BB070000 		.word	1979
+ 1260 1024 B3070000 		.word	1971
+ 1261 1028 AC070000 		.word	1964
+ 1262 102c A4070000 		.word	1956
+ 1263 1030 9D070000 		.word	1949
+ 1264 1034 95070000 		.word	1941
+ 1265 1038 8E070000 		.word	1934
+ 1266 103c 87070000 		.word	1927
+ 1267 1040 7F070000 		.word	1919
+ 1268 1044 78070000 		.word	1912
+ 1269 1048 71070000 		.word	1905
+ 1270 104c 6A070000 		.word	1898
+ 1271 1050 62070000 		.word	1890
+ 1272 1054 5B070000 		.word	1883
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 28
+
+
+ 1273 1058 54070000 		.word	1876
+ 1274 105c 4D070000 		.word	1869
+ 1275 1060 46070000 		.word	1862
+ 1276 1064 3F070000 		.word	1855
+ 1277 1068 38070000 		.word	1848
+ 1278 106c 31070000 		.word	1841
+ 1279 1070 2A070000 		.word	1834
+ 1280 1074 23070000 		.word	1827
+ 1281 1078 1C070000 		.word	1820
+ 1282 107c 15070000 		.word	1813
+ 1283 1080 0F070000 		.word	1807
+ 1284 1084 08070000 		.word	1800
+ 1285 1088 01070000 		.word	1793
+ 1286 108c FA060000 		.word	1786
+ 1287 1090 F4060000 		.word	1780
+ 1288 1094 ED060000 		.word	1773
+ 1289 1098 E6060000 		.word	1766
+ 1290 109c E0060000 		.word	1760
+ 1291 10a0 D9060000 		.word	1753
+ 1292 10a4 D2060000 		.word	1746
+ 1293 10a8 CC060000 		.word	1740
+ 1294 10ac C5060000 		.word	1733
+ 1295 10b0 BF060000 		.word	1727
+ 1296 10b4 B8060000 		.word	1720
+ 1297 10b8 B2060000 		.word	1714
+ 1298 10bc AC060000 		.word	1708
+ 1299 10c0 A5060000 		.word	1701
+ 1300 10c4 9F060000 		.word	1695
+ 1301 10c8 98060000 		.word	1688
+ 1302 10cc 92060000 		.word	1682
+ 1303 10d0 8C060000 		.word	1676
+ 1304 10d4 86060000 		.word	1670
+ 1305 10d8 7F060000 		.word	1663
+ 1306 10dc 79060000 		.word	1657
+ 1307 10e0 73060000 		.word	1651
+ 1308 10e4 6D060000 		.word	1645
+ 1309 10e8 67060000 		.word	1639
+ 1310 10ec 61060000 		.word	1633
+ 1311 10f0 5B060000 		.word	1627
+ 1312 10f4 55060000 		.word	1621
+ 1313 10f8 4F060000 		.word	1615
+ 1314 10fc 49060000 		.word	1609
+ 1315 1100 43060000 		.word	1603
+ 1316 1104 3D060000 		.word	1597
+ 1317 1108 37060000 		.word	1591
+ 1318 110c 31060000 		.word	1585
+ 1319 1110 2B060000 		.word	1579
+ 1320 1114 25060000 		.word	1573
+ 1321 1118 1F060000 		.word	1567
+ 1322 111c 1A060000 		.word	1562
+ 1323 1120 14060000 		.word	1556
+ 1324 1124 0E060000 		.word	1550
+ 1325 1128 08060000 		.word	1544
+ 1326 112c 03060000 		.word	1539
+ 1327 1130 FD050000 		.word	1533
+ 1328 1134 F7050000 		.word	1527
+ 1329 1138 F2050000 		.word	1522
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 29
+
+
+ 1330 113c EC050000 		.word	1516
+ 1331 1140 E7050000 		.word	1511
+ 1332 1144 E1050000 		.word	1505
+ 1333 1148 DC050000 		.word	1500
+ 1334 114c D6050000 		.word	1494
+ 1335 1150 D1050000 		.word	1489
+ 1336 1154 CB050000 		.word	1483
+ 1337 1158 C6050000 		.word	1478
+ 1338 115c C0050000 		.word	1472
+ 1339 1160 BB050000 		.word	1467
+ 1340 1164 B6050000 		.word	1462
+ 1341 1168 B0050000 		.word	1456
+ 1342 116c AB050000 		.word	1451
+ 1343 1170 A6050000 		.word	1446
+ 1344 1174 A0050000 		.word	1440
+ 1345 1178 9B050000 		.word	1435
+ 1346 117c 96050000 		.word	1430
+ 1347 1180 91050000 		.word	1425
+ 1348 1184 8B050000 		.word	1419
+ 1349 1188 86050000 		.word	1414
+ 1350 118c 81050000 		.word	1409
+ 1351 1190 7C050000 		.word	1404
+ 1352 1194 77050000 		.word	1399
+ 1353 1198 72050000 		.word	1394
+ 1354 119c 6D050000 		.word	1389
+ 1355 11a0 68050000 		.word	1384
+ 1356 11a4 63050000 		.word	1379
+ 1357 11a8 5E050000 		.word	1374
+ 1358 11ac 59050000 		.word	1369
+ 1359 11b0 54050000 		.word	1364
+ 1360 11b4 4F050000 		.word	1359
+ 1361 11b8 4A050000 		.word	1354
+ 1362 11bc 45050000 		.word	1349
+ 1363 11c0 40050000 		.word	1344
+ 1364 11c4 3B050000 		.word	1339
+ 1365 11c8 36050000 		.word	1334
+ 1366 11cc 32050000 		.word	1330
+ 1367 11d0 2D050000 		.word	1325
+ 1368 11d4 28050000 		.word	1320
+ 1369 11d8 23050000 		.word	1315
+ 1370 11dc 1F050000 		.word	1311
+ 1371 11e0 1A050000 		.word	1306
+ 1372 11e4 15050000 		.word	1301
+ 1373 11e8 10050000 		.word	1296
+ 1374 11ec 0C050000 		.word	1292
+ 1375 11f0 07050000 		.word	1287
+ 1376 11f4 03050000 		.word	1283
+ 1377 11f8 FE040000 		.word	1278
+ 1378 11fc F9040000 		.word	1273
+ 1379 1200 F5040000 		.word	1269
+ 1380 1204 F0040000 		.word	1264
+ 1381 1208 EC040000 		.word	1260
+ 1382 120c E7040000 		.word	1255
+ 1383 1210 E3040000 		.word	1251
+ 1384 1214 DE040000 		.word	1246
+ 1385 1218 DA040000 		.word	1242
+ 1386 121c D5040000 		.word	1237
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 30
+
+
+ 1387 1220 D1040000 		.word	1233
+ 1388 1224 CD040000 		.word	1229
+ 1389 1228 C8040000 		.word	1224
+ 1390 122c C4040000 		.word	1220
+ 1391 1230 BF040000 		.word	1215
+ 1392 1234 BB040000 		.word	1211
+ 1393 1238 B7040000 		.word	1207
+ 1394 123c B3040000 		.word	1203
+ 1395 1240 AE040000 		.word	1198
+ 1396 1244 AA040000 		.word	1194
+ 1397 1248 A6040000 		.word	1190
+ 1398 124c A2040000 		.word	1186
+ 1399 1250 9D040000 		.word	1181
+ 1400 1254 99040000 		.word	1177
+ 1401 1258 95040000 		.word	1173
+ 1402 125c 91040000 		.word	1169
+ 1403 1260 8D040000 		.word	1165
+ 1404 1264 89040000 		.word	1161
+ 1405 1268 84040000 		.word	1156
+ 1406 126c 80040000 		.word	1152
+ 1407 1270 7C040000 		.word	1148
+ 1408 1274 78040000 		.word	1144
+ 1409 1278 74040000 		.word	1140
+ 1410 127c 70040000 		.word	1136
+ 1411 1280 6C040000 		.word	1132
+ 1412 1284 68040000 		.word	1128
+ 1413 1288 64040000 		.word	1124
+ 1414 128c 60040000 		.word	1120
+ 1415 1290 5C040000 		.word	1116
+ 1416 1294 58040000 		.word	1112
+ 1417 1298 54040000 		.word	1108
+ 1418 129c 51040000 		.word	1105
+ 1419 12a0 4D040000 		.word	1101
+ 1420 12a4 49040000 		.word	1097
+ 1421 12a8 45040000 		.word	1093
+ 1422 12ac 41040000 		.word	1089
+ 1423 12b0 3D040000 		.word	1085
+ 1424 12b4 39040000 		.word	1081
+ 1425 12b8 36040000 		.word	1078
+ 1426 12bc 32040000 		.word	1074
+ 1427 12c0 2E040000 		.word	1070
+ 1428 12c4 2A040000 		.word	1066
+ 1429 12c8 27040000 		.word	1063
+ 1430 12cc 23040000 		.word	1059
+ 1431 12d0 1F040000 		.word	1055
+ 1432 12d4 1C040000 		.word	1052
+ 1433 12d8 18040000 		.word	1048
+ 1434 12dc 14040000 		.word	1044
+ 1435 12e0 11040000 		.word	1041
+ 1436 12e4 0D040000 		.word	1037
+ 1437 12e8 09040000 		.word	1033
+ 1438 12ec 06040000 		.word	1030
+ 1439 12f0 02040000 		.word	1026
+ 1440 12f4 FF030000 		.word	1023
+ 1441 12f8 FB030000 		.word	1019
+ 1442 12fc F8030000 		.word	1016
+ 1443 1300 F4030000 		.word	1012
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 31
+
+
+ 1444 1304 F1030000 		.word	1009
+ 1445 1308 ED030000 		.word	1005
+ 1446 130c EA030000 		.word	1002
+ 1447 1310 E6030000 		.word	998
+ 1448 1314 E3030000 		.word	995
+ 1449 1318 DF030000 		.word	991
+ 1450 131c DC030000 		.word	988
+ 1451 1320 D8030000 		.word	984
+ 1452 1324 D5030000 		.word	981
+ 1453 1328 D2030000 		.word	978
+ 1454 132c CE030000 		.word	974
+ 1455 1330 CB030000 		.word	971
+ 1456 1334 C7030000 		.word	967
+ 1457 1338 C4030000 		.word	964
+ 1458 133c C1030000 		.word	961
+ 1459 1340 BE030000 		.word	958
+ 1460 1344 BA030000 		.word	954
+ 1461 1348 B7030000 		.word	951
+ 1462 134c B4030000 		.word	948
+ 1463 1350 B0030000 		.word	944
+ 1464 1354 AD030000 		.word	941
+ 1465 1358 AA030000 		.word	938
+ 1466 135c A7030000 		.word	935
+ 1467 1360 A4030000 		.word	932
+ 1468 1364 A0030000 		.word	928
+ 1469 1368 9D030000 		.word	925
+ 1470 136c 9A030000 		.word	922
+ 1471 1370 97030000 		.word	919
+ 1472 1374 94030000 		.word	916
+ 1473 1378 91030000 		.word	913
+ 1474 137c 8D030000 		.word	909
+ 1475 1380 8A030000 		.word	906
+ 1476 1384 87030000 		.word	903
+ 1477 1388 84030000 		.word	900
+ 1478 138c 81030000 		.word	897
+ 1479 1390 7E030000 		.word	894
+ 1480 1394 7B030000 		.word	891
+ 1481 1398 78030000 		.word	888
+ 1482 139c 75030000 		.word	885
+ 1483 13a0 72030000 		.word	882
+ 1484 13a4 6F030000 		.word	879
+ 1485 13a8 6C030000 		.word	876
+ 1486 13ac 69030000 		.word	873
+ 1487 13b0 66030000 		.word	870
+ 1488 13b4 63030000 		.word	867
+ 1489 13b8 60030000 		.word	864
+ 1490 13bc 5D030000 		.word	861
+ 1491 13c0 5A030000 		.word	858
+ 1492 13c4 57030000 		.word	855
+ 1493 13c8 54030000 		.word	852
+ 1494 13cc 52030000 		.word	850
+ 1495 13d0 4F030000 		.word	847
+ 1496 13d4 4C030000 		.word	844
+ 1497 13d8 49030000 		.word	841
+ 1498 13dc 46030000 		.word	838
+ 1499 13e0 43030000 		.word	835
+ 1500 13e4 40030000 		.word	832
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 32
+
+
+ 1501 13e8 3E030000 		.word	830
+ 1502 13ec 3B030000 		.word	827
+ 1503 13f0 38030000 		.word	824
+ 1504 13f4 35030000 		.word	821
+ 1505 13f8 33030000 		.word	819
+ 1506 13fc 30030000 		.word	816
+ 1507 1400 2D030000 		.word	813
+ 1508 1404 2A030000 		.word	810
+ 1509 1408 28030000 		.word	808
+ 1510 140c 25030000 		.word	805
+ 1511 1410 22030000 		.word	802
+ 1512 1414 1F030000 		.word	799
+ 1513 1418 1D030000 		.word	797
+ 1514 141c 1A030000 		.word	794
+ 1515 1420 17030000 		.word	791
+ 1516 1424 15030000 		.word	789
+ 1517 1428 12030000 		.word	786
+ 1518 142c 10030000 		.word	784
+ 1519 1430 0D030000 		.word	781
+ 1520 1434 0A030000 		.word	778
+ 1521 1438 08030000 		.word	776
+ 1522 143c 05030000 		.word	773
+ 1523 1440 03030000 		.word	771
+ 1524 1444 00030000 		.word	768
+ 1525 1448 FD020000 		.word	765
+ 1526 144c FB020000 		.word	763
+ 1527 1450 F8020000 		.word	760
+ 1528 1454 F6020000 		.word	758
+ 1529 1458 F3020000 		.word	755
+ 1530 145c F1020000 		.word	753
+ 1531 1460 EE020000 		.word	750
+ 1532 1464 EC020000 		.word	748
+ 1533 1468 E9020000 		.word	745
+ 1534 146c E7020000 		.word	743
+ 1535 1470 E4020000 		.word	740
+ 1536 1474 E2020000 		.word	738
+ 1537 1478 DF020000 		.word	735
+ 1538 147c DD020000 		.word	733
+ 1539 1480 DB020000 		.word	731
+ 1540 1484 D8020000 		.word	728
+ 1541 1488 D6020000 		.word	726
+ 1542 148c D3020000 		.word	723
+ 1543 1490 D1020000 		.word	721
+ 1544 1494 CF020000 		.word	719
+ 1545 1498 CC020000 		.word	716
+ 1546 149c CA020000 		.word	714
+ 1547 14a0 C8020000 		.word	712
+ 1548 14a4 C5020000 		.word	709
+ 1549 14a8 C3020000 		.word	707
+ 1550 14ac C1020000 		.word	705
+ 1551 14b0 BE020000 		.word	702
+ 1552 14b4 BC020000 		.word	700
+ 1553 14b8 BA020000 		.word	698
+ 1554 14bc B7020000 		.word	695
+ 1555 14c0 B5020000 		.word	693
+ 1556 14c4 B3020000 		.word	691
+ 1557 14c8 B1020000 		.word	689
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 33
+
+
+ 1558 14cc AE020000 		.word	686
+ 1559 14d0 AC020000 		.word	684
+ 1560 14d4 AA020000 		.word	682
+ 1561 14d8 A8020000 		.word	680
+ 1562 14dc A5020000 		.word	677
+ 1563 14e0 A3020000 		.word	675
+ 1564 14e4 A1020000 		.word	673
+ 1565 14e8 9F020000 		.word	671
+ 1566 14ec 9D020000 		.word	669
+ 1567 14f0 9A020000 		.word	666
+ 1568 14f4 98020000 		.word	664
+ 1569 14f8 96020000 		.word	662
+ 1570 14fc 94020000 		.word	660
+ 1571 1500 92020000 		.word	658
+ 1572 1504 90020000 		.word	656
+ 1573 1508 8D020000 		.word	653
+ 1574 150c 8B020000 		.word	651
+ 1575 1510 89020000 		.word	649
+ 1576 1514 87020000 		.word	647
+ 1577 1518 85020000 		.word	645
+ 1578 151c 83020000 		.word	643
+ 1579 1520 81020000 		.word	641
+ 1580 1524 7F020000 		.word	639
+ 1581 1528 7D020000 		.word	637
+ 1582 152c 7B020000 		.word	635
+ 1583 1530 79020000 		.word	633
+ 1584 1534 76020000 		.word	630
+ 1585 1538 74020000 		.word	628
+ 1586 153c 72020000 		.word	626
+ 1587 1540 70020000 		.word	624
+ 1588 1544 6E020000 		.word	622
+ 1589 1548 6C020000 		.word	620
+ 1590 154c 6A020000 		.word	618
+ 1591 1550 68020000 		.word	616
+ 1592 1554 66020000 		.word	614
+ 1593 1558 64020000 		.word	612
+ 1594 155c 62020000 		.word	610
+ 1595 1560 60020000 		.word	608
+ 1596 1564 5E020000 		.word	606
+ 1597 1568 5D020000 		.word	605
+ 1598 156c 5B020000 		.word	603
+ 1599 1570 59020000 		.word	601
+ 1600 1574 57020000 		.word	599
+ 1601 1578 55020000 		.word	597
+ 1602 157c 53020000 		.word	595
+ 1603 1580 51020000 		.word	593
+ 1604 1584 4F020000 		.word	591
+ 1605 1588 4D020000 		.word	589
+ 1606 158c 4B020000 		.word	587
+ 1607 1590 49020000 		.word	585
+ 1608 1594 48020000 		.word	584
+ 1609 1598 46020000 		.word	582
+ 1610 159c 44020000 		.word	580
+ 1611 15a0 42020000 		.word	578
+ 1612 15a4 40020000 		.word	576
+ 1613 15a8 3E020000 		.word	574
+ 1614 15ac 3C020000 		.word	572
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 34
+
+
+ 1615 15b0 3B020000 		.word	571
+ 1616 15b4 39020000 		.word	569
+ 1617 15b8 37020000 		.word	567
+ 1618 15bc 35020000 		.word	565
+ 1619 15c0 33020000 		.word	563
+ 1620 15c4 32020000 		.word	562
+ 1621 15c8 30020000 		.word	560
+ 1622 15cc 2E020000 		.word	558
+ 1623 15d0 2C020000 		.word	556
+ 1624 15d4 2B020000 		.word	555
+ 1625 15d8 29020000 		.word	553
+ 1626 15dc 27020000 		.word	551
+ 1627 15e0 25020000 		.word	549
+ 1628 15e4 24020000 		.word	548
+ 1629 15e8 22020000 		.word	546
+ 1630 15ec 20020000 		.word	544
+ 1631 15f0 1E020000 		.word	542
+ 1632 15f4 1D020000 		.word	541
+ 1633 15f8 1B020000 		.word	539
+ 1634 15fc 19020000 		.word	537
+ 1635 1600 18020000 		.word	536
+ 1636 1604 16020000 		.word	534
+ 1637 1608 14020000 		.word	532
+ 1638 160c 12020000 		.word	530
+ 1639 1610 11020000 		.word	529
+ 1640 1614 0F020000 		.word	527
+ 1641 1618 0D020000 		.word	525
+ 1642 161c 0C020000 		.word	524
+ 1643 1620 0A020000 		.word	522
+ 1644 1624 09020000 		.word	521
+ 1645 1628 07020000 		.word	519
+ 1646 162c 05020000 		.word	517
+ 1647 1630 04020000 		.word	516
+ 1648 1634 02020000 		.word	514
+ 1649 1638 00020000 		.word	512
+ 1650 163c FF010000 		.word	511
+ 1651 1640 FD010000 		.word	509
+ 1652 1644 FC010000 		.word	508
+ 1653 1648 FA010000 		.word	506
+ 1654 164c F8010000 		.word	504
+ 1655 1650 F7010000 		.word	503
+ 1656 1654 F5010000 		.word	501
+ 1657 1658 F4010000 		.word	500
+ 1658 165c F2010000 		.word	498
+ 1659 1660 F1010000 		.word	497
+ 1660 1664 EF010000 		.word	495
+ 1661 1668 EE010000 		.word	494
+ 1662 166c EC010000 		.word	492
+ 1663 1670 EA010000 		.word	490
+ 1664 1674 E9010000 		.word	489
+ 1665 1678 E7010000 		.word	487
+ 1666 167c E6010000 		.word	486
+ 1667 1680 E4010000 		.word	484
+ 1668 1684 E3010000 		.word	483
+ 1669 1688 E1010000 		.word	481
+ 1670 168c E0010000 		.word	480
+ 1671 1690 DE010000 		.word	478
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 35
+
+
+ 1672 1694 DD010000 		.word	477
+ 1673 1698 DB010000 		.word	475
+ 1674 169c DA010000 		.word	474
+ 1675 16a0 D8010000 		.word	472
+ 1676 16a4 D7010000 		.word	471
+ 1677 16a8 D6010000 		.word	470
+ 1678 16ac D4010000 		.word	468
+ 1679 16b0 D3010000 		.word	467
+ 1680 16b4 D1010000 		.word	465
+ 1681 16b8 D0010000 		.word	464
+ 1682 16bc CE010000 		.word	462
+ 1683 16c0 CD010000 		.word	461
+ 1684 16c4 CB010000 		.word	459
+ 1685 16c8 CA010000 		.word	458
+ 1686 16cc C9010000 		.word	457
+ 1687 16d0 C7010000 		.word	455
+ 1688 16d4 C6010000 		.word	454
+ 1689 16d8 C4010000 		.word	452
+ 1690 16dc C3010000 		.word	451
+ 1691 16e0 C2010000 		.word	450
+ 1692 16e4 C0010000 		.word	448
+ 1693 16e8 BF010000 		.word	447
+ 1694 16ec BE010000 		.word	446
+ 1695 16f0 BC010000 		.word	444
+ 1696 16f4 BB010000 		.word	443
+ 1697 16f8 B9010000 		.word	441
+ 1698 16fc B8010000 		.word	440
+ 1699 1700 B7010000 		.word	439
+ 1700 1704 B5010000 		.word	437
+ 1701 1708 B4010000 		.word	436
+ 1702 170c B3010000 		.word	435
+ 1703 1710 B1010000 		.word	433
+ 1704 1714 B0010000 		.word	432
+ 1705 1718 AF010000 		.word	431
+ 1706 171c AD010000 		.word	429
+ 1707 1720 AC010000 		.word	428
+ 1708 1724 AB010000 		.word	427
+ 1709 1728 AA010000 		.word	426
+ 1710 172c A8010000 		.word	424
+ 1711 1730 A7010000 		.word	423
+ 1712 1734 A6010000 		.word	422
+ 1713 1738 A4010000 		.word	420
+ 1714 173c A3010000 		.word	419
+ 1715 1740 A2010000 		.word	418
+ 1716 1744 A1010000 		.word	417
+ 1717 1748 9F010000 		.word	415
+ 1718 174c 9E010000 		.word	414
+ 1719 1750 9D010000 		.word	413
+ 1720 1754 9C010000 		.word	412
+ 1721 1758 9A010000 		.word	410
+ 1722 175c 99010000 		.word	409
+ 1723 1760 98010000 		.word	408
+ 1724 1764 97010000 		.word	407
+ 1725 1768 95010000 		.word	405
+ 1726 176c 94010000 		.word	404
+ 1727 1770 93010000 		.word	403
+ 1728 1774 92010000 		.word	402
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 36
+
+
+ 1729 1778 90010000 		.word	400
+ 1730 177c 8F010000 		.word	399
+ 1731 1780 8E010000 		.word	398
+ 1732 1784 8D010000 		.word	397
+ 1733 1788 8C010000 		.word	396
+ 1734 178c 8A010000 		.word	394
+ 1735 1790 89010000 		.word	393
+ 1736 1794 88010000 		.word	392
+ 1737 1798 87010000 		.word	391
+ 1738 179c 86010000 		.word	390
+ 1739 17a0 85010000 		.word	389
+ 1740 17a4 83010000 		.word	387
+ 1741 17a8 82010000 		.word	386
+ 1742 17ac 81010000 		.word	385
+ 1743 17b0 80010000 		.word	384
+ 1744 17b4 7F010000 		.word	383
+ 1745 17b8 7E010000 		.word	382
+ 1746 17bc 7D010000 		.word	381
+ 1747 17c0 7B010000 		.word	379
+ 1748 17c4 7A010000 		.word	378
+ 1749 17c8 79010000 		.word	377
+ 1750 17cc 78010000 		.word	376
+ 1751 17d0 77010000 		.word	375
+ 1752 17d4 76010000 		.word	374
+ 1753 17d8 75010000 		.word	373
+ 1754 17dc 74010000 		.word	372
+ 1755 17e0 72010000 		.word	370
+ 1756 17e4 71010000 		.word	369
+ 1757 17e8 70010000 		.word	368
+ 1758 17ec 6F010000 		.word	367
+ 1759 17f0 6E010000 		.word	366
+ 1760 17f4 6D010000 		.word	365
+ 1761 17f8 6C010000 		.word	364
+ 1762 17fc 6B010000 		.word	363
+ 1763 1800 6A010000 		.word	362
+ 1764 1804 69010000 		.word	361
+ 1765 1808 68010000 		.word	360
+ 1766 180c 66010000 		.word	358
+ 1767 1810 65010000 		.word	357
+ 1768 1814 64010000 		.word	356
+ 1769 1818 63010000 		.word	355
+ 1770 181c 62010000 		.word	354
+ 1771 1820 61010000 		.word	353
+ 1772 1824 60010000 		.word	352
+ 1773 1828 5F010000 		.word	351
+ 1774 182c 5E010000 		.word	350
+ 1775 1830 5D010000 		.word	349
+ 1776 1834 5C010000 		.word	348
+ 1777 1838 5B010000 		.word	347
+ 1778 183c 5A010000 		.word	346
+ 1779 1840 59010000 		.word	345
+ 1780 1844 58010000 		.word	344
+ 1781 1848 57010000 		.word	343
+ 1782 184c 56010000 		.word	342
+ 1783 1850 55010000 		.word	341
+ 1784 1854 54010000 		.word	340
+ 1785 1858 53010000 		.word	339
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 37
+
+
+ 1786 185c 52010000 		.word	338
+ 1787 1860 51010000 		.word	337
+ 1788 1864 50010000 		.word	336
+ 1789 1868 4F010000 		.word	335
+ 1790 186c 4E010000 		.word	334
+ 1791 1870 4D010000 		.word	333
+ 1792 1874 4C010000 		.word	332
+ 1793 1878 4B010000 		.word	331
+ 1794 187c 4A010000 		.word	330
+ 1795 1880 49010000 		.word	329
+ 1796 1884 48010000 		.word	328
+ 1797 1888 47010000 		.word	327
+ 1798 188c 46010000 		.word	326
+ 1799 1890 45010000 		.word	325
+ 1800 1894 44010000 		.word	324
+ 1801 1898 43010000 		.word	323
+ 1802 189c 42010000 		.word	322
+ 1803 18a0 41010000 		.word	321
+ 1804 18a4 41010000 		.word	321
+ 1805 18a8 40010000 		.word	320
+ 1806 18ac 3F010000 		.word	319
+ 1807 18b0 3E010000 		.word	318
+ 1808 18b4 3D010000 		.word	317
+ 1809 18b8 3C010000 		.word	316
+ 1810 18bc 3B010000 		.word	315
+ 1811 18c0 3A010000 		.word	314
+ 1812 18c4 39010000 		.word	313
+ 1813 18c8 38010000 		.word	312
+ 1814 18cc 37010000 		.word	311
+ 1815 18d0 36010000 		.word	310
+ 1816 18d4 36010000 		.word	310
+ 1817 18d8 35010000 		.word	309
+ 1818 18dc 34010000 		.word	308
+ 1819 18e0 33010000 		.word	307
+ 1820 18e4 32010000 		.word	306
+ 1821 18e8 31010000 		.word	305
+ 1822 18ec 30010000 		.word	304
+ 1823 18f0 2F010000 		.word	303
+ 1824 18f4 2E010000 		.word	302
+ 1825 18f8 2E010000 		.word	302
+ 1826 18fc 2D010000 		.word	301
+ 1827 1900 2C010000 		.word	300
+ 1828 1904 2B010000 		.word	299
+ 1829 1908 2A010000 		.word	298
+ 1830 190c 29010000 		.word	297
+ 1831 1910 28010000 		.word	296
+ 1832 1914 28010000 		.word	296
+ 1833 1918 27010000 		.word	295
+ 1834 191c 26010000 		.word	294
+ 1835 1920 25010000 		.word	293
+ 1836 1924 24010000 		.word	292
+ 1837 1928 23010000 		.word	291
+ 1838 192c 23010000 		.word	291
+ 1839 1930 22010000 		.word	290
+ 1840 1934 21010000 		.word	289
+ 1841 1938 20010000 		.word	288
+ 1842 193c 1F010000 		.word	287
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 38
+
+
+ 1843 1940 1E010000 		.word	286
+ 1844 1944 1E010000 		.word	286
+ 1845 1948 1D010000 		.word	285
+ 1846 194c 1C010000 		.word	284
+ 1847 1950 1B010000 		.word	283
+ 1848 1954 1A010000 		.word	282
+ 1849 1958 19010000 		.word	281
+ 1850 195c 19010000 		.word	281
+ 1851 1960 18010000 		.word	280
+ 1852 1964 17010000 		.word	279
+ 1853 1968 16010000 		.word	278
+ 1854 196c 16010000 		.word	278
+ 1855 1970 15010000 		.word	277
+ 1856 1974 14010000 		.word	276
+ 1857 1978 13010000 		.word	275
+ 1858 197c 12010000 		.word	274
+ 1859 1980 12010000 		.word	274
+ 1860 1984 11010000 		.word	273
+ 1861 1988 10010000 		.word	272
+ 1862 198c 0F010000 		.word	271
+ 1863 1990 0F010000 		.word	271
+ 1864 1994 0E010000 		.word	270
+ 1865 1998 0D010000 		.word	269
+ 1866 199c 0C010000 		.word	268
+ 1867 19a0 0B010000 		.word	267
+ 1868 19a4 0B010000 		.word	267
+ 1869 19a8 0A010000 		.word	266
+ 1870 19ac 09010000 		.word	265
+ 1871 19b0 08010000 		.word	264
+ 1872 19b4 08010000 		.word	264
+ 1873 19b8 07010000 		.word	263
+ 1874 19bc 06010000 		.word	262
+ 1875 19c0 05010000 		.word	261
+ 1876 19c4 05010000 		.word	261
+ 1877 19c8 04010000 		.word	260
+ 1878              		.text
+ 1879              	.Letext0:
+ 1880              		.file 2 ".\\Generated_Source\\PSoC4\\cytypes.h"
+ 1881              		.section	.debug_info,"",%progbits
+ 1882              	.Ldebug_info0:
+ 1883 0000 94010000 		.4byte	0x194
+ 1884 0004 0400     		.2byte	0x4
+ 1885 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1886 000a 04       		.byte	0x4
+ 1887 000b 01       		.uleb128 0x1
+ 1888 000c 47000000 		.4byte	.LASF27
+ 1889 0010 01       		.byte	0x1
+ 1890 0011 2B010000 		.4byte	.LASF28
+ 1891 0015 88010000 		.4byte	.LASF29
+ 1892 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1893 001d 00000000 		.4byte	0
+ 1894 0021 00000000 		.4byte	.Ldebug_line0
+ 1895 0025 02       		.uleb128 0x2
+ 1896 0026 01       		.byte	0x1
+ 1897 0027 06       		.byte	0x6
+ 1898 0028 4C020000 		.4byte	.LASF0
+ 1899 002c 02       		.uleb128 0x2
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 39
+
+
+ 1900 002d 01       		.byte	0x1
+ 1901 002e 08       		.byte	0x8
+ 1902 002f 39000000 		.4byte	.LASF1
+ 1903 0033 02       		.uleb128 0x2
+ 1904 0034 02       		.byte	0x2
+ 1905 0035 05       		.byte	0x5
+ 1906 0036 1B020000 		.4byte	.LASF2
+ 1907 003a 02       		.uleb128 0x2
+ 1908 003b 02       		.byte	0x2
+ 1909 003c 07       		.byte	0x7
+ 1910 003d 1A000000 		.4byte	.LASF3
+ 1911 0041 02       		.uleb128 0x2
+ 1912 0042 04       		.byte	0x4
+ 1913 0043 05       		.byte	0x5
+ 1914 0044 3E020000 		.4byte	.LASF4
+ 1915 0048 02       		.uleb128 0x2
+ 1916 0049 04       		.byte	0x4
+ 1917 004a 07       		.byte	0x7
+ 1918 004b DF000000 		.4byte	.LASF5
+ 1919 004f 02       		.uleb128 0x2
+ 1920 0050 08       		.byte	0x8
+ 1921 0051 05       		.byte	0x5
+ 1922 0052 08020000 		.4byte	.LASF6
+ 1923 0056 02       		.uleb128 0x2
+ 1924 0057 08       		.byte	0x8
+ 1925 0058 07       		.byte	0x7
+ 1926 0059 65010000 		.4byte	.LASF7
+ 1927 005d 03       		.uleb128 0x3
+ 1928 005e 04       		.byte	0x4
+ 1929 005f 05       		.byte	0x5
+ 1930 0060 696E7400 		.ascii	"int\000"
+ 1931 0064 02       		.uleb128 0x2
+ 1932 0065 04       		.byte	0x4
+ 1933 0066 07       		.byte	0x7
+ 1934 0067 58010000 		.4byte	.LASF8
+ 1935 006b 04       		.uleb128 0x4
+ 1936 006c 24010000 		.4byte	.LASF9
+ 1937 0070 02       		.byte	0x2
+ 1938 0071 9901     		.2byte	0x199
+ 1939 0073 3A000000 		.4byte	0x3a
+ 1940 0077 04       		.uleb128 0x4
+ 1941 0078 51010000 		.4byte	.LASF10
+ 1942 007c 02       		.byte	0x2
+ 1943 007d 9A01     		.2byte	0x19a
+ 1944 007f 48000000 		.4byte	0x48
+ 1945 0083 04       		.uleb128 0x4
+ 1946 0084 D9000000 		.4byte	.LASF11
+ 1947 0088 02       		.byte	0x2
+ 1948 0089 9C01     		.2byte	0x19c
+ 1949 008b 33000000 		.4byte	0x33
+ 1950 008f 04       		.uleb128 0x4
+ 1951 0090 F6000000 		.4byte	.LASF12
+ 1952 0094 02       		.byte	0x2
+ 1953 0095 9D01     		.2byte	0x19d
+ 1954 0097 41000000 		.4byte	0x41
+ 1955 009b 02       		.uleb128 0x2
+ 1956 009c 04       		.byte	0x4
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 40
+
+
+ 1957 009d 04       		.byte	0x4
+ 1958 009e 33000000 		.4byte	.LASF13
+ 1959 00a2 02       		.uleb128 0x2
+ 1960 00a3 08       		.byte	0x8
+ 1961 00a4 04       		.byte	0x4
+ 1962 00a5 1D010000 		.4byte	.LASF14
+ 1963 00a9 02       		.uleb128 0x2
+ 1964 00aa 01       		.byte	0x1
+ 1965 00ab 08       		.byte	0x8
+ 1966 00ac 16020000 		.4byte	.LASF15
+ 1967 00b0 02       		.uleb128 0x2
+ 1968 00b1 04       		.byte	0x4
+ 1969 00b2 07       		.byte	0x7
+ 1970 00b3 FF010000 		.4byte	.LASF16
+ 1971 00b7 05       		.uleb128 0x5
+ 1972 00b8 25020000 		.4byte	.LASF21
+ 1973 00bc 01       		.byte	0x1
+ 1974 00bd 2A       		.byte	0x2a
+ 1975 00be 77000000 		.4byte	0x77
+ 1976 00c2 00000000 		.4byte	.LFB1
+ 1977 00c6 2C000000 		.4byte	.LFE1-.LFB1
+ 1978 00ca 01       		.uleb128 0x1
+ 1979 00cb 9C       		.byte	0x9c
+ 1980 00cc 0D010000 		.4byte	0x10d
+ 1981 00d0 06       		.uleb128 0x6
+ 1982 00d1 0F000000 		.4byte	.LASF17
+ 1983 00d5 01       		.byte	0x1
+ 1984 00d6 2A       		.byte	0x2a
+ 1985 00d7 83000000 		.4byte	0x83
+ 1986 00db 00000000 		.4byte	.LLST0
+ 1987 00df 06       		.uleb128 0x6
+ 1988 00e0 7C010000 		.4byte	.LASF18
+ 1989 00e4 01       		.byte	0x1
+ 1990 00e5 2A       		.byte	0x2a
+ 1991 00e6 83000000 		.4byte	0x83
+ 1992 00ea 21000000 		.4byte	.LLST1
+ 1993 00ee 07       		.uleb128 0x7
+ 1994 00ef 47020000 		.4byte	.LASF19
+ 1995 00f3 01       		.byte	0x1
+ 1996 00f4 2D       		.byte	0x2d
+ 1997 00f5 8F000000 		.4byte	0x8f
+ 1998 00f9 42000000 		.4byte	.LLST2
+ 1999 00fd 07       		.uleb128 0x7
+ 2000 00fe F1000000 		.4byte	.LASF20
+ 2001 0102 01       		.byte	0x1
+ 2002 0103 2E       		.byte	0x2e
+ 2003 0104 83000000 		.4byte	0x83
+ 2004 0108 6B000000 		.4byte	.LLST3
+ 2005 010c 00       		.byte	0
+ 2006 010d 08       		.uleb128 0x8
+ 2007 010e FC000000 		.4byte	.LASF22
+ 2008 0112 01       		.byte	0x1
+ 2009 0113 56       		.byte	0x56
+ 2010 0114 83000000 		.4byte	0x83
+ 2011 0118 00000000 		.4byte	.LFB2
+ 2012 011c 98000000 		.4byte	.LFE2-.LFB2
+ 2013 0120 01       		.uleb128 0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 41
+
+
+ 2014 0121 9C       		.byte	0x9c
+ 2015 0122 81010000 		.4byte	0x181
+ 2016 0126 06       		.uleb128 0x6
+ 2017 0127 47020000 		.4byte	.LASF19
+ 2018 012b 01       		.byte	0x1
+ 2019 012c 56       		.byte	0x56
+ 2020 012d 77000000 		.4byte	0x77
+ 2021 0131 A2000000 		.4byte	.LLST4
+ 2022 0135 09       		.uleb128 0x9
+ 2023 0136 16010000 		.4byte	.LASF23
+ 2024 013a 01       		.byte	0x1
+ 2025 013b 58       		.byte	0x58
+ 2026 013c 83000000 		.4byte	0x83
+ 2027 0140 01       		.uleb128 0x1
+ 2028 0141 50       		.byte	0x50
+ 2029 0142 09       		.uleb128 0x9
+ 2030 0143 00000000 		.4byte	.LASF24
+ 2031 0147 01       		.byte	0x1
+ 2032 0148 59       		.byte	0x59
+ 2033 0149 92010000 		.4byte	0x192
+ 2034 014d 05       		.uleb128 0x5
+ 2035 014e 03       		.byte	0x3
+ 2036 014f 00000000 		.4byte	Thermistor_LUT.4761
+ 2037 0153 0A       		.uleb128 0xa
+ 2038 0154 6D696400 		.ascii	"mid\000"
+ 2039 0158 01       		.byte	0x1
+ 2040 0159 DA       		.byte	0xda
+ 2041 015a 6B000000 		.4byte	0x6b
+ 2042 015e C3000000 		.4byte	.LLST5
+ 2043 0162 07       		.uleb128 0x7
+ 2044 0163 2D000000 		.4byte	.LASF25
+ 2045 0167 01       		.byte	0x1
+ 2046 0168 DB       		.byte	0xdb
+ 2047 0169 6B000000 		.4byte	0x6b
+ 2048 016d EE000000 		.4byte	.LLST6
+ 2049 0171 07       		.uleb128 0x7
+ 2050 0172 58020000 		.4byte	.LASF26
+ 2051 0176 01       		.byte	0x1
+ 2052 0177 DC       		.byte	0xdc
+ 2053 0178 6B000000 		.4byte	0x6b
+ 2054 017c 0D010000 		.4byte	.LLST7
+ 2055 0180 00       		.byte	0
+ 2056 0181 0B       		.uleb128 0xb
+ 2057 0182 77000000 		.4byte	0x77
+ 2058 0186 92010000 		.4byte	0x192
+ 2059 018a 0C       		.uleb128 0xc
+ 2060 018b B0000000 		.4byte	0xb0
+ 2061 018f 7206     		.2byte	0x672
+ 2062 0191 00       		.byte	0
+ 2063 0192 0D       		.uleb128 0xd
+ 2064 0193 81010000 		.4byte	0x181
+ 2065 0197 00       		.byte	0
+ 2066              		.section	.debug_abbrev,"",%progbits
+ 2067              	.Ldebug_abbrev0:
+ 2068 0000 01       		.uleb128 0x1
+ 2069 0001 11       		.uleb128 0x11
+ 2070 0002 01       		.byte	0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 42
+
+
+ 2071 0003 25       		.uleb128 0x25
+ 2072 0004 0E       		.uleb128 0xe
+ 2073 0005 13       		.uleb128 0x13
+ 2074 0006 0B       		.uleb128 0xb
+ 2075 0007 03       		.uleb128 0x3
+ 2076 0008 0E       		.uleb128 0xe
+ 2077 0009 1B       		.uleb128 0x1b
+ 2078 000a 0E       		.uleb128 0xe
+ 2079 000b 55       		.uleb128 0x55
+ 2080 000c 17       		.uleb128 0x17
+ 2081 000d 11       		.uleb128 0x11
+ 2082 000e 01       		.uleb128 0x1
+ 2083 000f 10       		.uleb128 0x10
+ 2084 0010 17       		.uleb128 0x17
+ 2085 0011 00       		.byte	0
+ 2086 0012 00       		.byte	0
+ 2087 0013 02       		.uleb128 0x2
+ 2088 0014 24       		.uleb128 0x24
+ 2089 0015 00       		.byte	0
+ 2090 0016 0B       		.uleb128 0xb
+ 2091 0017 0B       		.uleb128 0xb
+ 2092 0018 3E       		.uleb128 0x3e
+ 2093 0019 0B       		.uleb128 0xb
+ 2094 001a 03       		.uleb128 0x3
+ 2095 001b 0E       		.uleb128 0xe
+ 2096 001c 00       		.byte	0
+ 2097 001d 00       		.byte	0
+ 2098 001e 03       		.uleb128 0x3
+ 2099 001f 24       		.uleb128 0x24
+ 2100 0020 00       		.byte	0
+ 2101 0021 0B       		.uleb128 0xb
+ 2102 0022 0B       		.uleb128 0xb
+ 2103 0023 3E       		.uleb128 0x3e
+ 2104 0024 0B       		.uleb128 0xb
+ 2105 0025 03       		.uleb128 0x3
+ 2106 0026 08       		.uleb128 0x8
+ 2107 0027 00       		.byte	0
+ 2108 0028 00       		.byte	0
+ 2109 0029 04       		.uleb128 0x4
+ 2110 002a 16       		.uleb128 0x16
+ 2111 002b 00       		.byte	0
+ 2112 002c 03       		.uleb128 0x3
+ 2113 002d 0E       		.uleb128 0xe
+ 2114 002e 3A       		.uleb128 0x3a
+ 2115 002f 0B       		.uleb128 0xb
+ 2116 0030 3B       		.uleb128 0x3b
+ 2117 0031 05       		.uleb128 0x5
+ 2118 0032 49       		.uleb128 0x49
+ 2119 0033 13       		.uleb128 0x13
+ 2120 0034 00       		.byte	0
+ 2121 0035 00       		.byte	0
+ 2122 0036 05       		.uleb128 0x5
+ 2123 0037 2E       		.uleb128 0x2e
+ 2124 0038 01       		.byte	0x1
+ 2125 0039 3F       		.uleb128 0x3f
+ 2126 003a 19       		.uleb128 0x19
+ 2127 003b 03       		.uleb128 0x3
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 43
+
+
+ 2128 003c 0E       		.uleb128 0xe
+ 2129 003d 3A       		.uleb128 0x3a
+ 2130 003e 0B       		.uleb128 0xb
+ 2131 003f 3B       		.uleb128 0x3b
+ 2132 0040 0B       		.uleb128 0xb
+ 2133 0041 27       		.uleb128 0x27
+ 2134 0042 19       		.uleb128 0x19
+ 2135 0043 49       		.uleb128 0x49
+ 2136 0044 13       		.uleb128 0x13
+ 2137 0045 11       		.uleb128 0x11
+ 2138 0046 01       		.uleb128 0x1
+ 2139 0047 12       		.uleb128 0x12
+ 2140 0048 06       		.uleb128 0x6
+ 2141 0049 40       		.uleb128 0x40
+ 2142 004a 18       		.uleb128 0x18
+ 2143 004b 9642     		.uleb128 0x2116
+ 2144 004d 19       		.uleb128 0x19
+ 2145 004e 01       		.uleb128 0x1
+ 2146 004f 13       		.uleb128 0x13
+ 2147 0050 00       		.byte	0
+ 2148 0051 00       		.byte	0
+ 2149 0052 06       		.uleb128 0x6
+ 2150 0053 05       		.uleb128 0x5
+ 2151 0054 00       		.byte	0
+ 2152 0055 03       		.uleb128 0x3
+ 2153 0056 0E       		.uleb128 0xe
+ 2154 0057 3A       		.uleb128 0x3a
+ 2155 0058 0B       		.uleb128 0xb
+ 2156 0059 3B       		.uleb128 0x3b
+ 2157 005a 0B       		.uleb128 0xb
+ 2158 005b 49       		.uleb128 0x49
+ 2159 005c 13       		.uleb128 0x13
+ 2160 005d 02       		.uleb128 0x2
+ 2161 005e 17       		.uleb128 0x17
+ 2162 005f 00       		.byte	0
+ 2163 0060 00       		.byte	0
+ 2164 0061 07       		.uleb128 0x7
+ 2165 0062 34       		.uleb128 0x34
+ 2166 0063 00       		.byte	0
+ 2167 0064 03       		.uleb128 0x3
+ 2168 0065 0E       		.uleb128 0xe
+ 2169 0066 3A       		.uleb128 0x3a
+ 2170 0067 0B       		.uleb128 0xb
+ 2171 0068 3B       		.uleb128 0x3b
+ 2172 0069 0B       		.uleb128 0xb
+ 2173 006a 49       		.uleb128 0x49
+ 2174 006b 13       		.uleb128 0x13
+ 2175 006c 02       		.uleb128 0x2
+ 2176 006d 17       		.uleb128 0x17
+ 2177 006e 00       		.byte	0
+ 2178 006f 00       		.byte	0
+ 2179 0070 08       		.uleb128 0x8
+ 2180 0071 2E       		.uleb128 0x2e
+ 2181 0072 01       		.byte	0x1
+ 2182 0073 3F       		.uleb128 0x3f
+ 2183 0074 19       		.uleb128 0x19
+ 2184 0075 03       		.uleb128 0x3
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 44
+
+
+ 2185 0076 0E       		.uleb128 0xe
+ 2186 0077 3A       		.uleb128 0x3a
+ 2187 0078 0B       		.uleb128 0xb
+ 2188 0079 3B       		.uleb128 0x3b
+ 2189 007a 0B       		.uleb128 0xb
+ 2190 007b 27       		.uleb128 0x27
+ 2191 007c 19       		.uleb128 0x19
+ 2192 007d 49       		.uleb128 0x49
+ 2193 007e 13       		.uleb128 0x13
+ 2194 007f 11       		.uleb128 0x11
+ 2195 0080 01       		.uleb128 0x1
+ 2196 0081 12       		.uleb128 0x12
+ 2197 0082 06       		.uleb128 0x6
+ 2198 0083 40       		.uleb128 0x40
+ 2199 0084 18       		.uleb128 0x18
+ 2200 0085 9742     		.uleb128 0x2117
+ 2201 0087 19       		.uleb128 0x19
+ 2202 0088 01       		.uleb128 0x1
+ 2203 0089 13       		.uleb128 0x13
+ 2204 008a 00       		.byte	0
+ 2205 008b 00       		.byte	0
+ 2206 008c 09       		.uleb128 0x9
+ 2207 008d 34       		.uleb128 0x34
+ 2208 008e 00       		.byte	0
+ 2209 008f 03       		.uleb128 0x3
+ 2210 0090 0E       		.uleb128 0xe
+ 2211 0091 3A       		.uleb128 0x3a
+ 2212 0092 0B       		.uleb128 0xb
+ 2213 0093 3B       		.uleb128 0x3b
+ 2214 0094 0B       		.uleb128 0xb
+ 2215 0095 49       		.uleb128 0x49
+ 2216 0096 13       		.uleb128 0x13
+ 2217 0097 02       		.uleb128 0x2
+ 2218 0098 18       		.uleb128 0x18
+ 2219 0099 00       		.byte	0
+ 2220 009a 00       		.byte	0
+ 2221 009b 0A       		.uleb128 0xa
+ 2222 009c 34       		.uleb128 0x34
+ 2223 009d 00       		.byte	0
+ 2224 009e 03       		.uleb128 0x3
+ 2225 009f 08       		.uleb128 0x8
+ 2226 00a0 3A       		.uleb128 0x3a
+ 2227 00a1 0B       		.uleb128 0xb
+ 2228 00a2 3B       		.uleb128 0x3b
+ 2229 00a3 0B       		.uleb128 0xb
+ 2230 00a4 49       		.uleb128 0x49
+ 2231 00a5 13       		.uleb128 0x13
+ 2232 00a6 02       		.uleb128 0x2
+ 2233 00a7 17       		.uleb128 0x17
+ 2234 00a8 00       		.byte	0
+ 2235 00a9 00       		.byte	0
+ 2236 00aa 0B       		.uleb128 0xb
+ 2237 00ab 01       		.uleb128 0x1
+ 2238 00ac 01       		.byte	0x1
+ 2239 00ad 49       		.uleb128 0x49
+ 2240 00ae 13       		.uleb128 0x13
+ 2241 00af 01       		.uleb128 0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 45
+
+
+ 2242 00b0 13       		.uleb128 0x13
+ 2243 00b1 00       		.byte	0
+ 2244 00b2 00       		.byte	0
+ 2245 00b3 0C       		.uleb128 0xc
+ 2246 00b4 21       		.uleb128 0x21
+ 2247 00b5 00       		.byte	0
+ 2248 00b6 49       		.uleb128 0x49
+ 2249 00b7 13       		.uleb128 0x13
+ 2250 00b8 2F       		.uleb128 0x2f
+ 2251 00b9 05       		.uleb128 0x5
+ 2252 00ba 00       		.byte	0
+ 2253 00bb 00       		.byte	0
+ 2254 00bc 0D       		.uleb128 0xd
+ 2255 00bd 26       		.uleb128 0x26
+ 2256 00be 00       		.byte	0
+ 2257 00bf 49       		.uleb128 0x49
+ 2258 00c0 13       		.uleb128 0x13
+ 2259 00c1 00       		.byte	0
+ 2260 00c2 00       		.byte	0
+ 2261 00c3 00       		.byte	0
+ 2262              		.section	.debug_loc,"",%progbits
+ 2263              	.Ldebug_loc0:
+ 2264              	.LLST0:
+ 2265 0000 00000000 		.4byte	.LVL0
+ 2266 0004 20000000 		.4byte	.LVL8
+ 2267 0008 0100     		.2byte	0x1
+ 2268 000a 50       		.byte	0x50
+ 2269 000b 20000000 		.4byte	.LVL8
+ 2270 000f 2C000000 		.4byte	.LFE1
+ 2271 0013 0400     		.2byte	0x4
+ 2272 0015 F3       		.byte	0xf3
+ 2273 0016 01       		.uleb128 0x1
+ 2274 0017 50       		.byte	0x50
+ 2275 0018 9F       		.byte	0x9f
+ 2276 0019 00000000 		.4byte	0
+ 2277 001d 00000000 		.4byte	0
+ 2278              	.LLST1:
+ 2279 0021 00000000 		.4byte	.LVL0
+ 2280 0025 08000000 		.4byte	.LVL1
+ 2281 0029 0100     		.2byte	0x1
+ 2282 002b 51       		.byte	0x51
+ 2283 002c 08000000 		.4byte	.LVL1
+ 2284 0030 2C000000 		.4byte	.LFE1
+ 2285 0034 0400     		.2byte	0x4
+ 2286 0036 F3       		.byte	0xf3
+ 2287 0037 01       		.uleb128 0x1
+ 2288 0038 51       		.byte	0x51
+ 2289 0039 9F       		.byte	0x9f
+ 2290 003a 00000000 		.4byte	0
+ 2291 003e 00000000 		.4byte	0
+ 2292              	.LLST2:
+ 2293 0042 08000000 		.4byte	.LVL1
+ 2294 0046 20000000 		.4byte	.LVL8
+ 2295 004a 0100     		.2byte	0x1
+ 2296 004c 51       		.byte	0x51
+ 2297 004d 20000000 		.4byte	.LVL8
+ 2298 0051 25000000 		.4byte	.LVL9-1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 46
+
+
+ 2299 0055 0100     		.2byte	0x1
+ 2300 0057 50       		.byte	0x50
+ 2301 0058 26000000 		.4byte	.LVL9
+ 2302 005c 2C000000 		.4byte	.LFE1
+ 2303 0060 0100     		.2byte	0x1
+ 2304 0062 50       		.byte	0x50
+ 2305 0063 00000000 		.4byte	0
+ 2306 0067 00000000 		.4byte	0
+ 2307              	.LLST3:
+ 2308 006b 10000000 		.4byte	.LVL2
+ 2309 006f 14000000 		.4byte	.LVL4
+ 2310 0073 0100     		.2byte	0x1
+ 2311 0075 53       		.byte	0x53
+ 2312 0076 14000000 		.4byte	.LVL4
+ 2313 007a 16000000 		.4byte	.LVL5
+ 2314 007e 0400     		.2byte	0x4
+ 2315 0080 73       		.byte	0x73
+ 2316 0081 00       		.sleb128 0
+ 2317 0082 1F       		.byte	0x1f
+ 2318 0083 9F       		.byte	0x9f
+ 2319 0084 16000000 		.4byte	.LVL5
+ 2320 0088 18000000 		.4byte	.LVL6
+ 2321 008c 0100     		.2byte	0x1
+ 2322 008e 53       		.byte	0x53
+ 2323 008f 1C000000 		.4byte	.LVL7
+ 2324 0093 25000000 		.4byte	.LVL9-1
+ 2325 0097 0100     		.2byte	0x1
+ 2326 0099 53       		.byte	0x53
+ 2327 009a 00000000 		.4byte	0
+ 2328 009e 00000000 		.4byte	0
+ 2329              	.LLST4:
+ 2330 00a2 00000000 		.4byte	.LVL10
+ 2331 00a6 70000000 		.4byte	.LVL23
+ 2332 00aa 0100     		.2byte	0x1
+ 2333 00ac 50       		.byte	0x50
+ 2334 00ad 70000000 		.4byte	.LVL23
+ 2335 00b1 98000000 		.4byte	.LFE2
+ 2336 00b5 0400     		.2byte	0x4
+ 2337 00b7 F3       		.byte	0xf3
+ 2338 00b8 01       		.uleb128 0x1
+ 2339 00b9 50       		.byte	0x50
+ 2340 00ba 9F       		.byte	0x9f
+ 2341 00bb 00000000 		.4byte	0
+ 2342 00bf 00000000 		.4byte	0
+ 2343              	.LLST5:
+ 2344 00c3 0E000000 		.4byte	.LVL13
+ 2345 00c7 28000000 		.4byte	.LVL14
+ 2346 00cb 0100     		.2byte	0x1
+ 2347 00cd 52       		.byte	0x52
+ 2348 00ce 28000000 		.4byte	.LVL14
+ 2349 00d2 2C000000 		.4byte	.LVL16
+ 2350 00d6 0300     		.2byte	0x3
+ 2351 00d8 72       		.byte	0x72
+ 2352 00d9 7F       		.sleb128 -1
+ 2353 00da 9F       		.byte	0x9f
+ 2354 00db 2C000000 		.4byte	.LVL16
+ 2355 00df 30000000 		.4byte	.LVL18
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 47
+
+
+ 2356 00e3 0100     		.2byte	0x1
+ 2357 00e5 52       		.byte	0x52
+ 2358 00e6 00000000 		.4byte	0
+ 2359 00ea 00000000 		.4byte	0
+ 2360              	.LLST6:
+ 2361 00ee 02000000 		.4byte	.LVL11
+ 2362 00f2 08000000 		.4byte	.LVL12
+ 2363 00f6 0200     		.2byte	0x2
+ 2364 00f8 30       		.byte	0x30
+ 2365 00f9 9F       		.byte	0x9f
+ 2366 00fa 08000000 		.4byte	.LVL12
+ 2367 00fe 48000000 		.4byte	.LVL20
+ 2368 0102 0100     		.2byte	0x1
+ 2369 0104 54       		.byte	0x54
+ 2370 0105 00000000 		.4byte	0
+ 2371 0109 00000000 		.4byte	0
+ 2372              	.LLST7:
+ 2373 010d 02000000 		.4byte	.LVL11
+ 2374 0111 08000000 		.4byte	.LVL12
+ 2375 0115 0400     		.2byte	0x4
+ 2376 0117 0A       		.byte	0xa
+ 2377 0118 7206     		.2byte	0x672
+ 2378 011a 9F       		.byte	0x9f
+ 2379 011b 08000000 		.4byte	.LVL12
+ 2380 011f 2E000000 		.4byte	.LVL17
+ 2381 0123 0100     		.2byte	0x1
+ 2382 0125 51       		.byte	0x51
+ 2383 0126 30000000 		.4byte	.LVL18
+ 2384 012a 36000000 		.4byte	.LVL19
+ 2385 012e 0100     		.2byte	0x1
+ 2386 0130 51       		.byte	0x51
+ 2387 0131 36000000 		.4byte	.LVL19
+ 2388 0135 58000000 		.4byte	.LVL21
+ 2389 0139 0100     		.2byte	0x1
+ 2390 013b 52       		.byte	0x52
+ 2391 013c 5A000000 		.4byte	.LVL22
+ 2392 0140 76000000 		.4byte	.LVL24
+ 2393 0144 0100     		.2byte	0x1
+ 2394 0146 52       		.byte	0x52
+ 2395 0147 78000000 		.4byte	.LVL25
+ 2396 014b 7C000000 		.4byte	.LVL26
+ 2397 014f 0100     		.2byte	0x1
+ 2398 0151 52       		.byte	0x52
+ 2399 0152 00000000 		.4byte	0
+ 2400 0156 00000000 		.4byte	0
+ 2401              		.section	.debug_aranges,"",%progbits
+ 2402 0000 24000000 		.4byte	0x24
+ 2403 0004 0200     		.2byte	0x2
+ 2404 0006 00000000 		.4byte	.Ldebug_info0
+ 2405 000a 04       		.byte	0x4
+ 2406 000b 00       		.byte	0
+ 2407 000c 0000     		.2byte	0
+ 2408 000e 0000     		.2byte	0
+ 2409 0010 00000000 		.4byte	.LFB1
+ 2410 0014 2C000000 		.4byte	.LFE1-.LFB1
+ 2411 0018 00000000 		.4byte	.LFB2
+ 2412 001c 98000000 		.4byte	.LFE2-.LFB2
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 48
+
+
+ 2413 0020 00000000 		.4byte	0
+ 2414 0024 00000000 		.4byte	0
+ 2415              		.section	.debug_ranges,"",%progbits
+ 2416              	.Ldebug_ranges0:
+ 2417 0000 00000000 		.4byte	.LFB1
+ 2418 0004 2C000000 		.4byte	.LFE1
+ 2419 0008 00000000 		.4byte	.LFB2
+ 2420 000c 98000000 		.4byte	.LFE2
+ 2421 0010 00000000 		.4byte	0
+ 2422 0014 00000000 		.4byte	0
+ 2423              		.section	.debug_line,"",%progbits
+ 2424              	.Ldebug_line0:
+ 2425 0000 BC000000 		.section	.debug_str,"MS",%progbits,1
+ 2425      02004900 
+ 2425      00000201 
+ 2425      FB0E0D00 
+ 2425      01010101 
+ 2426              	.LASF24:
+ 2427 0000 54686572 		.ascii	"Thermistor_LUT\000"
+ 2427      6D697374 
+ 2427      6F725F4C 
+ 2427      555400
+ 2428              	.LASF17:
+ 2429 000f 76526566 		.ascii	"vReference\000"
+ 2429      6572656E 
+ 2429      636500
+ 2430              	.LASF3:
+ 2431 001a 73686F72 		.ascii	"short unsigned int\000"
+ 2431      7420756E 
+ 2431      7369676E 
+ 2431      65642069 
+ 2431      6E7400
+ 2432              	.LASF25:
+ 2433 002d 66697273 		.ascii	"first\000"
+ 2433      7400
+ 2434              	.LASF13:
+ 2435 0033 666C6F61 		.ascii	"float\000"
+ 2435      7400
+ 2436              	.LASF1:
+ 2437 0039 756E7369 		.ascii	"unsigned char\000"
+ 2437      676E6564 
+ 2437      20636861 
+ 2437      7200
+ 2438              	.LASF27:
+ 2439 0047 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 2439      4320342E 
+ 2439      392E3320 
+ 2439      32303135 
+ 2439      30333033 
+ 2440 007a 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m0plus -mthumb -"
+ 2440      20726576 
+ 2440      6973696F 
+ 2440      6E203232 
+ 2440      31323230 
+ 2441 00ad 67202D4F 		.ascii	"g -Og -ffunction-sections -ffat-lto-objects\000"
+ 2441      67202D66 
+ 2441      66756E63 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 49
+
+
+ 2441      74696F6E 
+ 2441      2D736563 
+ 2442              	.LASF11:
+ 2443 00d9 696E7431 		.ascii	"int16\000"
+ 2443      3600
+ 2444              	.LASF5:
+ 2445 00df 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2445      20756E73 
+ 2445      69676E65 
+ 2445      6420696E 
+ 2445      7400
+ 2446              	.LASF20:
+ 2447 00f1 74656D70 		.ascii	"temp\000"
+ 2447      00
+ 2448              	.LASF12:
+ 2449 00f6 696E7433 		.ascii	"int32\000"
+ 2449      3200
+ 2450              	.LASF22:
+ 2451 00fc 54686572 		.ascii	"Thermistor_GetTemperature\000"
+ 2451      6D697374 
+ 2451      6F725F47 
+ 2451      65745465 
+ 2451      6D706572 
+ 2452              	.LASF23:
+ 2453 0116 74656D70 		.ascii	"tempTR\000"
+ 2453      545200
+ 2454              	.LASF14:
+ 2455 011d 646F7562 		.ascii	"double\000"
+ 2455      6C6500
+ 2456              	.LASF9:
+ 2457 0124 75696E74 		.ascii	"uint16\000"
+ 2457      313600
+ 2458              	.LASF28:
+ 2459 012b 2E5C4765 		.ascii	".\\Generated_Source\\PSoC4\\Thermistor.c\000"
+ 2459      6E657261 
+ 2459      7465645F 
+ 2459      536F7572 
+ 2459      63655C50 
+ 2460              	.LASF10:
+ 2461 0151 75696E74 		.ascii	"uint32\000"
+ 2461      333200
+ 2462              	.LASF8:
+ 2463 0158 756E7369 		.ascii	"unsigned int\000"
+ 2463      676E6564 
+ 2463      20696E74 
+ 2463      00
+ 2464              	.LASF7:
+ 2465 0165 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2465      206C6F6E 
+ 2465      6720756E 
+ 2465      7369676E 
+ 2465      65642069 
+ 2466              	.LASF18:
+ 2467 017c 76546865 		.ascii	"vThermistor\000"
+ 2467      726D6973 
+ 2467      746F7200 
+ 2468              	.LASF29:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccjC5Rc6.s 			page 50
+
+
+ 2469 0188 433A5C53 		.ascii	"C:\\SVN\\apps\\trunk\\Cypress Academy\\WA-101\\Proj"
+ 2469      564E5C61 
+ 2469      7070735C 
+ 2469      7472756E 
+ 2469      6B5C4379 
+ 2470 01b5 65637473 		.ascii	"ects\\PSoC\\CE211321_Temperature_Sensing\\CE211321_"
+ 2470      5C50536F 
+ 2470      435C4345 
+ 2470      32313133 
+ 2470      32315F54 
+ 2471 01e5 54656D70 		.ascii	"Temperature_Sensing.cydsn\000"
+ 2471      65726174 
+ 2471      7572655F 
+ 2471      53656E73 
+ 2471      696E672E 
+ 2472              	.LASF16:
+ 2473 01ff 73697A65 		.ascii	"sizetype\000"
+ 2473      74797065 
+ 2473      00
+ 2474              	.LASF6:
+ 2475 0208 6C6F6E67 		.ascii	"long long int\000"
+ 2475      206C6F6E 
+ 2475      6720696E 
+ 2475      7400
+ 2476              	.LASF15:
+ 2477 0216 63686172 		.ascii	"char\000"
+ 2477      00
+ 2478              	.LASF2:
+ 2479 021b 73686F72 		.ascii	"short int\000"
+ 2479      7420696E 
+ 2479      7400
+ 2480              	.LASF21:
+ 2481 0225 54686572 		.ascii	"Thermistor_GetResistance\000"
+ 2481      6D697374 
+ 2481      6F725F47 
+ 2481      65745265 
+ 2481      73697374 
+ 2482              	.LASF4:
+ 2483 023e 6C6F6E67 		.ascii	"long int\000"
+ 2483      20696E74 
+ 2483      00
+ 2484              	.LASF19:
+ 2485 0247 72657354 		.ascii	"resT\000"
+ 2485      00
+ 2486              	.LASF0:
+ 2487 024c 7369676E 		.ascii	"signed char\000"
+ 2487      65642063 
+ 2487      68617200 
+ 2488              	.LASF26:
+ 2489 0258 6C617374 		.ascii	"last\000"
+ 2489      00
+ 2490              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

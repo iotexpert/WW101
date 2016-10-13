@@ -1,0 +1,635 @@
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"PVref_PM.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.PVref_Sleep,"ax",%progbits
+  18              		.align	2
+  19              		.global	PVref_Sleep
+  20              		.code	16
+  21              		.thumb_func
+  22              		.type	PVref_Sleep, %function
+  23              	PVref_Sleep:
+  24              	.LFB0:
+  25              		.file 1 ".\\Generated_Source\\PSoC4\\PVref_PM.c"
+   1:.\Generated_Source\PSoC4/PVref_PM.c **** /***************************************************************************//**
+   2:.\Generated_Source\PSoC4/PVref_PM.c **** * \file PVref_PM.c
+   3:.\Generated_Source\PSoC4/PVref_PM.c **** * \version 1.0
+   4:.\Generated_Source\PSoC4/PVref_PM.c **** *
+   5:.\Generated_Source\PSoC4/PVref_PM.c **** * \brief
+   6:.\Generated_Source\PSoC4/PVref_PM.c **** *  This file provides the API source code for Power Management of the
+   7:.\Generated_Source\PSoC4/PVref_PM.c **** *  Programmable Voltage Reference component.
+   8:.\Generated_Source\PSoC4/PVref_PM.c **** *
+   9:.\Generated_Source\PSoC4/PVref_PM.c **** * Note:
+  10:.\Generated_Source\PSoC4/PVref_PM.c **** *  None
+  11:.\Generated_Source\PSoC4/PVref_PM.c **** *
+  12:.\Generated_Source\PSoC4/PVref_PM.c **** ********************************************************************************
+  13:.\Generated_Source\PSoC4/PVref_PM.c **** * \copyright
+  14:.\Generated_Source\PSoC4/PVref_PM.c **** * Copyright 2016, Cypress Semiconductor Corporation. All rights reserved.
+  15:.\Generated_Source\PSoC4/PVref_PM.c **** * You may use this file only in accordance with the license, terms, conditions,
+  16:.\Generated_Source\PSoC4/PVref_PM.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  17:.\Generated_Source\PSoC4/PVref_PM.c **** * the software package with which this file was provided.
+  18:.\Generated_Source\PSoC4/PVref_PM.c **** *******************************************************************************/
+  19:.\Generated_Source\PSoC4/PVref_PM.c **** 
+  20:.\Generated_Source\PSoC4/PVref_PM.c **** #include "PVref.h"
+  21:.\Generated_Source\PSoC4/PVref_PM.c **** 
+  22:.\Generated_Source\PSoC4/PVref_PM.c **** static PVref_backup_struct PVref_backup = {0u};
+  23:.\Generated_Source\PSoC4/PVref_PM.c **** 
+  24:.\Generated_Source\PSoC4/PVref_PM.c **** 
+  25:.\Generated_Source\PSoC4/PVref_PM.c **** /*******************************************************************************
+  26:.\Generated_Source\PSoC4/PVref_PM.c **** * Function Name: PVref_Sleep
+  27:.\Generated_Source\PSoC4/PVref_PM.c **** ****************************************************************************//**
+  28:.\Generated_Source\PSoC4/PVref_PM.c **** *
+  29:.\Generated_Source\PSoC4/PVref_PM.c **** *  Prepares the component to enter Sleep mode.
+  30:.\Generated_Source\PSoC4/PVref_PM.c **** *  If the reference is based on Vdda, the function will open the switch at the
+  31:.\Generated_Source\PSoC4/PVref_PM.c **** *  bottom of the resistor tree to eliminate the current flow through the
+  32:.\Generated_Source\PSoC4/PVref_PM.c **** *  resistor. If the reference is based on the bandgap, this function will do
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 2
+
+
+  33:.\Generated_Source\PSoC4/PVref_PM.c **** *  nothing.
+  34:.\Generated_Source\PSoC4/PVref_PM.c **** *
+  35:.\Generated_Source\PSoC4/PVref_PM.c **** * \sideeffect
+  36:.\Generated_Source\PSoC4/PVref_PM.c **** *  If the reference is based on Vdda, it will affect all Vdda-based references
+  37:.\Generated_Source\PSoC4/PVref_PM.c **** *  because they share the same resistor tree.
+  38:.\Generated_Source\PSoC4/PVref_PM.c **** *
+  39:.\Generated_Source\PSoC4/PVref_PM.c **** *******************************************************************************/
+  40:.\Generated_Source\PSoC4/PVref_PM.c **** void PVref_Sleep(void)
+  41:.\Generated_Source\PSoC4/PVref_PM.c **** {
+  26              		.loc 1 41 0
+  27              		.cfi_startproc
+  42:.\Generated_Source\PSoC4/PVref_PM.c ****     if (0u != (PVref_PRB_REF_REG & PVref_VREF_SUPPLY_SEL))
+  28              		.loc 1 42 0
+  29 0000 084B     		ldr	r3, .L4
+  30 0002 1B68     		ldr	r3, [r3]
+  31 0004 9B07     		lsl	r3, r3, #30
+  32 0006 08D5     		bpl	.L2
+  43:.\Generated_Source\PSoC4/PVref_PM.c ****     {
+  44:.\Generated_Source\PSoC4/PVref_PM.c ****         PVref_PRB_CTRL_REG &= ~PVref_VDDA_ENABLE;
+  33              		.loc 1 44 0
+  34 0008 074A     		ldr	r2, .L4+4
+  35 000a 1368     		ldr	r3, [r2]
+  36 000c 1021     		mov	r1, #16
+  37 000e 8B43     		bic	r3, r1
+  38 0010 1360     		str	r3, [r2]
+  45:.\Generated_Source\PSoC4/PVref_PM.c ****         PVref_backup.enableState = 1u;
+  39              		.loc 1 45 0
+  40 0012 0122     		mov	r2, #1
+  41 0014 054B     		ldr	r3, .L4+8
+  42 0016 1A70     		strb	r2, [r3]
+  43 0018 02E0     		b	.L1
+  44              	.L2:
+  46:.\Generated_Source\PSoC4/PVref_PM.c ****     }
+  47:.\Generated_Source\PSoC4/PVref_PM.c ****     else /* The reference is based on the bandgap */
+  48:.\Generated_Source\PSoC4/PVref_PM.c ****     {
+  49:.\Generated_Source\PSoC4/PVref_PM.c ****         PVref_backup.enableState = 0u;
+  45              		.loc 1 49 0
+  46 001a 0022     		mov	r2, #0
+  47 001c 034B     		ldr	r3, .L4+8
+  48 001e 1A70     		strb	r2, [r3]
+  49              	.L1:
+  50:.\Generated_Source\PSoC4/PVref_PM.c ****     }
+  51:.\Generated_Source\PSoC4/PVref_PM.c **** }
+  50              		.loc 1 51 0
+  51              		@ sp needed
+  52 0020 7047     		bx	lr
+  53              	.L5:
+  54 0022 C046     		.align	2
+  55              	.L4:
+  56 0024 04023F40 		.word	1077871108
+  57 0028 00023F40 		.word	1077871104
+  58 002c 00000000 		.word	.LANCHOR0
+  59              		.cfi_endproc
+  60              	.LFE0:
+  61              		.size	PVref_Sleep, .-PVref_Sleep
+  62              		.section	.text.PVref_Wakeup,"ax",%progbits
+  63              		.align	2
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 3
+
+
+  64              		.global	PVref_Wakeup
+  65              		.code	16
+  66              		.thumb_func
+  67              		.type	PVref_Wakeup, %function
+  68              	PVref_Wakeup:
+  69              	.LFB1:
+  52:.\Generated_Source\PSoC4/PVref_PM.c **** 
+  53:.\Generated_Source\PSoC4/PVref_PM.c **** 
+  54:.\Generated_Source\PSoC4/PVref_PM.c **** /*******************************************************************************
+  55:.\Generated_Source\PSoC4/PVref_PM.c **** * Function Name: PVref_Wakeup
+  56:.\Generated_Source\PSoC4/PVref_PM.c **** ****************************************************************************//**
+  57:.\Generated_Source\PSoC4/PVref_PM.c **** *
+  58:.\Generated_Source\PSoC4/PVref_PM.c **** *  Restores the component after exiting Sleep mode.
+  59:.\Generated_Source\PSoC4/PVref_PM.c **** *  By calling this function for any Vdda-based reference, the function will
+  60:.\Generated_Source\PSoC4/PVref_PM.c **** *  enable all Vdda-based references because they all are based on the same
+  61:.\Generated_Source\PSoC4/PVref_PM.c **** *  resistor divider. For bandgap-based references, nothing will happen.
+  62:.\Generated_Source\PSoC4/PVref_PM.c **** *
+  63:.\Generated_Source\PSoC4/PVref_PM.c **** * \sideeffect
+  64:.\Generated_Source\PSoC4/PVref_PM.c **** *  If the reference is based on Vdda, it will affect all Vdda-based references
+  65:.\Generated_Source\PSoC4/PVref_PM.c **** *  because they share the same resistor tree.
+  66:.\Generated_Source\PSoC4/PVref_PM.c **** *
+  67:.\Generated_Source\PSoC4/PVref_PM.c **** *******************************************************************************/
+  68:.\Generated_Source\PSoC4/PVref_PM.c **** void PVref_Wakeup(void)
+  69:.\Generated_Source\PSoC4/PVref_PM.c **** {
+  70              		.loc 1 69 0
+  71              		.cfi_startproc
+  70:.\Generated_Source\PSoC4/PVref_PM.c ****     if (0u != PVref_backup.enableState)
+  72              		.loc 1 70 0
+  73 0000 044B     		ldr	r3, .L8
+  74 0002 1B78     		ldrb	r3, [r3]
+  75 0004 002B     		cmp	r3, #0
+  76 0006 04D0     		beq	.L6
+  71:.\Generated_Source\PSoC4/PVref_PM.c ****     {
+  72:.\Generated_Source\PSoC4/PVref_PM.c ****         PVref_PRB_CTRL_REG |= PVref_VDDA_ENABLE;
+  77              		.loc 1 72 0
+  78 0008 034A     		ldr	r2, .L8+4
+  79 000a 1168     		ldr	r1, [r2]
+  80 000c 1023     		mov	r3, #16
+  81 000e 0B43     		orr	r3, r1
+  82 0010 1360     		str	r3, [r2]
+  83              	.L6:
+  73:.\Generated_Source\PSoC4/PVref_PM.c ****     } /* Do nothing if the reference is based on the bandgap */
+  74:.\Generated_Source\PSoC4/PVref_PM.c **** }
+  84              		.loc 1 74 0
+  85              		@ sp needed
+  86 0012 7047     		bx	lr
+  87              	.L9:
+  88              		.align	2
+  89              	.L8:
+  90 0014 00000000 		.word	.LANCHOR0
+  91 0018 00023F40 		.word	1077871104
+  92              		.cfi_endproc
+  93              	.LFE1:
+  94              		.size	PVref_Wakeup, .-PVref_Wakeup
+  95              		.bss
+  96              		.align	2
+  97              		.set	.LANCHOR0,. + 0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 4
+
+
+  98              		.type	PVref_backup, %object
+  99              		.size	PVref_backup, 1
+ 100              	PVref_backup:
+ 101 0000 00       		.space	1
+ 102 0001 000000   		.text
+ 103              	.Letext0:
+ 104              		.file 2 ".\\Generated_Source\\PSoC4\\cytypes.h"
+ 105              		.file 3 ".\\Generated_Source\\PSoC4\\PVref.h"
+ 106              		.section	.debug_info,"",%progbits
+ 107              	.Ldebug_info0:
+ 108 0000 F9000000 		.4byte	0xf9
+ 109 0004 0400     		.2byte	0x4
+ 110 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 111 000a 04       		.byte	0x4
+ 112 000b 01       		.uleb128 0x1
+ 113 000c 72010000 		.4byte	.LASF18
+ 114 0010 01       		.byte	0x1
+ 115 0011 4E010000 		.4byte	.LASF19
+ 116 0015 A7000000 		.4byte	.LASF20
+ 117 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 118 001d 00000000 		.4byte	0
+ 119 0021 00000000 		.4byte	.Ldebug_line0
+ 120 0025 02       		.uleb128 0x2
+ 121 0026 01       		.byte	0x1
+ 122 0027 06       		.byte	0x6
+ 123 0028 10020000 		.4byte	.LASF0
+ 124 002c 02       		.uleb128 0x2
+ 125 002d 01       		.byte	0x1
+ 126 002e 08       		.byte	0x8
+ 127 002f 42000000 		.4byte	.LASF1
+ 128 0033 02       		.uleb128 0x2
+ 129 0034 02       		.byte	0x2
+ 130 0035 05       		.byte	0x5
+ 131 0036 31010000 		.4byte	.LASF2
+ 132 003a 02       		.uleb128 0x2
+ 133 003b 02       		.byte	0x2
+ 134 003c 07       		.byte	0x7
+ 135 003d 62000000 		.4byte	.LASF3
+ 136 0041 02       		.uleb128 0x2
+ 137 0042 04       		.byte	0x4
+ 138 0043 05       		.byte	0x5
+ 139 0044 1F000000 		.4byte	.LASF4
+ 140 0048 02       		.uleb128 0x2
+ 141 0049 04       		.byte	0x4
+ 142 004a 07       		.byte	0x7
+ 143 004b 50000000 		.4byte	.LASF5
+ 144 004f 02       		.uleb128 0x2
+ 145 0050 08       		.byte	0x8
+ 146 0051 05       		.byte	0x5
+ 147 0052 1E010000 		.4byte	.LASF6
+ 148 0056 02       		.uleb128 0x2
+ 149 0057 08       		.byte	0x8
+ 150 0058 07       		.byte	0x7
+ 151 0059 90000000 		.4byte	.LASF7
+ 152 005d 03       		.uleb128 0x3
+ 153 005e 04       		.byte	0x4
+ 154 005f 05       		.byte	0x5
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 5
+
+
+ 155 0060 696E7400 		.ascii	"int\000"
+ 156 0064 02       		.uleb128 0x2
+ 157 0065 04       		.byte	0x4
+ 158 0066 07       		.byte	0x7
+ 159 0067 83000000 		.4byte	.LASF8
+ 160 006b 04       		.uleb128 0x4
+ 161 006c 3B010000 		.4byte	.LASF9
+ 162 0070 02       		.byte	0x2
+ 163 0071 9801     		.2byte	0x198
+ 164 0073 2C000000 		.4byte	0x2c
+ 165 0077 04       		.uleb128 0x4
+ 166 0078 7C000000 		.4byte	.LASF10
+ 167 007c 02       		.byte	0x2
+ 168 007d 9A01     		.2byte	0x19a
+ 169 007f 48000000 		.4byte	0x48
+ 170 0083 02       		.uleb128 0x2
+ 171 0084 04       		.byte	0x4
+ 172 0085 04       		.byte	0x4
+ 173 0086 3C000000 		.4byte	.LASF11
+ 174 008a 02       		.uleb128 0x2
+ 175 008b 08       		.byte	0x8
+ 176 008c 04       		.byte	0x4
+ 177 008d 75000000 		.4byte	.LASF12
+ 178 0091 02       		.uleb128 0x2
+ 179 0092 01       		.byte	0x1
+ 180 0093 08       		.byte	0x8
+ 181 0094 2C010000 		.4byte	.LASF13
+ 182 0098 04       		.uleb128 0x4
+ 183 0099 00000000 		.4byte	.LASF14
+ 184 009d 02       		.byte	0x2
+ 185 009e 4402     		.2byte	0x244
+ 186 00a0 A4000000 		.4byte	0xa4
+ 187 00a4 05       		.uleb128 0x5
+ 188 00a5 77000000 		.4byte	0x77
+ 189 00a9 06       		.uleb128 0x6
+ 190 00aa 01       		.byte	0x1
+ 191 00ab 03       		.byte	0x3
+ 192 00ac 28       		.byte	0x28
+ 193 00ad BE000000 		.4byte	0xbe
+ 194 00b1 07       		.uleb128 0x7
+ 195 00b2 04020000 		.4byte	.LASF21
+ 196 00b6 03       		.byte	0x3
+ 197 00b7 2A       		.byte	0x2a
+ 198 00b8 6B000000 		.4byte	0x6b
+ 199 00bc 00       		.byte	0
+ 200 00bd 00       		.byte	0
+ 201 00be 08       		.uleb128 0x8
+ 202 00bf 28000000 		.4byte	.LASF15
+ 203 00c3 03       		.byte	0x3
+ 204 00c4 2B       		.byte	0x2b
+ 205 00c5 A9000000 		.4byte	0xa9
+ 206 00c9 09       		.uleb128 0x9
+ 207 00ca 06000000 		.4byte	.LASF16
+ 208 00ce 01       		.byte	0x1
+ 209 00cf 28       		.byte	0x28
+ 210 00d0 00000000 		.4byte	.LFB0
+ 211 00d4 30000000 		.4byte	.LFE0-.LFB0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 6
+
+
+ 212 00d8 01       		.uleb128 0x1
+ 213 00d9 9C       		.byte	0x9c
+ 214 00da 09       		.uleb128 0x9
+ 215 00db 12000000 		.4byte	.LASF17
+ 216 00df 01       		.byte	0x1
+ 217 00e0 44       		.byte	0x44
+ 218 00e1 00000000 		.4byte	.LFB1
+ 219 00e5 1C000000 		.4byte	.LFE1-.LFB1
+ 220 00e9 01       		.uleb128 0x1
+ 221 00ea 9C       		.byte	0x9c
+ 222 00eb 0A       		.uleb128 0xa
+ 223 00ec 41010000 		.4byte	.LASF22
+ 224 00f0 01       		.byte	0x1
+ 225 00f1 16       		.byte	0x16
+ 226 00f2 BE000000 		.4byte	0xbe
+ 227 00f6 05       		.uleb128 0x5
+ 228 00f7 03       		.byte	0x3
+ 229 00f8 00000000 		.4byte	PVref_backup
+ 230 00fc 00       		.byte	0
+ 231              		.section	.debug_abbrev,"",%progbits
+ 232              	.Ldebug_abbrev0:
+ 233 0000 01       		.uleb128 0x1
+ 234 0001 11       		.uleb128 0x11
+ 235 0002 01       		.byte	0x1
+ 236 0003 25       		.uleb128 0x25
+ 237 0004 0E       		.uleb128 0xe
+ 238 0005 13       		.uleb128 0x13
+ 239 0006 0B       		.uleb128 0xb
+ 240 0007 03       		.uleb128 0x3
+ 241 0008 0E       		.uleb128 0xe
+ 242 0009 1B       		.uleb128 0x1b
+ 243 000a 0E       		.uleb128 0xe
+ 244 000b 55       		.uleb128 0x55
+ 245 000c 17       		.uleb128 0x17
+ 246 000d 11       		.uleb128 0x11
+ 247 000e 01       		.uleb128 0x1
+ 248 000f 10       		.uleb128 0x10
+ 249 0010 17       		.uleb128 0x17
+ 250 0011 00       		.byte	0
+ 251 0012 00       		.byte	0
+ 252 0013 02       		.uleb128 0x2
+ 253 0014 24       		.uleb128 0x24
+ 254 0015 00       		.byte	0
+ 255 0016 0B       		.uleb128 0xb
+ 256 0017 0B       		.uleb128 0xb
+ 257 0018 3E       		.uleb128 0x3e
+ 258 0019 0B       		.uleb128 0xb
+ 259 001a 03       		.uleb128 0x3
+ 260 001b 0E       		.uleb128 0xe
+ 261 001c 00       		.byte	0
+ 262 001d 00       		.byte	0
+ 263 001e 03       		.uleb128 0x3
+ 264 001f 24       		.uleb128 0x24
+ 265 0020 00       		.byte	0
+ 266 0021 0B       		.uleb128 0xb
+ 267 0022 0B       		.uleb128 0xb
+ 268 0023 3E       		.uleb128 0x3e
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 7
+
+
+ 269 0024 0B       		.uleb128 0xb
+ 270 0025 03       		.uleb128 0x3
+ 271 0026 08       		.uleb128 0x8
+ 272 0027 00       		.byte	0
+ 273 0028 00       		.byte	0
+ 274 0029 04       		.uleb128 0x4
+ 275 002a 16       		.uleb128 0x16
+ 276 002b 00       		.byte	0
+ 277 002c 03       		.uleb128 0x3
+ 278 002d 0E       		.uleb128 0xe
+ 279 002e 3A       		.uleb128 0x3a
+ 280 002f 0B       		.uleb128 0xb
+ 281 0030 3B       		.uleb128 0x3b
+ 282 0031 05       		.uleb128 0x5
+ 283 0032 49       		.uleb128 0x49
+ 284 0033 13       		.uleb128 0x13
+ 285 0034 00       		.byte	0
+ 286 0035 00       		.byte	0
+ 287 0036 05       		.uleb128 0x5
+ 288 0037 35       		.uleb128 0x35
+ 289 0038 00       		.byte	0
+ 290 0039 49       		.uleb128 0x49
+ 291 003a 13       		.uleb128 0x13
+ 292 003b 00       		.byte	0
+ 293 003c 00       		.byte	0
+ 294 003d 06       		.uleb128 0x6
+ 295 003e 13       		.uleb128 0x13
+ 296 003f 01       		.byte	0x1
+ 297 0040 0B       		.uleb128 0xb
+ 298 0041 0B       		.uleb128 0xb
+ 299 0042 3A       		.uleb128 0x3a
+ 300 0043 0B       		.uleb128 0xb
+ 301 0044 3B       		.uleb128 0x3b
+ 302 0045 0B       		.uleb128 0xb
+ 303 0046 01       		.uleb128 0x1
+ 304 0047 13       		.uleb128 0x13
+ 305 0048 00       		.byte	0
+ 306 0049 00       		.byte	0
+ 307 004a 07       		.uleb128 0x7
+ 308 004b 0D       		.uleb128 0xd
+ 309 004c 00       		.byte	0
+ 310 004d 03       		.uleb128 0x3
+ 311 004e 0E       		.uleb128 0xe
+ 312 004f 3A       		.uleb128 0x3a
+ 313 0050 0B       		.uleb128 0xb
+ 314 0051 3B       		.uleb128 0x3b
+ 315 0052 0B       		.uleb128 0xb
+ 316 0053 49       		.uleb128 0x49
+ 317 0054 13       		.uleb128 0x13
+ 318 0055 38       		.uleb128 0x38
+ 319 0056 0B       		.uleb128 0xb
+ 320 0057 00       		.byte	0
+ 321 0058 00       		.byte	0
+ 322 0059 08       		.uleb128 0x8
+ 323 005a 16       		.uleb128 0x16
+ 324 005b 00       		.byte	0
+ 325 005c 03       		.uleb128 0x3
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 8
+
+
+ 326 005d 0E       		.uleb128 0xe
+ 327 005e 3A       		.uleb128 0x3a
+ 328 005f 0B       		.uleb128 0xb
+ 329 0060 3B       		.uleb128 0x3b
+ 330 0061 0B       		.uleb128 0xb
+ 331 0062 49       		.uleb128 0x49
+ 332 0063 13       		.uleb128 0x13
+ 333 0064 00       		.byte	0
+ 334 0065 00       		.byte	0
+ 335 0066 09       		.uleb128 0x9
+ 336 0067 2E       		.uleb128 0x2e
+ 337 0068 00       		.byte	0
+ 338 0069 3F       		.uleb128 0x3f
+ 339 006a 19       		.uleb128 0x19
+ 340 006b 03       		.uleb128 0x3
+ 341 006c 0E       		.uleb128 0xe
+ 342 006d 3A       		.uleb128 0x3a
+ 343 006e 0B       		.uleb128 0xb
+ 344 006f 3B       		.uleb128 0x3b
+ 345 0070 0B       		.uleb128 0xb
+ 346 0071 27       		.uleb128 0x27
+ 347 0072 19       		.uleb128 0x19
+ 348 0073 11       		.uleb128 0x11
+ 349 0074 01       		.uleb128 0x1
+ 350 0075 12       		.uleb128 0x12
+ 351 0076 06       		.uleb128 0x6
+ 352 0077 40       		.uleb128 0x40
+ 353 0078 18       		.uleb128 0x18
+ 354 0079 9742     		.uleb128 0x2117
+ 355 007b 19       		.uleb128 0x19
+ 356 007c 00       		.byte	0
+ 357 007d 00       		.byte	0
+ 358 007e 0A       		.uleb128 0xa
+ 359 007f 34       		.uleb128 0x34
+ 360 0080 00       		.byte	0
+ 361 0081 03       		.uleb128 0x3
+ 362 0082 0E       		.uleb128 0xe
+ 363 0083 3A       		.uleb128 0x3a
+ 364 0084 0B       		.uleb128 0xb
+ 365 0085 3B       		.uleb128 0x3b
+ 366 0086 0B       		.uleb128 0xb
+ 367 0087 49       		.uleb128 0x49
+ 368 0088 13       		.uleb128 0x13
+ 369 0089 02       		.uleb128 0x2
+ 370 008a 18       		.uleb128 0x18
+ 371 008b 00       		.byte	0
+ 372 008c 00       		.byte	0
+ 373 008d 00       		.byte	0
+ 374              		.section	.debug_aranges,"",%progbits
+ 375 0000 24000000 		.4byte	0x24
+ 376 0004 0200     		.2byte	0x2
+ 377 0006 00000000 		.4byte	.Ldebug_info0
+ 378 000a 04       		.byte	0x4
+ 379 000b 00       		.byte	0
+ 380 000c 0000     		.2byte	0
+ 381 000e 0000     		.2byte	0
+ 382 0010 00000000 		.4byte	.LFB0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 9
+
+
+ 383 0014 30000000 		.4byte	.LFE0-.LFB0
+ 384 0018 00000000 		.4byte	.LFB1
+ 385 001c 1C000000 		.4byte	.LFE1-.LFB1
+ 386 0020 00000000 		.4byte	0
+ 387 0024 00000000 		.4byte	0
+ 388              		.section	.debug_ranges,"",%progbits
+ 389              	.Ldebug_ranges0:
+ 390 0000 00000000 		.4byte	.LFB0
+ 391 0004 30000000 		.4byte	.LFE0
+ 392 0008 00000000 		.4byte	.LFB1
+ 393 000c 1C000000 		.4byte	.LFE1
+ 394 0010 00000000 		.4byte	0
+ 395 0014 00000000 		.4byte	0
+ 396              		.section	.debug_line,"",%progbits
+ 397              	.Ldebug_line0:
+ 398 0000 7F000000 		.section	.debug_str,"MS",%progbits,1
+ 398      02005200 
+ 398      00000201 
+ 398      FB0E0D00 
+ 398      01010101 
+ 399              	.LASF14:
+ 400 0000 72656733 		.ascii	"reg32\000"
+ 400      3200
+ 401              	.LASF16:
+ 402 0006 50567265 		.ascii	"PVref_Sleep\000"
+ 402      665F536C 
+ 402      65657000 
+ 403              	.LASF17:
+ 404 0012 50567265 		.ascii	"PVref_Wakeup\000"
+ 404      665F5761 
+ 404      6B657570 
+ 404      00
+ 405              	.LASF4:
+ 406 001f 6C6F6E67 		.ascii	"long int\000"
+ 406      20696E74 
+ 406      00
+ 407              	.LASF15:
+ 408 0028 50567265 		.ascii	"PVref_backup_struct\000"
+ 408      665F6261 
+ 408      636B7570 
+ 408      5F737472 
+ 408      75637400 
+ 409              	.LASF11:
+ 410 003c 666C6F61 		.ascii	"float\000"
+ 410      7400
+ 411              	.LASF1:
+ 412 0042 756E7369 		.ascii	"unsigned char\000"
+ 412      676E6564 
+ 412      20636861 
+ 412      7200
+ 413              	.LASF5:
+ 414 0050 6C6F6E67 		.ascii	"long unsigned int\000"
+ 414      20756E73 
+ 414      69676E65 
+ 414      6420696E 
+ 414      7400
+ 415              	.LASF3:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 10
+
+
+ 416 0062 73686F72 		.ascii	"short unsigned int\000"
+ 416      7420756E 
+ 416      7369676E 
+ 416      65642069 
+ 416      6E7400
+ 417              	.LASF12:
+ 418 0075 646F7562 		.ascii	"double\000"
+ 418      6C6500
+ 419              	.LASF10:
+ 420 007c 75696E74 		.ascii	"uint32\000"
+ 420      333200
+ 421              	.LASF8:
+ 422 0083 756E7369 		.ascii	"unsigned int\000"
+ 422      676E6564 
+ 422      20696E74 
+ 422      00
+ 423              	.LASF7:
+ 424 0090 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 424      206C6F6E 
+ 424      6720756E 
+ 424      7369676E 
+ 424      65642069 
+ 425              	.LASF20:
+ 426 00a7 433A5C53 		.ascii	"C:\\SVN\\apps\\trunk\\Cypress Academy\\WA-101\\Proj"
+ 426      564E5C61 
+ 426      7070735C 
+ 426      7472756E 
+ 426      6B5C4379 
+ 427 00d4 65637473 		.ascii	"ects\\PSoC\\CE211321_Temperature_Sensing\\CE211321_"
+ 427      5C50536F 
+ 427      435C4345 
+ 427      32313133 
+ 427      32315F54 
+ 428 0104 54656D70 		.ascii	"Temperature_Sensing.cydsn\000"
+ 428      65726174 
+ 428      7572655F 
+ 428      53656E73 
+ 428      696E672E 
+ 429              	.LASF6:
+ 430 011e 6C6F6E67 		.ascii	"long long int\000"
+ 430      206C6F6E 
+ 430      6720696E 
+ 430      7400
+ 431              	.LASF13:
+ 432 012c 63686172 		.ascii	"char\000"
+ 432      00
+ 433              	.LASF2:
+ 434 0131 73686F72 		.ascii	"short int\000"
+ 434      7420696E 
+ 434      7400
+ 435              	.LASF9:
+ 436 013b 75696E74 		.ascii	"uint8\000"
+ 436      3800
+ 437              	.LASF22:
+ 438 0141 50567265 		.ascii	"PVref_backup\000"
+ 438      665F6261 
+ 438      636B7570 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cceAP8JC.s 			page 11
+
+
+ 438      00
+ 439              	.LASF19:
+ 440 014e 2E5C4765 		.ascii	".\\Generated_Source\\PSoC4\\PVref_PM.c\000"
+ 440      6E657261 
+ 440      7465645F 
+ 440      536F7572 
+ 440      63655C50 
+ 441              	.LASF18:
+ 442 0172 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 442      4320342E 
+ 442      392E3320 
+ 442      32303135 
+ 442      30333033 
+ 443 01a5 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m0plus -mthumb -"
+ 443      20726576 
+ 443      6973696F 
+ 443      6E203232 
+ 443      31323230 
+ 444 01d8 67202D4F 		.ascii	"g -Og -ffunction-sections -ffat-lto-objects\000"
+ 444      67202D66 
+ 444      66756E63 
+ 444      74696F6E 
+ 444      2D736563 
+ 445              	.LASF21:
+ 446 0204 656E6162 		.ascii	"enableState\000"
+ 446      6C655374 
+ 446      61746500 
+ 447              	.LASF0:
+ 448 0210 7369676E 		.ascii	"signed char\000"
+ 448      65642063 
+ 448      68617200 
+ 449              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br
