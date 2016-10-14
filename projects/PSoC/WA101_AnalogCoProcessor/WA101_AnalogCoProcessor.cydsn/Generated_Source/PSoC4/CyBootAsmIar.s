@@ -1,6 +1,6 @@
 ;-------------------------------------------------------------------------------
 ; \file CyBootAsmIar.s
-; \version 5.40
+; \version 5.50
 ;
 ; \brief Assembly routines for IAR Embedded Workbench IDE.
 ;

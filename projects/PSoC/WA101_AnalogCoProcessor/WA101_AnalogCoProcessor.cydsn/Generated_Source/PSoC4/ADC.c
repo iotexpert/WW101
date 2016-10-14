@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file     ADC.c
-* \version  1.10
+* \version  1.20
 *
 * \brief
 * Provides the source code to the API for the ADC Component.
@@ -38,7 +38,25 @@
 *******************************************************************************/
 #include "ADC.h"
 
+#include <stdlib.h>
+
 static int32 ADC_IsChannelSigned(uint32 chan);
+#if(ADC_ANY_CONFIG_USES_FILTER	!= 0u)
+static void ADC_SetupComparatorTrim(void);
+static void ADC_UndoComparatorTrimSetup(void);
+static uint32 ADC_RaiseOpampTrimToCrossing(uint32 startTrim);
+static uint32 ADC_LowerOpampTrimToCrossing(uint32 startTrim);
+static uint32 ADC_RaiseAgndTrimToCrossing(uint32 startTrim);
+static uint32 ADC_LowerAgndTrimToCrossing(uint32 startTrim);
+static uint32 ADC_SetOpampAndAgndTrim(uint32 opampTrim, uint32 agndTrim);
+static uint32 ADC_SetOpampTrim(uint32 opampTrim);
+static uint32 ADC_SetAgndTrim(uint32 agndTrim);
+static uint32 ADC_IncOpampTrim(uint32 trim);
+static uint32 ADC_DecOpampTrim(uint32 trim);
+static uint32 ADC_IncAgndTrim(uint32 trim);
+static uint32 ADC_DecAgndTrim(uint32 trim);
+#define OFFSET_SAMPLES (30)
+#endif
 
 uint8 ADC_initVar = 0u; 
 
@@ -47,7 +65,6 @@ volatile int16 ADC_offset[ADC_TOTAL_CHANNELS_NUM];
 volatile int32 ADC_countsPer10Volt[ADC_TOTAL_CHANNELS_NUM]; 
 
 static uint32 ADC_currentConfig = 0u; /* Currently active configuration */
-static uint32 ADC_channelEnMasks[ADC_TOTAL_CONFIGS];
 
 /*******************************************************************************
 * Local data allocation
@@ -56,123 +73,479 @@ static uint32 ADC_channelEnMasks[ADC_TOTAL_CONFIGS];
 static const uint32 CYCODE ADC_channelsConfig[] = { 0x00000100UL, 0x00001100UL,  };
 
 /* Filter init */
-#if(ADC_ANY_CONFIG_USES_FILTER	!= 0u)	
-    #define ADC_UABH_A_FILTER_INITPAIRSSIZE ((ADC_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) \
-                                                         ? 18u \
-                                                         : 18u)
-    static CyUAB_reg_pair ADC_UABH_A_FILTER_initPairs[ADC_UABH_A_FILTER_INITPAIRSSIZE] =
-    {
-    	/*OA_CTRL default always first element in initPairs*/
-        /* Topology-invariant registers */
-         {ADC_UABH_A_OA_CTRL_PTR        , ((uint32)ADC_UABH_A_DEFAULT_OA_CTRL)}
-        ,{ADC_UABH_A_SW_STATIC_PTR      , ((uint32)ADC_UABH_A_DEFAULT_SW_STATIC)}
-        ,{ADC_UABH_A_SW_MODBIT_SRC_PTR      , ((uint32)ADC_UABH_A_DEFAULT_SW_MODBIT_SRC)}
-        ,{ADC_UABH_A_SRAM_CTRL_PTR      , ((uint32)ADC_UABH_A_INVAR_SRAM_CTRL)} 
-        ,{ADC_UABH_A_STARTUP_DELAY_PTR  , ((uint32)ADC_UABH_A_INVAR_STARTUP_DELAY)}
-        ,{ADC_UABH_A_SW_BOOST_CTRL_PTR  , ((uint32)ADC_UABH_A_DEFAULT_SW_BOOST_CTRL)}
-        ,{ADC_UABH_A_SW_OTHER_PTR  , ((uint32)ADC_UABH_A_DEFAULT_SW_OTHER)}
-        
-        #if (ADC_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q)
-            /* Filter-invariant registers */
-            ,{ADC_UABH_A_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CA_IN0)}
-            ,{ADC_UABH_A_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CA_TOP)}
-            ,{ADC_UABH_A_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CC_IN0)}
-            ,{ADC_UABH_A_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CC_IN1)}
-            ,{ADC_UABH_A_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CF_BOT)}
-
-            /* Parameter-based registers */
-            ,{ADC_UABH_A_CAP_CTRL_PTR       , ((uint32)ADC_UABH_A_LOWQDYN_CAP_CTRL)}
-            ,{ADC_UABH_A_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQDYN_SW_CB_IN0)}
-            ,{ADC_UABH_A_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_A_LOWQDYN_SW_CB_IN1)}
-            ,{ADC_UABH_A_SW_CB_TOP_PTR      , ((uint32)ADC_UABH_A_LOWQDYN_SW_CB_TOP)}
-            ,{ADC_UABH_A_SW_CC_TOP_PTR      , ((uint32)ADC_UABH_A_LOWQDYN_SW_CC_TOP)}
-            ,{ADC_UABH_A_CAP_ABCF_VAL_PTR   , ((uint32)ADC_UABH_A_LOWQDYN_CAP_ABCF_VAL)}
-        #elif (ADC_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_HIGH_Q)
-            /* Filter-invariant registers */
-            ,{ADC_UABH_A_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CA_IN0)}
-            ,{ADC_UABH_A_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CA_TOP)}
-            ,{ADC_UABH_A_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CB_IN0)}
-            ,{ADC_UABH_A_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CB_IN1)}
-            ,{ADC_UABH_A_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_IN0)}
-            ,{ADC_UABH_A_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_IN1)}
-            ,{ADC_UABH_A_SW_CC_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_TOP)}
-            ,{ADC_UABH_A_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CF_BOT)}
-
-            /* Parameter-based registers */
-            ,{ADC_UABH_A_CAP_CTRL_PTR       , ((uint32)ADC_UABH_A_HIGHQDYN_CAP_CTRL)}
-            ,{ADC_UABH_A_SW_CB_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQDYN_SW_CB_TOP)}
-            ,{ADC_UABH_A_CAP_ABCF_VAL_PTR   , ((uint32)ADC_UABH_A_HIGHQDYN_CAP_ABCF_VAL)}
-        #endif /* (ADC_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) */
-    };
-
-    #define ADC_UABH_B_FILTER_INITPAIRSSIZE ((ADC_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) \
-                                                         ? 19u \
-                                                         : 19u)
-    static CyUAB_reg_pair ADC_UABH_B_FILTER_initPairs[ADC_UABH_B_FILTER_INITPAIRSSIZE] = 
-    {
-        /*OA_CTRL default always first element in initPairs*/
-        /* Topology-invariant registers */
-         {ADC_UABH_B_OA_CTRL_PTR        , ((uint32)ADC_UABH_B_DEFAULT_OA_CTRL)}
-        ,{ADC_UABH_B_SW_STATIC_PTR      , ((uint32)ADC_UABH_B_DEFAULT_SW_STATIC)}
-        ,{ADC_UABH_B_SW_MODBIT_SRC_PTR      , ((uint32)ADC_UABH_B_DEFAULT_SW_MODBIT_SRC)}
-        ,{ADC_UABH_B_SRAM_CTRL_PTR      , ((uint32)ADC_UABH_B_INVAR_SRAM_CTRL)} 
-        ,{ADC_UABH_B_STARTUP_DELAY_PTR  , ((uint32)ADC_UABH_B_INVAR_STARTUP_DELAY)}
-        ,{ADC_UABH_B_SW_BOOST_CTRL_PTR  , ((uint32)ADC_UABH_B_DEFAULT_SW_BOOST_CTRL)}
-        ,{ADC_UABH_B_SW_OTHER_PTR  , ((uint32)ADC_UABH_B_DEFAULT_SW_OTHER)}
-        
-        #if (ADC_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q)
-                	/* Filter-invariant registers */
-            ,{ADC_UABH_B_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_IN0)}
-            ,{ADC_UABH_B_SW_CA_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_IN1)}
-            ,{ADC_UABH_B_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_TOP)}
-            ,{ADC_UABH_B_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_IN0)}
-            ,{ADC_UABH_B_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_IN1)}
-            ,{ADC_UABH_B_SW_CB_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_TOP)}
-            ,{ADC_UABH_B_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CC_IN0)}
-            ,{ADC_UABH_B_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CC_IN1)}
-            ,{ADC_UABH_B_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CF_BOT)}
+#if(ADC_ANY_CONFIG_USES_FILTER	!= 0u)
+    #if (0u != ADC_CFG0_FILTER_PRESENT)
+        #define ADC_CFG0_UABH_A_FILTER_INITPAIRSSIZE ((ADC_CFG0_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) \
+                                                             ? 18u \
+                                                             : 18u)
+        static CyUAB_reg_pair ADC_CFG0_UABH_A_FILTER_initPairs[ADC_CFG0_UABH_A_FILTER_INITPAIRSSIZE] =
+        {
+        	/*OA_CTRL default always first element in initPairs*/
+            /* Topology-invariant registers */
+             {ADC_UABH_A_OA_CTRL_PTR        , ((uint32)ADC_UABH_A_DEFAULT_OA_CTRL)}
+            ,{ADC_UABH_A_SW_STATIC_PTR      , ((uint32)ADC_UABH_A_DEFAULT_SW_STATIC)}
+            ,{ADC_UABH_A_SW_MODBIT_SRC_PTR      , ((uint32)ADC_UABH_A_INVAR_SW_MODBIT_SRC)}
+            ,{ADC_UABH_A_SRAM_CTRL_PTR      , ((uint32)ADC_UABH_A_INVAR_SRAM_CTRL)} 
+            ,{ADC_UABH_A_STARTUP_DELAY_PTR  , ((uint32)ADC_CFG0_UABH_A_STARTUP_DELAY)}
+            ,{ADC_UABH_A_SW_BOOST_CTRL_PTR  , ((uint32)ADC_UABH_A_DEFAULT_SW_BOOST_CTRL)}
+            ,{ADC_UABH_A_SW_OTHER_PTR  , ((uint32)ADC_UABH_A_DEFAULT_SW_OTHER)}
             
-            /* Parameter-based registers */
-            ,{ADC_UABH_B_CAP_CTRL_PTR       , ((uint32)ADC_UABH_B_LOWQDYN_CAP_CTRL)}
-            ,{ADC_UABH_B_SW_CC_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQDYN_SW_CC_TOP)}
-            ,{ADC_UABH_B_CAP_ABCF_VAL_PTR   , ((uint32)ADC_UABH_B_LOWQDYN_CAP_ABCF_VAL)}
-        #elif (ADC_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_HIGH_Q)
-        	/* Filter-invariant registers */
-            ,{ADC_UABH_B_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_IN0)}
-            ,{ADC_UABH_B_SW_CA_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_IN1)}
-            ,{ADC_UABH_B_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_TOP)}
-            ,{ADC_UABH_B_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CB_IN0)}
-            ,{ADC_UABH_B_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CB_IN1)}
-            ,{ADC_UABH_B_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CC_IN0)}
-            ,{ADC_UABH_B_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CC_IN1)}
-            ,{ADC_UABH_B_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CF_BOT)}
+            #if (ADC_CFG0_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q)
+                /* Filter-invariant registers */
+                ,{ADC_UABH_A_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_A_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_A_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_A_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_A_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CF_BOT)}
+
+                /* Parameter-based registers */
+                ,{ADC_UABH_A_CAP_CTRL_PTR       , ((uint32)ADC_CFG0_UABH_A_LOWQDYN_CAP_CTRL)}
+                ,{ADC_UABH_A_SW_CB_IN0_PTR      , ((uint32)ADC_CFG0_UABH_A_LOWQDYN_SW_CB_IN0)}
+                ,{ADC_UABH_A_SW_CB_IN1_PTR      , ((uint32)ADC_CFG0_UABH_A_LOWQDYN_SW_CB_IN1)}
+                ,{ADC_UABH_A_SW_CB_TOP_PTR      , ((uint32)ADC_CFG0_UABH_A_LOWQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_A_SW_CC_TOP_PTR      , ((uint32)ADC_CFG0_UABH_A_LOWQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_A_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG0_UABH_A_LOWQDYN_CAP_ABCF_VAL)}
+            #elif (ADC_CFG0_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_HIGH_Q)
+                /* Filter-invariant registers */
+                ,{ADC_UABH_A_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_A_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_A_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_A_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_A_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_A_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_A_SW_CC_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_TOP)}
+                ,{ADC_UABH_A_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CF_BOT)}
+
+                /* Parameter-based registers */
+                ,{ADC_UABH_A_CAP_CTRL_PTR       , ((uint32)ADC_CFG0_UABH_A_HIGHQDYN_CAP_CTRL)}
+                ,{ADC_UABH_A_SW_CB_TOP_PTR      , ((uint32)ADC_CFG0_UABH_A_HIGHQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_A_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG0_UABH_A_HIGHQDYN_CAP_ABCF_VAL)}
+            #endif /* (ADC_CFG0_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) */
+        };
+
+        #define ADC_CFG0_UABH_B_FILTER_INITPAIRSSIZE ((ADC_CFG0_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) \
+                                                             ? 19u \
+                                                             : 19u)
+        static CyUAB_reg_pair ADC_CFG0_UABH_B_FILTER_initPairs[ADC_CFG0_UABH_B_FILTER_INITPAIRSSIZE] = 
+        {
+            /*OA_CTRL default always first element in initPairs*/
+            /* Topology-invariant registers */
+             {ADC_UABH_B_OA_CTRL_PTR        , ((uint32)ADC_UABH_B_DEFAULT_OA_CTRL)}
+            ,{ADC_UABH_B_SW_STATIC_PTR      , ((uint32)ADC_UABH_B_DEFAULT_SW_STATIC)}
+            ,{ADC_UABH_B_SW_MODBIT_SRC_PTR  , ((uint32)ADC_UABH_B_INVAR_SW_MODBIT_SRC)}
+            ,{ADC_UABH_B_SRAM_CTRL_PTR      , ((uint32)ADC_UABH_B_INVAR_SRAM_CTRL)} 
+            ,{ADC_UABH_B_STARTUP_DELAY_PTR  , ((uint32)ADC_CFG0_UABH_B_STARTUP_DELAY)}
+            ,{ADC_UABH_B_SW_BOOST_CTRL_PTR  , ((uint32)ADC_UABH_B_DEFAULT_SW_BOOST_CTRL)}
+            ,{ADC_UABH_B_SW_OTHER_PTR  , ((uint32)ADC_UABH_B_DEFAULT_SW_OTHER)}
             
-            /* Parameter-based registers */
-            ,{ADC_UABH_B_CAP_CTRL_PTR       , ((uint32)ADC_UABH_B_HIGHQDYN_CAP_CTRL)}
-            ,{ADC_UABH_B_SW_CB_TOP_PTR      , ((uint32)ADC_UABH_B_HIGHQDYN_SW_CB_TOP)}
-            ,{ADC_UABH_B_SW_CC_TOP_PTR      , ((uint32)ADC_UABH_B_HIGHQDYN_SW_CC_TOP)}
-            ,{ADC_UABH_B_CAP_ABCF_VAL_PTR   , ((uint32)ADC_UABH_B_HIGHQDYN_CAP_ABCF_VAL)}
-        #endif /* #if (ADC_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) */
-    };
+            #if (ADC_CFG0_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q)
+                    	/* Filter-invariant registers */
+                ,{ADC_UABH_B_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_B_SW_CA_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_IN1)}
+                ,{ADC_UABH_B_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_B_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_B_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_B_SW_CB_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_TOP)}
+                ,{ADC_UABH_B_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_B_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_B_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CF_BOT)}
+                
+                /* Parameter-based registers */
+                ,{ADC_UABH_B_CAP_CTRL_PTR       , ((uint32)ADC_CFG0_UABH_B_LOWQDYN_CAP_CTRL)}
+                ,{ADC_UABH_B_SW_CC_TOP_PTR      , ((uint32)ADC_CFG0_UABH_B_LOWQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_B_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG0_UABH_B_LOWQDYN_CAP_ABCF_VAL)}
+            #elif (ADC_CFG0_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_HIGH_Q)
+            	/* Filter-invariant registers */
+                ,{ADC_UABH_B_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_B_SW_CA_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_IN1)}
+                ,{ADC_UABH_B_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_B_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_B_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_B_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_B_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_B_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CF_BOT)}
+                
+                /* Parameter-based registers */
+                ,{ADC_UABH_B_CAP_CTRL_PTR       , ((uint32)ADC_CFG0_UABH_B_HIGHQDYN_CAP_CTRL)}
+                ,{ADC_UABH_B_SW_CB_TOP_PTR      , ((uint32)ADC_CFG0_UABH_B_HIGHQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_B_SW_CC_TOP_PTR      , ((uint32)ADC_CFG0_UABH_B_HIGHQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_B_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG0_UABH_B_HIGHQDYN_CAP_ABCF_VAL)}
+            #endif /* #if (ADC_CFG0_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) */
+        };
 
-    static CyUAB_config ADC_UABH_A_FILTER_config = {
-        ADC_UABH_A_waveConfig,
-        ADC_UABH_A_FILTER_initPairs,
-        CyUAB_SHARED_SW_CFG(ADC_UABH_A_PARAM_REF_TIED,ADC_UABH_A_PARAM_AGND_TIED,
-            ADC_UABH_A_PARAM_SW_CC,ADC_UABH_A_PARAM_SW_BB,ADC_UABH_A_PARAM_SW_AA),
-        ADC_UABH_A_NUM_STEPS,
-        (uint8)(ADC_UABH_A_ELEMENT_COUNT(ADC_UABH_A_FILTER_initPairs))
-    };
+        static CyUAB_config ADC_CFG0_UABH_A_FILTER_config = {
+            ADC_UABH_A_waveConfig,
+            ADC_CFG0_UABH_A_FILTER_initPairs,
+            CyUAB_SHARED_SW_CFG(ADC_UABH_A_PARAM_REF_TIED,ADC_UABH_A_PARAM_AGND_TIED,
+                ADC_UABH_A_PARAM_SW_CC,ADC_UABH_A_PARAM_SW_BB,ADC_UABH_A_PARAM_SW_AA),
+            ADC_UABH_A_NUM_STEPS,
+            (uint8)(ADC_UABH_A_ELEMENT_COUNT(ADC_CFG0_UABH_A_FILTER_initPairs))
+        };
 
-    static CyUAB_config ADC_UABH_B_FILTER_config = {
+        static CyUAB_config ADC_CFG0_UABH_B_FILTER_config = {
         ADC_UABH_B_waveConfig,
-        ADC_UABH_B_FILTER_initPairs,
+        ADC_CFG0_UABH_B_FILTER_initPairs,
         CyUAB_SHARED_SW_CFG(ADC_UABH_B_PARAM_REF_TIED,ADC_UABH_B_PARAM_AGND_TIED,
             ADC_UABH_B_PARAM_SW_CC,ADC_UABH_B_PARAM_SW_BB,ADC_UABH_B_PARAM_SW_AA),
         ADC_UABH_B_NUM_STEPS,
-        (uint8)(ADC_UABH_B_ELEMENT_COUNT(ADC_UABH_B_FILTER_initPairs))
+        (uint8)(ADC_UABH_B_ELEMENT_COUNT(ADC_CFG0_UABH_B_FILTER_initPairs))
     };
+    #endif /* (0u != ADC_CFG0_FILTER_PRESENT) */
+    #if (0u != ADC_CFG1_FILTER_PRESENT)
+        #define ADC_CFG1_UABH_A_FILTER_INITPAIRSSIZE ((ADC_CFG1_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) \
+                                                             ? 18u \
+                                                             : 18u)
+        static CyUAB_reg_pair ADC_CFG1_UABH_A_FILTER_initPairs[ADC_CFG1_UABH_A_FILTER_INITPAIRSSIZE] =
+        {
+        	/*OA_CTRL default always first element in initPairs*/
+            /* Topology-invariant registers */
+             {ADC_UABH_A_OA_CTRL_PTR        , ((uint32)ADC_UABH_A_DEFAULT_OA_CTRL)}
+            ,{ADC_UABH_A_SW_STATIC_PTR      , ((uint32)ADC_UABH_A_DEFAULT_SW_STATIC)}
+            ,{ADC_UABH_A_SW_MODBIT_SRC_PTR      , ((uint32)ADC_UABH_A_INVAR_SW_MODBIT_SRC)}
+            ,{ADC_UABH_A_SRAM_CTRL_PTR      , ((uint32)ADC_UABH_A_INVAR_SRAM_CTRL)} 
+            ,{ADC_UABH_A_STARTUP_DELAY_PTR  , ((uint32)ADC_CFG1_UABH_A_STARTUP_DELAY)}
+            ,{ADC_UABH_A_SW_BOOST_CTRL_PTR  , ((uint32)ADC_UABH_A_DEFAULT_SW_BOOST_CTRL)}
+            ,{ADC_UABH_A_SW_OTHER_PTR  , ((uint32)ADC_UABH_A_DEFAULT_SW_OTHER)}
+            
+            #if (ADC_CFG1_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q)
+                /* Filter-invariant registers */
+                ,{ADC_UABH_A_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_A_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_A_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_A_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_A_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CF_BOT)}
+
+                /* Parameter-based registers */
+                ,{ADC_UABH_A_CAP_CTRL_PTR       , ((uint32)ADC_CFG1_UABH_A_LOWQDYN_CAP_CTRL)}
+                ,{ADC_UABH_A_SW_CB_IN0_PTR      , ((uint32)ADC_CFG1_UABH_A_LOWQDYN_SW_CB_IN0)}
+                ,{ADC_UABH_A_SW_CB_IN1_PTR      , ((uint32)ADC_CFG1_UABH_A_LOWQDYN_SW_CB_IN1)}
+                ,{ADC_UABH_A_SW_CB_TOP_PTR      , ((uint32)ADC_CFG1_UABH_A_LOWQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_A_SW_CC_TOP_PTR      , ((uint32)ADC_CFG1_UABH_A_LOWQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_A_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG1_UABH_A_LOWQDYN_CAP_ABCF_VAL)}
+            #elif (ADC_CFG1_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_HIGH_Q)
+                /* Filter-invariant registers */
+                ,{ADC_UABH_A_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_A_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_A_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_A_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_A_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_A_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_A_SW_CC_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_TOP)}
+                ,{ADC_UABH_A_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CF_BOT)}
+
+                /* Parameter-based registers */
+                ,{ADC_UABH_A_CAP_CTRL_PTR       , ((uint32)ADC_CFG1_UABH_A_HIGHQDYN_CAP_CTRL)}
+                ,{ADC_UABH_A_SW_CB_TOP_PTR      , ((uint32)ADC_CFG1_UABH_A_HIGHQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_A_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG1_UABH_A_HIGHQDYN_CAP_ABCF_VAL)}
+            #endif /* (ADC_CFG1_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) */
+        };
+
+        #define ADC_CFG1_UABH_B_FILTER_INITPAIRSSIZE ((ADC_CFG1_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) \
+                                                             ? 19u \
+                                                             : 19u)
+        static CyUAB_reg_pair ADC_CFG1_UABH_B_FILTER_initPairs[ADC_CFG1_UABH_B_FILTER_INITPAIRSSIZE] = 
+        {
+            /*OA_CTRL default always first element in initPairs*/
+            /* Topology-invariant registers */
+             {ADC_UABH_B_OA_CTRL_PTR        , ((uint32)ADC_UABH_B_DEFAULT_OA_CTRL)}
+            ,{ADC_UABH_B_SW_STATIC_PTR      , ((uint32)ADC_UABH_B_DEFAULT_SW_STATIC)}
+            ,{ADC_UABH_B_SW_MODBIT_SRC_PTR  , ((uint32)ADC_UABH_B_INVAR_SW_MODBIT_SRC)}
+            ,{ADC_UABH_B_SRAM_CTRL_PTR      , ((uint32)ADC_UABH_B_INVAR_SRAM_CTRL)} 
+            ,{ADC_UABH_B_STARTUP_DELAY_PTR  , ((uint32)ADC_CFG1_UABH_B_STARTUP_DELAY)}
+            ,{ADC_UABH_B_SW_BOOST_CTRL_PTR  , ((uint32)ADC_UABH_B_DEFAULT_SW_BOOST_CTRL)}
+            ,{ADC_UABH_B_SW_OTHER_PTR  , ((uint32)ADC_UABH_B_DEFAULT_SW_OTHER)}
+            
+            #if (ADC_CFG1_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q)
+                    	/* Filter-invariant registers */
+                ,{ADC_UABH_B_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_B_SW_CA_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_IN1)}
+                ,{ADC_UABH_B_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_B_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_B_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_B_SW_CB_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_TOP)}
+                ,{ADC_UABH_B_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_B_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_B_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CF_BOT)}
+                
+                /* Parameter-based registers */
+                ,{ADC_UABH_B_CAP_CTRL_PTR       , ((uint32)ADC_CFG1_UABH_B_LOWQDYN_CAP_CTRL)}
+                ,{ADC_UABH_B_SW_CC_TOP_PTR      , ((uint32)ADC_CFG1_UABH_B_LOWQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_B_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG1_UABH_B_LOWQDYN_CAP_ABCF_VAL)}
+            #elif (ADC_CFG1_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_HIGH_Q)
+            	/* Filter-invariant registers */
+                ,{ADC_UABH_B_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_B_SW_CA_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_IN1)}
+                ,{ADC_UABH_B_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_B_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_B_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_B_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_B_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_B_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CF_BOT)}
+                
+                /* Parameter-based registers */
+                ,{ADC_UABH_B_CAP_CTRL_PTR       , ((uint32)ADC_CFG1_UABH_B_HIGHQDYN_CAP_CTRL)}
+                ,{ADC_UABH_B_SW_CB_TOP_PTR      , ((uint32)ADC_CFG1_UABH_B_HIGHQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_B_SW_CC_TOP_PTR      , ((uint32)ADC_CFG1_UABH_B_HIGHQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_B_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG1_UABH_B_HIGHQDYN_CAP_ABCF_VAL)}
+            #endif /* #if (ADC_CFG1_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) */
+        };
+
+        static CyUAB_config ADC_CFG1_UABH_A_FILTER_config = {
+            ADC_UABH_A_waveConfig,
+            ADC_CFG1_UABH_A_FILTER_initPairs,
+            CyUAB_SHARED_SW_CFG(ADC_UABH_A_PARAM_REF_TIED,ADC_UABH_A_PARAM_AGND_TIED,
+                ADC_UABH_A_PARAM_SW_CC,ADC_UABH_A_PARAM_SW_BB,ADC_UABH_A_PARAM_SW_AA),
+            ADC_UABH_A_NUM_STEPS,
+            (uint8)(ADC_UABH_A_ELEMENT_COUNT(ADC_CFG1_UABH_A_FILTER_initPairs))
+        };
+
+        static CyUAB_config ADC_CFG1_UABH_B_FILTER_config = {
+        ADC_UABH_B_waveConfig,
+        ADC_CFG1_UABH_B_FILTER_initPairs,
+        CyUAB_SHARED_SW_CFG(ADC_UABH_B_PARAM_REF_TIED,ADC_UABH_B_PARAM_AGND_TIED,
+            ADC_UABH_B_PARAM_SW_CC,ADC_UABH_B_PARAM_SW_BB,ADC_UABH_B_PARAM_SW_AA),
+        ADC_UABH_B_NUM_STEPS,
+        (uint8)(ADC_UABH_B_ELEMENT_COUNT(ADC_CFG1_UABH_B_FILTER_initPairs))
+    };
+    #endif /* (0u != ADC_CFG1_FILTER_PRESENT) */
+    #if (0u != ADC_CFG2_FILTER_PRESENT)
+        #define ADC_CFG2_UABH_A_FILTER_INITPAIRSSIZE ((ADC_CFG2_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) \
+                                                             ? 18u \
+                                                             : 18u)
+        static CyUAB_reg_pair ADC_CFG2_UABH_A_FILTER_initPairs[ADC_CFG2_UABH_A_FILTER_INITPAIRSSIZE] =
+        {
+        	/*OA_CTRL default always first element in initPairs*/
+            /* Topology-invariant registers */
+             {ADC_UABH_A_OA_CTRL_PTR        , ((uint32)ADC_UABH_A_DEFAULT_OA_CTRL)}
+            ,{ADC_UABH_A_SW_STATIC_PTR      , ((uint32)ADC_UABH_A_DEFAULT_SW_STATIC)}
+            ,{ADC_UABH_A_SW_MODBIT_SRC_PTR      , ((uint32)ADC_UABH_A_INVAR_SW_MODBIT_SRC)}
+            ,{ADC_UABH_A_SRAM_CTRL_PTR      , ((uint32)ADC_UABH_A_INVAR_SRAM_CTRL)} 
+            ,{ADC_UABH_A_STARTUP_DELAY_PTR  , ((uint32)ADC_CFG2_UABH_A_STARTUP_DELAY)}
+            ,{ADC_UABH_A_SW_BOOST_CTRL_PTR  , ((uint32)ADC_UABH_A_DEFAULT_SW_BOOST_CTRL)}
+            ,{ADC_UABH_A_SW_OTHER_PTR  , ((uint32)ADC_UABH_A_DEFAULT_SW_OTHER)}
+            
+            #if (ADC_CFG2_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q)
+                /* Filter-invariant registers */
+                ,{ADC_UABH_A_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_A_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_A_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_A_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_A_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CF_BOT)}
+
+                /* Parameter-based registers */
+                ,{ADC_UABH_A_CAP_CTRL_PTR       , ((uint32)ADC_CFG2_UABH_A_LOWQDYN_CAP_CTRL)}
+                ,{ADC_UABH_A_SW_CB_IN0_PTR      , ((uint32)ADC_CFG2_UABH_A_LOWQDYN_SW_CB_IN0)}
+                ,{ADC_UABH_A_SW_CB_IN1_PTR      , ((uint32)ADC_CFG2_UABH_A_LOWQDYN_SW_CB_IN1)}
+                ,{ADC_UABH_A_SW_CB_TOP_PTR      , ((uint32)ADC_CFG2_UABH_A_LOWQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_A_SW_CC_TOP_PTR      , ((uint32)ADC_CFG2_UABH_A_LOWQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_A_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG2_UABH_A_LOWQDYN_CAP_ABCF_VAL)}
+            #elif (ADC_CFG2_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_HIGH_Q)
+                /* Filter-invariant registers */
+                ,{ADC_UABH_A_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_A_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_A_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_A_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_A_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_A_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_A_SW_CC_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_TOP)}
+                ,{ADC_UABH_A_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CF_BOT)}
+
+                /* Parameter-based registers */
+                ,{ADC_UABH_A_CAP_CTRL_PTR       , ((uint32)ADC_CFG2_UABH_A_HIGHQDYN_CAP_CTRL)}
+                ,{ADC_UABH_A_SW_CB_TOP_PTR      , ((uint32)ADC_CFG2_UABH_A_HIGHQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_A_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG2_UABH_A_HIGHQDYN_CAP_ABCF_VAL)}
+            #endif /* (ADC_CFG2_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) */
+        };
+
+        #define ADC_CFG2_UABH_B_FILTER_INITPAIRSSIZE ((ADC_CFG2_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) \
+                                                             ? 19u \
+                                                             : 19u)
+        static CyUAB_reg_pair ADC_CFG2_UABH_B_FILTER_initPairs[ADC_CFG2_UABH_B_FILTER_INITPAIRSSIZE] = 
+        {
+            /*OA_CTRL default always first element in initPairs*/
+            /* Topology-invariant registers */
+             {ADC_UABH_B_OA_CTRL_PTR        , ((uint32)ADC_UABH_B_DEFAULT_OA_CTRL)}
+            ,{ADC_UABH_B_SW_STATIC_PTR      , ((uint32)ADC_UABH_B_DEFAULT_SW_STATIC)}
+            ,{ADC_UABH_B_SW_MODBIT_SRC_PTR  , ((uint32)ADC_UABH_B_INVAR_SW_MODBIT_SRC)}
+            ,{ADC_UABH_B_SRAM_CTRL_PTR      , ((uint32)ADC_UABH_B_INVAR_SRAM_CTRL)} 
+            ,{ADC_UABH_B_STARTUP_DELAY_PTR  , ((uint32)ADC_CFG2_UABH_B_STARTUP_DELAY)}
+            ,{ADC_UABH_B_SW_BOOST_CTRL_PTR  , ((uint32)ADC_UABH_B_DEFAULT_SW_BOOST_CTRL)}
+            ,{ADC_UABH_B_SW_OTHER_PTR  , ((uint32)ADC_UABH_B_DEFAULT_SW_OTHER)}
+            
+            #if (ADC_CFG2_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q)
+                    	/* Filter-invariant registers */
+                ,{ADC_UABH_B_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_B_SW_CA_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_IN1)}
+                ,{ADC_UABH_B_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_B_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_B_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_B_SW_CB_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_TOP)}
+                ,{ADC_UABH_B_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_B_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_B_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CF_BOT)}
+                
+                /* Parameter-based registers */
+                ,{ADC_UABH_B_CAP_CTRL_PTR       , ((uint32)ADC_CFG2_UABH_B_LOWQDYN_CAP_CTRL)}
+                ,{ADC_UABH_B_SW_CC_TOP_PTR      , ((uint32)ADC_CFG2_UABH_B_LOWQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_B_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG2_UABH_B_LOWQDYN_CAP_ABCF_VAL)}
+            #elif (ADC_CFG2_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_HIGH_Q)
+            	/* Filter-invariant registers */
+                ,{ADC_UABH_B_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_B_SW_CA_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_IN1)}
+                ,{ADC_UABH_B_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_B_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_B_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_B_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_B_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_B_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CF_BOT)}
+                
+                /* Parameter-based registers */
+                ,{ADC_UABH_B_CAP_CTRL_PTR       , ((uint32)ADC_CFG2_UABH_B_HIGHQDYN_CAP_CTRL)}
+                ,{ADC_UABH_B_SW_CB_TOP_PTR      , ((uint32)ADC_CFG2_UABH_B_HIGHQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_B_SW_CC_TOP_PTR      , ((uint32)ADC_CFG2_UABH_B_HIGHQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_B_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG2_UABH_B_HIGHQDYN_CAP_ABCF_VAL)}
+            #endif /* #if (ADC_CFG2_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) */
+        };
+
+        static CyUAB_config ADC_CFG2_UABH_A_FILTER_config = {
+            ADC_UABH_A_waveConfig,
+            ADC_CFG2_UABH_A_FILTER_initPairs,
+            CyUAB_SHARED_SW_CFG(ADC_UABH_A_PARAM_REF_TIED,ADC_UABH_A_PARAM_AGND_TIED,
+                ADC_UABH_A_PARAM_SW_CC,ADC_UABH_A_PARAM_SW_BB,ADC_UABH_A_PARAM_SW_AA),
+            ADC_UABH_A_NUM_STEPS,
+            (uint8)(ADC_UABH_A_ELEMENT_COUNT(ADC_CFG2_UABH_A_FILTER_initPairs))
+        };
+
+        static CyUAB_config ADC_CFG2_UABH_B_FILTER_config = {
+        ADC_UABH_B_waveConfig,
+        ADC_CFG2_UABH_B_FILTER_initPairs,
+        CyUAB_SHARED_SW_CFG(ADC_UABH_B_PARAM_REF_TIED,ADC_UABH_B_PARAM_AGND_TIED,
+            ADC_UABH_B_PARAM_SW_CC,ADC_UABH_B_PARAM_SW_BB,ADC_UABH_B_PARAM_SW_AA),
+        ADC_UABH_B_NUM_STEPS,
+        (uint8)(ADC_UABH_B_ELEMENT_COUNT(ADC_CFG2_UABH_B_FILTER_initPairs))
+    };
+    #endif /* (0u != ADC_CFG2_FILTER_PRESENT) */
+    #if (0u != ADC_CFG3_FILTER_PRESENT)
+        #define ADC_CFG3_UABH_A_FILTER_INITPAIRSSIZE ((ADC_CFG3_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) \
+                                                             ? 18u \
+                                                             : 18u)
+        static CyUAB_reg_pair ADC_CFG3_UABH_A_FILTER_initPairs[ADC_CFG3_UABH_A_FILTER_INITPAIRSSIZE] =
+        {
+        	/*OA_CTRL default always first element in initPairs*/
+            /* Topology-invariant registers */
+             {ADC_UABH_A_OA_CTRL_PTR        , ((uint32)ADC_UABH_A_DEFAULT_OA_CTRL)}
+            ,{ADC_UABH_A_SW_STATIC_PTR      , ((uint32)ADC_UABH_A_DEFAULT_SW_STATIC)}
+            ,{ADC_UABH_A_SW_MODBIT_SRC_PTR      , ((uint32)ADC_UABH_A_INVAR_SW_MODBIT_SRC)}
+            ,{ADC_UABH_A_SRAM_CTRL_PTR      , ((uint32)ADC_UABH_A_INVAR_SRAM_CTRL)} 
+            ,{ADC_UABH_A_STARTUP_DELAY_PTR  , ((uint32)ADC_CFG3_UABH_A_STARTUP_DELAY)}
+            ,{ADC_UABH_A_SW_BOOST_CTRL_PTR  , ((uint32)ADC_UABH_A_DEFAULT_SW_BOOST_CTRL)}
+            ,{ADC_UABH_A_SW_OTHER_PTR  , ((uint32)ADC_UABH_A_DEFAULT_SW_OTHER)}
+            
+            #if (ADC_CFG3_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q)
+                /* Filter-invariant registers */
+                ,{ADC_UABH_A_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_A_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_A_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_A_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_A_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_A_LOWQSTAT_SW_CF_BOT)}
+
+                /* Parameter-based registers */
+                ,{ADC_UABH_A_CAP_CTRL_PTR       , ((uint32)ADC_CFG3_UABH_A_LOWQDYN_CAP_CTRL)}
+                ,{ADC_UABH_A_SW_CB_IN0_PTR      , ((uint32)ADC_CFG3_UABH_A_LOWQDYN_SW_CB_IN0)}
+                ,{ADC_UABH_A_SW_CB_IN1_PTR      , ((uint32)ADC_CFG3_UABH_A_LOWQDYN_SW_CB_IN1)}
+                ,{ADC_UABH_A_SW_CB_TOP_PTR      , ((uint32)ADC_CFG3_UABH_A_LOWQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_A_SW_CC_TOP_PTR      , ((uint32)ADC_CFG3_UABH_A_LOWQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_A_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG3_UABH_A_LOWQDYN_CAP_ABCF_VAL)}
+            #elif (ADC_CFG3_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_HIGH_Q)
+                /* Filter-invariant registers */
+                ,{ADC_UABH_A_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_A_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_A_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_A_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_A_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_A_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_A_SW_CC_TOP_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CC_TOP)}
+                ,{ADC_UABH_A_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_A_HIGHQSTAT_SW_CF_BOT)}
+
+                /* Parameter-based registers */
+                ,{ADC_UABH_A_CAP_CTRL_PTR       , ((uint32)ADC_CFG3_UABH_A_HIGHQDYN_CAP_CTRL)}
+                ,{ADC_UABH_A_SW_CB_TOP_PTR      , ((uint32)ADC_CFG3_UABH_A_HIGHQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_A_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG3_UABH_A_HIGHQDYN_CAP_ABCF_VAL)}
+            #endif /* (ADC_CFG3_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) */
+        };
+
+        #define ADC_CFG3_UABH_B_FILTER_INITPAIRSSIZE ((ADC_CFG3_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) \
+                                                             ? 19u \
+                                                             : 19u)
+        static CyUAB_reg_pair ADC_CFG3_UABH_B_FILTER_initPairs[ADC_CFG3_UABH_B_FILTER_INITPAIRSSIZE] = 
+        {
+            /*OA_CTRL default always first element in initPairs*/
+            /* Topology-invariant registers */
+             {ADC_UABH_B_OA_CTRL_PTR        , ((uint32)ADC_UABH_B_DEFAULT_OA_CTRL)}
+            ,{ADC_UABH_B_SW_STATIC_PTR      , ((uint32)ADC_UABH_B_DEFAULT_SW_STATIC)}
+            ,{ADC_UABH_B_SW_MODBIT_SRC_PTR  , ((uint32)ADC_UABH_B_INVAR_SW_MODBIT_SRC)}
+            ,{ADC_UABH_B_SRAM_CTRL_PTR      , ((uint32)ADC_UABH_B_INVAR_SRAM_CTRL)} 
+            ,{ADC_UABH_B_STARTUP_DELAY_PTR  , ((uint32)ADC_CFG3_UABH_B_STARTUP_DELAY)}
+            ,{ADC_UABH_B_SW_BOOST_CTRL_PTR  , ((uint32)ADC_UABH_B_DEFAULT_SW_BOOST_CTRL)}
+            ,{ADC_UABH_B_SW_OTHER_PTR  , ((uint32)ADC_UABH_B_DEFAULT_SW_OTHER)}
+            
+            #if (ADC_CFG3_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q)
+                    	/* Filter-invariant registers */
+                ,{ADC_UABH_B_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_B_SW_CA_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_IN1)}
+                ,{ADC_UABH_B_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_B_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_B_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_B_SW_CB_TOP_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CB_TOP)}
+                ,{ADC_UABH_B_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_B_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_B_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_B_LOWQSTAT_SW_CF_BOT)}
+                
+                /* Parameter-based registers */
+                ,{ADC_UABH_B_CAP_CTRL_PTR       , ((uint32)ADC_CFG3_UABH_B_LOWQDYN_CAP_CTRL)}
+                ,{ADC_UABH_B_SW_CC_TOP_PTR      , ((uint32)ADC_CFG3_UABH_B_LOWQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_B_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG3_UABH_B_LOWQDYN_CAP_ABCF_VAL)}
+            #elif (ADC_CFG3_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_HIGH_Q)
+            	/* Filter-invariant registers */
+                ,{ADC_UABH_B_SW_CA_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_IN0)}
+                ,{ADC_UABH_B_SW_CA_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_IN1)}
+                ,{ADC_UABH_B_SW_CA_TOP_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CA_TOP)}
+                ,{ADC_UABH_B_SW_CB_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CB_IN0)}
+                ,{ADC_UABH_B_SW_CB_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CB_IN1)}
+                ,{ADC_UABH_B_SW_CC_IN0_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CC_IN0)}
+                ,{ADC_UABH_B_SW_CC_IN1_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CC_IN1)}
+                ,{ADC_UABH_B_SW_CF_BOT_PTR      , ((uint32)ADC_UABH_B_HIGHQSTAT_SW_CF_BOT)}
+                
+                /* Parameter-based registers */
+                ,{ADC_UABH_B_CAP_CTRL_PTR       , ((uint32)ADC_CFG3_UABH_B_HIGHQDYN_CAP_CTRL)}
+                ,{ADC_UABH_B_SW_CB_TOP_PTR      , ((uint32)ADC_CFG3_UABH_B_HIGHQDYN_SW_CB_TOP)}
+                ,{ADC_UABH_B_SW_CC_TOP_PTR      , ((uint32)ADC_CFG3_UABH_B_HIGHQDYN_SW_CC_TOP)}
+                ,{ADC_UABH_B_CAP_ABCF_VAL_PTR   , ((uint32)ADC_CFG3_UABH_B_HIGHQDYN_CAP_ABCF_VAL)}
+            #endif /* #if (ADC_CFG3_FILTERTYPE_USED == ADC_FILTERTOPOLOGY_LOW_Q) */
+        };
+
+        static CyUAB_config ADC_CFG3_UABH_A_FILTER_config = {
+            ADC_UABH_A_waveConfig,
+            ADC_CFG3_UABH_A_FILTER_initPairs,
+            CyUAB_SHARED_SW_CFG(ADC_UABH_A_PARAM_REF_TIED,ADC_UABH_A_PARAM_AGND_TIED,
+                ADC_UABH_A_PARAM_SW_CC,ADC_UABH_A_PARAM_SW_BB,ADC_UABH_A_PARAM_SW_AA),
+            ADC_UABH_A_NUM_STEPS,
+            (uint8)(ADC_UABH_A_ELEMENT_COUNT(ADC_CFG3_UABH_A_FILTER_initPairs))
+        };
+
+        static CyUAB_config ADC_CFG3_UABH_B_FILTER_config = {
+        ADC_UABH_B_waveConfig,
+        ADC_CFG3_UABH_B_FILTER_initPairs,
+        CyUAB_SHARED_SW_CFG(ADC_UABH_B_PARAM_REF_TIED,ADC_UABH_B_PARAM_AGND_TIED,
+            ADC_UABH_B_PARAM_SW_CC,ADC_UABH_B_PARAM_SW_BB,ADC_UABH_B_PARAM_SW_AA),
+        ADC_UABH_B_NUM_STEPS,
+        (uint8)(ADC_UABH_B_ELEMENT_COUNT(ADC_CFG3_UABH_B_FILTER_initPairs))
+    };
+    #endif /* (0u != ADC_CFG3_FILTER_PRESENT) */
+    
+    
 #endif /* (ADC_ANY_CONFIG_USES_FILTER	!= 0u)	*/
+
 /*******************************************************************************
 * Function Name: ADC_Start
 ****************************************************************************//**
@@ -196,10 +569,10 @@ static const uint32 CYCODE ADC_channelsConfig[] = { 0x00000100UL, 0x00001100UL, 
 *******************************************************************************/
 void ADC_Start(void)
 {
-    if (1u != (1u & ADC_initVar))
+    if (ADC_INIT_VAR_INIT_FLAG != (ADC_INIT_VAR_INIT_FLAG & ADC_initVar))
     {
         ADC_Init();
-        ADC_initVar |= 1u;
+        ADC_initVar |= ADC_INIT_VAR_INIT_FLAG;
     }
     
     ADC_Enable();
@@ -300,7 +673,8 @@ void ADC_InitConfig(const ADC_CONFIG_STRUCT *config)
     	if((config->miscConfig & ADC_MISC_CONFIG_FILTER_PRESENT_MSK) 
     	    == ADC_MISC_CONFIG_FILTER_PRESENT_MSK)
     	{
-            ADC_intUabClock_SetFractionalDividerRegister(config->filterClkDivider, 0u);    		
+            ADC_intUabClock_SetFractionalDividerRegister(config->filterClkDivider, 0u);
+            
     	}
     #endif /* ADC_ANY_CONFIG_USES_FILTER != 0u */
     #if (ADC_CLOCK_INTERNAL)
@@ -308,7 +682,7 @@ void ADC_InitConfig(const ADC_CONFIG_STRUCT *config)
         
     #endif /* ADC_CLOCK_INTERNAL */
     /* Init SAR and MUX registers */
-	ADC_SAR_CTRL_REG |= config->ctrl
+	ADC_SAR_CTRL_REG = config->ctrl
    
 	/* Enable the SAR internal pump when global pump is enabled */
     | (((ADC_PUMP_CTRL_REG & ADC_PUMP_CTRL_ENABLED) != 0u) 
@@ -387,10 +761,7 @@ void ADC_InitConfig(const ADC_CONFIG_STRUCT *config)
 * 
 * \param restart Determines if the ADC should be  restarted after 
 * selecting the configuration.
-*
-* \sideeffect Calls ADC_Init() to initialize 
-* ADC_channelEnMasks[]
-*
+**
 * <b>Code Snippet</b>
 *  \snippet main.c snippet_ADC_SelectConfig
 *
@@ -399,7 +770,7 @@ void ADC_SelectConfig(uint32 config, uint32 restart)
 {
     /* Check whether the configuration number is valid or not */
     if(ADC_TOTAL_CONFIGS > config)
-    {
+    {        
         /* Stop the ADC before changing configurations */
 	    ADC_Stop();
         ADC_selected = 1u;
@@ -407,15 +778,22 @@ void ADC_SelectConfig(uint32 config, uint32 restart)
     	if(0u == ADC_initVar)
     	{
             ADC_Init();
+            ADC_initVar |= ADC_INIT_VAR_INIT_FLAG;
     	}
         #if (ADC_VREF_ROUTED)
-        ADC_vrefAMux_Select((uint8)config);
+            ADC_vrefAMux_DisconnectAll();
         #endif
     	ADC_InitConfig(&ADC_allConfigs[config]);
-        #if(0u != ADC_ANY_CONFIG_USES_FILTER)
-        ADC_filterVinMux_Select((uint8)config);
+        #if (ADC_VREF_ROUTED)
+            ADC_vrefAMux_Select((uint8)config);
         #endif
-    	ADC_SAR_CHAN_EN_REG = ADC_channelEnMasks[config];
+        #if(0u != ADC_ANY_CONFIG_USES_FILTER)
+            ADC_filterVinMux_Select((uint8)config);
+            ADC_filterInit(config);
+        #endif
+    	ADC_SAR_CHAN_EN_REG = ADC_allConfigs[config].chanEn;
+    	ADC_SAR_RANGE_INTR_MASK_REG = ADC_allConfigs[config].rangeIntMask;
+    	ADC_SAR_SATURATE_INTR_MASK_REG = ADC_allConfigs[config].satIntMask;
     	ADC_currentConfig = config;
         
         if(1u == restart)
@@ -454,19 +832,18 @@ void ADC_SelectConfig(uint32 config, uint32 restart)
 *******************************************************************************/
 void ADC_StartConvert(void)
 {
+    /* CDT 243358 */
+    #if(0u != ADC_ANY_CONFIG_USES_FILTER)
+        ADC_Stop();
+        ADC_Start();
+    #endif
+    
 	/* Freerunning mode */
 	if((ADC_SAR_SAMPLE_CTRL_REG 
 		& ADC_SAR_SAMPLE_CTRL_DSI_TRIGGER_LEVEL_MSK) 
 		== ADC_SAR_SAMPLE_CTRL_DSI_TRIGGER_LEVEL_MSK)
     {
-		ADC_SAR_SAMPLE_CTRL_REG |= ADC_SAR_SAMPLE_CTRL_CONTINUOUS_MSK ; 
-        #if (ADC_ANY_CONFIG_USES_FILTER)
-            if (0u == (ADC_initVar & 0x2u))
-            {
-                ADC_initVar |= 0x2u;
-                ADC_TrimOffset();
-            }
-        #endif /* (ADC_ANY_CONFIG_USES_FILTER && (CFG0_FILTER_TYPE == LOW_PASS)) */
+		ADC_SAR_SAMPLE_CTRL_REG |= ADC_SAR_SAMPLE_CTRL_CONTINUOUS_MSK ;
 	}
 	else /* Firmware trigger */
 	{
@@ -611,11 +988,11 @@ void ADC_SetEosMask(uint32 mask)
 * Function Name: ADC_SetChanMask
 ****************************************************************************//*
 *
-* \brief Sets enable/disable mask for all channels.
+* \brief Sets enable/disable mask for all channels in current configuration.
 *
 *
-* \param chanMask
-*  Channel mask.
+* \param enableMask
+*  Channel enable/disable mask.
 *
 * \sideeffect
 *  None.
@@ -624,10 +1001,11 @@ void ADC_SetEosMask(uint32 mask)
 *  \snippet main.c snippet_ADC_SetChanMask
 *
 *******************************************************************************/
-void ADC_SetChanMask(uint32 chanMask)
+void ADC_SetChanMask(uint32 enableMask)
 {
-    ADC_SAR_CHAN_EN_REG = chanMask & ADC_MAX_CHANNELS_EN_MASK;
-    ADC_channelEnMasks[ADC_currentConfig] = chanMask & ADC_MAX_CHANNELS_EN_MASK;
+    uint32 chanCount = ADC_allConfigs[ADC_currentConfig].numChannels;
+    enableMask &= (uint32)((uint32)(1ul << chanCount) - 1ul);
+    ADC_SAR_CHAN_EN_REG = enableMask;
     return;
 }
 
@@ -743,9 +1121,9 @@ int16 ADC_GetResult16(uint32 chan)
     uint32 adcResult;
     
     /* Halt CPU in debug mode if channel is out of valid range */
-    CYASSERT(chan < ADC_TOTAL_CHANNELS_NUM);
+    CYASSERT(chan < ADC_allConfigs[ADC_currentConfig].numChannels);
 
-    if(ADC_TOTAL_CHANNELS_NUM > chan)
+    if(ADC_allConfigs[ADC_currentConfig].numChannels > chan)
     {   
         adcResult = CY_GET_REG32((reg32 *)(ADC_SAR_CHAN_RESULT_IND + (uint32)(chan << 2u))) &
             ADC_RESULT_MASK; 
@@ -783,9 +1161,9 @@ int32 ADC_GetResult32(uint32 chan)
     int32 finalResult;
     
     /* Halt CPU in debug mode if channel is out of valid range */
-    CYASSERT(chan < ADC_TOTAL_CHANNELS_NUM);
+    CYASSERT(chan < ADC_allConfigs[ADC_currentConfig].numChannels);
 
-    if(ADC_TOTAL_CHANNELS_NUM > chan)
+    if(ADC_allConfigs[ADC_currentConfig].numChannels > chan)
     {
         adcResult = CY_GET_REG32((reg32 *)(ADC_SAR_CHAN_RESULT_IND + (uint32)(chan << 2u))) &
             ADC_RESULT_MASK;
@@ -860,7 +1238,7 @@ void ADC_SetHighLimit(uint32 highLimit)
 * \brief Sets the channel limit condition mask.
 *
 *
-* \param mask Sets which channels that may cause a limit condition interrupt. 
+* \param limitMask Sets which channels that may cause a limit condition interrupt. 
 * Setting bits for channels that do not exist will have no effect. For example, 
 * if only 6  channels were enabled, setting a mask of 0x0103 would only enable 
 * the last two channels (0 and 1).
@@ -873,10 +1251,11 @@ void ADC_SetHighLimit(uint32 highLimit)
 *  \snippet main.c snippet_ADC_SetLimitMask
 *
 *******************************************************************************/
-void ADC_SetLimitMask(uint32 mask)
+void ADC_SetLimitMask(uint32 limitMask)
 {   
-    ADC_SAR_RANGE_INTR_MASK_REG = mask & ADC_MAX_CHANNELS_EN_MASK;
- 
+    uint32 chanCount = ADC_allConfigs[ADC_currentConfig].numChannels;
+    limitMask &= (uint32)((uint32)(1ul << chanCount) - 1ul);
+    ADC_SAR_RANGE_INTR_MASK_REG = limitMask;
     return;
 }
 
@@ -886,7 +1265,7 @@ void ADC_SetLimitMask(uint32 mask)
 *
 * \brief Sets the channel saturation event mask.
 *
-* \param mask Sets which channels that may cause a saturation event interrupt. 
+* \param satMask Sets which channels that may cause a saturation event interrupt. 
 * Setting bits for channels that do not exist will have no effect. For example, 
 * if only 8 channels were enabled, setting a mask of 0x01C0 would only enable two 
 * channels (6 and 7).
@@ -899,9 +1278,11 @@ void ADC_SetLimitMask(uint32 mask)
 *  \snippet main.c snippet_ADC_SetSatMask
 *
 *******************************************************************************/
-void ADC_SetSatMask(uint32 mask)
+void ADC_SetSatMask(uint32 satMask)
 {   
-    ADC_SAR_SATURATE_INTR_MASK_REG = mask & ADC_MAX_CHANNELS_EN_MASK;    
+    uint32 chanCount = ADC_allConfigs[ADC_currentConfig].numChannels;
+    satMask &= (uint32)((uint32)(1ul << chanCount) - 1ul);
+    ADC_SAR_SATURATE_INTR_MASK_REG = satMask;    
     return;
 }
 
@@ -909,10 +1290,16 @@ void ADC_SetSatMask(uint32 mask)
 * Function Name: ADC_SetOffset
 ****************************************************************************//**
 *
-* \brief Sets the ADC offset which is used by the functions 
-* ADC_CountsTo_uVolts, ADC_CountsTo_mVolts and 
-* ADC_CountsTo_Volts to subtract the offset from the given reading 
-* before calculating the voltage conversion.
+* \brief Sets the ADC offset that is used by the functions ADC_CountsTo_uVolts, 
+* ADC_CountsTo_mVolts, and ADC_CountsTo_Volts.
+* 
+* Offset is applied to counts before unit scaling and gain.  All CountsTo_[mV, uV, V]olts()
+* functions use the following equation:
+*     V = (Counts/AvgDivider - Offset)*TEN_VOLT/Gain
+* See CountsTo_Volts() for more about this formula.
+* 
+* To set channel 0's offset based on known V_offset_mV, use:
+*     ADC_SetOffset(0uL, -1 * V_offset_mV * (1uL << (Resolution - 1)) / V_ref_mV);
 *
 * \param chan ADC channel number. 
 * 
@@ -930,7 +1317,7 @@ void ADC_SetSatMask(uint32 mask)
 void ADC_SetOffset(uint32 chan, int16 offset)
 {   
     /* Halt CPU in debug mode if channel is out of valid range */
-    CYASSERT(chan < ADC_TOTAL_CHANNELS_NUM);
+    CYASSERT(chan < ADC_allConfigs[ADC_currentConfig].numChannels);
 
     ADC_offset[ADC_allConfigs[ADC_currentConfig].channelBase + chan] = offset;
     return;
@@ -941,13 +1328,15 @@ void ADC_SetOffset(uint32 chan, int16 offset)
 ****************************************************************************//**
 *
 * \brief Sets the ADC gain in counts per 10 volt for the voltage 
-* conversion functions below. This value is set by default by the reference and 
-* input range settings. It should only be used to further calibrate the 
-* ADC with a known input or if an external reference is used. 
-* Affects the ADC_CountsTo_uVolts, ADC_CountsTo_mVolts 
-* and ADC_CountsTo_Volts functions by supplying the correct 
-* conversion between ADC counts and voltage.
+* conversion functions. This value is set by default by the reference and 
+* input range settings. Gain is applied after offset and unit scaling.  All 
+* CountsTo_[mV, uV, V]olts() functions use the following equation:
+*     V = (Counts/AvgDivider - Offset)*TEN_VOLT/Gain
+* See CountsTo_Volts() for more about this formula.
 * 
+* To set channel 0's gain based on known V_ref_mV, use:
+*     ADC_SetGain(0uL, 10000 * (1uL << (Resolution - 1)) / V_ref_mV);
+*  
 * \param chan ADC channel number.
 * 
 * \param adcGain ADC gain in counts per 10 volt.
@@ -963,22 +1352,103 @@ void ADC_SetOffset(uint32 chan, int16 offset)
 void ADC_SetGain(uint32 chan, int32 adcGain)
 {   
     /* Halt CPU in debug mode if channel is out of valid range */
-    CYASSERT(chan < ADC_TOTAL_CHANNELS_NUM);
+    CYASSERT(chan < ADC_allConfigs[ADC_currentConfig].numChannels);
 
     ADC_countsPer10Volt[ADC_allConfigs[ADC_currentConfig].channelBase + chan]
 	= adcGain;
     return;
+}
+/*******************************************************************************
+* Function Name: ADC_RawCounts2Counts
+****************************************************************************//**
+*
+* \brief Converts the output of the SAR to an idealized count value.
+*
+* Divides by averaging amount, if needed, and subtracts offset.
+*
+* \param chan ADC channel number.   
+*
+* \param adcCounts Result from the ADC conversion.
+*
+* \return Averaged and offset counts.
+* 
+* \sideeffect None
+*******************************************************************************/
+int16 ADC_RawCounts2Counts(uint32 chan, int16 adcCounts)
+{
+    uint32 temp;
+	uint32 averageAdcSamplesDiv;
+	uint32 rawChannel;
+	rawChannel = ADC_allConfigs[ADC_currentConfig].channelBase + chan;
+	
+    /* Halt CPU in debug mode if channel is out of valid range */
+    CYASSERT(chan < ADC_allConfigs[ADC_currentConfig].numChannels);
+
+    /* Divide the adcCount when accumulate averaging mode selected */
+    /* If Average mode != fixed */
+	if((ADC_allConfigs[ADC_currentConfig].sampleCtrl 
+		& ADC_SAR_SAMPLE_CTRL_AVG_SHIFT_MSK) 
+		!= ADC_SAR_SAMPLE_CTRL_AVG_SHIFT_MSK)
+	{
+        /* If Channel uses averaging */
+        if((ADC_channelsConfig[rawChannel] & ADC_SAR_CHAN_CONFIG_AVG_EN_MSK) != 0u)
+        {
+            /* Divide by 2^(AVG_CNT + 1) */
+			averageAdcSamplesDiv = ((ADC_allConfigs[ADC_currentConfig].sampleCtrl 
+				& ADC_SAR_SAMPLE_CTRL_AVG_CNT_MSK) 
+				>> ADC_SAR_SAMPLE_CTRL_AVG_CNT_SHFT);
+            averageAdcSamplesDiv = (1uL << (averageAdcSamplesDiv + 1uL));
+                        /* When it's "Sequential, Sum", divider limit is 16 */
+            /* If Mode is ACCUNDUMP */
+            if((ADC_allConfigs[ADC_currentConfig].sampleCtrl 
+    			& ADC_SAR_SAMPLE_CTRL_AVG_MODE_MSK) 
+    			!= ADC_SAR_SAMPLE_CTRL_AVG_MODE_MSK)
+    		{
+                if (averageAdcSamplesDiv > 16uL)
+                {
+                    averageAdcSamplesDiv = 16uL;
+                }
+            }
+            /* If unsigned format, prevent sign extension */
+            if(0 == ADC_IsChannelSigned(chan))
+            {
+				temp = ((uint16) adcCounts / averageAdcSamplesDiv);
+                adcCounts = (int16) temp;
+            }
+            else
+            {
+                adcCounts /= (int16) averageAdcSamplesDiv;
+            }
+        }
+    }
+    /* Subtract ADC offset */
+    adcCounts -= ADC_offset[rawChannel];
+    return adcCounts;
 }
 
 /*******************************************************************************
 * Function Name: ADC_CountsTo_Volts
 ****************************************************************************//**
 *
-* \brief Converts the ADC output to Volts as a floating point number. For 
-* example, if the ADC measured 0.534 volts, the return value would be 0.534. The 
-* calculation of voltage depends on the value of the voltage reference. When the 
-* Vref is based on Vdda, the value used for Vdda is set for the project in the 
-* System tab of the DWR.
+* \brief Converts the ADC output to Volts as a float32. For example, if the ADC 
+* measured 0.534 volts, the return value would be 0.534.
+* The calculation of voltage depends on the contents of ADC_offset[],
+* ADC_countsPer10Volt[], and other parameters.  The equation used is:
+* 
+*     V = (Counts/AvgDivider - Offset)*TEN_VOLT/Gain
+* -Counts = Raw Counts from SAR register
+* -AvgDivider = divider based on averaging mode
+*     -Sequential, Sum: AvgDivider = number averaged
+*         Note: The divider should be a maximum of 16. If using more averages, 
+*         pre-scale Counts by (number averaged / 16)
+*     -Interleaved, Sum: AvgDivider = number averaged
+*     -Sequential, Fixed: AvgDivider = 1
+* -Offset = ADC_offset[]
+* -TEN_VOLT = 10V constant and unit scalar.
+* -Gain = ADC_countsPer10Volt[]
+* 
+* When the Vref is based on Vdda, the value used for Vdda is set for the project
+* in the System tab of the DWR.
 *
 * \param chan ADC channel number.   
 *
@@ -995,8 +1465,6 @@ void ADC_SetGain(uint32 chan, int32 adcGain)
 float32 ADC_CountsTo_Volts(uint32 chan, int16 adcCounts)
 {   
     float32 result_Volts = 0.0f;
-	uint32 temp;
-	uint32 averageAdcSamplesDiv;
 	uint32 rawChannel;
 	rawChannel = ADC_allConfigs[ADC_currentConfig].channelBase + chan;
 	
@@ -1004,36 +1472,7 @@ float32 ADC_CountsTo_Volts(uint32 chan, int16 adcCounts)
 		& ADC_SAR_SAMPLE_CTRL_LEFT_ALIGN_MSK) 
 		!= ADC_SAR_SAMPLE_CTRL_LEFT_ALIGN_MSK)
 	{
-        /* Halt CPU in debug mode if channel is out of valid range */
-        CYASSERT(chan < ADC_TOTAL_CHANNELS_NUM);
-
-        /* Divide the adcCount when accumulate averaging mode selected */
-		if((ADC_allConfigs[ADC_currentConfig].sampleCtrl 
-			& ADC_SAR_SAMPLE_CTRL_AVG_SHIFT_MSK) 
-			!= ADC_SAR_SAMPLE_CTRL_AVG_SHIFT_MSK)
-		{
-            if((ADC_channelsConfig[rawChannel] & ADC_SAR_CHAN_CONFIG_AVG_EN_MSK) != 0u)
-            {
-                /* Divide by 2^(AVG_CNT + 1) */
-				averageAdcSamplesDiv = ((ADC_allConfigs[ADC_currentConfig].sampleCtrl 
-					& ADC_SAR_SAMPLE_CTRL_AVG_CNT_MSK) 
-					>> ADC_SAR_SAMPLE_CTRL_AVG_CNT_SHFT);
-                averageAdcSamplesDiv = (1uL << (averageAdcSamplesDiv + 1uL));
-                
-                /* If unsigned format, prevent sign extension */
-                if(0 == ADC_IsChannelSigned(chan))
-                {
-					temp = ((uint16) adcCounts / averageAdcSamplesDiv);
-                    adcCounts = (int16) temp;
-                }
-                else
-                {
-                    adcCounts /= (int16) averageAdcSamplesDiv;
-                }
-            }
-		}
-        /* Subtract ADC offset */
-        adcCounts -= ADC_offset[rawChannel];
+        adcCounts = ADC_RawCounts2Counts(chan, adcCounts);
 
         result_Volts = ((float32)adcCounts * ADC_10V_COUNTS) 
 			/ (float32)ADC_countsPer10Volt[rawChannel];
@@ -1045,11 +1484,25 @@ float32 ADC_CountsTo_Volts(uint32 chan, int16 adcCounts)
 * Function Name: ADC_CountsTo_mVolts
 ****************************************************************************//**
 *
-* \brief Converts the ADC output to millivolts as a 16-bit integer. 
-* For example, if the ADC measured 0.534 volts, the return value 
-* would be 534. The calculation of voltage depends on the value of the voltage 
-* reference. When the Vref is based on Vdda, the value used for Vdda is set for 
-* the project in the System tab of the DWR.
+* \brief Converts the ADC output to millivolts as an int16. For example, if the ADC 
+* measured 0.534 volts, the return value would be 534.
+* The calculation of voltage depends on the contents of ADC_offset[],
+* ADC_countsPer10Volt[], and other parameters.  The equation used is:
+* 
+*     V = (Counts/AvgDivider - Offset)*TEN_VOLT/Gain
+* -Counts = Raw Counts from SAR register
+* -AvgDivider = divider based on averaging mode
+*     -Sequential, Sum: AvgDivider = number averaged
+*         Note: The divider should be a maximum of 16. If using more averages, 
+*         pre-scale Counts by (number averaged / 16)
+*     -Interleaved, Sum: AvgDivider = number averaged
+*     -Sequential, Fixed: AvgDivider = 1
+* -Offset = ADC_offset[]
+* -TEN_VOLT = 10V constant and unit scalar.
+* -Gain = ADC_countsPer10Volt[]
+* 
+* When the Vref is based on Vdda, the value used for Vdda is set for the project
+* in the System tab of the DWR.
 *
 * \param chan ADC channel number. 
 *
@@ -1066,8 +1519,6 @@ float32 ADC_CountsTo_Volts(uint32 chan, int16 adcCounts)
 int16 ADC_CountsTo_mVolts(uint32 chan, int16 adcCounts)
 {   
     int16 result_mVolts = 0;
-	uint32 temp;
-	uint32 averageAdcSamplesDiv;
 	uint32 rawChannel;
     
 	rawChannel = ADC_allConfigs[ADC_currentConfig].channelBase + chan;
@@ -1076,38 +1527,7 @@ int16 ADC_CountsTo_mVolts(uint32 chan, int16 adcCounts)
 		& ADC_SAR_SAMPLE_CTRL_LEFT_ALIGN_MSK) 
 		!= ADC_SAR_SAMPLE_CTRL_LEFT_ALIGN_MSK)
 	{
-		/* Halt CPU in debug mode if channel is out of valid range */
-	    CYASSERT(chan < ADC_TOTAL_CHANNELS_NUM);
-
-	    /* Divide the adcCount when accumulate averaging mode selected */
-		if((ADC_allConfigs[ADC_currentConfig].sampleCtrl 
-			& ADC_SAR_SAMPLE_CTRL_AVG_SHIFT_MSK) 
-			!= ADC_SAR_SAMPLE_CTRL_AVG_SHIFT_MSK)
-		{
-	        if((ADC_channelsConfig[rawChannel] 
-				& ADC_SAR_CHAN_CONFIG_AVG_EN_MSK) != 0u)
-	        {
-                /* Divide by 2^(AVG_CNT + 1) */
-	            averageAdcSamplesDiv = ((ADC_allConfigs[ADC_currentConfig].sampleCtrl 
-					& ADC_SAR_SAMPLE_CTRL_AVG_CNT_MSK) 
-					>> ADC_SAR_SAMPLE_CTRL_AVG_CNT_SHFT);
-                averageAdcSamplesDiv = (1uL << (averageAdcSamplesDiv + 1uL));
-                
-                /* If unsigned format, prevent sign extension */
-                if(0 == ADC_IsChannelSigned(chan))
-                {
-					temp = ((uint16) adcCounts / averageAdcSamplesDiv);
-                    adcCounts = (int16) temp;
-                }
-                else
-                {
-                    adcCounts /= (int16) averageAdcSamplesDiv;
-                }
-	        }
-	    }
-
-	    /* Subtract ADC offset */
-	    adcCounts -= ADC_offset[rawChannel];
+        adcCounts = ADC_RawCounts2Counts(chan, adcCounts);
 
 	    result_mVolts = (int16)((((int32)adcCounts * ADC_10MV_COUNTS) + ( (adcCounts > 0) ? 
 	             (ADC_countsPer10Volt[rawChannel] / 2) 
@@ -1121,11 +1541,25 @@ int16 ADC_CountsTo_mVolts(uint32 chan, int16 adcCounts)
 * Function Name: ADC_CountsTo_uVolts
 ****************************************************************************//**
 *
-* \brief Converts the ADC output to microvolts as a 32-bit integer. 
-* For example, if the ADC measured 0.534 volts, the return value 
-* would be 534000. The calculation of voltage depends on the value of the voltage 
-* reference. When the Vref is based on Vdda, the value used for Vdda is set for 
-* the project in the System tab of the DWR.
+* \brief Converts the ADC output to microvolts as an int32. For example, if the ADC 
+* measured 0.534 volts, the return value would be 534000.
+* The calculation of voltage depends on the contents of ADC_offset[],
+* ADC_countsPer10Volt[], and other parameters.  The equation used is:
+* 
+*     V = (Counts/AvgDivider - Offset)*TEN_VOLT/Gain
+* -Counts = Raw Counts from SAR register
+* -AvgDivider = divider based on averaging mode
+*     -Sequential, Sum: AvgDivider = number averaged
+*         Note: The divider should be a maximum of 16. If using more averages, 
+*         pre-scale Counts by (number averaged / 16)
+*     -Interleaved, Sum: AvgDivider = number averaged
+*     -Sequential, Fixed: AvgDivider = 1
+* -Offset = ADC_offset[]
+* -TEN_VOLT = 10V constant and unit scalar.
+* -Gain = ADC_countsPer10Volt[]
+* 
+* When the Vref is based on Vdda, the value used for Vdda is set for the project
+* in the System tab of the DWR.
 *
 * \param chan ADC channel number.   
 *
@@ -1142,8 +1576,6 @@ int16 ADC_CountsTo_mVolts(uint32 chan, int16 adcCounts)
 int32 ADC_CountsTo_uVolts(uint32 chan, int16 adcCounts)
 {   
     int64 result_uVolts = 0;
-	uint32 temp;
-	uint32 averageAdcSamplesDiv;
 	uint32 rawChannel;
 	rawChannel = ADC_allConfigs[ADC_currentConfig].channelBase + chan;
 
@@ -1151,37 +1583,7 @@ int32 ADC_CountsTo_uVolts(uint32 chan, int16 adcCounts)
 		& ADC_SAR_SAMPLE_CTRL_LEFT_ALIGN_MSK) 
 		!= ADC_SAR_SAMPLE_CTRL_LEFT_ALIGN_MSK)
 	{
-        /* Halt CPU in debug mode if channel is out of valid range */
-        CYASSERT(chan < ADC_TOTAL_CHANNELS_NUM);
-
-        /* Divide the adcCount when accumulate averaging mode selected */
-		if((ADC_allConfigs[ADC_currentConfig].sampleCtrl 
-			& ADC_SAR_SAMPLE_CTRL_AVG_SHIFT_MSK) 
-			!= ADC_SAR_SAMPLE_CTRL_AVG_SHIFT_MSK)
-		{
-	        if((ADC_channelsConfig[rawChannel] & ADC_SAR_CHAN_CONFIG_AVG_EN_MSK) != 0u)
-	        {
-                /* Divide by 2^(AVG_CNT + 1) */
-				averageAdcSamplesDiv = ((ADC_allConfigs[ADC_currentConfig].sampleCtrl 
-					& ADC_SAR_SAMPLE_CTRL_AVG_CNT_MSK) 
-					>> ADC_SAR_SAMPLE_CTRL_AVG_CNT_SHFT);
-                averageAdcSamplesDiv = (1uL << (averageAdcSamplesDiv + 1uL));
-                
-                /* If unsigned format, prevent sign extension */
-                if(0 == ADC_IsChannelSigned(chan))
-                {
-					temp = ((uint16) adcCounts / averageAdcSamplesDiv);
-                    adcCounts = (int16) temp;
-                }
-                else
-                {
-                    adcCounts /= (int16) averageAdcSamplesDiv;
-                }
-            }
-        }
-
-        /* Subtract ADC offset */
-        adcCounts -= ADC_offset[rawChannel];
+        adcCounts = ADC_RawCounts2Counts(chan, adcCounts);
 
         result_uVolts = ((int64)adcCounts * ADC_10UV_COUNTS) 
 			/ ADC_countsPer10Volt[rawChannel];
@@ -1189,12 +1591,13 @@ int32 ADC_CountsTo_uVolts(uint32 chan, int16 adcCounts)
 	return ( (int32)result_uVolts );
 }
 
-#if(0u != ADC_ANY_CONFIG_USES_FILTER)		
+#if(0u != ADC_ANY_CONFIG_USES_FILTER)
+    
     /* ****************************************************************************
-    * Function Name: ADC_TrimOffset
+    * Function Name: ADC_TrimFilterVos
     ****************************************************************************//*
     *
-    * \brief Runs an algorithm to reduce offset using the UAB's opamp trim.
+    * \brief Runs an algorithm to reduce voltage offset using the UAB's opamp trim.
     *
     * \param None
     * 
@@ -1203,62 +1606,386 @@ int32 ADC_CountsTo_uVolts(uint32 chan, int16 adcCounts)
     * \sideeffect None
     *
     * <b>Code Snippet</b>
-    *  \snippet main.c snippet_ADC_TrimOffset
+    *  \snippet main.c snippet_ADC_TrimFilterVos
     *
     *******************************************************************************/
-    void ADC_TrimOffset(void)
+    void ADC_TrimFilterVos(void)
     {
-        uint32 curTrim = 0uL;
-        uint32 bestTrim = 0uL;
-        int16 curResult = 0;
-        int16 bestResult = (int16)0x7fff; /* Max positive 16-bit number */
-        int16 targResult = 0;
-
-        ADC_Stop();
-        ADC_Start();
-        ADC_StartConvert();
-        /* Set firmware modbit. */
-        ADC_UABH_A_CAP_ABCF_VAL_REG |= (0x1uL << CyUAB_SIGN_VAL_SHIFT);
-        ADC_UABH_B_CAP_ABCF_VAL_REG |= (0x1uL << CyUAB_SIGN_VAL_SHIFT);
-        /* Unsigned mode zero is 0x800, signed mode zero is 0 */
-        targResult = (0u != (ADC_SAR_SAMPLE_CTRL_REG 
-                                 & ADC_SAR_SAMPLE_CTRL_DIFFERENTIAL_SIGNED_MSK))
-                           ? 0
-                           : (int16)0x0800;
-                        
-        /* Check each trim value. Remember trim that created smallest offset.*/
-        for(curTrim = 0uL; curTrim < 0x10uL; curTrim++)
+        uint32 opampTrim = 0uL;
+        uint32 agndTrim = 0uL;
+        uint32 compStatus = 0uL;
+        
+        ADC_SetupComparatorTrim();
+        
+        /* Sweep from center to crossing */
+        compStatus = ADC_SetOpampAndAgndTrim(ADC_OPAMP_TRIM_POS_BASE, ADC_AGND_TRIM_POS_BASE);
+        if (0uL == compStatus)
         {
-            /* Use defines from cydevice_trm to set trim. */
-            CY_SET_REG32(CYREG_UAB0_OA_TRIM0, 
-                CY_GET_REG32(CYREG_UAB0_OA_TRIM0) & ~(0xfuL << CyUAB_OA_OFFSET_SHIFT));
-            CY_SET_REG32(CYREG_UAB0_OA_TRIM0, 
-                CY_GET_REG32(CYREG_UAB0_OA_TRIM0) | (curTrim << CyUAB_OA_OFFSET_SHIFT));
-            CyDelayUs(100u);
-            (void)ADC_IsEndConversion(ADC_WAIT_FOR_RESULT);
-            curResult = ADC_GetResult16(0uL) - targResult;
-            if (curResult < 0)
+            opampTrim = ADC_RaiseOpampTrimToCrossing(ADC_OPAMP_TRIM_POS_BASE);
+            agndTrim = ADC_RaiseAgndTrimToCrossing(ADC_AGND_TRIM_POS_BASE);
+            if ((agndTrim == (ADC_AGND_TRIM_POS_LIMIT - 1uL))
+                && (opampTrim != (ADC_OPAMP_TRIM_POS_LIMIT - 1uL)))
             {
-                curResult *= -1;
+                opampTrim = ADC_IncOpampTrim(opampTrim);
+                (void) ADC_SetOpampAndAgndTrim(opampTrim, ADC_AGND_TRIM_POS_BASE);
+                (void) ADC_LowerAgndTrimToCrossing(ADC_AGND_TRIM_POS_BASE);
             }
-            if (curResult < bestResult)
+        }
+        else
+        {
+            opampTrim = ADC_LowerOpampTrimToCrossing(ADC_OPAMP_TRIM_POS_BASE);
+            agndTrim = ADC_LowerAgndTrimToCrossing(ADC_AGND_TRIM_POS_BASE);
+            if ((agndTrim == (ADC_AGND_TRIM_NEG_LIMIT - 1uL))
+                && (opampTrim != (ADC_OPAMP_TRIM_NEG_LIMIT - 1uL)))
             {
-                bestResult = curResult;
-                bestTrim = curTrim;
+                opampTrim = ADC_DecOpampTrim(opampTrim);
+                (void) ADC_SetOpampAndAgndTrim(opampTrim, ADC_AGND_TRIM_POS_BASE);
+                (void) ADC_RaiseAgndTrimToCrossing(ADC_AGND_TRIM_POS_BASE);
             }
         }
         
-        /* Set the best trim. */
-        CY_SET_REG32(CYREG_UAB0_OA_TRIM0, 
-            CY_GET_REG32(CYREG_UAB0_OA_TRIM0) & ~(0xfuL << CyUAB_OA_OFFSET_SHIFT));
-        CY_SET_REG32(CYREG_UAB0_OA_TRIM0, 
-            CY_GET_REG32(CYREG_UAB0_OA_TRIM0) | (bestTrim << CyUAB_OA_OFFSET_SHIFT));
+        ADC_UndoComparatorTrimSetup();
+    }
+    
+    
+    static void ADC_SetupComparatorTrim(void)
+    {
+        /* Set firmware modbit. */
+        ADC_UABH_A_CAP_ABCF_VAL_REG |= (0x1uL << CyUAB_SIGN_VAL_SHIFT);
+        ADC_UABH_B_CAP_ABCF_VAL_REG |= (0x1uL << CyUAB_SIGN_VAL_SHIFT);
+        
+        /* Open filter output switch to isolate filter during trim. */
+        ADC_UABH_B_SW_CF_BOT_REG &= ~(uint32)(ADC_UABH_B_SW_PO_MASK);
+        
+        /* Power on the UAB half B reference buffer. */
+        ADC_UABH_B_OA_CTRL_REG |= (uint32)ADC_UABH_B_REF_PWR_MASK;
+        
+        /* Connect the UAB half B reference buffer to the comparator. */
+        ADC_UABH_B_SW_STATIC_REG |= (uint32)ADC_UABH_B_SW_RT_MASK;
+                        
+        /* Clock the UAB half B comparator with phi1. */
+        ADC_UABH_B_SW_OTHER_REG &= ~(uint32)ADC_UABH_B_CMP_FF_MASK;
+        ADC_UABH_B_SW_OTHER_REG |= (uint32)((uint32)CyUAB_CLK_PHI1 << ADC_UABH_B_CMP_FF_SHIFT);
+        
+        /* Power on the UAB half B comparator. */
+        ADC_UABH_B_OA_CTRL_REG |= (uint32)ADC_UABH_B_CMP_PWR_MASK;
+    }
+    
+    
+    static void ADC_UndoComparatorTrimSetup(void)
+    {
+        /* Power off the UAB half B comparator. */
+        ADC_UABH_B_OA_CTRL_REG &= ~(uint32)ADC_UABH_B_CMP_PWR_MASK;
+        
+        /* Remove clock from the UAB half B comparator. */
+        ADC_UABH_B_SW_OTHER_REG &= ~(uint32)ADC_UABH_B_CMP_FF_MASK;
+        ADC_UABH_B_SW_OTHER_REG |= (uint32)((uint32)CyUAB_SW_OPEN << ADC_UABH_B_CMP_FF_SHIFT);
+        
+        /* Disconnect the UAB half B reference buffer from the comparator. */
+        ADC_UABH_B_SW_STATIC_REG &= ~(uint32)ADC_UABH_B_SW_RT_MASK;
+                        
+        /* Power off the UAB half B reference buffer. */
+        ADC_UABH_B_OA_CTRL_REG &= ~(uint32)ADC_UABH_B_REF_PWR_MASK;
+        
+        /* Close filter output switch to connect filter to AROUTE. */
+        ADC_UABH_B_SW_CF_BOT_REG &= ~(uint32)(ADC_UABH_B_SW_PO_MASK);
+        ADC_UABH_B_SW_CF_BOT_REG |= (uint32)((uint32)CyUAB_CLK_PHI3 << ADC_UABH_B_SW_PO_SHIFT);
         
         /* Clear the modbit */
         ADC_UABH_A_CAP_ABCF_VAL_REG &= ~(0x1uL << CyUAB_SIGN_VAL_SHIFT);
         ADC_UABH_B_CAP_ABCF_VAL_REG &= ~(0x1uL << CyUAB_SIGN_VAL_SHIFT);
     }
+    
+    
+    static uint32 ADC_RaiseOpampTrimToCrossing(uint32 startTrim)
+    {
+        uint32 opampTrim;
+        uint32 lastOpampTrim;
+        uint32 compStatus;
+
+        lastOpampTrim = startTrim;
+        for (opampTrim = startTrim;
+            opampTrim != ADC_OPAMP_TRIM_NEG_LIMIT;
+            opampTrim = ADC_IncOpampTrim(opampTrim))
+        {
+            compStatus = ADC_SetOpampAndAgndTrim(opampTrim, ADC_AGND_TRIM_POS_BASE);
+            if (0uL != compStatus)
+            {
+                (void) ADC_SetOpampTrim(lastOpampTrim);
+                break;
+            }
+            lastOpampTrim = opampTrim;
+        }
+        
+        return lastOpampTrim;
+    }
+
+
+    static uint32 ADC_LowerOpampTrimToCrossing(uint32 startTrim)
+    {
+        uint32 opampTrim;
+        uint32 lastOpampTrim;
+        uint32 compStatus;
+
+        lastOpampTrim = startTrim;
+        for (opampTrim = startTrim;
+            opampTrim != ADC_OPAMP_TRIM_NEG_LIMIT;
+            opampTrim = ADC_DecOpampTrim(opampTrim))
+        {
+            compStatus = ADC_SetOpampAndAgndTrim(opampTrim, ADC_AGND_TRIM_POS_BASE);
+            if (0uL == compStatus)
+            {
+                (void) ADC_SetOpampTrim(lastOpampTrim);
+                break;
+            }
+            lastOpampTrim = opampTrim;
+        }
+        
+        return lastOpampTrim;
+    }
+
+
+    static uint32 ADC_RaiseAgndTrimToCrossing(uint32 startTrim)
+    {
+        uint32 agndTrim;
+        uint32 lastAgndTrim;
+        uint32 compStatus;
+
+        lastAgndTrim = startTrim;
+        for (agndTrim = startTrim;
+            agndTrim != ADC_AGND_TRIM_NEG_LIMIT;
+            agndTrim = ADC_IncAgndTrim(agndTrim))
+        {
+            compStatus = ADC_SetAgndTrim(agndTrim);
+            if (0uL != compStatus)
+            {
+                (void) ADC_SetAgndTrim(lastAgndTrim); 
+                break;
+            }
+            lastAgndTrim = agndTrim;
+        }
+        
+        return lastAgndTrim;
+    }
+    
+    
+    static uint32 ADC_LowerAgndTrimToCrossing(uint32 startTrim)
+    {
+        uint32 agndTrim = startTrim;
+        uint32 lastAgndTrim = agndTrim;
+        uint32 compStatus = 1uL;
+
+        lastAgndTrim = startTrim;
+        for (agndTrim = startTrim;
+            agndTrim != ADC_AGND_TRIM_NEG_LIMIT;
+            agndTrim = ADC_DecAgndTrim(agndTrim))
+        {
+            compStatus = ADC_SetAgndTrim(agndTrim);
+            if (0uL == compStatus)
+            {
+                (void) ADC_SetAgndTrim(lastAgndTrim); 
+                break;
+            }
+            lastAgndTrim = agndTrim;
+        }
+        
+        return lastAgndTrim;
+    }
+    
+    
+    static uint32 ADC_SetOpampAndAgndTrim(uint32 opampTrim, uint32 agndTrim)
+    {
+        uint32 compStatus = 0uL;
+ 
+        uint32 trimRegVal = ADC_UABH_A_OA_TRIM_REG;
+        trimRegVal &= ~(ADC_OPAMP_TRIM_MASK << CyUAB_OA_OFFSET_SHIFT);
+        trimRegVal |= (opampTrim << CyUAB_OA_OFFSET_SHIFT);
+        trimRegVal &= ~(ADC_AGND_TRIM_MASK << CyUAB_AGND_OFFSET_SHIFT);
+        trimRegVal |= (agndTrim << CyUAB_AGND_OFFSET_SHIFT);
+        ADC_UABH_A_OA_TRIM_REG = trimRegVal;
+        
+        CyDelayUs(100u);
+        
+        compStatus = ADC_UABH_B_STAT_REG & ADC_UABH_B_COMP_MASK;
+        
+        return compStatus;
+    }
+    
+    
+    static uint32 ADC_SetOpampTrim(uint32 opampTrim)
+    {
+        uint32 compStatus = 0uL;
+ 
+        uint32 trimRegVal = ADC_UABH_A_OA_TRIM_REG;
+        trimRegVal &= ~(ADC_OPAMP_TRIM_MASK << CyUAB_OA_OFFSET_SHIFT);
+        trimRegVal |= (opampTrim << CyUAB_OA_OFFSET_SHIFT);
+        ADC_UABH_A_OA_TRIM_REG = trimRegVal;
+        
+        CyDelayUs(100u);
+        
+        compStatus = ADC_UABH_B_STAT_REG & ADC_UABH_B_COMP_MASK;
+        
+        return compStatus;
+    }
+    
+    
+    static uint32 ADC_SetAgndTrim(uint32 agndTrim)
+    {
+        uint32 compStatus = 0uL;
+ 
+        uint32 trimRegVal = ADC_UABH_A_OA_TRIM_REG;
+        trimRegVal &= ~(ADC_AGND_TRIM_MASK << CyUAB_AGND_OFFSET_SHIFT);
+        trimRegVal |= (agndTrim << CyUAB_AGND_OFFSET_SHIFT);
+        ADC_UABH_A_OA_TRIM_REG = trimRegVal;
+        
+        CyDelayUs(100u);
+        
+        compStatus = ADC_UABH_B_STAT_REG & ADC_UABH_B_COMP_MASK;
+        
+        return compStatus;
+    }
+    
+    /* Skips OPAMP_TRIM_NEG_BASE because it is the same as POS_BASE. */
+    static uint32 ADC_IncOpampTrim(uint32 trim)
+    {
+        
+        if (trim < (ADC_OPAMP_TRIM_POS_LIMIT - 1uL))
+        {
+            trim = trim + 1uL;
+        }
+        else if ((ADC_OPAMP_TRIM_POS_LIMIT - 1uL) == trim)
+        {
+            trim = ADC_OPAMP_TRIM_NEG_LIMIT;
+        }
+        else if (trim <= (ADC_OPAMP_TRIM_NEG_BASE + 1uL))
+        {
+            trim = ADC_OPAMP_TRIM_POS_BASE;
+        }
+        else
+        {
+            trim = trim - 1uL;
+        }
+        
+        return trim;
+    }
+
+
+    /* Skips OPAMP_TRIM_NEG_BASE because it is the same as POS_BASE. */
+    static uint32 ADC_DecOpampTrim(uint32 trim)
+    {
+        
+        if (ADC_OPAMP_TRIM_POS_BASE == trim)
+        {
+            trim = ADC_OPAMP_TRIM_NEG_BASE + 1uL;
+        }
+        else if (trim < ADC_OPAMP_TRIM_POS_LIMIT)
+        {
+            trim = trim - 1uL;
+        }
+        else if (trim < ADC_OPAMP_TRIM_NEG_LIMIT)
+        {
+            trim = trim + 1uL;
+        }
+        else
+        {
+            trim = ADC_OPAMP_TRIM_POS_LIMIT - 1uL;
+        }
+        
+        return trim;
+    }
+
+
+    /* Skips AGND_TRIM_NEG_BASE because it is the same as POS_BASE. */
+    static uint32 ADC_IncAgndTrim(uint32 trim)
+    {
+        
+        if (trim < (ADC_AGND_TRIM_POS_LIMIT - 1uL))
+        {
+            trim = trim + 1uL;
+        }
+        else if ((ADC_AGND_TRIM_POS_LIMIT - 1uL) == trim)
+        {
+            trim = ADC_AGND_TRIM_NEG_LIMIT;
+        }
+        else if (trim <= (ADC_AGND_TRIM_NEG_BASE + 1uL))
+        {
+            trim = ADC_AGND_TRIM_POS_BASE;
+        }
+        else
+        {
+            trim = trim - 1uL;
+        }
+        
+        return trim;
+    }
+
+
+    /* Skips ADC_AGND_TRIM_NEG_BASE because it is the same as POS_BASE. */
+    static uint32 ADC_DecAgndTrim(uint32 trim)
+    {
+        
+        if (trim == ADC_AGND_TRIM_POS_BASE)
+        {
+            trim = ADC_AGND_TRIM_NEG_BASE + 1uL;
+        }
+        else if (trim < ADC_AGND_TRIM_POS_LIMIT)
+        {
+            trim = trim - 1uL;
+        }
+        else if (trim < ADC_AGND_TRIM_NEG_LIMIT)
+        {
+            trim = trim + 1uL;
+        }
+        else
+        {
+            trim = ADC_AGND_TRIM_POS_LIMIT - 1uL;
+        }
+        
+        return trim;
+    }
+
+    
+    void ADC_filterInit(uint32 configNum)
+    {
+        /* Configure the common filter settings if any configuration filters */
+        switch (configNum)
+        {
+            #if (0u != ADC_CFG0_FILTER_PRESENT)
+            case 0u:
+    		    ADC_UABH_A_Init(&ADC_CFG0_UABH_A_FILTER_config);
+    		    ADC_UABH_B_Init(&ADC_CFG0_UABH_B_FILTER_config);
+                
+            break;
+            #endif
+            #if (0u != ADC_CFG1_FILTER_PRESENT)
+            case 1u:
+    		    ADC_UABH_A_Init(&ADC_CFG1_UABH_A_FILTER_config);
+    		    ADC_UABH_B_Init(&ADC_CFG1_UABH_B_FILTER_config);
+                
+            break;
+            #endif
+            #if (0u != ADC_CFG2_FILTER_PRESENT)
+            case 2u:
+    		    ADC_UABH_A_Init(&ADC_CFG2_UABH_A_FILTER_config);
+    		    ADC_UABH_B_Init(&ADC_CFG2_UABH_B_FILTER_config);
+                
+            break;
+            #endif
+            #if (0u != ADC_CFG3_FILTER_PRESENT)
+            case 3u:
+    		    ADC_UABH_A_Init(&ADC_CFG3_UABH_A_FILTER_config);
+    		    ADC_UABH_B_Init(&ADC_CFG3_UABH_B_FILTER_config);
+                
+            break;
+            #endif
+            default:
+            break;
+        }
+        ADC_FILTERAGND2SAR_BUFFER_Init();
+    }
 #endif /* ADC_ANY_CONFIG_USES_FILTER != 0u */
+
+
 /* ****************************************************************************
 * Function Name: ADC_Init
 ****************************************************************************//*
@@ -1321,6 +2048,7 @@ void ADC_Init(void)
 				{
                 	ADC_offset[chNum] = 0;	
 				}
+				
 			}
 			else    /* Differential channel */
         	{
@@ -1334,7 +2062,7 @@ void ADC_Init(void)
             
             /* Increment configuration number after rolling over to the next configuration*/
 			if((ADC_allConfigs[configNum].channelBase
-				+ ADC_allConfigs[configNum].numChannels) == chNum)
+				+ (ADC_allConfigs[configNum].numChannels - 1uL)) == chNum)
 			{
 				configNum++;
 			}
@@ -1346,48 +2074,30 @@ void ADC_Init(void)
             (void)CyIntSetVector(ADC_INTC_NUMBER, &ADC_ISR);
         #endif   /* End ADC_IRQ_REMOVE */
         
-        /* Initialize the channel enable masks for each configuration */
-        for(configNum=0u; configNum < ADC_TOTAL_CONFIGS; configNum++)
-		{
-			ADC_channelEnMasks[configNum] = ADC_allConfigs[configNum].chanEn;
-		}
-        
-        #if(0u != ADC_ANY_CONFIG_USES_FILTER)		
-		    /* Configure the common filter settings if any configuration filters */
-		    ADC_UABH_A_Init(&ADC_UABH_A_FILTER_config);
-		    ADC_UABH_B_Init(&ADC_UABH_B_FILTER_config);
-            ADC_FILTERAGND2SAR_BUFFER_Init();
-            /* Set several of the UAB switches or buffers based on what source is used as Vagnd/Vref. */
-            #if ADC_UABH_A_halfuab__VAGND_SRC != ADC_UABH_A_halfuab__SRC_AGNDBUF
-                ADC_UABH_A_SetStaticSwitch(ADC_SW_EXTAGND, CyUAB_SW_CLOSED);
-            #else
-                ADC_UABH_A_SetAgndPower(CyUAB_PWR_HIGH);
-            #endif
-            
-            /* Control UAB filter output switch with PHI3 "11" (always closed). */
-            ADC_UABH_B_SRAM0_REG |= 0x4u;
-            ADC_UABH_B_SRAM1_REG |= 0x4u;
-            ADC_UABH_B_SetSwitch(CyUAB_SW_PO, CyUAB_CLK_PHI3);
-        #endif /* ADC_ANY_CONFIG_USES_FILTER != 0u */
-        
         /* Initialize configuration zero if SelectConfig has not been called */
         if(0u == ADC_selected)
 	    {
             ADC_selected = 1u;
             configNum = 0u;
-            /* Change Vref selection if is was routed by Creator */
+            /* Change Vref selection if is was routed by Creator. Break. */
             #if (ADC_VREF_ROUTED)
-            ADC_vrefAMux_Select((uint8)configNum);
+                ADC_vrefAMux_DisconnectAll();
             #endif
             ADC_InitConfig(&ADC_allConfigs[configNum]);
-            ADC_SAR_CHAN_EN_REG = ADC_channelEnMasks[configNum];
+            /* Change Vref selection if is was routed by Creator. Make. */
+            #if (ADC_VREF_ROUTED)
+                ADC_vrefAMux_Select((uint8)configNum);
+            #endif
+            ADC_SAR_CHAN_EN_REG = ADC_allConfigs[configNum].chanEn;
             #if(0u != ADC_ANY_CONFIG_USES_FILTER)	
                 ADC_filterVinMux_Select((uint8)configNum);
+                ADC_filterInit(configNum);
             #endif
         }           
 	}
     return;
 }
+
 
 /* ****************************************************************************
 * Function Name: ADC_Enable
@@ -1417,10 +2127,6 @@ void ADC_Enable(void)
             ADC_FILTERAGND2SAR_BUFFER_Enable();
     		ADC_UABH_A_Enable();
     		ADC_UABH_B_Enable();
-            ADC_UABH_A_SetModbitSource(31u, 31u);
-            ADC_UABH_B_SetModbitSource(31u, 31u);
-            ADC_UABH_A_SetStartupDelay(ADC_allConfigs[ADC_currentConfig].filterStartDelay);
-            ADC_UABH_B_SetStartupDelay(ADC_allConfigs[ADC_currentConfig].filterStartDelay);
             ADC_UABH_B_Run(1u);
             ADC_UABH_A_Run(1u);
     	}

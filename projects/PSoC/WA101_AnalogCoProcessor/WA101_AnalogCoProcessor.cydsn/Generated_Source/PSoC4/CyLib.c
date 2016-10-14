@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file CyLib.c
-* \version 5.40
+* \version 5.50
 *
 * \brief Provides a system API for the Clocking, Interrupts, SysTick, and
 * Voltage Detect.
@@ -33,6 +33,7 @@ uint32 cydelay32kMs   = CY_DELAY_MS_OVERFLOW * ((CYDEV_BCLK__SYSCLK__HZ + CY_DEL
 
 static cySysTickCallback CySysTickCallbacks[CY_SYS_SYST_NUM_OF_CALLBACKS];
 static void CySysTickServiceCallbacks(void);
+
 #if (CY_IP_SRSSV2 && CY_IP_PLL)
     static uint32 CySysClkPllGetBypassMode(uint32 pll);
     static cystatus CySysClkPllConfigChangeAllowed(uint32 pll);
@@ -86,6 +87,8 @@ uint32 CySysTickInitVar = 0u;
     uint32 CySysClkImoTrim4 = 0u;
 #endif /* (CY_IP_IMO_TRIMMABLE_BY_USB && CY_IP_SRSSV2) */
 
+/* Stored PUMP_SEL configuration during disable (IMO output by default) */
+uint32 CySysClkPumpConfig = CY_SYS_CLK_PUMP_ENABLE;
 
 /*******************************************************************************
 * Function Name: CySysClkImoStart
@@ -452,6 +455,50 @@ void CySysClkWriteHfclkDirect(uint32 clkSelect)
 
 
 /*******************************************************************************
+* Function Name: CySysEnablePumpClock
+****************************************************************************//**
+*
+* Enables / disables the pump clock.
+*
+* \param enable  
+* CY_SYS_CLK_PUMP_DISABLE - Disables the pump clock
+* CY_SYS_CLK_PUMP_ENABLE - Enables and restores the operating source of 
+* the pump clock.
+*
+* \sideeffect
+*  Enabling/disabling the pump clock does not guarantee glitch free operation 
+*  when changing the IMO parameters or clock divider settings.
+*
+*******************************************************************************/
+void CySysEnablePumpClock(uint32 enable)
+{
+    #if(CY_IP_SRSSV2)
+        if (0u != (CY_SYS_CLK_PUMP_ENABLE & enable))
+        {
+            CY_SYS_CLK_IMO_CONFIG_REG |= (CySysClkPumpConfig << CY_SYS_CLK_IMO_CONFIG_PUMP_SEL_SHIFT);
+        }
+        else
+        {
+            CySysClkPumpConfig = (CY_SYS_CLK_IMO_CONFIG_REG >> CY_SYS_CLK_IMO_CONFIG_PUMP_SEL_SHIFT) & 
+                                  CY_SYS_CLK_IMO_CONFIG_PUMP_SEL_MASK;
+            CY_SYS_CLK_IMO_CONFIG_REG &= ~(CY_SYS_CLK_IMO_CONFIG_PUMP_SEL_MASK << CY_SYS_CLK_IMO_CONFIG_PUMP_SEL_SHIFT);
+        }
+    #else /* CY_IP_SRSSLT */
+        if (0u != (CY_SYS_CLK_PUMP_ENABLE & enable))
+        {
+            CY_SYS_CLK_SELECT_REG |= (CySysClkPumpConfig << CY_SYS_CLK_SELECT_PUMP_SEL_SHIFT);
+        }
+        else
+        {
+            CySysClkPumpConfig = (CY_SYS_CLK_SELECT_REG >> CY_SYS_CLK_SELECT_PUMP_SEL_SHIFT) & 
+                                  CY_SYS_CLK_SELECT_PUMP_SEL_MASK;
+            CY_SYS_CLK_SELECT_REG &= ~(CY_SYS_CLK_SELECT_PUMP_SEL_MASK << CY_SYS_CLK_SELECT_PUMP_SEL_SHIFT);
+        }
+    #endif  /* (CY_IP_SRSSV2) */
+}
+
+
+/*******************************************************************************
 * Function Name: CySysClkGetSysclkSource
 ****************************************************************************//**
 *
@@ -793,6 +840,8 @@ void CySysClkWriteSysclkDiv(uint32 divider)
 
         #if (CY_PSOC4_4000)
             if ((freq == 24u) || (freq == 32u) || (freq == 48u))
+        #elif (CY_CCG3)
+            if ((freq == 24u) || (freq == 36u) || (freq == 48u))
         #else
             if ((freq == 24u) || (freq == 28u) || (freq == 32u) ||
                 (freq == 36u) || (freq == 40u) || (freq == 44u) ||
@@ -979,7 +1028,7 @@ void CySysClkWriteSysclkDiv(uint32 divider)
     {
         cystatus returnStatus = CYRET_SUCCESS;
 
-        #if (CY_IP_WCO_BLESS)
+        #if (CY_IP_ECO_BLESS)
             /* Enable the RF oscillator band gap */
             CY_SYS_XTAL_BLESS_RF_CONFIG_REG |= CY_SYS_XTAL_BLESS_RF_CONFIG_RF_ENABLE;
 
@@ -988,11 +1037,102 @@ void CySysClkWriteSysclkDiv(uint32 divider)
 
             /* Enable the Crystal */
             CY_SYS_XTAL_BLERD_DBUS_REG |= CY_SYS_XTAL_BLERD_DBUS_XTAL_ENABLE;
-        #else /* CY_IP_WCO_SRSSV2 */
+        
+        #elif (CY_IP_ECO_BLESSV3)
+            uint32 regConfig;
+            uint32 intrRegMaskStore = 0u;
+            
+            if (0u != (CY_SYS_BLESS_MT_CFG_REG & (CY_SYS_BLESS_MT_CFG_ENABLE_BLERD <<  CYFLD_BLE_BLESS_ENABLE_BLERD__OFFSET)))
+            {
+                CY_SYS_BLESS_MT_CFG_REG |= (CY_SYS_BLESS_MT_CFG_DPSLP_ECO_ON  <<  CYFLD_BLE_BLESS_DPSLP_ECO_ON__OFFSET);
+            }
+            else
+            {
+                /* Init BLE core */
+                CY_SYS_BLESS_MT_DELAY_CFG_REG = CY_SYS_BLESS_MT_DELAY_CFG_INIT;
+                CY_SYS_BLESS_MT_DELAY_CFG2_REG = CY_SYS_BLESS_MT_DELAY_CFG2_INIT;
+                CY_SYS_BLESS_MT_DELAY_CFG3_REG = CY_SYS_BLESS_MT_DELAY_CFG3_INIT;
+            
+                /* RCB init */
+                regConfig = CY_SYS_RCB_CTRL_REG;
+                regConfig &= CY_SYS_RCB_CTRL_CLEAR;
+                regConfig |= CY_SYS_RCB_CTRL_INIT;
+                CY_SYS_RCB_CTRL_REG = regConfig;
+                
+                intrRegMaskStore = CY_SYS_BLESS_INTR_MASK_REG;
+                if(0u != (CY_SYS_BLESS_BLERD_ACTIVE_INTR_MASK & intrRegMaskStore))
+                {
+                    CY_SYS_BLESS_INTR_MASK_REG &= ~CY_SYS_BLESS_BLERD_ACTIVE_INTR_MASK;
+                }
+                
+                /* Enable BLE core */
+                regConfig = CY_SYS_BLESS_MT_CFG_REG;
+                regConfig &= CY_SYS_BLESS_MT_CFG_CLEAR;
+                regConfig |= CY_SYS_BLESS_MT_CFG_INIT;
+                CY_SYS_BLESS_MT_CFG_REG = regConfig;
+
+                while(0u == ((CY_SYS_BLESS_BLERD_ACTIVE_INTR_STAT & CY_SYS_BLESS_INTR_STAT_REG)))
+                {
+                    /* Wait until BLERD55 moves to active state */
+                }
+
+                if(0u != (CY_SYS_BLESS_BLERD_ACTIVE_INTR_MASK & intrRegMaskStore))
+                {
+                    CY_SYS_BLESS_INTR_MASK_REG |= CY_SYS_BLESS_BLERD_ACTIVE_INTR_MASK;
+                }
+                
+                /* Send write commands to RBUS */
+                CY_SYS_RCB_TX_FIFO_WR_REG = CY_SYS_RCB_RBUS_FREQ_NRST_SET;
+                CY_SYS_RCB_TX_FIFO_WR_REG = CY_SYS_RCB_RBUS_DIG_CLK_SET;
+                
+                #if (CY_SYS_BLE_CLK_ECO_FREQ_32MHZ == CYDEV_ECO_CLK_MHZ)
+                    CY_SYS_RCB_TX_FIFO_WR_REG = CY_SYS_RCB_RBUS_FREQ_XTAL_DIV_SET;
+                    CY_SYS_RCB_TX_FIFO_WR_REG = (CY_SYS_RCB_RBUS_RF_DCXO_CFG_SET | CY_SYS_RCB_RBUS_IB_VAL); 
+                #else
+                    CY_SYS_RCB_TX_FIFO_WR_REG = CY_SYS_RCB_RBUS_FREQ_XTAL_NODIV_SET;
+                #endif
+                
+                intrRegMaskStore = CY_SYS_BLESS_INTR_MASK_REG;
+                if(0u != (CY_SYS_RCB_INTR_RCB_DONE & intrRegMaskStore))
+                {
+                    CY_SYS_BLESS_INTR_MASK_REG &= ~(CY_SYS_RCB_INTR_RCB_DONE | CY_SYS_RCB_INTR_RCB_RX_FIFO_NOT_EMPTY);
+                }
+                
+                /* Send read commands to RBUS */
+                CY_SYS_RCB_TX_FIFO_WR_REG = (CY_SYS_RCB_RBUS_RD_CMD | 
+                                            (CY_SYS_RCB_RBUS_RF_DCXO_CFG_SET & ~CY_SYS_RCB_RBUS_VAL_MASK));
+                                            
+                while (0u == (CY_SYS_RCB_INTR_RCB_RX_FIFO_NOT_EMPTY & CY_SYS_RCB_INTR_REG))
+                {
+                    /* Wait until RX_FIFO_NOT_EMPTY state */
+                }
+
+                CY_SYS_RCB_INTR_REG |= CY_SYS_RCB_INTR_RCB_DONE;
+                
+                regConfig = CY_SYS_RCB_RX_FIFO_RD_REG & CY_SYS_RCB_RBUS_TRIM_MASK;
+                
+                /* Send write commands to RBUS */
+                CY_SYS_RCB_TX_FIFO_WR_REG = (CY_SYS_RCB_RBUS_RF_DCXO_CFG_SET | regConfig | CY_SYS_RCB_RBUS_TRIM_VAL);
+                
+                while (0u == (CY_SYS_RCB_INTR_RCB_DONE & CY_SYS_RCB_INTR_REG))
+                {
+                    /* Wait until RCB_DONE state */
+                }
+                
+                /* Clear Interrupt */
+                CY_SYS_RCB_INTR_REG = CY_SYS_RCB_INTR_CLEAR;
+                
+                if(0u != ((CY_SYS_RCB_INTR_RCB_DONE | CY_SYS_RCB_INTR_RCB_RX_FIFO_NOT_EMPTY) & intrRegMaskStore))
+                {
+                    CY_SYS_BLESS_INTR_MASK_REG |= intrRegMaskStore;
+                }
+                
+            }
+        #else /* CY_IP_ECO_SRSSV2 */
             CY_SYS_CLK_ECO_CONFIG_REG |= CY_SYS_CLK_ECO_CONFIG_ENABLE;
             CyDelayUs(CY_SYS_CLK_ECO_CONFIG_CLK_EN_TIMEOUT_US);
             CY_SYS_CLK_ECO_CONFIG_REG |= CY_SYS_CLK_ECO_CONFIG_CLK_EN;
-        #endif /* (CY_IP_WCO_BLESS) */
+        #endif /* (CY_IP_ECO_BLESS) */
 
         if(timeoutUs > 0u)
         {
@@ -1034,6 +1174,8 @@ void CySysClkWriteSysclkDiv(uint32 divider)
 
             /* Disable the Crystal */
             CY_SYS_XTAL_BLERD_DBUS_REG &= (uint32) ~CY_SYS_XTAL_BLERD_DBUS_XTAL_ENABLE;
+        #elif (CY_IP_ECO_BLESSV3)
+            CY_SYS_BLESS_MT_CFG_REG &= ~(CY_SYS_BLESS_MT_CFG_DPSLP_ECO_ON  <<  CYFLD_BLE_BLESS_DPSLP_ECO_ON__OFFSET);
         #else
             CY_SYS_CLK_ECO_CONFIG_REG &= (uint32) ~(CY_SYS_CLK_ECO_CONFIG_ENABLE | CY_SYS_CLK_ECO_CONFIG_CLK_EN);
         #endif /* (CY_IP_WCO_BLESS) */
@@ -1064,6 +1206,13 @@ void CySysClkWriteSysclkDiv(uint32 divider)
 
         #if (CY_IP_WCO_BLESS)
             returnValue = CY_SYS_XTAL_BLERD_FSM_REG & CY_SYS_XTAL_BLERD_FSM_XO_AMP_DETECT;
+        #elif (CY_IP_ECO_BLESSV3)
+            returnValue = (CY_SYS_BLESS_MT_STATUS_REG & CY_SYS_BLESS_MT_STATUS_CURR_STATE_MASK) >> CYFLD_BLE_BLESS_MT_CURR_STATE__OFFSET;
+
+            returnValue =  ((CY_SYS_BLESS_MT_STATUS_BLERD_IDLE == returnValue) || 
+                            (CY_SYS_BLESS_MT_STATUS_SWITCH_EN  == returnValue) ||
+                            (CY_SYS_BLESS_MT_STATUS_ACTIVE  ==  returnValue) ||
+                            (CY_SYS_BLESS_MT_STATUS_ISOLATE == returnValue));
         #else
             returnValue = (0u != (CY_SYS_CLK_ECO_STATUS_REG & CY_SYS_CLK_ECO_STATUS_WATCHDOG_ERROR)) ? 0u : 1u;
         #endif /* (CY_IP_WCO_BLESS) */
@@ -1071,7 +1220,7 @@ void CySysClkWriteSysclkDiv(uint32 divider)
         return (returnValue);
     }
 
-    #if (CY_IP_ECO_BLESS)
+    #if (CY_IP_ECO_BLESS || CY_IP_ECO_BLESSV3)
         /*******************************************************************************
         * Function Name: CySysClkWriteEcoDiv
         ****************************************************************************//**
@@ -2661,7 +2810,7 @@ uint32 CySysTickGetValue(void)
     *
     *  \param clockSource Clock source for SysTick counter
     *         Define                     Clock Source
-    *   CY_SYS_SYST_CSR_CLK_SRC_SYSCLK     SysTick is clocked by CPU clock.
+    *   CY_SYS_SYST_CSR_CLK_SRC_SYSCLK     SysTick is clocked by the CPU clock.
     *   CY_SYS_SYST_CSR_CLK_SRC_LFCLK      SysTick is clocked by the low frequency
     *                                      clock. (ILO 100 KHz for PSoC 5LP, and
     *                                      LFCLK for PSoC 4).
@@ -2677,6 +2826,25 @@ uint32 CySysTickGetValue(void)
             CY_SYS_SYST_CSR_REG &= ((uint32) ~((uint32)(CY_SYS_SYST_CSR_CLK_SRC_SYSCLK << CY_SYS_SYST_CSR_CLK_SOURCE_SHIFT)));
         }
     }
+
+    
+    /*******************************************************************************
+    * Function Name: CySysTickGetClockSource
+    ****************************************************************************//**
+    *
+    *  Returns the current clock source of the SysTick counter.
+    *
+    *  \return 
+    *   CY_SYS_SYST_CSR_CLK_SRC_SYSCLK     SysTick is clocked by CPU clock.
+    *   CY_SYS_SYST_CSR_CLK_SRC_LFCLK      SysTick is clocked by the low frequency
+    *                                      clock. (ILO 100 KHz for PSoC 5LP, and
+    *                                      LFCLK for PSoC 4).
+    *******************************************************************************/
+    uint32 CySysTickGetClockSource(void)
+    {
+        return ((CY_SYS_SYST_CSR_REG >> CY_SYS_SYST_CSR_CLK_SOURCE_SHIFT) & CY_SYS_SYST_CSR_CLK_SRC_SYSCLK );
+    }
+    
 #endif /* (CY_SYSTICK_LFCLK_SOURCE) */
 
 
@@ -2697,7 +2865,7 @@ uint32 CySysTickGetValue(void)
 *******************************************************************************/
 uint32 CySysTickGetCountFlag(void)
 {
-    return ((CY_SYS_SYST_CSR_REG>>CY_SYS_SYST_CSR_COUNTFLAG_SHIFT) & 0x01u);
+    return ((CY_SYS_SYST_CSR_REG >> CY_SYS_SYST_CSR_COUNTFLAG_SHIFT) & 0x01u);
 }
 
 
@@ -3049,22 +3217,22 @@ void CyGetUniqueId(uint32* uniqueId)
     *
     *   voltageTap  | If bandgap (x1), V| If bandgap (x2), V| If Vdda
     *   ------------|-------------------|-------------------|-------------------
-    *       0       |       0.08        |       0.16        |       0.21
-    *       1       |       0.15        |       0.30        |       0.41
-    *       2       |       0.23        |       0.46        |       0.62
-    *       3       |       0.30        |       0.60        |       0.83
-    *       4       |       0.38        |       0.76        |       1.03
-    *       5       |       0.45        |       0.90        |       1.24
-    *       6       |       0.53        |       1.06        |       1.44
-    *       7       |       0.60        |       1.20        |       1.65
-    *       8       |       0.68        |       1.36        |       1.86
-    *       9       |       0.75        |       1.50        |       2.06
-    *       10      |       0.83        |       1.66        |       2.27
-    *       11      |       0.90        |       1.80        |       2.48
-    *       12      |       0.98        |       1.96        |       2.68
-    *       13      |       1.05        |       2.10        |       2.89
-    *       14      |       1.13        |       2.26        |       3.09
-    *       15      |       1.20        |       2.40        |       3.30
+    *       1       |       0.08        |       0.16        |       0.21
+    *       2       |       0.15        |       0.30        |       0.41
+    *       3       |       0.23        |       0.46        |       0.62
+    *       4       |       0.30        |       0.60        |       0.83
+    *       5       |       0.38        |       0.76        |       1.03
+    *       6       |       0.45        |       0.90        |       1.24
+    *       7       |       0.53        |       1.06        |       1.44
+    *       8       |       0.60        |       1.20        |       1.65
+    *       9       |       0.68        |       1.36        |       1.86
+    *       10      |       0.75        |       1.50        |       2.06
+    *       11      |       0.83        |       1.66        |       2.27
+    *       12      |       0.90        |       1.80        |       2.48
+    *       13      |       0.98        |       1.96        |       2.68
+    *       14      |       1.05        |       2.10        |       2.89
+    *       15      |       1.13        |       2.26        |       3.09
+    *       16      |       1.20        |       2.40        |       3.30
     *
     *******************************************************************************/
     #ifdef CyDesignWideVoltageReference_PRB_REF
@@ -3202,8 +3370,8 @@ void CyGetUniqueId(uint32* uniqueId)
 
         return (returnValue);
     }
-
-
+    
+    
 #endif /* (CY_IP_PASS) */
 
 

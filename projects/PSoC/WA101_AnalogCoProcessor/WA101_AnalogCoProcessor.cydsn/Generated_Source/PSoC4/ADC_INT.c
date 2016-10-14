@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC_INT.c
-* Version 1.10
+* Version 1.20
 *
 *  Description:
 *    This file contains the code that operates during the ADC_SAR interrupt

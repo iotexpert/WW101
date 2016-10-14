@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file CyLib.h
-* \version 5.40
+* \version 5.50
 *
 * \brief Provides a system API for the clocking, and interrupts.
 *
@@ -107,6 +107,8 @@ void CySysClkWriteHfclkDirect(uint32 clkSelect);
 void CySysClkWriteSysclkDiv(uint32 divider);
 void CySysClkWriteImoFreq(uint32 freq);
 uint32 CySysClkGetSysclkSource(void);
+void CySysEnablePumpClock(uint32 enable);
+
 /** @} group_clocking_hfclk */
 
 
@@ -131,7 +133,7 @@ uint32 CySysClkGetSysclkSource(void);
     void     CySysClkEcoStop(void);
     uint32   CySysClkEcoReadStatus(void);
 
-    #if (CY_IP_ECO_BLESS)
+    #if (CY_IP_ECO_BLESS || CY_IP_ECO_BLESSV3)
         void CySysClkWriteEcoDiv(uint32 divider);
     #endif /* (CY_IP_ECO_BLESS) */
 
@@ -256,6 +258,7 @@ cySysTickCallback CySysTickGetCallback(uint32 number);
 
 #if(CY_SYSTICK_LFCLK_SOURCE)
     void CySysTickSetClockSource(uint32 clockSource);
+    uint32 CySysTickGetClockSource(void);
 #endif /* (CY_SYSTICK_LFCLK_SOURCE) */
 
 uint32 CySysTickGetCountFlag(void);
@@ -393,6 +396,9 @@ extern uint32 CySysTickInitVar;
     #endif /* (CY_IP_PLL) */
 #endif  /* (CY_IP_SRSSV2) */
 
+/* CySysPumpClock() */
+#define CY_SYS_CLK_PUMP_DISABLE                         ((uint32) 0u)
+#define CY_SYS_CLK_PUMP_ENABLE                          ((uint32) 1u)
 
 #if (CY_IP_SRSSV2 && CY_IP_PLL)
 
@@ -500,7 +506,7 @@ extern uint32 CySysTickInitVar;
     #define CY_SYS_CLK_IMO_SELECT_24MHZ                 (( uint32 )(0x00u))
 
     #define CY_SYS_CLK_IMO_TRIM_DELAY_US                (( uint32 )(50u))
-    #define CY_SYS_CLK_IMO_TRIM_DELAY_CYCLES            (( uint32 )(50u))
+    #define CY_SYS_CLK_IMO_TRIM_DELAY_CYCLES            (( uint32 )(50u))    
 #endif  /* (CY_IP_SRSSV2) */
 
 /* CySysClkImoEnableUsbLock(void) -  - implementation definitions */
@@ -523,7 +529,6 @@ extern uint32 CySysTickInitVar;
 
 /* CySysClkImoStart()/CySysClkImoStop() - implementation definitions */
 #define CY_SYS_CLK_IMO_CONFIG_ENABLE                    (( uint32 )(( uint32 )0x01u << 31u))
-
 
 
 #if(CY_IP_SRSSLT)
@@ -586,6 +591,113 @@ extern uint32 CySysTickInitVar;
     /* CySysClkWriteEcoDiv() - implementation definitions */
     #define CY_SYS_CLK_XTAL_CLK_DIV_MASK                ((uint32) 0x03)
 #endif  /* (CY_IP_ECO_BLESS) */
+
+#if (CY_IP_ECO_BLESSV3)
+     #define CY_SYS_CLK_ECO_DIV1    ((uint32) 0x00)     /**< CySysClkWriteEcoDiv(): HFCLK = ECO / 1 */
+     #define CY_SYS_CLK_ECO_DIV2    ((uint32) 0x01)     /**< CySysClkWriteEcoDiv(): HFCLK = ECO / 2 */
+     #define CY_SYS_CLK_ECO_DIV4    ((uint32) 0x02)     /**< CySysClkWriteEcoDiv(): HFCLK = ECO / 4 */
+     #define CY_SYS_CLK_ECO_DIV8    ((uint32) 0x03)     /**< CySysClkWriteEcoDiv(): HFCLK = ECO / 8 */
+    /** @} group_api_eco */
+
+    #define CY_SYS_BLESS_HVLDO_STARTUP_DELAY                ((uint32) 2u)
+    #define CY_SYS_BLESS_ISOLATE_DEASSERT_DELAY             ((uint32) 1u)
+    #define CY_SYS_BLESS_ACT_TO_SWITCH_DELAY                ((uint32) 1u)
+    #define CY_SYS_BLESS_HVLDO_DISABLE_DELAY                ((uint32) 1u)
+
+    #define CY_SYS_BLESS_OSC_STARTUP_DELAY_LF               ((uint32) 80u)
+    #define CY_SYS_BLESS_DSM_OFFSET_TO_WAKEUP_INST_LF       ((uint32) 4u)
+    #define CY_SYS_BLESS_ACT_STARTUP_DELAY                  ((uint32) 1u)
+    #define CY_SYS_BLESS_DIG_LDO_STARTUP_DELAY              ((uint32) 1u)
+
+    #define CY_SYS_BLESS_XTAL_DISABLE_DELAY                 ((uint32) 1u)
+    #define CY_SYS_BLESS_DIG_LDO_DISABLE_DELAY              ((uint32) 1u)
+
+    #define CY_SYS_BLESS_MT_CFG_ACT_LDO                     ((uint32) 1u)
+    #define CY_SYS_BLESS_MT_CFG_ENABLE_BLERD                ((uint32) 1u)
+    #define CY_SYS_BLESS_MT_CFG_DPSLP_ECO_ON                ((uint32) 1u)
+    
+    #define CY_SYS_BLESS_MT_STATUS_BLERD_IDLE               ((uint32) 4u)
+    #define CY_SYS_BLESS_MT_STATUS_SWITCH_EN                ((uint32) 5u)
+    #define CY_SYS_BLESS_MT_STATUS_ACTIVE                   ((uint32) 6u)
+    #define CY_SYS_BLESS_MT_STATUS_ISOLATE                  ((uint32) 7u)
+    
+    #define CY_SYS_BLESS_BLERD_ACTIVE_INTR_MASK             ((uint32) 0x20u)
+    #define CY_SYS_BLESS_BLERD_ACTIVE_INTR_STAT             ((uint32) 0x8u)
+
+    #define CY_SYS_BLESS_MT_STATUS_CURR_STATE_MASK          ((uint32) 0x1Eu)
+    
+    #define CY_SYS_RCB_CTRL_ENABLED                         ((uint32) 1u)
+    #define CY_SYS_RCB_CTRL_DIV_ENABLED                     ((uint32) 1u)
+    #define CY_SYS_RCB_CTRL_DIV                             ((uint32) 2u)
+    #define CY_SYS_RCB_CTRL_LEAD                            ((uint32) 3u)
+    #define CY_SYS_RCB_CTRL_LAG                             ((uint32) 3u)
+    
+    #define CY_SYS_RCB_INTR_RCB_DONE                        ((uint32) 1u)
+    #define CY_SYS_RCB_INTR_RCB_RX_FIFO_NOT_EMPTY           ((uint32) ((uint32)0x1u << 17u))
+    #define CY_SYS_RCB_INTR_CLEAR                           ((uint32) 0xFFFFFFFFu)
+    #define CY_SYS_RCB_RBUS_RD_CMD                          ((uint32) ((uint32)0x1u << 31u))
+    #define CY_SYS_RCB_RBUS_DIG_CLK_SET                     ((uint32) 0x1e030400u)
+    #define CY_SYS_RCB_RBUS_FREQ_NRST_SET                   ((uint32) 0x1e021800u)
+    #define CY_SYS_RCB_RBUS_FREQ_XTAL_DIV_SET               ((uint32) 0x1e090040u)
+    #define CY_SYS_RCB_RBUS_FREQ_XTAL_NODIV_SET             ((uint32) 0x1e090000u)
+    #define CY_SYS_RCB_RBUS_RF_DCXO_CFG_SET                 ((uint32) 0x1e080000u)
+    #define CY_SYS_RCB_RBUS_IB_VAL                          ((uint32) ((uint32)0x1u << 9u))
+    #define CY_SYS_RCB_RBUS_IB_MASK                         ((uint32) ((uint32)0x3u << 9u))
+    #define CY_SYS_RCB_RBUS_TRIM_VAL                        ((uint32) (CYDEV_RCB_RBUS_RF_DCXO_CAP_TRIM << 1u))
+    #define CY_SYS_RCB_RBUS_TRIM_MASK                       ((uint32) ((uint32)0xFFu << 1u))
+    #define CY_SYS_RCB_RBUS_VAL_MASK                        ((uint32) 0xFFFFu)
+
+    #define CY_SYS_RCBLL_CPU_ACCESS                         ((uint32) 0u)
+    #define CY_SYS_RCBLL_BLELL_ACCESS                       ((uint32) 1u)
+
+    #define CY_SYS_BLELL_CMD_ENTER_DSM                      ((uint32) 0x50u)
+    
+    #define CY_SYS_BLESS_MT_DELAY_CFG_INIT \
+           ((CY_SYS_BLESS_HVLDO_STARTUP_DELAY    <<  CYFLD_BLE_BLESS_HVLDO_STARTUP_DELAY__OFFSET) | \
+            (CY_SYS_BLESS_ISOLATE_DEASSERT_DELAY <<  CYFLD_BLE_BLESS_ISOLATE_DEASSERT_DELAY__OFFSET) | \
+            (CY_SYS_BLESS_ACT_TO_SWITCH_DELAY    <<  CYFLD_BLE_BLESS_ACT_TO_SWITCH_DELAY__OFFSET) | \
+            (CY_SYS_BLESS_HVLDO_DISABLE_DELAY    <<  CYFLD_BLE_BLESS_HVLDO_DISABLE_DELAY__OFFSET))
+
+    #define CY_SYS_BLESS_MT_DELAY_CFG2_INIT \
+           ((CY_SYS_BLESS_OSC_STARTUP_DELAY_LF          << CYFLD_BLE_BLESS_OSC_STARTUP_DELAY_LF__OFFSET) | \
+            (CY_SYS_BLESS_DSM_OFFSET_TO_WAKEUP_INST_LF  << CYFLD_BLE_BLESS_DSM_OFFSET_TO_WAKEUP_INSTANT_LF__OFFSET) | \
+            (CY_SYS_BLESS_ACT_STARTUP_DELAY             << CYFLD_BLE_BLESS_ACT_STARTUP_DELAY__OFFSET) | \
+            (CY_SYS_BLESS_DIG_LDO_STARTUP_DELAY         << CYFLD_BLE_BLESS_DIG_LDO_STARTUP_DELAY__OFFSET))
+    
+    #define CY_SYS_BLESS_MT_DELAY_CFG3_INIT \
+           ((CY_SYS_BLESS_XTAL_DISABLE_DELAY    << CYFLD_BLE_BLESS_XTAL_DISABLE_DELAY__OFFSET) | \
+            (CY_SYS_BLESS_DIG_LDO_DISABLE_DELAY << CYFLD_BLE_BLESS_DIG_LDO_DISABLE_DELAY__OFFSET))
+    
+    #define CY_SYS_BLESS_MT_CFG_CLEAR \
+                                                  ~(CY_GET_FIELD_MASK(32, CYFLD_BLE_BLESS_ENABLE_BLERD) | \
+                                                    CY_GET_FIELD_MASK(32, CYFLD_BLE_BLESS_DPSLP_ECO_ON) | \
+                                                    CY_GET_FIELD_MASK(32, CYFLD_BLE_BLESS_ACT_LDO_NOT_BUCK))
+    
+    #define CY_SYS_BLESS_MT_CFG_INIT \
+           ((CY_SYS_BLESS_MT_CFG_ENABLE_BLERD           <<  CYFLD_BLE_BLESS_ENABLE_BLERD__OFFSET) | \
+            (CY_SYS_BLESS_MT_CFG_DPSLP_ECO_ON           <<  CYFLD_BLE_BLESS_DPSLP_ECO_ON__OFFSET) | \
+            (CY_SYS_BLESS_MT_CFG_ACT_LDO                <<  CYFLD_BLE_BLESS_ACT_LDO_NOT_BUCK__OFFSET))
+    
+    #define CY_SYS_RCB_CTRL_CLEAR \
+                                                  ~(CY_GET_FIELD_MASK(32, CYFLD_BLE_RCB_ENABLED) | \
+                                                    CY_GET_FIELD_MASK(32, CYFLD_BLE_RCB_DIV_ENABLED) | \
+                                                    CY_GET_FIELD_MASK(32, CYFLD_BLE_RCB_DIV) | \
+                                                    CY_GET_FIELD_MASK(32, CYFLD_BLE_RCB_LEAD) | \
+                                                    CY_GET_FIELD_MASK(32, CYFLD_BLE_RCB_LAG))
+    
+    #define CY_SYS_RCB_CTRL_INIT \
+           ((CY_SYS_RCB_CTRL_ENABLED            <<  CYFLD_BLE_RCB_ENABLED__OFFSET) | \
+            (CY_SYS_RCB_CTRL_DIV_ENABLED        <<  CYFLD_BLE_RCB_DIV_ENABLED__OFFSET) | \
+            (CY_SYS_RCB_CTRL_DIV                <<  CYFLD_BLE_RCB_DIV__OFFSET) | \
+            (CY_SYS_RCB_CTRL_LEAD               <<  CYFLD_BLE_RCB_LEAD__OFFSET) | \
+            (CY_SYS_RCB_CTRL_LAG                <<  CYFLD_BLE_RCB_LAG__OFFSET))
+
+    /* CySysClkWriteEcoDiv() - implementation definitions */
+    #define CY_SYS_CLK_XTAL_CLK_DIV_MASK                    ((uint32) 0x03)
+    
+    #define CY_SYS_BLE_CLK_ECO_FREQ_32MHZ                   (32)
+
+#endif  /* (CY_IP_ECO_BLESSV3) */
 
 
 /* CySysClkImoEnableWcoLock() / CySysClkImoDisableWcoLock() constants */
@@ -1098,8 +1210,45 @@ extern uint32 CySysTickInitVar;
         #define CY_SYS_CLK_XTAL_CLK_DIV_CONFIG_REG      (*(reg32 *) CYREG_BLE_BLESS_XTAL_CLK_DIV_CONFIG)
         #define CY_SYS_CLK_XTAL_CLK_DIV_CONFIG_PTR      ( (reg32 *) CYREG_BLE_BLESS_XTAL_CLK_DIV_CONFIG)
 
-    #else
+    #elif (CY_IP_ECO_BLESSV3)
+        /* Crystal clock divider configuration register */
+        #define CY_SYS_CLK_XTAL_CLK_DIV_CONFIG_REG      (*(reg32 *) CYREG_BLE_BLESS_XTAL_CLK_DIV_CONFIG)
+        #define CY_SYS_CLK_XTAL_CLK_DIV_CONFIG_PTR      ( (reg32 *) CYREG_BLE_BLESS_XTAL_CLK_DIV_CONFIG)
+        
+        /* RCB registers */
+        #define CY_SYS_RCB_CTRL_REG                     (*(reg32 *) CYREG_BLE_RCB_CTRL)
+        #define CY_SYS_RCB_CTRL_PTR                     ( (reg32 *) CYREG_BLE_RCB_CTRL)
+        #define CY_SYS_RCB_TX_FIFO_WR_REG               (*(reg32 *) CYREG_BLE_RCB_TX_FIFO_WR)
+        #define CY_SYS_RCB_TX_FIFO_WR_PTR               ( (reg32 *) CYREG_BLE_RCB_TX_FIFO_WR)
+        #define CY_SYS_RCB_RX_FIFO_RD_REG               (*(reg32 *) CYREG_BLE_RCB_RX_FIFO_RD)
+        #define CY_SYS_RCB_RX_FIFO_RD_PTR               ( (reg32 *) CYREG_BLE_RCB_RX_FIFO_RD)
+        #define CY_SYS_RCB_INTR_REG                     (*(reg32 *) CYREG_BLE_RCB_INTR)
+        #define CY_SYS_RCB_INTR_PTR                     ( (reg32 *) CYREG_BLE_RCB_INTR)
+        #define CY_SYS_RCB_INTR_MASK_REG                (*(reg32 *) CYREG_BLE_RCB_INTR_MASK)
+        #define CY_SYS_RCB_INTR_MASK_PTR                ( (reg32 *) CYREG_BLE_RCB_INTR_MASK)
+        
+                                                            
+        /* BLESS registers */
+        #define CY_SYS_BLESS_MT_CFG_REG                 (*(reg32 *) CYREG_BLE_BLESS_MT_CFG)
+        #define CY_SYS_BLESS_MT_CFG_PTR                 ( (reg32 *) CYREG_BLE_BLESS_MT_CFG)
+        #define CY_SYS_BLESS_MT_STATUS_REG              (*(reg32 *) CYREG_BLE_BLESS_MT_STATUS)
+        #define CY_SYS_BLESS_MT_STATUS_PTR              ( (reg32 *) CYREG_BLE_BLESS_MT_STATUS)
+        #define CY_SYS_BLESS_INTR_STAT_REG              (*(reg32 *) CYREG_BLE_BLESS_INTR_STAT)
+        #define CY_SYS_BLESS_INTR_STAT_PTR              ( (reg32 *) CYREG_BLE_BLESS_INTR_STAT)
+        #define CY_SYS_BLESS_INTR_MASK_REG              (*(reg32 *) CYREG_BLE_BLESS_INTR_MASK)
+        #define CY_SYS_BLESS_INTR_MASK_PTR              ( (reg32 *) CYREG_BLE_BLESS_INTR_MASK)
+        #define CY_SYS_BLESS_MT_DELAY_CFG_REG           (*(reg32 *) CYREG_BLE_BLESS_MT_DELAY_CFG)
+        #define CY_SYS_BLESS_MT_DELAY_CFG_PTR           ( (reg32 *) CYREG_BLE_BLESS_MT_DELAY_CFG)
+        #define CY_SYS_BLESS_MT_DELAY_CFG2_REG          (*(reg32 *) CYREG_BLE_BLESS_MT_DELAY_CFG2)
+        #define CY_SYS_BLESS_MT_DELAY_CFG2_PTR          ( (reg32 *) CYREG_BLE_BLESS_MT_DELAY_CFG2)
+        #define CY_SYS_BLESS_MT_DELAY_CFG3_REG          (*(reg32 *) CYREG_BLE_BLESS_MT_DELAY_CFG3)
+        #define CY_SYS_BLESS_MT_DELAY_CFG3_PTR          ( (reg32 *) CYREG_BLE_BLESS_MT_DELAY_CFG3)
+        
+        /* BLELL registers */
+        #define CY_SYS_BLELL_COMMAND_REG                (*(reg32 *) CYREG_BLE_BLELL_COMMAND_REGISTER)
+        #define CY_SYS_BLELL_COMMAND_PTR                ( (reg32 *) CYREG_BLE_BLELL_COMMAND_REGISTER)        
 
+    #else
         /* ECO Configuration Register */
         #define CY_SYS_CLK_ECO_CONFIG_REG        (*(reg32 *) CYREG_CLK_ECO_CONFIG)
         #define CY_SYS_CLK_ECO_CONFIG_PRT        ( (reg32 *) CYREG_CLK_ECO_CONFIG)

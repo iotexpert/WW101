@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file ADC_PM.c  
-* \version 1.10
+* \version 1.20
 *
 * \brief
 *  This file provides the power manager source code to the API for 

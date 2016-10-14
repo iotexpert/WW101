@@ -11,7 +11,7 @@ wiced_uart_config_t uart_config =
     .flow_control = FLOW_CONTROL_DISABLED,
 };
 
-/* Interrupt service routine for the buttonn */
+/* Interrupt service routine for the button */
 void button_isr(void* arg)
 {
 	static wiced_bool_t led1 = WICED_FALSE;

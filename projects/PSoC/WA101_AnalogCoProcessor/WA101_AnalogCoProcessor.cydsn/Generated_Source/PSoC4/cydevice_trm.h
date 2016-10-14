@@ -1,7 +1,7 @@
 /*******************************************************************************
 * File Name: cydevice_trm.h
 * 
-* PSoC Creator  3.3 CP3
+* PSoC Creator  4.0
 *
 * Description:
 * This file provides all of the address values for the entire PSoC device.
@@ -32,6 +32,9 @@
 #define CYFLD_SFLASH_ADCTRIM_3p84V_2_0__SIZE 0x00000005u
 #define CYFLD_SFLASH_ADCTRIM_2p4V_5_4__OFFSET 0x00000005u
 #define CYFLD_SFLASH_ADCTRIM_2p4V_5_4__SIZE 0x00000002u
+#define CYREG_SFLASH_SILICON_ID 0x0ffff144u
+#define CYFLD_SFLASH_ID__OFFSET 0x00000000u
+#define CYFLD_SFLASH_ID__SIZE 0x00000010u
 #define CYREG_SFLASH_HIB_KEY_DELAY 0x0ffff150u
 #define CYFLD_SFLASH_WAKEUP_HOLDOFF__OFFSET 0x00000000u
 #define CYFLD_SFLASH_WAKEUP_HOLDOFF__SIZE 0x0000000au

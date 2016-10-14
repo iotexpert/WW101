@@ -1,7 +1,7 @@
 /*******************************************************************************
 * File Name: project.h
 * 
-* PSoC Creator  3.3 CP3
+* PSoC Creator  4.0
 *
 * Description:
 * It contains references to all generated header files and should not be modified.
@@ -37,10 +37,24 @@
 #include "PVref.h"
 #include "Pin_Vref.h"
 #include "Pin_Vref_aliases.h"
-#include "P0_3.h"
-#include "P0_3_aliases.h"
 #include "GreenLED.h"
 #include "GreenLED_aliases.h"
+#include "P0_3.h"
+#include "P0_3_aliases.h"
+#include "RedLED.h"
+#include "RedLED_aliases.h"
+#include "BlueLED.h"
+#include "BlueLED_aliases.h"
+#include "CSD.h"
+#include "CSD_Control.h"
+#include "CSD_Filter.h"
+#include "CSD_Processing.h"
+#include "CSD_Sensing.h"
+#include "CSD_Structure.h"
+#include "CSD_Tuner.h"
+#include "CSD_Configuration.h"
+#include "CSD_SensingCSD_LL.h"
+#include "CSD_RegisterMap.h"
 #include "ADC_intSarClock.h"
 #include "ADC_IRQ.h"
 #include "ADC_intUabClock.h"
@@ -50,6 +64,7 @@
 #include "EZI2C_scl.h"
 #include "EZI2C_scl_aliases.h"
 #include "EZI2C_SCB_IRQ.h"
+#include "CSD_ISR.h"
 #include "CyFlash.h"
 #include "CyLib.h"
 #include "cyPm.h"
