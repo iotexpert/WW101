@@ -1,6 +1,6 @@
 #include "wiced.h"
 
-/* Interrupt service routine for the buttonn */
+/* Interrupt service routine for the button */
 void button_isr(void* arg)
 {
 	static wiced_bool_t led1 = WICED_FALSE;

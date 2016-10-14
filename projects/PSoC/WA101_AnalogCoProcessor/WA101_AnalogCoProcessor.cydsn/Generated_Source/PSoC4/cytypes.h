@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cytypes.h
-* \version 5.40
+* \version 5.50
 *
 * \brief CyTypes provides register access macros and approved types for use in
 * firmware.
@@ -121,6 +121,20 @@
     #define CY_PSOC4_4400 (0u != 0u)
 #endif  /* CYDEV_CHIP_MEMBER_4I */
 
+#ifdef CYDEV_CHIP_MEMBER_4O
+    #define CY_CCG3 (CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_4O)
+#else
+    #define CY_CCG3 (0u != 0u)
+#endif  /* CYDEV_CHIP_MEMBER_4I */
+
+#ifdef CYDEV_CHIP_MEMBER_4P
+    #define CY_PSOC4_4100BLII (CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_4P)
+    #define CY_PSOC4_4200BLII (CYDEV_CHIP_MEMBER_USED == CYDEV_CHIP_MEMBER_4P)
+#else
+    #define CY_PSOC4_4100BLII (0u != 0u)
+    #define CY_PSOC4_4200BLII (0u != 0u)
+#endif  /* CYDEV_CHIP_MEMBER_4P */
+
 
 #define CY_IP_HOBTO_DEVICE      (!(0 == 1))
 
@@ -230,8 +244,10 @@
     /* Presence of the BLESS IP block */
     #if (CY_IP_HOBTO_DEVICE)
         #define CY_IP_BLESS             (0 != 0)
+        #define CY_IP_BLESSV3           (CYIPBLOCK_m0s8bless_VERSION == 3)
     #else
         #define CY_IP_BLESS             (0 != 0)
+        #define CY_IP_BLESSV3           (0 != 0)
     #endif  /* (CY_IP_HOBTO_DEVICE) */
 
 
@@ -261,21 +277,29 @@
     /* Watch Crystal Oscillator (WCO) is present (32kHz) */
     #if (CY_IP_HOBTO_DEVICE)
         #if (CY_IP_BLESS)
-            #define CY_IP_WCO_BLESS         (0 == 0)
             #define CY_IP_WCO_WCO           (0 != 0)
             #define CY_IP_WCO_SRSSV2        (0 != 0)
+            #if (CY_IP_BLESSV3)
+                #define CY_IP_WCO_WCOV2     (0 == 0)
+                #define CY_IP_WCO_BLESS     (0 != 0)                
+            #else
+                #define CY_IP_WCO_WCOV2     (0 != 0)
+                #define CY_IP_WCO_BLESS     (0 == 0)
+            #endif
         #else
             #define CY_IP_WCO_BLESS         (0 != 0)
             #define CY_IP_WCO_WCO           (1 == 1)
+            #define CY_IP_WCO_WCOV2         (0 != 0)
             #define CY_IP_WCO_SRSSV2        (-1 == 1)
         #endif  /* (CY_IP_BLESS) */
     #else
         #define CY_IP_WCO_BLESS             (0 != 0)
         #define CY_IP_WCO_WCO               (0 != 0)
+        #define CY_IP_WCO_WCOV2             (0 != 0)
         #define CY_IP_WCO_SRSSV2            (0 != 0)
     #endif  /* (CY_IP_HOBTO_DEVICE) */
 
-    #define CY_IP_WCO   (CY_IP_WCO_BLESS || CY_IP_WCO_WCO || CY_IP_WCO_SRSSV2)
+    #define CY_IP_WCO   (CY_IP_WCO_BLESS || CY_IP_WCO_WCO || CY_IP_WCO_WCOV2 || CY_IP_WCO_SRSSV2)
 
 
     /* PLL is present */
@@ -294,18 +318,26 @@
     /* External Crystal Oscillator is present (high frequency) */
     #if (CY_IP_HOBTO_DEVICE)
         #if (CY_IP_BLESS)
-            #define CY_IP_ECO_BLESS         (0 == 0)
             #define CY_IP_ECO_SRSSV2        (0 != 0)
+            #if (CY_IP_BLESSV3)
+                #define CY_IP_ECO_BLESS     (0 != 0)
+                #define CY_IP_ECO_BLESSV3   (0 == 0)
+            #else
+                #define CY_IP_ECO_BLESS     (0 == 0)
+                #define CY_IP_ECO_BLESSV3   (0 != 0)
+            #endif
         #else
             #define CY_IP_ECO_BLESS         (0 != 0)
+            #define CY_IP_ECO_BLESSV3       (0 != 0)
             #define CY_IP_ECO_SRSSV2        (-1 == 1)
         #endif  /* (CY_IP_BLESS) */
     #else
         #define CY_IP_ECO_BLESS             (0 != 0)
+        #define CY_IP_ECO_BLESSV3           (0 != 0)
         #define CY_IP_ECO_SRSSV2            (0 != 0)
     #endif  /* (CY_IP_HOBTO_DEVICE) */
 
-    #define CY_IP_ECO   (CY_IP_ECO_BLESS || CY_IP_ECO_SRSSV2)
+    #define CY_IP_ECO   (CY_IP_ECO_BLESS || CY_IP_ECO_SRSSV2 || CY_IP_ECO_BLESSV3)
 
 
     /* Clock Source clk_lf implemented in SysTick Counter. When 0, not implemented, 1=implemented */
@@ -399,7 +431,8 @@
 #define CY_BOOT_5_20            (520u)
 #define CY_BOOT_5_30            (530u)
 #define CY_BOOT_5_40            (540u)
-#define CY_BOOT_VERSION         (CY_BOOT_5_40)
+#define CY_BOOT_5_50            (550u)
+#define CY_BOOT_VERSION         (CY_BOOT_5_50)
 
 
 /*******************************************************************************

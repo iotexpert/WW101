@@ -1,0 +1,4582 @@
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"CSD_Structure.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DsParseParamId,"ax",%progbits
+  18              		.align	2
+  19              		.code	16
+  20              		.thumb_func
+  21              		.type	DsParseParamId, %function
+  22              	DsParseParamId:
+  23              	.LFB2:
+  24              		.file 1 "Generated_Source\\PSoC4\\CSD_Structure.c"
+   1:Generated_Source\PSoC4/CSD_Structure.c **** /***************************************************************************//**
+   2:Generated_Source\PSoC4/CSD_Structure.c **** * \file CSD_Structure.c
+   3:Generated_Source\PSoC4/CSD_Structure.c **** * \version 3.10
+   4:Generated_Source\PSoC4/CSD_Structure.c **** *
+   5:Generated_Source\PSoC4/CSD_Structure.c **** * \brief
+   6:Generated_Source\PSoC4/CSD_Structure.c **** *   This file defines the data structure global variables and provides implementation
+   7:Generated_Source\PSoC4/CSD_Structure.c **** *   for the high-level and low-level APIs of the Data Structure module.
+   8:Generated_Source\PSoC4/CSD_Structure.c **** *
+   9:Generated_Source\PSoC4/CSD_Structure.c **** * \see CapSense P4 v3.10 Datasheet
+  10:Generated_Source\PSoC4/CSD_Structure.c **** *
+  11:Generated_Source\PSoC4/CSD_Structure.c **** *//*****************************************************************************
+  12:Generated_Source\PSoC4/CSD_Structure.c **** * Copyright (2016), Cypress Semiconductor Corporation.
+  13:Generated_Source\PSoC4/CSD_Structure.c **** ********************************************************************************
+  14:Generated_Source\PSoC4/CSD_Structure.c **** * This software is owned by Cypress Semiconductor Corporation (Cypress) and is
+  15:Generated_Source\PSoC4/CSD_Structure.c **** * protected by and subject to worldwide patent protection (United States and
+  16:Generated_Source\PSoC4/CSD_Structure.c **** * foreign), United States copyright laws and international treaty provisions.
+  17:Generated_Source\PSoC4/CSD_Structure.c **** * Cypress hereby grants to licensee a personal, non-exclusive, non-transferable
+  18:Generated_Source\PSoC4/CSD_Structure.c **** * license to copy, use, modify, create derivative works of, and compile the
+  19:Generated_Source\PSoC4/CSD_Structure.c **** * Cypress Source Code and derivative works for the sole purpose of creating
+  20:Generated_Source\PSoC4/CSD_Structure.c **** * custom software in support of licensee product to be used only in conjunction
+  21:Generated_Source\PSoC4/CSD_Structure.c **** * with a Cypress integrated circuit as specified in the applicable agreement.
+  22:Generated_Source\PSoC4/CSD_Structure.c **** * Any reproduction, modification, translation, compilation, or representation of
+  23:Generated_Source\PSoC4/CSD_Structure.c **** * this software except as specified above is prohibited without the express
+  24:Generated_Source\PSoC4/CSD_Structure.c **** * written permission of Cypress.
+  25:Generated_Source\PSoC4/CSD_Structure.c **** *
+  26:Generated_Source\PSoC4/CSD_Structure.c **** * Disclaimer: CYPRESS MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH
+  27:Generated_Source\PSoC4/CSD_Structure.c **** * REGARD TO THIS MATERIAL, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  28:Generated_Source\PSoC4/CSD_Structure.c **** * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  29:Generated_Source\PSoC4/CSD_Structure.c **** * Cypress reserves the right to make changes without further notice to the
+  30:Generated_Source\PSoC4/CSD_Structure.c **** * materials described herein. Cypress does not assume any liability arising out
+  31:Generated_Source\PSoC4/CSD_Structure.c **** * of the application or use of any product or circuit described herein. Cypress
+  32:Generated_Source\PSoC4/CSD_Structure.c **** * does not authorize its products for use as critical components in life-support
+  33:Generated_Source\PSoC4/CSD_Structure.c **** * systems where a malfunction or failure may reasonably be expected to result in
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 2
+
+
+  34:Generated_Source\PSoC4/CSD_Structure.c **** * significant injury to the user. The inclusion of Cypress' product in a life-
+  35:Generated_Source\PSoC4/CSD_Structure.c **** * support systems application implies that the manufacturer assumes all risk of
+  36:Generated_Source\PSoC4/CSD_Structure.c **** * such use and in doing so indemnifies Cypress against all charges. Use may be
+  37:Generated_Source\PSoC4/CSD_Structure.c **** * limited by and subject to the applicable Cypress software license agreement.
+  38:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+  39:Generated_Source\PSoC4/CSD_Structure.c **** 
+  40:Generated_Source\PSoC4/CSD_Structure.c **** #include <cytypes.h>
+  41:Generated_Source\PSoC4/CSD_Structure.c **** #include "CyLib.h"
+  42:Generated_Source\PSoC4/CSD_Structure.c **** #include "CSD_Structure.h"
+  43:Generated_Source\PSoC4/CSD_Structure.c **** #include "CSD_Configuration.h"
+  44:Generated_Source\PSoC4/CSD_Structure.c **** 
+  45:Generated_Source\PSoC4/CSD_Structure.c **** #if (0u != CSD_ADC_EN)
+  46:Generated_Source\PSoC4/CSD_Structure.c ****     #include "CSD_Adc.h"
+  47:Generated_Source\PSoC4/CSD_Structure.c **** #endif /* (0u != CSD_ADC_EN) */
+  48:Generated_Source\PSoC4/CSD_Structure.c **** 
+  49:Generated_Source\PSoC4/CSD_Structure.c **** #if (CSD_ENABLE == CSD_SELF_TEST_EN)
+  50:Generated_Source\PSoC4/CSD_Structure.c ****     #include "CSD_SelfTest.h"
+  51:Generated_Source\PSoC4/CSD_Structure.c **** #endif
+  52:Generated_Source\PSoC4/CSD_Structure.c **** 
+  53:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+  54:Generated_Source\PSoC4/CSD_Structure.c **** * Define the RAM Data Structure variables and their init data in flash
+  55:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+  56:Generated_Source\PSoC4/CSD_Structure.c **** /**
+  57:Generated_Source\PSoC4/CSD_Structure.c **** * \if SECTION_GLOBAL_VARIABLES
+  58:Generated_Source\PSoC4/CSD_Structure.c **** * \addtogroup group_global_variables
+  59:Generated_Source\PSoC4/CSD_Structure.c **** * \{
+  60:Generated_Source\PSoC4/CSD_Structure.c **** */
+  61:Generated_Source\PSoC4/CSD_Structure.c **** 
+  62:Generated_Source\PSoC4/CSD_Structure.c **** /**
+  63:Generated_Source\PSoC4/CSD_Structure.c **** * Variable that contains CSD configuration, settings and scanning results.
+  64:Generated_Source\PSoC4/CSD_Structure.c **** * CSD_dsRam represents RAM Data Structure.
+  65:Generated_Source\PSoC4/CSD_Structure.c **** */
+  66:Generated_Source\PSoC4/CSD_Structure.c **** CSD_RAM_STRUCT CSD_dsRam;
+  67:Generated_Source\PSoC4/CSD_Structure.c **** /** \}
+  68:Generated_Source\PSoC4/CSD_Structure.c **** * \endif */
+  69:Generated_Source\PSoC4/CSD_Structure.c **** 
+  70:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+  71:Generated_Source\PSoC4/CSD_Structure.c **** * Declare Widget's De-bounce Counters
+  72:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+  73:Generated_Source\PSoC4/CSD_Structure.c **** static uint8 CSD_debounceButton0[CSD_BUTTON0_NUM_SENSORS];
+  74:Generated_Source\PSoC4/CSD_Structure.c **** 
+  75:Generated_Source\PSoC4/CSD_Structure.c **** 
+  76:Generated_Source\PSoC4/CSD_Structure.c **** /***************************************************************************//**
+  77:Generated_Source\PSoC4/CSD_Structure.c **** * Declare Filter History Objects
+  78:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+  79:Generated_Source\PSoC4/CSD_Structure.c **** static CSD_REGULAR_FLTR_STRUCT CSD_fltrHistoryButton0[CSD_BUTTON0_NUM_SENSORS];
+  80:Generated_Source\PSoC4/CSD_Structure.c **** 
+  81:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+  82:Generated_Source\PSoC4/CSD_Structure.c **** * Define and initialize the Flash Data Structure
+  83:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+  84:Generated_Source\PSoC4/CSD_Structure.c **** 
+  85:Generated_Source\PSoC4/CSD_Structure.c **** /**
+  86:Generated_Source\PSoC4/CSD_Structure.c **** * \if SECTION_API_CONSTANTS
+  87:Generated_Source\PSoC4/CSD_Structure.c **** * \addtogroup group_api_constants
+  88:Generated_Source\PSoC4/CSD_Structure.c **** * \{
+  89:Generated_Source\PSoC4/CSD_Structure.c **** */
+  90:Generated_Source\PSoC4/CSD_Structure.c **** 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 3
+
+
+  91:Generated_Source\PSoC4/CSD_Structure.c **** /**
+  92:Generated_Source\PSoC4/CSD_Structure.c **** * Constant for the FLASH Data Structure
+  93:Generated_Source\PSoC4/CSD_Structure.c **** */
+  94:Generated_Source\PSoC4/CSD_Structure.c **** const CSD_FLASH_STRUCT CSD_dsFlash =
+  95:Generated_Source\PSoC4/CSD_Structure.c **** {
+  96:Generated_Source\PSoC4/CSD_Structure.c ****     /* Flash Widget Initialization Data */
+  97:Generated_Source\PSoC4/CSD_Structure.c ****     {
+  98:Generated_Source\PSoC4/CSD_Structure.c ****         { /* Button0 */
+  99:Generated_Source\PSoC4/CSD_Structure.c ****             &CSD_ioList[0u],
+ 100:Generated_Source\PSoC4/CSD_Structure.c ****             (void *)&CSD_dsRam.wdgtList.button0,
+ 101:Generated_Source\PSoC4/CSD_Structure.c ****             CSD_dsRam.snsList.button0,
+ 102:Generated_Source\PSoC4/CSD_Structure.c ****             (void *)CSD_fltrHistoryButton0,
+ 103:Generated_Source\PSoC4/CSD_Structure.c ****             CSD_debounceButton0,
+ 104:Generated_Source\PSoC4/CSD_Structure.c ****             CSD_BUTTON0_STATIC_CONFIG,
+ 105:Generated_Source\PSoC4/CSD_Structure.c ****             CSD_BUTTON0_NUM_SENSORS,
+ 106:Generated_Source\PSoC4/CSD_Structure.c ****             (uint8)CSD_WD_BUTTON_E,
+ 107:Generated_Source\PSoC4/CSD_Structure.c ****             CSD_BUTTON0_NUM_SENSORS,
+ 108:Generated_Source\PSoC4/CSD_Structure.c ****         },
+ 109:Generated_Source\PSoC4/CSD_Structure.c ****     },
+ 110:Generated_Source\PSoC4/CSD_Structure.c **** };
+ 111:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 112:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 113:Generated_Source\PSoC4/CSD_Structure.c **** /**
+ 114:Generated_Source\PSoC4/CSD_Structure.c **** * Array of pointers to the electrode specific register
+ 115:Generated_Source\PSoC4/CSD_Structure.c **** */
+ 116:Generated_Source\PSoC4/CSD_Structure.c **** const CSD_FLASH_IO_STRUCT CSD_ioList[CSD_TOTAL_ELECTRODES] =
+ 117:Generated_Source\PSoC4/CSD_Structure.c **** {
+ 118:Generated_Source\PSoC4/CSD_Structure.c ****     { /* 0: Button0_Sns0 */
+ 119:Generated_Source\PSoC4/CSD_Structure.c ****         (reg32 *)CSD_Sns__0__HSIOM,
+ 120:Generated_Source\PSoC4/CSD_Structure.c ****         (reg32 *)CSD_Sns__0__PC,
+ 121:Generated_Source\PSoC4/CSD_Structure.c ****         (reg32 *)CSD_Sns__0__DR,
+ 122:Generated_Source\PSoC4/CSD_Structure.c ****         (reg32 *)CSD_Sns__0__PS,
+ 123:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_Sns__0__HSIOM_MASK,
+ 124:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_Sns__0__MASK,
+ 125:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_Sns__0__HSIOM_SHIFT,
+ 126:Generated_Source\PSoC4/CSD_Structure.c ****         (uint8)CSD_Sns__0__SHIFT,
+ 127:Generated_Source\PSoC4/CSD_Structure.c ****         (uint8)CSD_Sns__0__SHIFT * 3u,
+ 128:Generated_Source\PSoC4/CSD_Structure.c ****     },
+ 129:Generated_Source\PSoC4/CSD_Structure.c ****     { /* 1: Button0_Sns1 */
+ 130:Generated_Source\PSoC4/CSD_Structure.c ****         (reg32 *)CSD_Sns__1__HSIOM,
+ 131:Generated_Source\PSoC4/CSD_Structure.c ****         (reg32 *)CSD_Sns__1__PC,
+ 132:Generated_Source\PSoC4/CSD_Structure.c ****         (reg32 *)CSD_Sns__1__DR,
+ 133:Generated_Source\PSoC4/CSD_Structure.c ****         (reg32 *)CSD_Sns__1__PS,
+ 134:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_Sns__1__HSIOM_MASK,
+ 135:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_Sns__1__MASK,
+ 136:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_Sns__1__HSIOM_SHIFT,
+ 137:Generated_Source\PSoC4/CSD_Structure.c ****         (uint8)CSD_Sns__1__SHIFT,
+ 138:Generated_Source\PSoC4/CSD_Structure.c ****         (uint8)CSD_Sns__1__SHIFT * 3u,
+ 139:Generated_Source\PSoC4/CSD_Structure.c ****     },
+ 140:Generated_Source\PSoC4/CSD_Structure.c **** };
+ 141:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 142:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 143:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 144:Generated_Source\PSoC4/CSD_Structure.c **** /** \}
+ 145:Generated_Source\PSoC4/CSD_Structure.c **** * \endif */
+ 146:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 147:Generated_Source\PSoC4/CSD_Structure.c **** /* Initialization data for RAM widget list */
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 4
+
+
+ 148:Generated_Source\PSoC4/CSD_Structure.c **** static const CSD_RAM_WD_LIST_STRUCT CSD_ramWidgetInit =
+ 149:Generated_Source\PSoC4/CSD_Structure.c **** {
+ 150:Generated_Source\PSoC4/CSD_Structure.c ****     { /* Button0 */
+ 151:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_BUTTON0_RESOLUTION,
+ 152:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_BUTTON0_FINGER_TH,
+ 153:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_BUTTON0_NOISE_TH,
+ 154:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_BUTTON0_NNOISE_TH,
+ 155:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_BUTTON0_HYSTERESIS,
+ 156:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_BUTTON0_ON_DEBOUNCE,
+ 157:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_BUTTON0_LOW_BSLN_RST,
+ 158:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_BUTTON0_BSLN_COEFF,
+ 159:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 160:Generated_Source\PSoC4/CSD_Structure.c ****             CSD_BUTTON0_IDAC_MOD0,
+ 161:Generated_Source\PSoC4/CSD_Structure.c ****         },
+ 162:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_BUTTON0_SNS_CLK,
+ 163:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_BUTTON0_SNS_CLK_SOURCE,
+ 164:Generated_Source\PSoC4/CSD_Structure.c ****     },
+ 165:Generated_Source\PSoC4/CSD_Structure.c **** };
+ 166:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 167:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 168:Generated_Source\PSoC4/CSD_Structure.c **** /* IDAC Initialization Data */
+ 169:Generated_Source\PSoC4/CSD_Structure.c **** static const uint8 CSD_ramIdacInit[CSD_TOTAL_SENSORS] =
+ 170:Generated_Source\PSoC4/CSD_Structure.c **** {
+ 171:Generated_Source\PSoC4/CSD_Structure.c ****     /* Button0 */
+ 172:Generated_Source\PSoC4/CSD_Structure.c ****     CSD_BUTTON0_SNS0_IDAC_COMP0,
+ 173:Generated_Source\PSoC4/CSD_Structure.c ****     CSD_BUTTON0_SNS1_IDAC_COMP0,
+ 174:Generated_Source\PSoC4/CSD_Structure.c **** };
+ 175:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 176:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 177:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+ 178:Generated_Source\PSoC4/CSD_Structure.c **** * Define internal data types and statements
+ 179:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+ 180:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_TYPE_OFFSET       (30u)
+ 181:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_TYPE_MASK         (3Lu << PARAM_TYPE_OFFSET)
+ 182:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_RWBIT_OFFSET      (29u)
+ 183:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_RWBIT_MASK        (1Lu << PARAM_RWBIT_OFFSET)
+ 184:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_FBIT_OFFSET       (28u)
+ 185:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_FBIT_MASK         (1Lu << PARAM_FBIT_OFFSET)
+ 186:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_UBIT_OFFSET       (23u)
+ 187:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_UBIT_MASK         (1Lu << PARAM_UBIT_OFFSET)
+ 188:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_WDID_OFFSET       (16u)
+ 189:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_WDID_MASK         (0x7FLu << PARAM_WDID_OFFSET)
+ 190:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_CRC_OFFSET        (24u)
+ 191:Generated_Source\PSoC4/CSD_Structure.c **** #define PARAM_CRC_MASK          (0x0FLu << PARAM_CRC_OFFSET)
+ 192:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 193:Generated_Source\PSoC4/CSD_Structure.c **** /* Define align masks for uint16 and uint32 */
+ 194:Generated_Source\PSoC4/CSD_Structure.c **** #define UINT16_ALIGN_MASK       (1Lu)
+ 195:Generated_Source\PSoC4/CSD_Structure.c **** #define UINT32_ALIGN_MASK       (3Lu)
+ 196:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 197:Generated_Source\PSoC4/CSD_Structure.c **** /* Define supported parameter types */
+ 198:Generated_Source\PSoC4/CSD_Structure.c **** #define DS_PARAM_TYPE_UINT8     (0x01u)
+ 199:Generated_Source\PSoC4/CSD_Structure.c **** #define DS_PARAM_TYPE_UINT16    (0x02u)
+ 200:Generated_Source\PSoC4/CSD_Structure.c **** #define DS_PARAM_TYPE_UINT32    (0x03u)
+ 201:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 202:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 203:Generated_Source\PSoC4/CSD_Structure.c **** /* Define PARAM_ID structure */
+ 204:Generated_Source\PSoC4/CSD_Structure.c **** typedef struct
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 5
+
+
+ 205:Generated_Source\PSoC4/CSD_Structure.c **** {
+ 206:Generated_Source\PSoC4/CSD_Structure.c ****     uint16 offset;      /* parameter offset                     */
+ 207:Generated_Source\PSoC4/CSD_Structure.c ****     uint8  widgetId;    /* widget Id parameter belongs to       */
+ 208:Generated_Source\PSoC4/CSD_Structure.c ****     uint8  affectsCrc;  /* parameter affects widget CRC         */
+ 209:Generated_Source\PSoC4/CSD_Structure.c ****     uint8  crc;         /* parameter CRC                        */
+ 210:Generated_Source\PSoC4/CSD_Structure.c ****     uint8  flash;       /* parameter located in FLASH flag      */
+ 211:Generated_Source\PSoC4/CSD_Structure.c ****     uint8  rw;          /* parameter is read/write flag         */
+ 212:Generated_Source\PSoC4/CSD_Structure.c ****     uint8  type;        /* parameter type: uint8/uint16/uint32  */
+ 213:Generated_Source\PSoC4/CSD_Structure.c **** } PARAM_ID_STRUCT;
+ 214:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 215:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 216:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+ 217:Generated_Source\PSoC4/CSD_Structure.c **** * Static Function Prototypes
+ 218:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+ 219:Generated_Source\PSoC4/CSD_Structure.c **** /**
+ 220:Generated_Source\PSoC4/CSD_Structure.c **** * \if SECTION_CAPSENSE_INTERNAL
+ 221:Generated_Source\PSoC4/CSD_Structure.c **** * \addtogroup group_capsense_internal
+ 222:Generated_Source\PSoC4/CSD_Structure.c **** * \{
+ 223:Generated_Source\PSoC4/CSD_Structure.c **** */
+ 224:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 225:Generated_Source\PSoC4/CSD_Structure.c **** static cystatus DsParseParamId(uint32 paramId, PARAM_ID_STRUCT *pData);
+ 226:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 227:Generated_Source\PSoC4/CSD_Structure.c **** /** \}
+ 228:Generated_Source\PSoC4/CSD_Structure.c **** * \endif */
+ 229:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 230:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 231:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+ 232:Generated_Source\PSoC4/CSD_Structure.c **** * Function Name: CSD_DsInitialize
+ 233:Generated_Source\PSoC4/CSD_Structure.c **** ****************************************************************************//**
+ 234:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 235:Generated_Source\PSoC4/CSD_Structure.c **** * \brief
+ 236:Generated_Source\PSoC4/CSD_Structure.c **** *   This function initializes the Data Structure storage.
+ 237:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 238:Generated_Source\PSoC4/CSD_Structure.c **** * \details
+ 239:Generated_Source\PSoC4/CSD_Structure.c **** *   This function copies the default widget configuration parameters 
+ 240:Generated_Source\PSoC4/CSD_Structure.c **** *   from the Flash storage into the RAM Data Structure.
+ 241:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 242:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+ 243:Generated_Source\PSoC4/CSD_Structure.c **** void CSD_DsInitialize(void)
+ 244:Generated_Source\PSoC4/CSD_Structure.c **** {
+ 245:Generated_Source\PSoC4/CSD_Structure.c ****     #if (0u != CSD_CSX_EN) || (0 != CSD_CSD_IDAC_COMP_EN)
+ 246:Generated_Source\PSoC4/CSD_Structure.c ****         uint32 snsId;
+ 247:Generated_Source\PSoC4/CSD_Structure.c ****         uint32 wdgtId;
+ 248:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 249:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_RAM_SNS_STRUCT * ptrSns;
+ 250:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_FLASH_WD_STRUCT const * ptrFlashWdgt;
+ 251:Generated_Source\PSoC4/CSD_Structure.c ****         uint8 const * ptrIdacInit = CSD_ramIdacInit;
+ 252:Generated_Source\PSoC4/CSD_Structure.c ****     #endif        
+ 253:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 254:Generated_Source\PSoC4/CSD_Structure.c ****     /* Reset RAM data structure content */
+ 255:Generated_Source\PSoC4/CSD_Structure.c ****     (void)memset(&CSD_dsRam, 0, sizeof(CSD_dsRam));
+ 256:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 257:Generated_Source\PSoC4/CSD_Structure.c ****     /* Initialize configId and deviceId registers */
+ 258:Generated_Source\PSoC4/CSD_Structure.c ****     CSD_dsRam.configId = CSD_CONFIG_ID;
+ 259:Generated_Source\PSoC4/CSD_Structure.c ****     CSD_dsRam.deviceId = CSD_DEVICE_ID;
+ 260:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 261:Generated_Source\PSoC4/CSD_Structure.c ****     /* Initialize global RAM data */
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 6
+
+
+ 262:Generated_Source\PSoC4/CSD_Structure.c ****     CSD_dsRam.csd0Config = CSD_CSD0_CONFIG;
+ 263:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 264:Generated_Source\PSoC4/CSD_Structure.c ****     #if ((0u != CSD_CSD2X_EN) || (0u != CSD_CSX2X_EN))
+ 265:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_dsRam.csd1Config = CSD_CSD1_CONFIG;
+ 266:Generated_Source\PSoC4/CSD_Structure.c ****     #endif /* #if ((0u != CSD_CSD2X_EN) || (0u != CSD_CSX2X_EN)) */
+ 267:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 268:Generated_Source\PSoC4/CSD_Structure.c ****     #if (0u != CSD_TOTAL_CSD_WIDGETS)
+ 269:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_dsRam.modCsdClk = CSD_CSD_SCANSPEED_DIVIDER;
+ 270:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 271:Generated_Source\PSoC4/CSD_Structure.c ****         #if (0u != CSD_CSD_COMMON_SNS_CLK_EN)
+ 272:Generated_Source\PSoC4/CSD_Structure.c ****             CSD_dsRam.snsCsdClk = CSD_CSD_SNS_CLK_DIVIDER;
+ 273:Generated_Source\PSoC4/CSD_Structure.c ****         #endif /* #if (0u != CSD_CSD_COMMON_SNS_CLK_EN) */
+ 274:Generated_Source\PSoC4/CSD_Structure.c ****     #endif /* #if (0u != CSD_TOTAL_CSD_WIDGETS) */
+ 275:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 276:Generated_Source\PSoC4/CSD_Structure.c ****     #if (0u != CSD_CSX_EN)
+ 277:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_dsRam.modCsxClk = CSD_CSX_SCANSPEED_DIVIDER;
+ 278:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 279:Generated_Source\PSoC4/CSD_Structure.c ****         #if (0u != CSD_CSX_COMMON_TX_CLK_EN)
+ 280:Generated_Source\PSoC4/CSD_Structure.c ****             CSD_dsRam.snsCsxClk = CSD_CSX_TX_CLK_DIVIDER;
+ 281:Generated_Source\PSoC4/CSD_Structure.c ****         #endif /* #if (0u != CSD_CSX_COMMON_TX_CLK_EN) */
+ 282:Generated_Source\PSoC4/CSD_Structure.c ****     #endif /* #if (0u != CSD_CSX_EN) */
+ 283:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 284:Generated_Source\PSoC4/CSD_Structure.c ****     #if (0u != CSD_SELF_TEST_EN)
+ 285:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_dsRam.glbCrc = CSD_GLB_CRC;
+ 286:Generated_Source\PSoC4/CSD_Structure.c ****     #endif /* #if (0u != CSD_SELF_TEST_EN) */
+ 287:Generated_Source\PSoC4/CSD_Structure.c ****    
+ 288:Generated_Source\PSoC4/CSD_Structure.c ****     /* Initialize RAM widget data */
+ 289:Generated_Source\PSoC4/CSD_Structure.c ****     CSD_dsRam.wdgtList = CSD_ramWidgetInit;
+ 290:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 291:Generated_Source\PSoC4/CSD_Structure.c ****     #if (0u != CSD_CSX_EN) || (0 != CSD_CSD_IDAC_COMP_EN)
+ 292:Generated_Source\PSoC4/CSD_Structure.c ****         /* Initialize IDAC data */
+ 293:Generated_Source\PSoC4/CSD_Structure.c ****         ptrFlashWdgt = CSD_dsFlash.wdgtArray;
+ 294:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 295:Generated_Source\PSoC4/CSD_Structure.c ****         for (wdgtId = CSD_TOTAL_WIDGETS; wdgtId-- > 0u; )
+ 296:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 297:Generated_Source\PSoC4/CSD_Structure.c ****             ptrSns = ptrFlashWdgt->ptr2SnsRam;
+ 298:Generated_Source\PSoC4/CSD_Structure.c ****                 
+ 299:Generated_Source\PSoC4/CSD_Structure.c ****             for (snsId = CSD_GET_SNS_CNT_BY_PTR(ptrFlashWdgt); snsId-- > 0u;)
+ 300:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 301:Generated_Source\PSoC4/CSD_Structure.c ****                 ptrSns->idacComp[0u] = *ptrIdacInit;
+ 302:Generated_Source\PSoC4/CSD_Structure.c ****                 ptrIdacInit++;
+ 303:Generated_Source\PSoC4/CSD_Structure.c ****                 
+ 304:Generated_Source\PSoC4/CSD_Structure.c ****                 #if (0u != CSD_MULTI_FREQ_SCAN_EN)
+ 305:Generated_Source\PSoC4/CSD_Structure.c ****                     ptrSns->idacComp[1u] = *ptrIdacInit;
+ 306:Generated_Source\PSoC4/CSD_Structure.c ****                     ptrIdacInit++;
+ 307:Generated_Source\PSoC4/CSD_Structure.c ****                     
+ 308:Generated_Source\PSoC4/CSD_Structure.c ****                     ptrSns->idacComp[2u] = *ptrIdacInit;
+ 309:Generated_Source\PSoC4/CSD_Structure.c ****                     ptrIdacInit++;
+ 310:Generated_Source\PSoC4/CSD_Structure.c ****                 #endif /* #if (0u != CSD_MULTI_FREQ_SCAN_EN) */
+ 311:Generated_Source\PSoC4/CSD_Structure.c ****                 
+ 312:Generated_Source\PSoC4/CSD_Structure.c ****                 ptrSns++;
+ 313:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 314:Generated_Source\PSoC4/CSD_Structure.c ****             
+ 315:Generated_Source\PSoC4/CSD_Structure.c ****             ptrFlashWdgt++; /* Move to next widget */
+ 316:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 317:Generated_Source\PSoC4/CSD_Structure.c ****     #endif /*(0u != CSD_CSX_EN) || (0 != CSD_CSD_IDAC_COMP_EN)*/
+ 318:Generated_Source\PSoC4/CSD_Structure.c ****     
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 7
+
+
+ 319:Generated_Source\PSoC4/CSD_Structure.c ****     #if (0u != CSD_ADC_EN)
+ 320:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_AdcDsInitialize();
+ 321:Generated_Source\PSoC4/CSD_Structure.c ****     #endif /* (0u != CSD_ADC_EN) */
+ 322:Generated_Source\PSoC4/CSD_Structure.c **** }
+ 323:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 324:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 325:Generated_Source\PSoC4/CSD_Structure.c **** #if (0u != CSD_ADC_EN)
+ 326:Generated_Source\PSoC4/CSD_Structure.c ****     /*******************************************************************************
+ 327:Generated_Source\PSoC4/CSD_Structure.c ****     * Function Name: CSD_AdcDsInitialize
+ 328:Generated_Source\PSoC4/CSD_Structure.c ****     ****************************************************************************//**
+ 329:Generated_Source\PSoC4/CSD_Structure.c ****     *
+ 330:Generated_Source\PSoC4/CSD_Structure.c ****     * \brief
+ 331:Generated_Source\PSoC4/CSD_Structure.c ****     *   Configures the initial Adc datastructure members.
+ 332:Generated_Source\PSoC4/CSD_Structure.c ****     *
+ 333:Generated_Source\PSoC4/CSD_Structure.c ****     *******************************************************************************/
+ 334:Generated_Source\PSoC4/CSD_Structure.c ****     void CSD_AdcDsInitialize(void)
+ 335:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 336:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_dsRam.adcResolution = CSD_ADC_RESOLUTION;
+ 337:Generated_Source\PSoC4/CSD_Structure.c ****         CSD_dsRam.adcIdac = (uint8)(CSD_ADC_IDACVAL);
+ 338:Generated_Source\PSoC4/CSD_Structure.c ****     }
+ 339:Generated_Source\PSoC4/CSD_Structure.c **** #endif /* (0u != CSD_ADC_EN) */
+ 340:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 341:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 342:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+ 343:Generated_Source\PSoC4/CSD_Structure.c **** * Function Name: DsParseParamId
+ 344:Generated_Source\PSoC4/CSD_Structure.c **** ****************************************************************************//**
+ 345:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 346:Generated_Source\PSoC4/CSD_Structure.c **** * \brief
+ 347:Generated_Source\PSoC4/CSD_Structure.c **** *   This function parses the parameter ID and checks its correctness.
+ 348:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 349:Generated_Source\PSoC4/CSD_Structure.c **** * \details
+ 350:Generated_Source\PSoC4/CSD_Structure.c **** *   This function checks the parameter CRC if the self-test is enabled, 
+ 351:Generated_Source\PSoC4/CSD_Structure.c **** *   validates the offset value and parameter type.
+ 352:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 353:Generated_Source\PSoC4/CSD_Structure.c **** * \param paramId The parameter to parse.
+ 354:Generated_Source\PSoC4/CSD_Structure.c **** * \param pData   The pointer to the structure that will hold parsed data.
+ 355:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 356:Generated_Source\PSoC4/CSD_Structure.c **** * \return CYRET_SUCCESS     If the parameter is valid
+ 357:Generated_Source\PSoC4/CSD_Structure.c **** *         CYRET_BAD_PARAM   If  the parameter is invalid
+ 358:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 359:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+ 360:Generated_Source\PSoC4/CSD_Structure.c **** static cystatus DsParseParamId(uint32 paramId, PARAM_ID_STRUCT *pData)
+ 361:Generated_Source\PSoC4/CSD_Structure.c **** {
+  25              		.loc 1 361 0
+  26              		.cfi_startproc
+  27              	.LVL0:
+  28 0000 30B5     		push	{r4, r5, lr}
+  29              		.cfi_def_cfa_offset 12
+  30              		.cfi_offset 4, -12
+  31              		.cfi_offset 5, -8
+  32              		.cfi_offset 14, -4
+  33              	.LVL1:
+ 362:Generated_Source\PSoC4/CSD_Structure.c ****     cystatus result = CYRET_SUCCESS;
+ 363:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 364:Generated_Source\PSoC4/CSD_Structure.c ****     #if (0u != CSD_SELF_TEST_EN)
+ 365:Generated_Source\PSoC4/CSD_Structure.c ****         const uint8 crcTable[] =
+ 366:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 8
+
+
+ 367:Generated_Source\PSoC4/CSD_Structure.c ****             0x00u, 0x09u, 0x0Bu, 0x02u, 0x0Fu, 0x06u, 0x04u, 0x0Du,
+ 368:Generated_Source\PSoC4/CSD_Structure.c ****             0x07u, 0x0Eu, 0x0Cu, 0x05u, 0x08u, 0x01u, 0x03u, 0x0Au
+ 369:Generated_Source\PSoC4/CSD_Structure.c ****         };
+ 370:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 371:Generated_Source\PSoC4/CSD_Structure.c ****         uint32 i;
+ 372:Generated_Source\PSoC4/CSD_Structure.c ****         uint32 actualCrc = 0u;
+ 373:Generated_Source\PSoC4/CSD_Structure.c ****         uint32 crcIndex;
+ 374:Generated_Source\PSoC4/CSD_Structure.c ****     #endif /* #if (0u != CSD_SELF_TEST_EN) */
+ 375:Generated_Source\PSoC4/CSD_Structure.c ****             
+ 376:Generated_Source\PSoC4/CSD_Structure.c ****     /* Extract parameter data */
+ 377:Generated_Source\PSoC4/CSD_Structure.c ****     pData->offset     = LO16(paramId);
+  34              		.loc 1 377 0
+  35 0002 84B2     		uxth	r4, r0
+  36 0004 0C80     		strh	r4, [r1]
+ 378:Generated_Source\PSoC4/CSD_Structure.c ****     pData->affectsCrc = LO8((paramId & PARAM_UBIT_MASK)  >> PARAM_UBIT_OFFSET);
+  37              		.loc 1 378 0
+  38 0006 0302     		lsl	r3, r0, #8
+  39 0008 DB0F     		lsr	r3, r3, #31
+  40 000a CB70     		strb	r3, [r1, #3]
+ 379:Generated_Source\PSoC4/CSD_Structure.c ****     pData->widgetId   = LO8((paramId & PARAM_WDID_MASK)  >> PARAM_WDID_OFFSET);
+  41              		.loc 1 379 0
+  42 000c 4302     		lsl	r3, r0, #9
+  43 000e 5B0E     		lsr	r3, r3, #25
+  44 0010 8B70     		strb	r3, [r1, #2]
+ 380:Generated_Source\PSoC4/CSD_Structure.c ****     pData->type       = LO8((paramId & PARAM_TYPE_MASK)  >> PARAM_TYPE_OFFSET);
+  45              		.loc 1 380 0
+  46 0012 850F     		lsr	r5, r0, #30
+  47 0014 CD71     		strb	r5, [r1, #7]
+ 381:Generated_Source\PSoC4/CSD_Structure.c ****     pData->flash      = LO8((paramId & PARAM_FBIT_MASK)  >> PARAM_FBIT_OFFSET);
+  48              		.loc 1 381 0
+  49 0016 C300     		lsl	r3, r0, #3
+  50 0018 DB0F     		lsr	r3, r3, #31
+  51 001a 4B71     		strb	r3, [r1, #5]
+ 382:Generated_Source\PSoC4/CSD_Structure.c ****     pData->rw         = LO8((paramId & PARAM_RWBIT_MASK) >> PARAM_RWBIT_OFFSET);
+  52              		.loc 1 382 0
+  53 001c 8200     		lsl	r2, r0, #2
+  54 001e D20F     		lsr	r2, r2, #31
+  55 0020 8A71     		strb	r2, [r1, #6]
+ 383:Generated_Source\PSoC4/CSD_Structure.c ****     pData->crc        = LO8((paramId & PARAM_CRC_MASK)   >> PARAM_CRC_OFFSET);
+  56              		.loc 1 383 0
+  57 0022 0001     		lsl	r0, r0, #4
+  58              	.LVL2:
+  59 0024 000F     		lsr	r0, r0, #28
+  60 0026 0871     		strb	r0, [r1, #4]
+ 384:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 385:Generated_Source\PSoC4/CSD_Structure.c ****     /* Check parameter CRC if self-test is enabled */
+ 386:Generated_Source\PSoC4/CSD_Structure.c ****     #if (0u != CSD_SELF_TEST_EN)
+ 387:Generated_Source\PSoC4/CSD_Structure.c ****  
+ 388:Generated_Source\PSoC4/CSD_Structure.c ****         /* Calculate CRC for bits 0..24.
+ 389:Generated_Source\PSoC4/CSD_Structure.c ****          * The CRC is calculated using nibbles (4-bits). 
+ 390:Generated_Source\PSoC4/CSD_Structure.c ****          * So for 0..24 bits there are in total 6 nibbles. */
+ 391:Generated_Source\PSoC4/CSD_Structure.c ****         for (i = 6u; i > 0u; i--)
+ 392:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 393:Generated_Source\PSoC4/CSD_Structure.c ****             crcIndex = actualCrc ^ (paramId & 0x0Fu);
+ 394:Generated_Source\PSoC4/CSD_Structure.c ****             actualCrc = crcTable[crcIndex];
+ 395:Generated_Source\PSoC4/CSD_Structure.c ****             paramId >>= 4u;
+ 396:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 9
+
+
+ 397:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 398:Generated_Source\PSoC4/CSD_Structure.c ****         /* Add bits 28..32 */
+ 399:Generated_Source\PSoC4/CSD_Structure.c ****         crcIndex = actualCrc ^ ((paramId >> 4u) & 0x0Fu);
+ 400:Generated_Source\PSoC4/CSD_Structure.c ****         actualCrc = crcTable[crcIndex];
+ 401:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 402:Generated_Source\PSoC4/CSD_Structure.c ****         /* Add bits 24..28 (CRC) */
+ 403:Generated_Source\PSoC4/CSD_Structure.c ****         crcIndex = actualCrc ^ (paramId & 0x0Fu);
+ 404:Generated_Source\PSoC4/CSD_Structure.c ****         actualCrc = crcTable[crcIndex];
+ 405:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 406:Generated_Source\PSoC4/CSD_Structure.c ****         if (0u != actualCrc)
+ 407:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 408:Generated_Source\PSoC4/CSD_Structure.c ****             /* CRC mismatch */
+ 409:Generated_Source\PSoC4/CSD_Structure.c ****             result = CYRET_BAD_PARAM;
+ 410:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 411:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 412:Generated_Source\PSoC4/CSD_Structure.c ****         if ((CYRET_SUCCESS == result) && 
+ 413:Generated_Source\PSoC4/CSD_Structure.c ****             (0u != pData->affectsCrc) && (pData->widgetId >= CSD_TOTAL_WIDGETS ))
+ 414:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 415:Generated_Source\PSoC4/CSD_Structure.c ****             /* Wrong widgetId for protected parameter */
+ 416:Generated_Source\PSoC4/CSD_Structure.c ****             result = CYRET_BAD_PARAM;
+ 417:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 418:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 419:Generated_Source\PSoC4/CSD_Structure.c ****         /* Check offset value range */
+ 420:Generated_Source\PSoC4/CSD_Structure.c ****         if (CYRET_SUCCESS == result)
+ 421:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 422:Generated_Source\PSoC4/CSD_Structure.c ****             if (0u == pData->flash)
+ 423:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 424:Generated_Source\PSoC4/CSD_Structure.c ****                 /* Check offset for RAM Data Structure range */
+ 425:Generated_Source\PSoC4/CSD_Structure.c ****                 if (pData->offset >= sizeof(CSD_dsRam))
+ 426:Generated_Source\PSoC4/CSD_Structure.c ****                 {
+ 427:Generated_Source\PSoC4/CSD_Structure.c ****                     result = CYRET_BAD_PARAM;
+ 428:Generated_Source\PSoC4/CSD_Structure.c ****                 }
+ 429:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 430:Generated_Source\PSoC4/CSD_Structure.c ****             else
+ 431:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 432:Generated_Source\PSoC4/CSD_Structure.c ****                 /* Check offset for Flash Data Structure range */
+ 433:Generated_Source\PSoC4/CSD_Structure.c ****                 if (pData->offset >= sizeof(CSD_dsFlash))
+ 434:Generated_Source\PSoC4/CSD_Structure.c ****                 {
+ 435:Generated_Source\PSoC4/CSD_Structure.c ****                     result = CYRET_BAD_PARAM;
+ 436:Generated_Source\PSoC4/CSD_Structure.c ****                 }
+ 437:Generated_Source\PSoC4/CSD_Structure.c ****                 
+ 438:Generated_Source\PSoC4/CSD_Structure.c ****                 /* Check if it is marked as Read Only */
+ 439:Generated_Source\PSoC4/CSD_Structure.c ****                 if (0u != pData->rw)
+ 440:Generated_Source\PSoC4/CSD_Structure.c ****                 {
+ 441:Generated_Source\PSoC4/CSD_Structure.c ****                     result = CYRET_BAD_PARAM;
+ 442:Generated_Source\PSoC4/CSD_Structure.c ****                 }
+ 443:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 444:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 445:Generated_Source\PSoC4/CSD_Structure.c ****     #else /* #if (0u != CSD_SELF_TEST_EN) */
+ 446:Generated_Source\PSoC4/CSD_Structure.c ****         /* Check offset value range */
+ 447:Generated_Source\PSoC4/CSD_Structure.c ****         if (0u == pData->flash)
+  61              		.loc 1 447 0
+  62 0028 002B     		cmp	r3, #0
+  63 002a 03D1     		bne	.L2
+ 448:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 449:Generated_Source\PSoC4/CSD_Structure.c ****             /* Check offset for RAM Data Structure range */
+ 450:Generated_Source\PSoC4/CSD_Structure.c ****             if (pData->offset >= sizeof(CSD_dsRam))
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 10
+
+
+  64              		.loc 1 450 0
+  65 002c 432C     		cmp	r4, #67
+  66 002e 09D8     		bhi	.L9
+ 362:Generated_Source\PSoC4/CSD_Structure.c ****     
+  67              		.loc 1 362 0
+  68 0030 0020     		mov	r0, #0
+  69 0032 0AE0     		b	.L3
+  70              	.L2:
+ 451:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 452:Generated_Source\PSoC4/CSD_Structure.c ****                 result = CYRET_BAD_PARAM;
+ 453:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 454:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 455:Generated_Source\PSoC4/CSD_Structure.c ****         else
+ 456:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 457:Generated_Source\PSoC4/CSD_Structure.c ****             /* Check offset for Flash Data Structure range */
+ 458:Generated_Source\PSoC4/CSD_Structure.c ****             if (pData->offset >= sizeof(CSD_dsFlash))
+  71              		.loc 1 458 0
+  72 0034 1B2C     		cmp	r4, #27
+  73 0036 01D8     		bhi	.L10
+ 362:Generated_Source\PSoC4/CSD_Structure.c ****     
+  74              		.loc 1 362 0
+  75 0038 0020     		mov	r0, #0
+  76 003a 00E0     		b	.L4
+  77              	.L10:
+ 459:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 460:Generated_Source\PSoC4/CSD_Structure.c ****                 result = CYRET_BAD_PARAM;
+  78              		.loc 1 460 0
+  79 003c 0120     		mov	r0, #1
+  80              	.L4:
+  81              	.LVL3:
+ 461:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 462:Generated_Source\PSoC4/CSD_Structure.c ****             
+ 463:Generated_Source\PSoC4/CSD_Structure.c ****             /* Check if it is marked as Read Only */
+ 464:Generated_Source\PSoC4/CSD_Structure.c ****             if (0u != pData->rw)
+  82              		.loc 1 464 0
+  83 003e 002A     		cmp	r2, #0
+  84 0040 02D1     		bne	.L11
+  85 0042 02E0     		b	.L3
+  86              	.LVL4:
+  87              	.L9:
+ 452:Generated_Source\PSoC4/CSD_Structure.c ****             }
+  88              		.loc 1 452 0
+  89 0044 0120     		mov	r0, #1
+  90 0046 00E0     		b	.L3
+  91              	.LVL5:
+  92              	.L11:
+ 465:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 466:Generated_Source\PSoC4/CSD_Structure.c ****                 result = CYRET_BAD_PARAM;
+  93              		.loc 1 466 0
+  94 0048 0120     		mov	r0, #1
+  95              	.LVL6:
+  96              	.L3:
+ 467:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 468:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 469:Generated_Source\PSoC4/CSD_Structure.c ****     #endif /* #if (0u != CSD_SELF_TEST_EN) */
+ 470:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 471:Generated_Source\PSoC4/CSD_Structure.c ****     if (CYRET_SUCCESS == result)
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 11
+
+
+  97              		.loc 1 471 0
+  98 004a 0028     		cmp	r0, #0
+  99 004c 11D1     		bne	.L5
+ 472:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 473:Generated_Source\PSoC4/CSD_Structure.c ****         /* Check parameter type, offset alignment */
+ 474:Generated_Source\PSoC4/CSD_Structure.c ****         switch (pData->type)
+ 100              		.loc 1 474 0
+ 101 004e 022D     		cmp	r5, #2
+ 102 0050 04D0     		beq	.L6
+ 103 0052 032D     		cmp	r5, #3
+ 104 0054 05D0     		beq	.L7
+ 105 0056 012D     		cmp	r5, #1
+ 106 0058 06D1     		bne	.L15
+ 107 005a 0AE0     		b	.L5
+ 108              	.L6:
+ 475:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 476:Generated_Source\PSoC4/CSD_Structure.c ****         case DS_PARAM_TYPE_UINT16:
+ 477:Generated_Source\PSoC4/CSD_Structure.c ****             if (0u != (pData->offset & UINT16_ALIGN_MASK))
+ 109              		.loc 1 477 0
+ 110 005c E307     		lsl	r3, r4, #31
+ 111 005e 05D4     		bmi	.L13
+ 112 0060 07E0     		b	.L5
+ 113              	.L7:
+ 478:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 479:Generated_Source\PSoC4/CSD_Structure.c ****                 result = CYRET_BAD_PARAM;
+ 480:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 481:Generated_Source\PSoC4/CSD_Structure.c ****             break;
+ 482:Generated_Source\PSoC4/CSD_Structure.c ****             
+ 483:Generated_Source\PSoC4/CSD_Structure.c ****         case DS_PARAM_TYPE_UINT32:
+ 484:Generated_Source\PSoC4/CSD_Structure.c ****             if (0u != (pData->offset & UINT32_ALIGN_MASK))
+ 114              		.loc 1 484 0
+ 115 0062 A307     		lsl	r3, r4, #30
+ 116 0064 04D1     		bne	.L14
+ 117 0066 04E0     		b	.L5
+ 118              	.L15:
+ 485:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 486:Generated_Source\PSoC4/CSD_Structure.c ****                 result = CYRET_BAD_PARAM;
+ 487:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 488:Generated_Source\PSoC4/CSD_Structure.c ****             break;
+ 489:Generated_Source\PSoC4/CSD_Structure.c ****             
+ 490:Generated_Source\PSoC4/CSD_Structure.c ****         case DS_PARAM_TYPE_UINT8:
+ 491:Generated_Source\PSoC4/CSD_Structure.c ****             break;
+ 492:Generated_Source\PSoC4/CSD_Structure.c ****             
+ 493:Generated_Source\PSoC4/CSD_Structure.c ****         default:
+ 494:Generated_Source\PSoC4/CSD_Structure.c ****             result = CYRET_BAD_PARAM;
+ 119              		.loc 1 494 0
+ 120 0068 0120     		mov	r0, #1
+ 121              	.LVL7:
+ 122 006a 02E0     		b	.L5
+ 123              	.LVL8:
+ 124              	.L13:
+ 479:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 125              		.loc 1 479 0
+ 126 006c 0120     		mov	r0, #1
+ 127              	.LVL9:
+ 128 006e 00E0     		b	.L5
+ 129              	.LVL10:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 12
+
+
+ 130              	.L14:
+ 486:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 131              		.loc 1 486 0
+ 132 0070 0120     		mov	r0, #1
+ 133              	.LVL11:
+ 134              	.L5:
+ 495:Generated_Source\PSoC4/CSD_Structure.c ****             break;
+ 496:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 497:Generated_Source\PSoC4/CSD_Structure.c ****     }
+ 498:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 499:Generated_Source\PSoC4/CSD_Structure.c ****     return result;
+ 500:Generated_Source\PSoC4/CSD_Structure.c **** }
+ 135              		.loc 1 500 0
+ 136              		@ sp needed
+ 137 0072 30BD     		pop	{r4, r5, pc}
+ 138              		.cfi_endproc
+ 139              	.LFE2:
+ 140              		.size	DsParseParamId, .-DsParseParamId
+ 141              		.section	.text.CSD_DsInitialize,"ax",%progbits
+ 142              		.align	2
+ 143              		.global	CSD_DsInitialize
+ 144              		.code	16
+ 145              		.thumb_func
+ 146              		.type	CSD_DsInitialize, %function
+ 147              	CSD_DsInitialize:
+ 148              	.LFB1:
+ 244:Generated_Source\PSoC4/CSD_Structure.c ****     #if (0u != CSD_CSX_EN) || (0 != CSD_CSD_IDAC_COMP_EN)
+ 149              		.loc 1 244 0
+ 150              		.cfi_startproc
+ 151 0000 38B5     		push	{r3, r4, r5, lr}
+ 152              		.cfi_def_cfa_offset 16
+ 153              		.cfi_offset 3, -16
+ 154              		.cfi_offset 4, -12
+ 155              		.cfi_offset 5, -8
+ 156              		.cfi_offset 14, -4
+ 157              	.LVL12:
+ 255:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 158              		.loc 1 255 0
+ 159 0002 164D     		ldr	r5, .L21
+ 160 0004 281C     		mov	r0, r5
+ 161 0006 0021     		mov	r1, #0
+ 162 0008 4422     		mov	r2, #68
+ 163 000a FFF7FEFF 		bl	memset
+ 164              	.LVL13:
+ 258:Generated_Source\PSoC4/CSD_Structure.c ****     CSD_dsRam.deviceId = CSD_DEVICE_ID;
+ 165              		.loc 1 258 0
+ 166 000e 144B     		ldr	r3, .L21+4
+ 167 0010 2B80     		strh	r3, [r5]
+ 259:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 168              		.loc 1 259 0
+ 169 0012 B023     		mov	r3, #176
+ 170 0014 5B00     		lsl	r3, r3, #1
+ 171 0016 6B80     		strh	r3, [r5, #2]
+ 262:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 172              		.loc 1 262 0
+ 173 0018 593B     		sub	r3, r3, #89
+ 174 001a FF3B     		sub	r3, r3, #255
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 13
+
+
+ 175 001c EB82     		strh	r3, [r5, #22]
+ 269:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 176              		.loc 1 269 0
+ 177 001e 073B     		sub	r3, r3, #7
+ 178 0020 2B76     		strb	r3, [r5, #24]
+ 289:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 179              		.loc 1 289 0
+ 180 0022 104C     		ldr	r4, .L21+8
+ 181 0024 281C     		mov	r0, r5
+ 182 0026 1A30     		add	r0, r0, #26
+ 183 0028 211C     		mov	r1, r4
+ 184 002a 2031     		add	r1, r1, #32
+ 185 002c 0E22     		mov	r2, #14
+ 186 002e FFF7FEFF 		bl	memcpy
+ 187              	.LVL14:
+ 251:Generated_Source\PSoC4/CSD_Structure.c ****     #endif        
+ 188              		.loc 1 251 0
+ 189 0032 221C     		mov	r2, r4
+ 293:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 190              		.loc 1 293 0
+ 191 0034 0434     		add	r4, r4, #4
+ 295:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 192              		.loc 1 295 0
+ 193 0036 0123     		mov	r3, #1
+ 194 0038 0CE0     		b	.L17
+ 195              	.LVL15:
+ 196              	.L20:
+ 297:Generated_Source\PSoC4/CSD_Structure.c ****                 
+ 197              		.loc 1 297 0
+ 198 003a A168     		ldr	r1, [r4, #8]
+ 199              	.LVL16:
+ 299:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 200              		.loc 1 299 0
+ 201 003c E38A     		ldrh	r3, [r4, #22]
+ 202              	.LVL17:
+ 203 003e 04E0     		b	.L18
+ 204              	.LVL18:
+ 205              	.L19:
+ 301:Generated_Source\PSoC4/CSD_Structure.c ****                 ptrIdacInit++;
+ 206              		.loc 1 301 0
+ 207 0040 1378     		ldrb	r3, [r2]
+ 208 0042 4B72     		strb	r3, [r1, #9]
+ 302:Generated_Source\PSoC4/CSD_Structure.c ****                 
+ 209              		.loc 1 302 0
+ 210 0044 0132     		add	r2, r2, #1
+ 211              	.LVL19:
+ 312:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 212              		.loc 1 312 0
+ 213 0046 0A31     		add	r1, r1, #10
+ 214              	.LVL20:
+ 299:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 215              		.loc 1 299 0
+ 216 0048 031C     		mov	r3, r0
+ 217              	.LVL21:
+ 218              	.L18:
+ 299:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 219              		.loc 1 299 0 is_stmt 0 discriminator 1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 14
+
+
+ 220 004a 581E     		sub	r0, r3, #1
+ 221              	.LVL22:
+ 222 004c 002B     		cmp	r3, #0
+ 223 004e F7D1     		bne	.L19
+ 315:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 224              		.loc 1 315 0 is_stmt 1
+ 225 0050 1C34     		add	r4, r4, #28
+ 226              	.LVL23:
+ 295:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 227              		.loc 1 295 0
+ 228 0052 2B1C     		mov	r3, r5
+ 229              	.LVL24:
+ 230              	.L17:
+ 295:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 231              		.loc 1 295 0 is_stmt 0 discriminator 1
+ 232 0054 5D1E     		sub	r5, r3, #1
+ 233              	.LVL25:
+ 234 0056 002B     		cmp	r3, #0
+ 235 0058 EFD1     		bne	.L20
+ 322:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 236              		.loc 1 322 0 is_stmt 1
+ 237              		@ sp needed
+ 238              	.LVL26:
+ 239              	.LVL27:
+ 240 005a 38BD     		pop	{r3, r4, r5, pc}
+ 241              	.L22:
+ 242              		.align	2
+ 243              	.L21:
+ 244 005c 00000000 		.word	CSD_dsRam
+ 245 0060 307C0000 		.word	31792
+ 246 0064 00000000 		.word	.LANCHOR0
+ 247              		.cfi_endproc
+ 248              	.LFE1:
+ 249              		.size	CSD_DsInitialize, .-CSD_DsInitialize
+ 250              		.section	.text.CSD_GetParam,"ax",%progbits
+ 251              		.align	2
+ 252              		.global	CSD_GetParam
+ 253              		.code	16
+ 254              		.thumb_func
+ 255              		.type	CSD_GetParam, %function
+ 256              	CSD_GetParam:
+ 257              	.LFB3:
+ 501:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 502:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+ 503:Generated_Source\PSoC4/CSD_Structure.c **** * Function Name: CSD_GetParam
+ 504:Generated_Source\PSoC4/CSD_Structure.c **** ****************************************************************************//**
+ 505:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 506:Generated_Source\PSoC4/CSD_Structure.c **** * \brief
+ 507:Generated_Source\PSoC4/CSD_Structure.c **** *  Gets the specified parameter value from the \ref group_structures.
+ 508:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 509:Generated_Source\PSoC4/CSD_Structure.c **** * \details
+ 510:Generated_Source\PSoC4/CSD_Structure.c **** *  This function gets the value of the specified parameter by the paramId 
+ 511:Generated_Source\PSoC4/CSD_Structure.c **** *  argument. The paramId for each register is available in the 
+ 512:Generated_Source\PSoC4/CSD_Structure.c **** *  CSD RegisterMap header file as 
+ 513:Generated_Source\PSoC4/CSD_Structure.c **** *  CSD_<ParameterName>_PARAM_ID. The paramId is a special 
+ 514:Generated_Source\PSoC4/CSD_Structure.c **** *  enumerated value generated by the customizer. The format of paramId is as 
+ 515:Generated_Source\PSoC4/CSD_Structure.c **** *  follows:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 15
+
+
+ 516:Generated_Source\PSoC4/CSD_Structure.c **** *    1. [ byte 3 byte 2 byte 1 byte 0 ] 
+ 517:Generated_Source\PSoC4/CSD_Structure.c **** *    2. [ TTWFCCCC UIIIIIII MMMMMMMM LLLLLLLL ]
+ 518:Generated_Source\PSoC4/CSD_Structure.c **** *    3. T - encodes the parameter type:
+ 519:Generated_Source\PSoC4/CSD_Structure.c **** *      - 01b: uint8
+ 520:Generated_Source\PSoC4/CSD_Structure.c **** *      - 10b: uint16
+ 521:Generated_Source\PSoC4/CSD_Structure.c **** *      - 11b: uint32
+ 522:Generated_Source\PSoC4/CSD_Structure.c **** *    4. W - indicates whether the parameter is writable:
+ 523:Generated_Source\PSoC4/CSD_Structure.c **** *      - 0: ReadOnly
+ 524:Generated_Source\PSoC4/CSD_Structure.c **** *      - 1: Read/Write
+ 525:Generated_Source\PSoC4/CSD_Structure.c **** *    5. C - 4 bit CRC (X^3 + 1) of the whole paramId word, the C bits are 
+ 526:Generated_Source\PSoC4/CSD_Structure.c **** *       filled with 0s when the CRC is calculated.
+ 527:Generated_Source\PSoC4/CSD_Structure.c **** *    6. U - indicates if the parameter affects the RAM Widget Object CRC.
+ 528:Generated_Source\PSoC4/CSD_Structure.c **** *    7. I - specifies that the widgetID parameter belongs to
+ 529:Generated_Source\PSoC4/CSD_Structure.c **** *    8. M,L - the parameter offset MSB and LSB accordingly in:
+ 530:Generated_Source\PSoC4/CSD_Structure.c **** *      - Flash Data Structure if W bit is 0.
+ 531:Generated_Source\PSoC4/CSD_Structure.c **** *      - RAM Data Structure if W bit is 1.
+ 532:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 533:Generated_Source\PSoC4/CSD_Structure.c **** *  Refer to the \ref group_structures section for details of the data structure 
+ 534:Generated_Source\PSoC4/CSD_Structure.c **** *  organization and examples of its register access.
+ 535:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 536:Generated_Source\PSoC4/CSD_Structure.c **** * \param  paramId 
+ 537:Generated_Source\PSoC4/CSD_Structure.c **** *  Specify the ID of parameter to get its value.
+ 538:Generated_Source\PSoC4/CSD_Structure.c **** *  A macro for the parameter ID can be found in the CSD RegisterMap header 
+ 539:Generated_Source\PSoC4/CSD_Structure.c **** *  file defined as CSD_<ParameterName>_PARAM_ID.
+ 540:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 541:Generated_Source\PSoC4/CSD_Structure.c **** * \param  value   
+ 542:Generated_Source\PSoC4/CSD_Structure.c **** *  The pointer to a variable that should be updated with the got value.
+ 543:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 544:Generated_Source\PSoC4/CSD_Structure.c **** * \return
+ 545:Generated_Source\PSoC4/CSD_Structure.c **** *  Returns the status of operation:
+ 546:Generated_Source\PSoC4/CSD_Structure.c **** *    - CYRET_SUCCESS if the operation is successfully completed.
+ 547:Generated_Source\PSoC4/CSD_Structure.c **** *    - CYRET_BAD_PARAM if the input parameter is invalid. 
+ 548:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 549:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+ 550:Generated_Source\PSoC4/CSD_Structure.c **** cystatus CSD_GetParam(uint32 paramId, uint32 *value)
+ 551:Generated_Source\PSoC4/CSD_Structure.c **** {
+ 258              		.loc 1 551 0
+ 259              		.cfi_startproc
+ 260              	.LVL28:
+ 261 0000 30B5     		push	{r4, r5, lr}
+ 262              		.cfi_def_cfa_offset 12
+ 263              		.cfi_offset 4, -12
+ 264              		.cfi_offset 5, -8
+ 265              		.cfi_offset 14, -4
+ 266 0002 83B0     		sub	sp, sp, #12
+ 267              		.cfi_def_cfa_offset 24
+ 268 0004 0D1C     		mov	r5, r1
+ 552:Generated_Source\PSoC4/CSD_Structure.c ****     PARAM_ID_STRUCT pData;
+ 553:Generated_Source\PSoC4/CSD_Structure.c ****     cystatus result;
+ 554:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 555:Generated_Source\PSoC4/CSD_Structure.c ****     union
+ 556:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 557:Generated_Source\PSoC4/CSD_Structure.c ****         volatile void   const * ptr;
+ 558:Generated_Source\PSoC4/CSD_Structure.c ****         volatile uint8  const * ptrUint8;
+ 559:Generated_Source\PSoC4/CSD_Structure.c ****         volatile uint16 const * ptrUint16;
+ 560:Generated_Source\PSoC4/CSD_Structure.c ****         volatile uint32 const * ptrUint32;
+ 561:Generated_Source\PSoC4/CSD_Structure.c ****     } ptrData;
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 16
+
+
+ 562:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 563:Generated_Source\PSoC4/CSD_Structure.c ****     result = DsParseParamId(paramId, &pData);
+ 269              		.loc 1 563 0
+ 270 0006 6946     		mov	r1, sp
+ 271              	.LVL29:
+ 272 0008 FFF7FEFF 		bl	DsParseParamId
+ 273              	.LVL30:
+ 274 000c 041E     		sub	r4, r0, #0
+ 275              	.LVL31:
+ 564:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 565:Generated_Source\PSoC4/CSD_Structure.c ****     /* Parse and validate paramId */
+ 566:Generated_Source\PSoC4/CSD_Structure.c ****     if (CYRET_SUCCESS == result)
+ 276              		.loc 1 566 0
+ 277 000e 1ED1     		bne	.L24
+ 567:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 568:Generated_Source\PSoC4/CSD_Structure.c ****         /* Get base address of parameter */
+ 569:Generated_Source\PSoC4/CSD_Structure.c ****         if (0u == pData.flash)
+ 278              		.loc 1 569 0
+ 279 0010 6B46     		mov	r3, sp
+ 280 0012 5B79     		ldrb	r3, [r3, #5]
+ 281 0014 002B     		cmp	r3, #0
+ 282 0016 01D1     		bne	.L25
+ 570:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 571:Generated_Source\PSoC4/CSD_Structure.c ****             ptrData.ptr = &CSD_dsRam;
+ 283              		.loc 1 571 0
+ 284 0018 0E4A     		ldr	r2, .L30
+ 285              	.LVL32:
+ 286 001a 01E0     		b	.L26
+ 287              	.L25:
+ 572:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 573:Generated_Source\PSoC4/CSD_Structure.c ****         else
+ 574:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 575:Generated_Source\PSoC4/CSD_Structure.c ****             ptrData.ptr = &CSD_dsFlash;
+ 288              		.loc 1 575 0
+ 289 001c 0E4B     		ldr	r3, .L30+4
+ 290 001e 1A1D     		add	r2, r3, #4
+ 291              	.L26:
+ 576:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 577:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 578:Generated_Source\PSoC4/CSD_Structure.c ****         /* Add offset to base address */
+ 579:Generated_Source\PSoC4/CSD_Structure.c ****         ptrData.ptrUint8 += pData.offset;
+ 292              		.loc 1 579 0
+ 293 0020 6B46     		mov	r3, sp
+ 294 0022 1B88     		ldrh	r3, [r3]
+ 295              	.LVL33:
+ 296 0024 D318     		add	r3, r2, r3
+ 580:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 581:Generated_Source\PSoC4/CSD_Structure.c ****         /* Read data */
+ 582:Generated_Source\PSoC4/CSD_Structure.c ****         if (DS_PARAM_TYPE_UINT8 == pData.type)
+ 297              		.loc 1 582 0
+ 298 0026 6A46     		mov	r2, sp
+ 299              	.LVL34:
+ 300 0028 D279     		ldrb	r2, [r2, #7]
+ 301 002a 012A     		cmp	r2, #1
+ 302 002c 02D1     		bne	.L27
+ 583:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 584:Generated_Source\PSoC4/CSD_Structure.c ****             *value = (uint32) (*ptrData.ptrUint8);
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 17
+
+
+ 303              		.loc 1 584 0
+ 304 002e 1B78     		ldrb	r3, [r3]
+ 305 0030 2B60     		str	r3, [r5]
+ 306 0032 0CE0     		b	.L24
+ 307              	.L27:
+ 585:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 586:Generated_Source\PSoC4/CSD_Structure.c ****         else if (DS_PARAM_TYPE_UINT16 == pData.type)
+ 308              		.loc 1 586 0
+ 309 0034 022A     		cmp	r2, #2
+ 310 0036 02D1     		bne	.L28
+ 587:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 588:Generated_Source\PSoC4/CSD_Structure.c ****             *value = (uint32) (*ptrData.ptrUint16);
+ 311              		.loc 1 588 0
+ 312 0038 1B88     		ldrh	r3, [r3]
+ 313 003a 2B60     		str	r3, [r5]
+ 314 003c 07E0     		b	.L24
+ 315              	.L28:
+ 589:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 590:Generated_Source\PSoC4/CSD_Structure.c ****         else if (DS_PARAM_TYPE_UINT32 == pData.type)
+ 316              		.loc 1 590 0
+ 317 003e 032A     		cmp	r2, #3
+ 318 0040 02D1     		bne	.L29
+ 591:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 592:Generated_Source\PSoC4/CSD_Structure.c ****             *value = *ptrData.ptrUint32;
+ 319              		.loc 1 592 0
+ 320 0042 1B68     		ldr	r3, [r3]
+ 321 0044 2B60     		str	r3, [r5]
+ 322 0046 02E0     		b	.L24
+ 323              	.L29:
+ 593:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 594:Generated_Source\PSoC4/CSD_Structure.c ****         else
+ 595:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 596:Generated_Source\PSoC4/CSD_Structure.c ****             /* Parameter comes here already validated. */
+ 597:Generated_Source\PSoC4/CSD_Structure.c ****             CYASSERT(0u);
+ 324              		.loc 1 597 0 discriminator 1
+ 325 0048 0020     		mov	r0, #0
+ 326              	.LVL35:
+ 327 004a FFF7FEFF 		bl	CyHalt
+ 328              	.LVL36:
+ 329              	.L24:
+ 598:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 599:Generated_Source\PSoC4/CSD_Structure.c ****     }
+ 600:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 601:Generated_Source\PSoC4/CSD_Structure.c ****     return result;
+ 602:Generated_Source\PSoC4/CSD_Structure.c **** }
+ 330              		.loc 1 602 0
+ 331 004e 201C     		mov	r0, r4
+ 332 0050 03B0     		add	sp, sp, #12
+ 333              		@ sp needed
+ 334              	.LVL37:
+ 335              	.LVL38:
+ 336 0052 30BD     		pop	{r4, r5, pc}
+ 337              	.L31:
+ 338              		.align	2
+ 339              	.L30:
+ 340 0054 00000000 		.word	CSD_dsRam
+ 341 0058 00000000 		.word	.LANCHOR0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 18
+
+
+ 342              		.cfi_endproc
+ 343              	.LFE3:
+ 344              		.size	CSD_GetParam, .-CSD_GetParam
+ 345              		.section	.text.CSD_SetParam,"ax",%progbits
+ 346              		.align	2
+ 347              		.global	CSD_SetParam
+ 348              		.code	16
+ 349              		.thumb_func
+ 350              		.type	CSD_SetParam, %function
+ 351              	CSD_SetParam:
+ 352              	.LFB4:
+ 603:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 604:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 605:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+ 606:Generated_Source\PSoC4/CSD_Structure.c **** * Function Name: CSD_SetParam
+ 607:Generated_Source\PSoC4/CSD_Structure.c **** ****************************************************************************//**
+ 608:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 609:Generated_Source\PSoC4/CSD_Structure.c **** * \brief
+ 610:Generated_Source\PSoC4/CSD_Structure.c **** *  Sets a new value for the specified parameter in the \ref group_structures.
+ 611:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 612:Generated_Source\PSoC4/CSD_Structure.c **** * \details
+ 613:Generated_Source\PSoC4/CSD_Structure.c **** *  This function sets the value of the specified parameter by the paramId 
+ 614:Generated_Source\PSoC4/CSD_Structure.c **** *  argument. The paramId for each register is available in the 
+ 615:Generated_Source\PSoC4/CSD_Structure.c **** *  CSD RegisterMap header file as 
+ 616:Generated_Source\PSoC4/CSD_Structure.c **** *  CSD_<ParameterName>_PARAM_ID. The paramId is a special 
+ 617:Generated_Source\PSoC4/CSD_Structure.c **** *  enumerated value generated by the customizer. The format of paramId is as 
+ 618:Generated_Source\PSoC4/CSD_Structure.c **** *  follows:
+ 619:Generated_Source\PSoC4/CSD_Structure.c **** *    1. [ byte 3 byte 2 byte 1 byte 0 ] 
+ 620:Generated_Source\PSoC4/CSD_Structure.c **** *    2. [ TTWFCCCC UIIIIIII MMMMMMMM LLLLLLLL ]
+ 621:Generated_Source\PSoC4/CSD_Structure.c **** *    3. T - encodes the parameter type:
+ 622:Generated_Source\PSoC4/CSD_Structure.c **** *      - 01b: uint8
+ 623:Generated_Source\PSoC4/CSD_Structure.c **** *      - 10b: uint16
+ 624:Generated_Source\PSoC4/CSD_Structure.c **** *      - 11b: uint32
+ 625:Generated_Source\PSoC4/CSD_Structure.c **** *    4. W - indicates whether the parameter is writable:
+ 626:Generated_Source\PSoC4/CSD_Structure.c **** *      - 0: ReadOnly
+ 627:Generated_Source\PSoC4/CSD_Structure.c **** *      - 1: Read/Write
+ 628:Generated_Source\PSoC4/CSD_Structure.c **** *    5. C - 4 bit CRC (X^3 + 1) of the whole paramId word, the C bits are 
+ 629:Generated_Source\PSoC4/CSD_Structure.c **** *       filled with 0s when the CRC is calculated.
+ 630:Generated_Source\PSoC4/CSD_Structure.c **** *    6. U - indicates if the parameter affects the RAM Widget Object CRC.
+ 631:Generated_Source\PSoC4/CSD_Structure.c **** *    7. I - specifies that the widgetID parameter belongs to
+ 632:Generated_Source\PSoC4/CSD_Structure.c **** *    8. M,L - the parameter offset MSB and LSB accordingly in:
+ 633:Generated_Source\PSoC4/CSD_Structure.c **** *      - Flash Data Structure if W bit is 0.
+ 634:Generated_Source\PSoC4/CSD_Structure.c **** *      - RAM Data Structure if W bit is 1.
+ 635:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 636:Generated_Source\PSoC4/CSD_Structure.c **** *  Refer to the \ref group_structures section for details of the data structure 
+ 637:Generated_Source\PSoC4/CSD_Structure.c **** *  organization and examples of its register access.
+ 638:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 639:Generated_Source\PSoC4/CSD_Structure.c **** * \param paramId  
+ 640:Generated_Source\PSoC4/CSD_Structure.c **** *  Specify the ID of parameter to set its value.
+ 641:Generated_Source\PSoC4/CSD_Structure.c **** *  A macro for the parameter ID can be found in the CSD RegisterMap header
+ 642:Generated_Source\PSoC4/CSD_Structure.c **** *  file defined as CSD_<ParameterName>_PARAM_ID.
+ 643:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 644:Generated_Source\PSoC4/CSD_Structure.c **** * \param value    
+ 645:Generated_Source\PSoC4/CSD_Structure.c **** *  Specify the new parameter's value.
+ 646:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 647:Generated_Source\PSoC4/CSD_Structure.c **** * \return
+ 648:Generated_Source\PSoC4/CSD_Structure.c **** *  Returns the status of operation:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 19
+
+
+ 649:Generated_Source\PSoC4/CSD_Structure.c **** *    - CYRET_SUCCESS if the operation is successfully completed.
+ 650:Generated_Source\PSoC4/CSD_Structure.c **** *    - CYRET_BAD_PARAM if the input parameter is invalid. 
+ 651:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 652:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+ 653:Generated_Source\PSoC4/CSD_Structure.c **** cystatus CSD_SetParam(uint32 paramId, uint32 value)
+ 654:Generated_Source\PSoC4/CSD_Structure.c **** {
+ 353              		.loc 1 654 0
+ 354              		.cfi_startproc
+ 355              	.LVL39:
+ 356 0000 30B5     		push	{r4, r5, lr}
+ 357              		.cfi_def_cfa_offset 12
+ 358              		.cfi_offset 4, -12
+ 359              		.cfi_offset 5, -8
+ 360              		.cfi_offset 14, -4
+ 361 0002 83B0     		sub	sp, sp, #12
+ 362              		.cfi_def_cfa_offset 24
+ 363 0004 0D1C     		mov	r5, r1
+ 655:Generated_Source\PSoC4/CSD_Structure.c ****     cystatus result;
+ 656:Generated_Source\PSoC4/CSD_Structure.c ****     PARAM_ID_STRUCT pData;
+ 657:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 658:Generated_Source\PSoC4/CSD_Structure.c ****     union
+ 659:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 660:Generated_Source\PSoC4/CSD_Structure.c ****         volatile void   * ptr;
+ 661:Generated_Source\PSoC4/CSD_Structure.c ****         volatile uint8  * ptrUint8;
+ 662:Generated_Source\PSoC4/CSD_Structure.c ****         volatile uint16 * ptrUint16;
+ 663:Generated_Source\PSoC4/CSD_Structure.c ****         volatile uint32 * ptrUint32;
+ 664:Generated_Source\PSoC4/CSD_Structure.c ****     } ptrData;
+ 665:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 666:Generated_Source\PSoC4/CSD_Structure.c ****     result = DsParseParamId(paramId, &pData);
+ 364              		.loc 1 666 0
+ 365 0006 6946     		mov	r1, sp
+ 366              	.LVL40:
+ 367 0008 FFF7FEFF 		bl	DsParseParamId
+ 368              	.LVL41:
+ 369 000c 041E     		sub	r4, r0, #0
+ 370              	.LVL42:
+ 667:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 668:Generated_Source\PSoC4/CSD_Structure.c ****     /* verify if parameter is writable */
+ 669:Generated_Source\PSoC4/CSD_Structure.c ****     if (CYRET_SUCCESS == result)
+ 371              		.loc 1 669 0
+ 372 000e 04D1     		bne	.L33
+ 670:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 671:Generated_Source\PSoC4/CSD_Structure.c ****         if (0u == pData.rw)
+ 373              		.loc 1 671 0
+ 374 0010 6B46     		mov	r3, sp
+ 375 0012 9B79     		ldrb	r3, [r3, #6]
+ 376 0014 002B     		cmp	r3, #0
+ 377 0016 00D1     		bne	.L33
+ 672:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 673:Generated_Source\PSoC4/CSD_Structure.c ****             result = CYRET_BAD_PARAM;
+ 378              		.loc 1 673 0
+ 379 0018 0134     		add	r4, r4, #1
+ 380              	.L33:
+ 381              	.LVL43:
+ 674:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 675:Generated_Source\PSoC4/CSD_Structure.c ****     }
+ 676:Generated_Source\PSoC4/CSD_Structure.c ****     
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 20
+
+
+ 677:Generated_Source\PSoC4/CSD_Structure.c ****     /* Parse and validate paramId */
+ 678:Generated_Source\PSoC4/CSD_Structure.c ****     if (CYRET_SUCCESS == result)
+ 382              		.loc 1 678 0
+ 383 001a 002C     		cmp	r4, #0
+ 384 001c 16D1     		bne	.L34
+ 679:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 680:Generated_Source\PSoC4/CSD_Structure.c ****         /* Get base address of parameter */
+ 681:Generated_Source\PSoC4/CSD_Structure.c ****         ptrData.ptr = &CSD_dsRam;
+ 682:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 683:Generated_Source\PSoC4/CSD_Structure.c ****         /* Add offset to base address */
+ 684:Generated_Source\PSoC4/CSD_Structure.c ****         ptrData.ptrUint8 += pData.offset;
+ 385              		.loc 1 684 0
+ 386 001e 6B46     		mov	r3, sp
+ 387 0020 1A88     		ldrh	r2, [r3]
+ 388 0022 0C4B     		ldr	r3, .L39
+ 389 0024 D318     		add	r3, r2, r3
+ 685:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 686:Generated_Source\PSoC4/CSD_Structure.c ****         /* Write data */
+ 687:Generated_Source\PSoC4/CSD_Structure.c ****         if (DS_PARAM_TYPE_UINT8 == pData.type)
+ 390              		.loc 1 687 0
+ 391 0026 6A46     		mov	r2, sp
+ 392 0028 D279     		ldrb	r2, [r2, #7]
+ 393 002a 012A     		cmp	r2, #1
+ 394 002c 02D1     		bne	.L35
+ 688:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 689:Generated_Source\PSoC4/CSD_Structure.c ****             *ptrData.ptrUint8 = LO8(value);
+ 395              		.loc 1 689 0
+ 396 002e EDB2     		uxtb	r5, r5
+ 397              	.LVL44:
+ 398 0030 1D70     		strb	r5, [r3]
+ 399 0032 0BE0     		b	.L34
+ 400              	.LVL45:
+ 401              	.L35:
+ 690:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 691:Generated_Source\PSoC4/CSD_Structure.c ****         else if (DS_PARAM_TYPE_UINT16 == pData.type)
+ 402              		.loc 1 691 0
+ 403 0034 022A     		cmp	r2, #2
+ 404 0036 02D1     		bne	.L36
+ 692:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 693:Generated_Source\PSoC4/CSD_Structure.c ****             *ptrData.ptrUint16 = LO16(value);
+ 405              		.loc 1 693 0
+ 406 0038 ADB2     		uxth	r5, r5
+ 407              	.LVL46:
+ 408 003a 1D80     		strh	r5, [r3]
+ 409 003c 06E0     		b	.L34
+ 410              	.LVL47:
+ 411              	.L36:
+ 694:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 695:Generated_Source\PSoC4/CSD_Structure.c ****         else if (DS_PARAM_TYPE_UINT32 == pData.type)
+ 412              		.loc 1 695 0
+ 413 003e 032A     		cmp	r2, #3
+ 414 0040 01D1     		bne	.L37
+ 696:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 697:Generated_Source\PSoC4/CSD_Structure.c ****             *ptrData.ptrUint32 = value;
+ 415              		.loc 1 697 0
+ 416 0042 1D60     		str	r5, [r3]
+ 417 0044 02E0     		b	.L34
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 21
+
+
+ 418              	.L37:
+ 698:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 699:Generated_Source\PSoC4/CSD_Structure.c ****         else
+ 700:Generated_Source\PSoC4/CSD_Structure.c ****         {
+ 701:Generated_Source\PSoC4/CSD_Structure.c ****             /* Parameter comes here already validated. */
+ 702:Generated_Source\PSoC4/CSD_Structure.c ****             CYASSERT(0u);
+ 419              		.loc 1 702 0 discriminator 1
+ 420 0046 0020     		mov	r0, #0
+ 421 0048 FFF7FEFF 		bl	CyHalt
+ 422              	.LVL48:
+ 423              	.L34:
+ 703:Generated_Source\PSoC4/CSD_Structure.c ****         }
+ 704:Generated_Source\PSoC4/CSD_Structure.c ****         
+ 705:Generated_Source\PSoC4/CSD_Structure.c ****         #if (CSD_ENABLE == (CSD_TST_WDGT_CRC_EN || CSD_TST_GLOBAL_CRC_EN))
+ 706:Generated_Source\PSoC4/CSD_Structure.c ****             /* Update widget or global CRC if self-test is enabled and parameter affects it */
+ 707:Generated_Source\PSoC4/CSD_Structure.c ****             if (0u != pData.affectsCrc)
+ 708:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 709:Generated_Source\PSoC4/CSD_Structure.c ****                 if ((ptrData.ptrUint16 >= &CSD_dsRam.csd0Config) &&
+ 710:Generated_Source\PSoC4/CSD_Structure.c ****                     (ptrData.ptrUint16 <  &CSD_dsRam.glbCrc))
+ 711:Generated_Source\PSoC4/CSD_Structure.c ****                 {
+ 712:Generated_Source\PSoC4/CSD_Structure.c ****                     
+ 713:Generated_Source\PSoC4/CSD_Structure.c ****                     #if (CSD_ENABLE == CSD_TST_GLOBAL_CRC_EN)
+ 714:Generated_Source\PSoC4/CSD_Structure.c ****                         CSD_DsUpdateGlobalCrc();
+ 715:Generated_Source\PSoC4/CSD_Structure.c ****                     #endif /* (CSD_ENABLE == CSD_TST_GLOBAL_CRC_EN) */
+ 716:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 717:Generated_Source\PSoC4/CSD_Structure.c ****                 }
+ 718:Generated_Source\PSoC4/CSD_Structure.c ****                 else
+ 719:Generated_Source\PSoC4/CSD_Structure.c ****                 {
+ 720:Generated_Source\PSoC4/CSD_Structure.c ****                     #if (CSD_ENABLE == CSD_TST_WDGT_CRC_EN)
+ 721:Generated_Source\PSoC4/CSD_Structure.c ****                         CSD_DsUpdateWidgetCrc((uint32)pData.widgetId);
+ 722:Generated_Source\PSoC4/CSD_Structure.c ****                     #endif /* (CSD_ENABLE == CSD_TST_WDGT_CRC_EN) */
+ 723:Generated_Source\PSoC4/CSD_Structure.c ****                 }
+ 724:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 725:Generated_Source\PSoC4/CSD_Structure.c ****         #endif /* (CSD_ENABLE == (CSD_TST_WDGT_CRC_EN || CSD_TST_GLOBAL_CRC_EN)) */
+ 726:Generated_Source\PSoC4/CSD_Structure.c ****     }
+ 727:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 728:Generated_Source\PSoC4/CSD_Structure.c ****     return result;
+ 729:Generated_Source\PSoC4/CSD_Structure.c **** }
+ 424              		.loc 1 729 0
+ 425 004c 201C     		mov	r0, r4
+ 426 004e 03B0     		add	sp, sp, #12
+ 427              		@ sp needed
+ 428              	.LVL49:
+ 429 0050 30BD     		pop	{r4, r5, pc}
+ 430              	.L40:
+ 431 0052 C046     		.align	2
+ 432              	.L39:
+ 433 0054 00000000 		.word	CSD_dsRam
+ 434              		.cfi_endproc
+ 435              	.LFE4:
+ 436              		.size	CSD_SetParam, .-CSD_SetParam
+ 437              		.section	.text.CSD_IsAnyWidgetActive,"ax",%progbits
+ 438              		.align	2
+ 439              		.global	CSD_IsAnyWidgetActive
+ 440              		.code	16
+ 441              		.thumb_func
+ 442              		.type	CSD_IsAnyWidgetActive, %function
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 22
+
+
+ 443              	CSD_IsAnyWidgetActive:
+ 444              	.LFB5:
+ 730:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 731:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+ 732:Generated_Source\PSoC4/CSD_Structure.c **** * Function Name: CSD_IsAnyWidgetActive
+ 733:Generated_Source\PSoC4/CSD_Structure.c **** ****************************************************************************//**
+ 734:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 735:Generated_Source\PSoC4/CSD_Structure.c **** * \brief
+ 736:Generated_Source\PSoC4/CSD_Structure.c **** *  Reports if any widget has detected a touch.
+ 737:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 738:Generated_Source\PSoC4/CSD_Structure.c **** * \details
+ 739:Generated_Source\PSoC4/CSD_Structure.c **** *  This function reports if any widget has detected a touch or not by extracting 
+ 740:Generated_Source\PSoC4/CSD_Structure.c **** *  the information from the wdgtStatus registers 
+ 741:Generated_Source\PSoC4/CSD_Structure.c **** *  (CSD_WDGT_STATUS<X>_VALUE). This function does not process any 
+ 742:Generated_Source\PSoC4/CSD_Structure.c **** *  widget but extracts the processed results from the \ref group_structures.
+ 743:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 744:Generated_Source\PSoC4/CSD_Structure.c **** * \return 
+ 745:Generated_Source\PSoC4/CSD_Structure.c **** *   Returns the touch detection status of all widgets:
+ 746:Generated_Source\PSoC4/CSD_Structure.c **** *     - Zero if no touch is detected in all widgets or sensors.
+ 747:Generated_Source\PSoC4/CSD_Structure.c **** *     - Non-zero if at least one widget or sensor detected a touch.
+ 748:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 749:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+ 750:Generated_Source\PSoC4/CSD_Structure.c **** uint32 CSD_IsAnyWidgetActive(void)
+ 751:Generated_Source\PSoC4/CSD_Structure.c **** {
+ 445              		.loc 1 751 0
+ 446              		.cfi_startproc
+ 447              	.LVL50:
+ 752:Generated_Source\PSoC4/CSD_Structure.c ****     uint32 result = 0Lu;
+ 753:Generated_Source\PSoC4/CSD_Structure.c ****     uint32 wdWord;
+ 754:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 755:Generated_Source\PSoC4/CSD_Structure.c ****     for (wdWord = CSD_WDGT_STATUS_WORDS; wdWord-- > 0u;)
+ 448              		.loc 1 755 0
+ 449 0000 0123     		mov	r3, #1
+ 752:Generated_Source\PSoC4/CSD_Structure.c ****     uint32 result = 0Lu;
+ 450              		.loc 1 752 0
+ 451 0002 0020     		mov	r0, #0
+ 452              		.loc 1 755 0
+ 453 0004 05E0     		b	.L42
+ 454              	.LVL51:
+ 455              	.L43:
+ 756:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 757:Generated_Source\PSoC4/CSD_Structure.c ****         result |= CSD_dsRam.wdgtStatus[wdWord];
+ 456              		.loc 1 757 0
+ 457 0006 131D     		add	r3, r2, #4
+ 458 0008 9B00     		lsl	r3, r3, #2
+ 459 000a 0449     		ldr	r1, .L44
+ 460 000c 5B58     		ldr	r3, [r3, r1]
+ 461 000e 1843     		orr	r0, r3
+ 462              	.LVL52:
+ 755:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 463              		.loc 1 755 0
+ 464 0010 131C     		mov	r3, r2
+ 465              	.LVL53:
+ 466              	.L42:
+ 755:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 467              		.loc 1 755 0 is_stmt 0 discriminator 1
+ 468 0012 5A1E     		sub	r2, r3, #1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 23
+
+
+ 469              	.LVL54:
+ 470 0014 002B     		cmp	r3, #0
+ 471 0016 F6D1     		bne	.L43
+ 758:Generated_Source\PSoC4/CSD_Structure.c ****     }
+ 759:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 760:Generated_Source\PSoC4/CSD_Structure.c ****     return result;
+ 761:Generated_Source\PSoC4/CSD_Structure.c **** }
+ 472              		.loc 1 761 0 is_stmt 1
+ 473              		@ sp needed
+ 474 0018 7047     		bx	lr
+ 475              	.L45:
+ 476 001a C046     		.align	2
+ 477              	.L44:
+ 478 001c 00000000 		.word	CSD_dsRam
+ 479              		.cfi_endproc
+ 480              	.LFE5:
+ 481              		.size	CSD_IsAnyWidgetActive, .-CSD_IsAnyWidgetActive
+ 482              		.section	.text.CSD_IsWidgetActive,"ax",%progbits
+ 483              		.align	2
+ 484              		.global	CSD_IsWidgetActive
+ 485              		.code	16
+ 486              		.thumb_func
+ 487              		.type	CSD_IsWidgetActive, %function
+ 488              	CSD_IsWidgetActive:
+ 489              	.LFB6:
+ 762:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 763:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 764:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+ 765:Generated_Source\PSoC4/CSD_Structure.c **** * Function Name: CSD_IsWidgetActive
+ 766:Generated_Source\PSoC4/CSD_Structure.c **** ****************************************************************************//**
+ 767:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 768:Generated_Source\PSoC4/CSD_Structure.c **** * \brief
+ 769:Generated_Source\PSoC4/CSD_Structure.c **** *  Reports if the specified widget detects a touch on any of its sensors.
+ 770:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 771:Generated_Source\PSoC4/CSD_Structure.c **** * \details
+ 772:Generated_Source\PSoC4/CSD_Structure.c **** *  This function reports if the specified widget has detected a touch or not by 
+ 773:Generated_Source\PSoC4/CSD_Structure.c **** *  extracting the information from the wdgtStatus registers 
+ 774:Generated_Source\PSoC4/CSD_Structure.c **** *  (CSD_WDGT_STATUS<X>_VALUE). This function does not process the 
+ 775:Generated_Source\PSoC4/CSD_Structure.c **** *  widget, but extracts the processed results from the \ref group_structures.
+ 776:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 777:Generated_Source\PSoC4/CSD_Structure.c **** * \param widgetId  
+ 778:Generated_Source\PSoC4/CSD_Structure.c **** *  Specify the ID number of the widget to get its status.
+ 779:Generated_Source\PSoC4/CSD_Structure.c **** *  A macro for the widget ID can be found in the CSD Configuration header 
+ 780:Generated_Source\PSoC4/CSD_Structure.c **** *  file defined as CSD_<WidgetName>_WDGT_ID.
+ 781:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 782:Generated_Source\PSoC4/CSD_Structure.c **** * \return 
+ 783:Generated_Source\PSoC4/CSD_Structure.c **** *  Returns the touch detection status of the specified widgets:
+ 784:Generated_Source\PSoC4/CSD_Structure.c **** *    - Zero if no touch is detected in the specified widget or a wrong widgetId
+ 785:Generated_Source\PSoC4/CSD_Structure.c **** *      is specified
+ 786:Generated_Source\PSoC4/CSD_Structure.c **** *    - Non-zero if at least one sensor of the specified widget is active i.e. 
+ 787:Generated_Source\PSoC4/CSD_Structure.c **** *      touch is detected
+ 788:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 789:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+ 790:Generated_Source\PSoC4/CSD_Structure.c **** uint32 CSD_IsWidgetActive(uint32 widgetId)
+ 791:Generated_Source\PSoC4/CSD_Structure.c **** {
+ 490              		.loc 1 791 0
+ 491              		.cfi_startproc
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 24
+
+
+ 492              	.LVL55:
+ 792:Generated_Source\PSoC4/CSD_Structure.c ****     uint32 result = 0Lu;
+ 793:Generated_Source\PSoC4/CSD_Structure.c ****    
+ 794:Generated_Source\PSoC4/CSD_Structure.c ****     if (widgetId < CSD_TOTAL_WIDGETS)
+ 493              		.loc 1 794 0
+ 494 0000 0028     		cmp	r0, #0
+ 495 0002 0BD1     		bne	.L48
+ 795:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 796:Generated_Source\PSoC4/CSD_Structure.c ****         result = CSD_GET_WIDGET_ACTIVE_STATUS(widgetId);
+ 496              		.loc 1 796 0
+ 497 0004 1F22     		mov	r2, #31
+ 498 0006 0240     		and	r2, r0
+ 499 0008 0123     		mov	r3, #1
+ 500 000a 9340     		lsl	r3, r3, r2
+ 501 000c 1A1C     		mov	r2, r3
+ 502 000e 4309     		lsr	r3, r0, #5
+ 503 0010 0433     		add	r3, r3, #4
+ 504 0012 9B00     		lsl	r3, r3, #2
+ 505 0014 0249     		ldr	r1, .L49
+ 506 0016 5858     		ldr	r0, [r3, r1]
+ 507              	.LVL56:
+ 508 0018 1040     		and	r0, r2
+ 509              	.LVL57:
+ 510 001a 00E0     		b	.L47
+ 511              	.LVL58:
+ 512              	.L48:
+ 792:Generated_Source\PSoC4/CSD_Structure.c ****     uint32 result = 0Lu;
+ 513              		.loc 1 792 0
+ 514 001c 0020     		mov	r0, #0
+ 515              	.LVL59:
+ 516              	.L47:
+ 797:Generated_Source\PSoC4/CSD_Structure.c ****     }
+ 798:Generated_Source\PSoC4/CSD_Structure.c ****     return result;
+ 799:Generated_Source\PSoC4/CSD_Structure.c **** }
+ 517              		.loc 1 799 0
+ 518              		@ sp needed
+ 519 001e 7047     		bx	lr
+ 520              	.L50:
+ 521              		.align	2
+ 522              	.L49:
+ 523 0020 00000000 		.word	CSD_dsRam
+ 524              		.cfi_endproc
+ 525              	.LFE6:
+ 526              		.size	CSD_IsWidgetActive, .-CSD_IsWidgetActive
+ 527              		.section	.text.CSD_IsSensorActive,"ax",%progbits
+ 528              		.align	2
+ 529              		.global	CSD_IsSensorActive
+ 530              		.code	16
+ 531              		.thumb_func
+ 532              		.type	CSD_IsSensorActive, %function
+ 533              	CSD_IsSensorActive:
+ 534              	.LFB7:
+ 800:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 801:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 802:Generated_Source\PSoC4/CSD_Structure.c **** /*******************************************************************************
+ 803:Generated_Source\PSoC4/CSD_Structure.c **** * Function Name: CSD_IsSensorActive
+ 804:Generated_Source\PSoC4/CSD_Structure.c **** ****************************************************************************//**
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 25
+
+
+ 805:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 806:Generated_Source\PSoC4/CSD_Structure.c **** * \brief
+ 807:Generated_Source\PSoC4/CSD_Structure.c **** *  Reports if the specified sensor in the widget detects a touch.
+ 808:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 809:Generated_Source\PSoC4/CSD_Structure.c **** * \details 
+ 810:Generated_Source\PSoC4/CSD_Structure.c **** *  This function reports if the specified sensor in the widget has detected a 
+ 811:Generated_Source\PSoC4/CSD_Structure.c **** *  touch or not by extracting the information from wdgtStatus registers 
+ 812:Generated_Source\PSoC4/CSD_Structure.c **** *  (CSD_WDGT_STATUS<X>_VALUE). This function does not process the
+ 813:Generated_Source\PSoC4/CSD_Structure.c **** *  widget or sensor, but extracts the processed results from the \ref group_structures.
+ 814:Generated_Source\PSoC4/CSD_Structure.c **** *   
+ 815:Generated_Source\PSoC4/CSD_Structure.c **** *  For Proximity sensors this function returns proximity detection status. To 
+ 816:Generated_Source\PSoC4/CSD_Structure.c **** *  get finger touch status of proximity sensors, use the 
+ 817:Generated_Source\PSoC4/CSD_Structure.c **** *  CSD_IsProximitySensorActive() function. 
+ 818:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 819:Generated_Source\PSoC4/CSD_Structure.c **** * \param widgetId  
+ 820:Generated_Source\PSoC4/CSD_Structure.c **** *  Specify the ID number of the widget.
+ 821:Generated_Source\PSoC4/CSD_Structure.c **** *  A macro for the widget ID can be found in the CSD Configuration header 
+ 822:Generated_Source\PSoC4/CSD_Structure.c **** *  file defined as CSD_<WidgetName>_WDGT_ID 
+ 823:Generated_Source\PSoC4/CSD_Structure.c **** 
+ 824:Generated_Source\PSoC4/CSD_Structure.c **** * \param sensorId  
+ 825:Generated_Source\PSoC4/CSD_Structure.c **** *  Specify the ID number of the sensor within the widget to get its touch 
+ 826:Generated_Source\PSoC4/CSD_Structure.c **** *  detection status.
+ 827:Generated_Source\PSoC4/CSD_Structure.c **** *  A macro for the sensor ID within specified widget can be found in the 
+ 828:Generated_Source\PSoC4/CSD_Structure.c **** *  CSD Configuration header file defined as 
+ 829:Generated_Source\PSoC4/CSD_Structure.c **** *  CSD_<WidgetName>_SNS<SensorNumber>_ID 
+ 830:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 831:Generated_Source\PSoC4/CSD_Structure.c **** * \return 
+ 832:Generated_Source\PSoC4/CSD_Structure.c **** *  Returns the touch detection status of the specified sensor / widget:
+ 833:Generated_Source\PSoC4/CSD_Structure.c **** *    - Zero if no touch is detected in the specified sensor / widget or a wrong
+ 834:Generated_Source\PSoC4/CSD_Structure.c **** *      widget ID / sensor ID is specified
+ 835:Generated_Source\PSoC4/CSD_Structure.c **** *    - Non-zero if the specified sensor is active i.e. touch is detected. If the
+ 836:Generated_Source\PSoC4/CSD_Structure.c **** *      specific sensor belongs to a proximity widget, the proximity detection 
+ 837:Generated_Source\PSoC4/CSD_Structure.c **** *      status is returned.
+ 838:Generated_Source\PSoC4/CSD_Structure.c **** *
+ 839:Generated_Source\PSoC4/CSD_Structure.c **** *******************************************************************************/
+ 840:Generated_Source\PSoC4/CSD_Structure.c **** uint32 CSD_IsSensorActive(uint32 widgetId, uint32 sensorId)
+ 841:Generated_Source\PSoC4/CSD_Structure.c **** {
+ 535              		.loc 1 841 0
+ 536              		.cfi_startproc
+ 537              	.LVL60:
+ 842:Generated_Source\PSoC4/CSD_Structure.c ****     uint32 result = 0Lu;
+ 843:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 844:Generated_Source\PSoC4/CSD_Structure.c ****     if ((widgetId < CSD_TOTAL_WIDGETS) &&
+ 538              		.loc 1 844 0
+ 539 0000 0028     		cmp	r0, #0
+ 540 0002 0ED1     		bne	.L53
+ 845:Generated_Source\PSoC4/CSD_Structure.c ****         (sensorId < CSD_GET_SENSOR_COUNT(widgetId)))
+ 541              		.loc 1 845 0 discriminator 1
+ 542 0004 C300     		lsl	r3, r0, #3
+ 543 0006 1B1A     		sub	r3, r3, r0
+ 544 0008 9B00     		lsl	r3, r3, #2
+ 545 000a 084A     		ldr	r2, .L55
+ 546 000c D318     		add	r3, r2, r3
+ 547 000e 5B8B     		ldrh	r3, [r3, #26]
+ 844:Generated_Source\PSoC4/CSD_Structure.c ****         (sensorId < CSD_GET_SENSOR_COUNT(widgetId)))
+ 548              		.loc 1 844 0 discriminator 1
+ 549 0010 8B42     		cmp	r3, r1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 26
+
+
+ 550 0012 08D9     		bls	.L54
+ 846:Generated_Source\PSoC4/CSD_Structure.c ****     {
+ 847:Generated_Source\PSoC4/CSD_Structure.c ****         #if (CSD_ENABLE == CSD_PROXIMITY_WIDGET_EN)
+ 848:Generated_Source\PSoC4/CSD_Structure.c ****             if (CSD_WD_PROXIMITY_E == 
+ 849:Generated_Source\PSoC4/CSD_Structure.c **** 				(CSD_WD_TYPE_ENUM)CSD_dsFlash.wdgtArray[widgetId].wdgtType)
+ 850:Generated_Source\PSoC4/CSD_Structure.c ****             {
+ 851:Generated_Source\PSoC4/CSD_Structure.c ****                 sensorId = CSD_PROX_STS_OFFSET(sensorId);
+ 852:Generated_Source\PSoC4/CSD_Structure.c ****             }
+ 853:Generated_Source\PSoC4/CSD_Structure.c ****         #endif /* (CSD_ENABLE != CSD_PROXIMITY_WIDGET_EN) */
+ 854:Generated_Source\PSoC4/CSD_Structure.c ****         result = CSD_dsRam.snsStatus[widgetId] & (1Lu << sensorId);
+ 551              		.loc 1 854 0
+ 552 0014 064B     		ldr	r3, .L55+4
+ 553 0016 1818     		add	r0, r3, r0
+ 554              	.LVL61:
+ 555 0018 037D     		ldrb	r3, [r0, #20]
+ 556 001a 0120     		mov	r0, #1
+ 557 001c 8840     		lsl	r0, r0, r1
+ 558 001e 1840     		and	r0, r3
+ 559              	.LVL62:
+ 560 0020 02E0     		b	.L52
+ 561              	.LVL63:
+ 562              	.L53:
+ 842:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 563              		.loc 1 842 0
+ 564 0022 0020     		mov	r0, #0
+ 565              	.LVL64:
+ 566 0024 00E0     		b	.L52
+ 567              	.LVL65:
+ 568              	.L54:
+ 569 0026 0020     		mov	r0, #0
+ 570              	.LVL66:
+ 571              	.L52:
+ 855:Generated_Source\PSoC4/CSD_Structure.c ****     }
+ 856:Generated_Source\PSoC4/CSD_Structure.c ****     
+ 857:Generated_Source\PSoC4/CSD_Structure.c ****     return result;
+ 858:Generated_Source\PSoC4/CSD_Structure.c **** }
+ 572              		.loc 1 858 0
+ 573              		@ sp needed
+ 574 0028 7047     		bx	lr
+ 575              	.L56:
+ 576 002a C046     		.align	2
+ 577              	.L55:
+ 578 002c 00000000 		.word	.LANCHOR0
+ 579 0030 00000000 		.word	CSD_dsRam
+ 580              		.cfi_endproc
+ 581              	.LFE7:
+ 582              		.size	CSD_IsSensorActive, .-CSD_IsSensorActive
+ 583              		.global	CSD_ioList
+ 584              		.global	CSD_dsFlash
+ 585              		.comm	CSD_dsRam,68,4
+ 586              		.section	.rodata
+ 587              		.align	2
+ 588              		.set	.LANCHOR0,. + 0
+ 589              		.type	CSD_ramIdacInit, %object
+ 590              		.size	CSD_ramIdacInit, 2
+ 591              	CSD_ramIdacInit:
+ 592 0000 20       		.byte	32
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 27
+
+
+ 593 0001 20       		.byte	32
+ 594 0002 0000     		.space	2
+ 595              		.type	CSD_dsFlash, %object
+ 596              		.size	CSD_dsFlash, 28
+ 597              	CSD_dsFlash:
+ 598 0004 00000000 		.word	CSD_ioList
+ 599 0008 1A000000 		.word	CSD_dsRam+26
+ 600 000c 28000000 		.word	CSD_dsRam+40
+ 601 0010 00000000 		.word	CSD_fltrHistoryButton0
+ 602 0014 04000000 		.word	CSD_debounceButton0
+ 603 0018 0100     		.short	1
+ 604 001a 0200     		.short	2
+ 605 001c 01       		.byte	1
+ 606 001d 02       		.byte	2
+ 607 001e 0000     		.space	2
+ 608              		.type	CSD_ramWidgetInit, %object
+ 609              		.size	CSD_ramWidgetInit, 14
+ 610              	CSD_ramWidgetInit:
+ 611 0020 1000     		.short	16
+ 612 0022 6400     		.short	100
+ 613 0024 28       		.byte	40
+ 614 0025 28       		.byte	40
+ 615 0026 0A       		.byte	10
+ 616 0027 03       		.byte	3
+ 617 0028 1E       		.byte	30
+ 618 0029 64       		.byte	100
+ 619 002a 20       		.byte	32
+ 620 002b 80       		.byte	-128
+ 621 002c 00       		.byte	0
+ 622 002d 00       		.space	1
+ 623 002e 0000     		.space	2
+ 624              		.type	CSD_ioList, %object
+ 625              		.size	CSD_ioList, 56
+ 626              	CSD_ioList:
+ 627 0030 00010240 		.word	1073873152
+ 628 0034 08010440 		.word	1074004232
+ 629 0038 00010440 		.word	1074004224
+ 630 003c 04010440 		.word	1074004228
+ 631 0040 0000F000 		.word	15728640
+ 632 0044 20000000 		.word	32
+ 633 0048 14       		.byte	20
+ 634 0049 05       		.byte	5
+ 635 004a 0F       		.byte	15
+ 636 004b 00       		.space	1
+ 637 004c 00010240 		.word	1073873152
+ 638 0050 08010440 		.word	1074004232
+ 639 0054 00010440 		.word	1074004224
+ 640 0058 04010440 		.word	1074004228
+ 641 005c 000000F0 		.word	-268435456
+ 642 0060 80000000 		.word	128
+ 643 0064 1C       		.byte	28
+ 644 0065 07       		.byte	7
+ 645 0066 15       		.byte	21
+ 646 0067 00       		.space	1
+ 647              		.bss
+ 648              		.align	2
+ 649              		.type	CSD_fltrHistoryButton0, %object
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 28
+
+
+ 650              		.size	CSD_fltrHistoryButton0, 4
+ 651              	CSD_fltrHistoryButton0:
+ 652 0000 00000000 		.space	4
+ 653              		.type	CSD_debounceButton0, %object
+ 654              		.size	CSD_debounceButton0, 2
+ 655              	CSD_debounceButton0:
+ 656 0004 0000     		.space	2
+ 657 0006 0000     		.text
+ 658              	.Letext0:
+ 659              		.file 2 "Generated_Source\\PSoC4/cytypes.h"
+ 660              		.file 3 "Generated_Source\\PSoC4\\CSD_Configuration.h"
+ 661              		.file 4 "Generated_Source\\PSoC4\\CSD_Structure.h"
+ 662              		.file 5 "Generated_Source\\PSoC4\\CyLib.h"
+ 663              		.section	.debug_info,"",%progbits
+ 664              	.Ldebug_info0:
+ 665 0000 4F0A0000 		.4byte	0xa4f
+ 666 0004 0400     		.2byte	0x4
+ 667 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 668 000a 04       		.byte	0x4
+ 669 000b 01       		.uleb128 0x1
+ 670 000c 85060000 		.4byte	.LASF125
+ 671 0010 01       		.byte	0x1
+ 672 0011 34050000 		.4byte	.LASF126
+ 673 0015 97050000 		.4byte	.LASF127
+ 674 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 675 001d 00000000 		.4byte	0
+ 676 0021 00000000 		.4byte	.Ldebug_line0
+ 677 0025 02       		.uleb128 0x2
+ 678 0026 01       		.byte	0x1
+ 679 0027 06       		.byte	0x6
+ 680 0028 C9000000 		.4byte	.LASF0
+ 681 002c 02       		.uleb128 0x2
+ 682 002d 01       		.byte	0x1
+ 683 002e 08       		.byte	0x8
+ 684 002f CC030000 		.4byte	.LASF1
+ 685 0033 02       		.uleb128 0x2
+ 686 0034 02       		.byte	0x2
+ 687 0035 05       		.byte	0x5
+ 688 0036 FD030000 		.4byte	.LASF2
+ 689 003a 02       		.uleb128 0x2
+ 690 003b 02       		.byte	0x2
+ 691 003c 07       		.byte	0x7
+ 692 003d 77020000 		.4byte	.LASF3
+ 693 0041 02       		.uleb128 0x2
+ 694 0042 04       		.byte	0x4
+ 695 0043 05       		.byte	0x5
+ 696 0044 00010000 		.4byte	.LASF4
+ 697 0048 02       		.uleb128 0x2
+ 698 0049 04       		.byte	0x4
+ 699 004a 07       		.byte	0x7
+ 700 004b 12020000 		.4byte	.LASF5
+ 701 004f 02       		.uleb128 0x2
+ 702 0050 08       		.byte	0x8
+ 703 0051 05       		.byte	0x5
+ 704 0052 BB000000 		.4byte	.LASF6
+ 705 0056 02       		.uleb128 0x2
+ 706 0057 08       		.byte	0x8
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 29
+
+
+ 707 0058 07       		.byte	0x7
+ 708 0059 5F000000 		.4byte	.LASF7
+ 709 005d 03       		.uleb128 0x3
+ 710 005e 04       		.byte	0x4
+ 711 005f 05       		.byte	0x5
+ 712 0060 696E7400 		.ascii	"int\000"
+ 713 0064 02       		.uleb128 0x2
+ 714 0065 04       		.byte	0x4
+ 715 0066 07       		.byte	0x7
+ 716 0067 F5010000 		.4byte	.LASF8
+ 717 006b 04       		.uleb128 0x4
+ 718 006c 2B010000 		.4byte	.LASF9
+ 719 0070 02       		.byte	0x2
+ 720 0071 B901     		.2byte	0x1b9
+ 721 0073 2C000000 		.4byte	0x2c
+ 722 0077 04       		.uleb128 0x4
+ 723 0078 00000000 		.4byte	.LASF10
+ 724 007c 02       		.byte	0x2
+ 725 007d BA01     		.2byte	0x1ba
+ 726 007f 3A000000 		.4byte	0x3a
+ 727 0083 04       		.uleb128 0x4
+ 728 0084 82010000 		.4byte	.LASF11
+ 729 0088 02       		.byte	0x2
+ 730 0089 BB01     		.2byte	0x1bb
+ 731 008b 48000000 		.4byte	0x48
+ 732 008f 02       		.uleb128 0x2
+ 733 0090 04       		.byte	0x4
+ 734 0091 04       		.byte	0x4
+ 735 0092 7F030000 		.4byte	.LASF12
+ 736 0096 02       		.uleb128 0x2
+ 737 0097 08       		.byte	0x8
+ 738 0098 04       		.byte	0x4
+ 739 0099 44010000 		.4byte	.LASF13
+ 740 009d 02       		.uleb128 0x2
+ 741 009e 01       		.byte	0x1
+ 742 009f 08       		.byte	0x8
+ 743 00a0 A3040000 		.4byte	.LASF14
+ 744 00a4 04       		.uleb128 0x4
+ 745 00a5 25060000 		.4byte	.LASF15
+ 746 00a9 02       		.byte	0x2
+ 747 00aa 5B02     		.2byte	0x25b
+ 748 00ac 48000000 		.4byte	0x48
+ 749 00b0 05       		.uleb128 0x5
+ 750 00b1 6B000000 		.4byte	0x6b
+ 751 00b5 05       		.uleb128 0x5
+ 752 00b6 77000000 		.4byte	0x77
+ 753 00ba 04       		.uleb128 0x4
+ 754 00bb DD020000 		.4byte	.LASF16
+ 755 00bf 02       		.byte	0x2
+ 756 00c0 6502     		.2byte	0x265
+ 757 00c2 C6000000 		.4byte	0xc6
+ 758 00c6 05       		.uleb128 0x5
+ 759 00c7 83000000 		.4byte	0x83
+ 760 00cb 02       		.uleb128 0x2
+ 761 00cc 04       		.byte	0x4
+ 762 00cd 07       		.byte	0x7
+ 763 00ce FC020000 		.4byte	.LASF17
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 30
+
+
+ 764 00d2 06       		.uleb128 0x6
+ 765 00d3 04       		.byte	0x4
+ 766 00d4 07       		.uleb128 0x7
+ 767 00d5 89010000 		.4byte	.LASF18
+ 768 00d9 03       		.byte	0x3
+ 769 00da D8       		.byte	0xd8
+ 770 00db 77000000 		.4byte	0x77
+ 771 00df 07       		.uleb128 0x7
+ 772 00e0 24020000 		.4byte	.LASF19
+ 773 00e4 03       		.byte	0x3
+ 774 00e5 DC       		.byte	0xdc
+ 775 00e6 6B000000 		.4byte	0x6b
+ 776 00ea 08       		.uleb128 0x8
+ 777 00eb 01       		.byte	0x1
+ 778 00ec 04       		.byte	0x4
+ 779 00ed 4F       		.byte	0x4f
+ 780 00ee 17010000 		.4byte	0x117
+ 781 00f2 09       		.uleb128 0x9
+ 782 00f3 4B010000 		.4byte	.LASF20
+ 783 00f7 01       		.sleb128 1
+ 784 00f8 09       		.uleb128 0x9
+ 785 00f9 DA040000 		.4byte	.LASF21
+ 786 00fd 02       		.sleb128 2
+ 787 00fe 09       		.uleb128 0x9
+ 788 00ff 60060000 		.4byte	.LASF22
+ 789 0103 03       		.sleb128 3
+ 790 0104 09       		.uleb128 0x9
+ 791 0105 23040000 		.4byte	.LASF23
+ 792 0109 04       		.sleb128 4
+ 793 010a 09       		.uleb128 0x9
+ 794 010b EE000000 		.4byte	.LASF24
+ 795 010f 05       		.sleb128 5
+ 796 0110 09       		.uleb128 0x9
+ 797 0111 91000000 		.4byte	.LASF25
+ 798 0115 06       		.sleb128 6
+ 799 0116 00       		.byte	0
+ 800 0117 0A       		.uleb128 0xa
+ 801 0118 6B000000 		.4byte	0x6b
+ 802 011c 27010000 		.4byte	0x127
+ 803 0120 0B       		.uleb128 0xb
+ 804 0121 CB000000 		.4byte	0xcb
+ 805 0125 00       		.byte	0
+ 806 0126 00       		.byte	0
+ 807 0127 0C       		.uleb128 0xc
+ 808 0128 0E       		.byte	0xe
+ 809 0129 04       		.byte	0x4
+ 810 012a BF       		.byte	0xbf
+ 811 012b B4010000 		.4byte	0x1b4
+ 812 012f 0D       		.uleb128 0xd
+ 813 0130 77040000 		.4byte	.LASF26
+ 814 0134 04       		.byte	0x4
+ 815 0135 C5       		.byte	0xc5
+ 816 0136 77000000 		.4byte	0x77
+ 817 013a 00       		.byte	0
+ 818 013b 0D       		.uleb128 0xd
+ 819 013c 34060000 		.4byte	.LASF27
+ 820 0140 04       		.byte	0x4
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 31
+
+
+ 821 0141 CA       		.byte	0xca
+ 822 0142 D4000000 		.4byte	0xd4
+ 823 0146 02       		.byte	0x2
+ 824 0147 0D       		.uleb128 0xd
+ 825 0148 17070000 		.4byte	.LASF28
+ 826 014c 04       		.byte	0x4
+ 827 014d CF       		.byte	0xcf
+ 828 014e 6B000000 		.4byte	0x6b
+ 829 0152 04       		.byte	0x4
+ 830 0153 0D       		.uleb128 0xd
+ 831 0154 26030000 		.4byte	.LASF29
+ 832 0158 04       		.byte	0x4
+ 833 0159 D4       		.byte	0xd4
+ 834 015a 6B000000 		.4byte	0x6b
+ 835 015e 05       		.byte	0x5
+ 836 015f 0D       		.uleb128 0xd
+ 837 0160 C1030000 		.4byte	.LASF30
+ 838 0164 04       		.byte	0x4
+ 839 0165 D9       		.byte	0xd9
+ 840 0166 6B000000 		.4byte	0x6b
+ 841 016a 06       		.byte	0x6
+ 842 016b 0D       		.uleb128 0xd
+ 843 016c CF040000 		.4byte	.LASF31
+ 844 0170 04       		.byte	0x4
+ 845 0171 DE       		.byte	0xde
+ 846 0172 6B000000 		.4byte	0x6b
+ 847 0176 07       		.byte	0x7
+ 848 0177 0D       		.uleb128 0xd
+ 849 0178 45020000 		.4byte	.LASF32
+ 850 017c 04       		.byte	0x4
+ 851 017d E4       		.byte	0xe4
+ 852 017e DF000000 		.4byte	0xdf
+ 853 0182 08       		.byte	0x8
+ 854 0183 0D       		.uleb128 0xd
+ 855 0184 A8030000 		.4byte	.LASF33
+ 856 0188 04       		.byte	0x4
+ 857 0189 E9       		.byte	0xe9
+ 858 018a 6B000000 		.4byte	0x6b
+ 859 018e 09       		.byte	0x9
+ 860 018f 0D       		.uleb128 0xd
+ 861 0190 EC020000 		.4byte	.LASF34
+ 862 0194 04       		.byte	0x4
+ 863 0195 F0       		.byte	0xf0
+ 864 0196 17010000 		.4byte	0x117
+ 865 019a 0A       		.byte	0xa
+ 866 019b 0D       		.uleb128 0xd
+ 867 019c BE040000 		.4byte	.LASF35
+ 868 01a0 04       		.byte	0x4
+ 869 01a1 F7       		.byte	0xf7
+ 870 01a2 6B000000 		.4byte	0x6b
+ 871 01a6 0B       		.byte	0xb
+ 872 01a7 0D       		.uleb128 0xd
+ 873 01a8 18060000 		.4byte	.LASF36
+ 874 01ac 04       		.byte	0x4
+ 875 01ad FC       		.byte	0xfc
+ 876 01ae 6B000000 		.4byte	0x6b
+ 877 01b2 0C       		.byte	0xc
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 32
+
+
+ 878 01b3 00       		.byte	0
+ 879 01b4 07       		.uleb128 0x7
+ 880 01b5 F1040000 		.4byte	.LASF37
+ 881 01b9 04       		.byte	0x4
+ 882 01ba FD       		.byte	0xfd
+ 883 01bb 27010000 		.4byte	0x127
+ 884 01bf 0E       		.uleb128 0xe
+ 885 01c0 0E       		.byte	0xe
+ 886 01c1 04       		.byte	0x4
+ 887 01c2 0301     		.2byte	0x103
+ 888 01c4 D6010000 		.4byte	0x1d6
+ 889 01c8 0F       		.uleb128 0xf
+ 890 01c9 D5000000 		.4byte	.LASF38
+ 891 01cd 04       		.byte	0x4
+ 892 01ce 0801     		.2byte	0x108
+ 893 01d0 B4010000 		.4byte	0x1b4
+ 894 01d4 00       		.byte	0
+ 895 01d5 00       		.byte	0
+ 896 01d6 04       		.uleb128 0x4
+ 897 01d7 DA030000 		.4byte	.LASF39
+ 898 01db 04       		.byte	0x4
+ 899 01dc 0901     		.2byte	0x109
+ 900 01de BF010000 		.4byte	0x1bf
+ 901 01e2 0E       		.uleb128 0xe
+ 902 01e3 0A       		.byte	0xa
+ 903 01e4 04       		.byte	0x4
+ 904 01e5 0F01     		.2byte	0x10f
+ 905 01e7 3A020000 		.4byte	0x23a
+ 906 01eb 10       		.uleb128 0x10
+ 907 01ec 72617700 		.ascii	"raw\000"
+ 908 01f0 04       		.byte	0x4
+ 909 01f1 1401     		.2byte	0x114
+ 910 01f3 3A020000 		.4byte	0x23a
+ 911 01f7 00       		.byte	0
+ 912 01f8 0F       		.uleb128 0xf
+ 913 01f9 E3010000 		.4byte	.LASF40
+ 914 01fd 04       		.byte	0x4
+ 915 01fe 1901     		.2byte	0x119
+ 916 0200 3A020000 		.4byte	0x23a
+ 917 0204 02       		.byte	0x2
+ 918 0205 0F       		.uleb128 0xf
+ 919 0206 BF010000 		.4byte	.LASF41
+ 920 020a 04       		.byte	0x4
+ 921 020b 1F01     		.2byte	0x11f
+ 922 020d 17010000 		.4byte	0x117
+ 923 0211 04       		.byte	0x4
+ 924 0212 0F       		.uleb128 0xf
+ 925 0213 83000000 		.4byte	.LASF42
+ 926 0217 04       		.byte	0x4
+ 927 0218 2401     		.2byte	0x124
+ 928 021a D4000000 		.4byte	0xd4
+ 929 021e 06       		.byte	0x6
+ 930 021f 0F       		.uleb128 0xf
+ 931 0220 1A050000 		.4byte	.LASF43
+ 932 0224 04       		.byte	0x4
+ 933 0225 2901     		.2byte	0x129
+ 934 0227 4A020000 		.4byte	0x24a
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 33
+
+
+ 935 022b 08       		.byte	0x8
+ 936 022c 0F       		.uleb128 0xf
+ 937 022d 11050000 		.4byte	.LASF44
+ 938 0231 04       		.byte	0x4
+ 939 0232 2F01     		.2byte	0x12f
+ 940 0234 17010000 		.4byte	0x117
+ 941 0238 09       		.byte	0x9
+ 942 0239 00       		.byte	0
+ 943 023a 0A       		.uleb128 0xa
+ 944 023b 77000000 		.4byte	0x77
+ 945 023f 4A020000 		.4byte	0x24a
+ 946 0243 0B       		.uleb128 0xb
+ 947 0244 CB000000 		.4byte	0xcb
+ 948 0248 00       		.byte	0
+ 949 0249 00       		.byte	0
+ 950 024a 0A       		.uleb128 0xa
+ 951 024b DF000000 		.4byte	0xdf
+ 952 024f 5A020000 		.4byte	0x25a
+ 953 0253 0B       		.uleb128 0xb
+ 954 0254 CB000000 		.4byte	0xcb
+ 955 0258 00       		.byte	0
+ 956 0259 00       		.byte	0
+ 957 025a 04       		.uleb128 0x4
+ 958 025b 31010000 		.4byte	.LASF45
+ 959 025f 04       		.byte	0x4
+ 960 0260 3001     		.2byte	0x130
+ 961 0262 E2010000 		.4byte	0x1e2
+ 962 0266 0E       		.uleb128 0xe
+ 963 0267 14       		.byte	0x14
+ 964 0268 04       		.byte	0x4
+ 965 0269 3601     		.2byte	0x136
+ 966 026b 7D020000 		.4byte	0x27d
+ 967 026f 0F       		.uleb128 0xf
+ 968 0270 D5000000 		.4byte	.LASF38
+ 969 0274 04       		.byte	0x4
+ 970 0275 3B01     		.2byte	0x13b
+ 971 0277 7D020000 		.4byte	0x27d
+ 972 027b 00       		.byte	0
+ 973 027c 00       		.byte	0
+ 974 027d 0A       		.uleb128 0xa
+ 975 027e 5A020000 		.4byte	0x25a
+ 976 0282 8D020000 		.4byte	0x28d
+ 977 0286 0B       		.uleb128 0xb
+ 978 0287 CB000000 		.4byte	0xcb
+ 979 028b 01       		.byte	0x1
+ 980 028c 00       		.byte	0
+ 981 028d 04       		.uleb128 0x4
+ 982 028e 8B040000 		.4byte	.LASF46
+ 983 0292 04       		.byte	0x4
+ 984 0293 3C01     		.2byte	0x13c
+ 985 0295 66020000 		.4byte	0x266
+ 986 0299 0E       		.uleb128 0xe
+ 987 029a 44       		.byte	0x44
+ 988 029b 04       		.byte	0x4
+ 989 029c 4301     		.2byte	0x143
+ 990 029e 73030000 		.4byte	0x373
+ 991 02a2 0F       		.uleb128 0xf
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 34
+
+
+ 992 02a3 92020000 		.4byte	.LASF47
+ 993 02a7 04       		.byte	0x4
+ 994 02a8 4901     		.2byte	0x149
+ 995 02aa 77000000 		.4byte	0x77
+ 996 02ae 00       		.byte	0
+ 997 02af 0F       		.uleb128 0xf
+ 998 02b0 CE020000 		.4byte	.LASF48
+ 999 02b4 04       		.byte	0x4
+ 1000 02b5 4E01     		.2byte	0x14e
+ 1001 02b7 77000000 		.4byte	0x77
+ 1002 02bb 02       		.byte	0x2
+ 1003 02bc 0F       		.uleb128 0xf
+ 1004 02bd 76030000 		.4byte	.LASF49
+ 1005 02c1 04       		.byte	0x4
+ 1006 02c2 5401     		.2byte	0x154
+ 1007 02c4 77000000 		.4byte	0x77
+ 1008 02c8 04       		.byte	0x4
+ 1009 02c9 0F       		.uleb128 0xf
+ 1010 02ca 40030000 		.4byte	.LASF50
+ 1011 02ce 04       		.byte	0x4
+ 1012 02cf 5901     		.2byte	0x159
+ 1013 02d1 77000000 		.4byte	0x77
+ 1014 02d5 06       		.byte	0x6
+ 1015 02d6 0F       		.uleb128 0xf
+ 1016 02d7 90050000 		.4byte	.LASF51
+ 1017 02db 04       		.byte	0x4
+ 1018 02dc 5E01     		.2byte	0x15e
+ 1019 02de 83000000 		.4byte	0x83
+ 1020 02e2 08       		.byte	0x8
+ 1021 02e3 0F       		.uleb128 0xf
+ 1022 02e4 3A020000 		.4byte	.LASF52
+ 1023 02e8 04       		.byte	0x4
+ 1024 02e9 6301     		.2byte	0x163
+ 1025 02eb 73030000 		.4byte	0x373
+ 1026 02ef 0C       		.byte	0xc
+ 1027 02f0 0F       		.uleb128 0xf
+ 1028 02f1 C7010000 		.4byte	.LASF53
+ 1029 02f5 04       		.byte	0x4
+ 1030 02f6 6801     		.2byte	0x168
+ 1031 02f8 73030000 		.4byte	0x373
+ 1032 02fc 10       		.byte	0x10
+ 1033 02fd 0F       		.uleb128 0xf
+ 1034 02fe E4000000 		.4byte	.LASF54
+ 1035 0302 04       		.byte	0x4
+ 1036 0303 7601     		.2byte	0x176
+ 1037 0305 17010000 		.4byte	0x117
+ 1038 0309 14       		.byte	0x14
+ 1039 030a 0F       		.uleb128 0xf
+ 1040 030b B7020000 		.4byte	.LASF55
+ 1041 030f 04       		.byte	0x4
+ 1042 0310 7B01     		.2byte	0x17b
+ 1043 0312 77000000 		.4byte	0x77
+ 1044 0316 16       		.byte	0x16
+ 1045 0317 0F       		.uleb128 0xf
+ 1046 0318 09010000 		.4byte	.LASF56
+ 1047 031c 04       		.byte	0x4
+ 1048 031d 8001     		.2byte	0x180
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 35
+
+
+ 1049 031f 6B000000 		.4byte	0x6b
+ 1050 0323 18       		.byte	0x18
+ 1051 0324 0F       		.uleb128 0xf
+ 1052 0325 82040000 		.4byte	.LASF57
+ 1053 0329 04       		.byte	0x4
+ 1054 032a 8501     		.2byte	0x185
+ 1055 032c D6010000 		.4byte	0x1d6
+ 1056 0330 1A       		.byte	0x1a
+ 1057 0331 0F       		.uleb128 0xf
+ 1058 0332 8A020000 		.4byte	.LASF58
+ 1059 0336 04       		.byte	0x4
+ 1060 0337 8A01     		.2byte	0x18a
+ 1061 0339 8D020000 		.4byte	0x28d
+ 1062 033d 28       		.byte	0x28
+ 1063 033e 0F       		.uleb128 0xf
+ 1064 033f 02020000 		.4byte	.LASF59
+ 1065 0343 04       		.byte	0x4
+ 1066 0344 8F01     		.2byte	0x18f
+ 1067 0346 6B000000 		.4byte	0x6b
+ 1068 034a 3C       		.byte	0x3c
+ 1069 034b 0F       		.uleb128 0xf
+ 1070 034c A4000000 		.4byte	.LASF60
+ 1071 0350 04       		.byte	0x4
+ 1072 0351 9401     		.2byte	0x194
+ 1073 0353 6B000000 		.4byte	0x6b
+ 1074 0357 3D       		.byte	0x3d
+ 1075 0358 0F       		.uleb128 0xf
+ 1076 0359 43060000 		.4byte	.LASF61
+ 1077 035d 04       		.byte	0x4
+ 1078 035e 9901     		.2byte	0x199
+ 1079 0360 77000000 		.4byte	0x77
+ 1080 0364 3E       		.byte	0x3e
+ 1081 0365 0F       		.uleb128 0xf
+ 1082 0366 5B010000 		.4byte	.LASF62
+ 1083 036a 04       		.byte	0x4
+ 1084 036b 9E01     		.2byte	0x19e
+ 1085 036d 3A020000 		.4byte	0x23a
+ 1086 0371 40       		.byte	0x40
+ 1087 0372 00       		.byte	0
+ 1088 0373 0A       		.uleb128 0xa
+ 1089 0374 83000000 		.4byte	0x83
+ 1090 0378 83030000 		.4byte	0x383
+ 1091 037c 0B       		.uleb128 0xb
+ 1092 037d CB000000 		.4byte	0xcb
+ 1093 0381 00       		.byte	0
+ 1094 0382 00       		.byte	0
+ 1095 0383 04       		.uleb128 0x4
+ 1096 0384 85030000 		.4byte	.LASF63
+ 1097 0388 04       		.byte	0x4
+ 1098 0389 9F01     		.2byte	0x19f
+ 1099 038b 99020000 		.4byte	0x299
+ 1100 038f 0E       		.uleb128 0xe
+ 1101 0390 1C       		.byte	0x1c
+ 1102 0391 04       		.byte	0x4
+ 1103 0392 A501     		.2byte	0x1a5
+ 1104 0394 0E040000 		.4byte	0x40e
+ 1105 0398 0F       		.uleb128 0xf
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 36
+
+
+ 1106 0399 88000000 		.4byte	.LASF64
+ 1107 039d 04       		.byte	0x4
+ 1108 039e AA01     		.2byte	0x1aa
+ 1109 03a0 0E040000 		.4byte	0x40e
+ 1110 03a4 00       		.byte	0
+ 1111 03a5 0F       		.uleb128 0xf
+ 1112 03a6 3D060000 		.4byte	.LASF65
+ 1113 03aa 04       		.byte	0x4
+ 1114 03ab AF01     		.2byte	0x1af
+ 1115 03ad 0E040000 		.4byte	0x40e
+ 1116 03b1 04       		.byte	0x4
+ 1117 03b2 0F       		.uleb128 0xf
+ 1118 03b3 B8040000 		.4byte	.LASF66
+ 1119 03b7 04       		.byte	0x4
+ 1120 03b8 B401     		.2byte	0x1b4
+ 1121 03ba 0E040000 		.4byte	0x40e
+ 1122 03be 08       		.byte	0x8
+ 1123 03bf 0F       		.uleb128 0xf
+ 1124 03c0 1E010000 		.4byte	.LASF67
+ 1125 03c4 04       		.byte	0x4
+ 1126 03c5 B901     		.2byte	0x1b9
+ 1127 03c7 0E040000 		.4byte	0x40e
+ 1128 03cb 0C       		.byte	0xc
+ 1129 03cc 0F       		.uleb128 0xf
+ 1130 03cd 56060000 		.4byte	.LASF68
+ 1131 03d1 04       		.byte	0x4
+ 1132 03d2 BE01     		.2byte	0x1be
+ 1133 03d4 83000000 		.4byte	0x83
+ 1134 03d8 10       		.byte	0x10
+ 1135 03d9 0F       		.uleb128 0xf
+ 1136 03da BA010000 		.4byte	.LASF69
+ 1137 03de 04       		.byte	0x4
+ 1138 03df C301     		.2byte	0x1c3
+ 1139 03e1 83000000 		.4byte	0x83
+ 1140 03e5 14       		.byte	0x14
+ 1141 03e6 0F       		.uleb128 0xf
+ 1142 03e7 42040000 		.4byte	.LASF70
+ 1143 03eb 04       		.byte	0x4
+ 1144 03ec C801     		.2byte	0x1c8
+ 1145 03ee 6B000000 		.4byte	0x6b
+ 1146 03f2 18       		.byte	0x18
+ 1147 03f3 0F       		.uleb128 0xf
+ 1148 03f4 7A010000 		.4byte	.LASF71
+ 1149 03f8 04       		.byte	0x4
+ 1150 03f9 CD01     		.2byte	0x1cd
+ 1151 03fb 6B000000 		.4byte	0x6b
+ 1152 03ff 19       		.byte	0x19
+ 1153 0400 0F       		.uleb128 0xf
+ 1154 0401 6B010000 		.4byte	.LASF72
+ 1155 0405 04       		.byte	0x4
+ 1156 0406 D201     		.2byte	0x1d2
+ 1157 0408 6B000000 		.4byte	0x6b
+ 1158 040c 1A       		.byte	0x1a
+ 1159 040d 00       		.byte	0
+ 1160 040e 11       		.uleb128 0x11
+ 1161 040f 04       		.byte	0x4
+ 1162 0410 BA000000 		.4byte	0xba
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 37
+
+
+ 1163 0414 04       		.uleb128 0x4
+ 1164 0415 94030000 		.4byte	.LASF73
+ 1165 0419 04       		.byte	0x4
+ 1166 041a D301     		.2byte	0x1d3
+ 1167 041c 8F030000 		.4byte	0x38f
+ 1168 0420 0E       		.uleb128 0xe
+ 1169 0421 1C       		.byte	0x1c
+ 1170 0422 04       		.byte	0x4
+ 1171 0423 FE01     		.2byte	0x1fe
+ 1172 0425 9F040000 		.4byte	0x49f
+ 1173 0429 0F       		.uleb128 0xf
+ 1174 042a 76000000 		.4byte	.LASF74
+ 1175 042e 04       		.byte	0x4
+ 1176 042f 0702     		.2byte	0x207
+ 1177 0431 9F040000 		.4byte	0x49f
+ 1178 0435 00       		.byte	0
+ 1179 0436 0F       		.uleb128 0xf
+ 1180 0437 C2020000 		.4byte	.LASF75
+ 1181 043b 04       		.byte	0x4
+ 1182 043c 0D02     		.2byte	0x20d
+ 1183 043e D2000000 		.4byte	0xd2
+ 1184 0442 04       		.byte	0x4
+ 1185 0443 0F       		.uleb128 0xf
+ 1186 0444 13010000 		.4byte	.LASF76
+ 1187 0448 04       		.byte	0x4
+ 1188 0449 1302     		.2byte	0x213
+ 1189 044b A6040000 		.4byte	0x4a6
+ 1190 044f 08       		.byte	0x8
+ 1191 0450 0F       		.uleb128 0xf
+ 1192 0451 13040000 		.4byte	.LASF77
+ 1193 0455 04       		.byte	0x4
+ 1194 0456 1802     		.2byte	0x218
+ 1195 0458 D2000000 		.4byte	0xd2
+ 1196 045c 0C       		.byte	0xc
+ 1197 045d 0F       		.uleb128 0xf
+ 1198 045e 5B050000 		.4byte	.LASF78
+ 1199 0462 04       		.byte	0x4
+ 1200 0463 1F02     		.2byte	0x21f
+ 1201 0465 AC040000 		.4byte	0x4ac
+ 1202 0469 10       		.byte	0x10
+ 1203 046a 0F       		.uleb128 0xf
+ 1204 046b 19030000 		.4byte	.LASF79
+ 1205 046f 04       		.byte	0x4
+ 1206 0470 2402     		.2byte	0x224
+ 1207 0472 77000000 		.4byte	0x77
+ 1208 0476 14       		.byte	0x14
+ 1209 0477 0F       		.uleb128 0xf
+ 1210 0478 28050000 		.4byte	.LASF80
+ 1211 047c 04       		.byte	0x4
+ 1212 047d 2B02     		.2byte	0x22b
+ 1213 047f 77000000 		.4byte	0x77
+ 1214 0483 16       		.byte	0x16
+ 1215 0484 0F       		.uleb128 0xf
+ 1216 0485 2F030000 		.4byte	.LASF81
+ 1217 0489 04       		.byte	0x4
+ 1218 048a 3602     		.2byte	0x236
+ 1219 048c 6B000000 		.4byte	0x6b
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 38
+
+
+ 1220 0490 18       		.byte	0x18
+ 1221 0491 0F       		.uleb128 0xf
+ 1222 0492 F4020000 		.4byte	.LASF82
+ 1223 0496 04       		.byte	0x4
+ 1224 0497 3E02     		.2byte	0x23e
+ 1225 0499 6B000000 		.4byte	0x6b
+ 1226 049d 19       		.byte	0x19
+ 1227 049e 00       		.byte	0
+ 1228 049f 11       		.uleb128 0x11
+ 1229 04a0 04       		.byte	0x4
+ 1230 04a1 A5040000 		.4byte	0x4a5
+ 1231 04a5 12       		.uleb128 0x12
+ 1232 04a6 11       		.uleb128 0x11
+ 1233 04a7 04       		.byte	0x4
+ 1234 04a8 5A020000 		.4byte	0x25a
+ 1235 04ac 11       		.uleb128 0x11
+ 1236 04ad 04       		.byte	0x4
+ 1237 04ae 6B000000 		.4byte	0x6b
+ 1238 04b2 04       		.uleb128 0x4
+ 1239 04b3 63040000 		.4byte	.LASF83
+ 1240 04b7 04       		.byte	0x4
+ 1241 04b8 3F02     		.2byte	0x23f
+ 1242 04ba 20040000 		.4byte	0x420
+ 1243 04be 0E       		.uleb128 0xe
+ 1244 04bf 1C       		.byte	0x1c
+ 1245 04c0 04       		.byte	0x4
+ 1246 04c1 4502     		.2byte	0x245
+ 1247 04c3 D5040000 		.4byte	0x4d5
+ 1248 04c7 0F       		.uleb128 0xf
+ 1249 04c8 E8050000 		.4byte	.LASF84
+ 1250 04cc 04       		.byte	0x4
+ 1251 04cd 4A02     		.2byte	0x24a
+ 1252 04cf D5040000 		.4byte	0x4d5
+ 1253 04d3 00       		.byte	0
+ 1254 04d4 00       		.byte	0
+ 1255 04d5 0A       		.uleb128 0xa
+ 1256 04d6 B2040000 		.4byte	0x4b2
+ 1257 04da E5040000 		.4byte	0x4e5
+ 1258 04de 0B       		.uleb128 0xb
+ 1259 04df CB000000 		.4byte	0xcb
+ 1260 04e3 00       		.byte	0
+ 1261 04e4 00       		.byte	0
+ 1262 04e5 04       		.uleb128 0x4
+ 1263 04e6 6B050000 		.4byte	.LASF85
+ 1264 04ea 04       		.byte	0x4
+ 1265 04eb 4B02     		.2byte	0x24b
+ 1266 04ed BE040000 		.4byte	0x4be
+ 1267 04f1 0E       		.uleb128 0xe
+ 1268 04f2 02       		.byte	0x2
+ 1269 04f3 04       		.byte	0x4
+ 1270 04f4 8002     		.2byte	0x280
+ 1271 04f6 08050000 		.4byte	0x508
+ 1272 04fa 0F       		.uleb128 0xf
+ 1273 04fb D8010000 		.4byte	.LASF86
+ 1274 04ff 04       		.byte	0x4
+ 1275 0500 8502     		.2byte	0x285
+ 1276 0502 77000000 		.4byte	0x77
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 39
+
+
+ 1277 0506 00       		.byte	0
+ 1278 0507 00       		.byte	0
+ 1279 0508 04       		.uleb128 0x4
+ 1280 0509 57020000 		.4byte	.LASF87
+ 1281 050d 04       		.byte	0x4
+ 1282 050e 8602     		.2byte	0x286
+ 1283 0510 F1040000 		.4byte	0x4f1
+ 1284 0514 0E       		.uleb128 0xe
+ 1285 0515 02       		.byte	0x2
+ 1286 0516 04       		.byte	0x4
+ 1287 0517 8B02     		.2byte	0x28b
+ 1288 0519 2B050000 		.4byte	0x52b
+ 1289 051d 0F       		.uleb128 0xf
+ 1290 051e B2030000 		.4byte	.LASF88
+ 1291 0522 04       		.byte	0x4
+ 1292 0523 9002     		.2byte	0x290
+ 1293 0525 2B050000 		.4byte	0x52b
+ 1294 0529 00       		.byte	0
+ 1295 052a 00       		.byte	0
+ 1296 052b 0A       		.uleb128 0xa
+ 1297 052c 08050000 		.4byte	0x508
+ 1298 0530 3B050000 		.4byte	0x53b
+ 1299 0534 0B       		.uleb128 0xb
+ 1300 0535 CB000000 		.4byte	0xcb
+ 1301 0539 00       		.byte	0
+ 1302 053a 00       		.byte	0
+ 1303 053b 04       		.uleb128 0x4
+ 1304 053c A2010000 		.4byte	.LASF89
+ 1305 0540 04       		.byte	0x4
+ 1306 0541 9102     		.2byte	0x291
+ 1307 0543 14050000 		.4byte	0x514
+ 1308 0547 0C       		.uleb128 0xc
+ 1309 0548 08       		.byte	0x8
+ 1310 0549 01       		.byte	0x1
+ 1311 054a CC       		.byte	0xcc
+ 1312 054b A3050000 		.4byte	0x5a3
+ 1313 054f 0D       		.uleb128 0xd
+ 1314 0550 0A050000 		.4byte	.LASF90
+ 1315 0554 01       		.byte	0x1
+ 1316 0555 CE       		.byte	0xce
+ 1317 0556 77000000 		.4byte	0x77
+ 1318 055a 00       		.byte	0
+ 1319 055b 0D       		.uleb128 0xd
+ 1320 055c E3020000 		.4byte	.LASF91
+ 1321 0560 01       		.byte	0x1
+ 1322 0561 CF       		.byte	0xcf
+ 1323 0562 6B000000 		.4byte	0x6b
+ 1324 0566 02       		.byte	0x2
+ 1325 0567 0D       		.uleb128 0xd
+ 1326 0568 07000000 		.4byte	.LASF92
+ 1327 056c 01       		.byte	0x1
+ 1328 056d D0       		.byte	0xd0
+ 1329 056e 6B000000 		.4byte	0x6b
+ 1330 0572 03       		.byte	0x3
+ 1331 0573 13       		.uleb128 0x13
+ 1332 0574 63726300 		.ascii	"crc\000"
+ 1333 0578 01       		.byte	0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 40
+
+
+ 1334 0579 D1       		.byte	0xd1
+ 1335 057a 6B000000 		.4byte	0x6b
+ 1336 057e 04       		.byte	0x4
+ 1337 057f 0D       		.uleb128 0xd
+ 1338 0580 D7020000 		.4byte	.LASF93
+ 1339 0584 01       		.byte	0x1
+ 1340 0585 D2       		.byte	0xd2
+ 1341 0586 6B000000 		.4byte	0x6b
+ 1342 058a 05       		.byte	0x5
+ 1343 058b 13       		.uleb128 0x13
+ 1344 058c 727700   		.ascii	"rw\000"
+ 1345 058f 01       		.byte	0x1
+ 1346 0590 D3       		.byte	0xd3
+ 1347 0591 6B000000 		.4byte	0x6b
+ 1348 0595 06       		.byte	0x6
+ 1349 0596 0D       		.uleb128 0xd
+ 1350 0597 3F000000 		.4byte	.LASF94
+ 1351 059b 01       		.byte	0x1
+ 1352 059c D4       		.byte	0xd4
+ 1353 059d 6B000000 		.4byte	0x6b
+ 1354 05a1 07       		.byte	0x7
+ 1355 05a2 00       		.byte	0
+ 1356 05a3 07       		.uleb128 0x7
+ 1357 05a4 12000000 		.4byte	.LASF95
+ 1358 05a8 01       		.byte	0x1
+ 1359 05a9 D5       		.byte	0xd5
+ 1360 05aa 47050000 		.4byte	0x547
+ 1361 05ae 14       		.uleb128 0x14
+ 1362 05af F2050000 		.4byte	.LASF128
+ 1363 05b3 01       		.byte	0x1
+ 1364 05b4 6801     		.2byte	0x168
+ 1365 05b6 A4000000 		.4byte	0xa4
+ 1366 05ba 00000000 		.4byte	.LFB2
+ 1367 05be 74000000 		.4byte	.LFE2-.LFB2
+ 1368 05c2 01       		.uleb128 0x1
+ 1369 05c3 9C       		.byte	0x9c
+ 1370 05c4 F7050000 		.4byte	0x5f7
+ 1371 05c8 15       		.uleb128 0x15
+ 1372 05c9 38030000 		.4byte	.LASF96
+ 1373 05cd 01       		.byte	0x1
+ 1374 05ce 6801     		.2byte	0x168
+ 1375 05d0 83000000 		.4byte	0x83
+ 1376 05d4 00000000 		.4byte	.LLST0
+ 1377 05d8 16       		.uleb128 0x16
+ 1378 05d9 9C010000 		.4byte	.LASF97
+ 1379 05dd 01       		.byte	0x1
+ 1380 05de 6801     		.2byte	0x168
+ 1381 05e0 F7050000 		.4byte	0x5f7
+ 1382 05e4 01       		.uleb128 0x1
+ 1383 05e5 51       		.byte	0x51
+ 1384 05e6 17       		.uleb128 0x17
+ 1385 05e7 7E060000 		.4byte	.LASF98
+ 1386 05eb 01       		.byte	0x1
+ 1387 05ec 6A01     		.2byte	0x16a
+ 1388 05ee A4000000 		.4byte	0xa4
+ 1389 05f2 21000000 		.4byte	.LLST1
+ 1390 05f6 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 41
+
+
+ 1391 05f7 11       		.uleb128 0x11
+ 1392 05f8 04       		.byte	0x4
+ 1393 05f9 A3050000 		.4byte	0x5a3
+ 1394 05fd 18       		.uleb128 0x18
+ 1395 05fe 9B020000 		.4byte	.LASF129
+ 1396 0602 01       		.byte	0x1
+ 1397 0603 F3       		.byte	0xf3
+ 1398 0604 00000000 		.4byte	.LFB1
+ 1399 0608 68000000 		.4byte	.LFE1-.LFB1
+ 1400 060c 01       		.uleb128 0x1
+ 1401 060d 9C       		.byte	0x9c
+ 1402 060e 98060000 		.4byte	0x698
+ 1403 0612 19       		.uleb128 0x19
+ 1404 0613 2E060000 		.4byte	.LASF99
+ 1405 0617 01       		.byte	0x1
+ 1406 0618 F6       		.byte	0xf6
+ 1407 0619 83000000 		.4byte	0x83
+ 1408 061d 6D000000 		.4byte	.LLST2
+ 1409 0621 19       		.uleb128 0x19
+ 1410 0622 B4000000 		.4byte	.LASF100
+ 1411 0626 01       		.byte	0x1
+ 1412 0627 F7       		.byte	0xf7
+ 1413 0628 83000000 		.4byte	0x83
+ 1414 062c A1000000 		.4byte	.LLST3
+ 1415 0630 19       		.uleb128 0x19
+ 1416 0631 50020000 		.4byte	.LASF101
+ 1417 0635 01       		.byte	0x1
+ 1418 0636 F9       		.byte	0xf9
+ 1419 0637 A6040000 		.4byte	0x4a6
+ 1420 063b E3000000 		.4byte	.LLST4
+ 1421 063f 19       		.uleb128 0x19
+ 1422 0640 E8010000 		.4byte	.LASF102
+ 1423 0644 01       		.byte	0x1
+ 1424 0645 FA       		.byte	0xfa
+ 1425 0646 98060000 		.4byte	0x698
+ 1426 064a F6000000 		.4byte	.LLST5
+ 1427 064e 19       		.uleb128 0x19
+ 1428 064f F1030000 		.4byte	.LASF103
+ 1429 0653 01       		.byte	0x1
+ 1430 0654 FB       		.byte	0xfb
+ 1431 0655 A3060000 		.4byte	0x6a3
+ 1432 0659 19010000 		.4byte	.LLST6
+ 1433 065d 1A       		.uleb128 0x1a
+ 1434 065e 0E000000 		.4byte	.LVL13
+ 1435 0662 0B0A0000 		.4byte	0xa0b
+ 1436 0666 7C060000 		.4byte	0x67c
+ 1437 066a 1B       		.uleb128 0x1b
+ 1438 066b 01       		.uleb128 0x1
+ 1439 066c 52       		.byte	0x52
+ 1440 066d 02       		.uleb128 0x2
+ 1441 066e 08       		.byte	0x8
+ 1442 066f 44       		.byte	0x44
+ 1443 0670 1B       		.uleb128 0x1b
+ 1444 0671 01       		.uleb128 0x1
+ 1445 0672 51       		.byte	0x51
+ 1446 0673 01       		.uleb128 0x1
+ 1447 0674 30       		.byte	0x30
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 42
+
+
+ 1448 0675 1B       		.uleb128 0x1b
+ 1449 0676 01       		.uleb128 0x1
+ 1450 0677 50       		.byte	0x50
+ 1451 0678 02       		.uleb128 0x2
+ 1452 0679 75       		.byte	0x75
+ 1453 067a 00       		.sleb128 0
+ 1454 067b 00       		.byte	0
+ 1455 067c 1C       		.uleb128 0x1c
+ 1456 067d 32000000 		.4byte	.LVL14
+ 1457 0681 280A0000 		.4byte	0xa28
+ 1458 0685 1B       		.uleb128 0x1b
+ 1459 0686 01       		.uleb128 0x1
+ 1460 0687 52       		.byte	0x52
+ 1461 0688 01       		.uleb128 0x1
+ 1462 0689 3E       		.byte	0x3e
+ 1463 068a 1B       		.uleb128 0x1b
+ 1464 068b 01       		.uleb128 0x1
+ 1465 068c 51       		.byte	0x51
+ 1466 068d 02       		.uleb128 0x2
+ 1467 068e 74       		.byte	0x74
+ 1468 068f 20       		.sleb128 32
+ 1469 0690 1B       		.uleb128 0x1b
+ 1470 0691 01       		.uleb128 0x1
+ 1471 0692 50       		.byte	0x50
+ 1472 0693 02       		.uleb128 0x2
+ 1473 0694 75       		.byte	0x75
+ 1474 0695 1A       		.sleb128 26
+ 1475 0696 00       		.byte	0
+ 1476 0697 00       		.byte	0
+ 1477 0698 11       		.uleb128 0x11
+ 1478 0699 04       		.byte	0x4
+ 1479 069a 9E060000 		.4byte	0x69e
+ 1480 069e 1D       		.uleb128 0x1d
+ 1481 069f B2040000 		.4byte	0x4b2
+ 1482 06a3 11       		.uleb128 0x11
+ 1483 06a4 04       		.byte	0x4
+ 1484 06a5 A9060000 		.4byte	0x6a9
+ 1485 06a9 1D       		.uleb128 0x1d
+ 1486 06aa 6B000000 		.4byte	0x6b
+ 1487 06ae 1E       		.uleb128 0x1e
+ 1488 06af 01060000 		.4byte	.LASF109
+ 1489 06b3 01       		.byte	0x1
+ 1490 06b4 2602     		.2byte	0x226
+ 1491 06b6 A4000000 		.4byte	0xa4
+ 1492 06ba 00000000 		.4byte	.LFB3
+ 1493 06be 5C000000 		.4byte	.LFE3-.LFB3
+ 1494 06c2 01       		.uleb128 0x1
+ 1495 06c3 9C       		.byte	0x9c
+ 1496 06c4 7C070000 		.4byte	0x77c
+ 1497 06c8 15       		.uleb128 0x15
+ 1498 06c9 38030000 		.4byte	.LASF96
+ 1499 06cd 01       		.byte	0x1
+ 1500 06ce 2602     		.2byte	0x226
+ 1501 06d0 83000000 		.4byte	0x83
+ 1502 06d4 3C010000 		.4byte	.LLST7
+ 1503 06d8 15       		.uleb128 0x15
+ 1504 06d9 D2010000 		.4byte	.LASF104
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 43
+
+
+ 1505 06dd 01       		.byte	0x1
+ 1506 06de 2602     		.2byte	0x226
+ 1507 06e0 7C070000 		.4byte	0x77c
+ 1508 06e4 5D010000 		.4byte	.LLST8
+ 1509 06e8 1F       		.uleb128 0x1f
+ 1510 06e9 9C010000 		.4byte	.LASF97
+ 1511 06ed 01       		.byte	0x1
+ 1512 06ee 2802     		.2byte	0x228
+ 1513 06f0 A3050000 		.4byte	0x5a3
+ 1514 06f4 02       		.uleb128 0x2
+ 1515 06f5 91       		.byte	0x91
+ 1516 06f6 68       		.sleb128 -24
+ 1517 06f7 17       		.uleb128 0x17
+ 1518 06f8 7E060000 		.4byte	.LASF98
+ 1519 06fc 01       		.byte	0x1
+ 1520 06fd 2902     		.2byte	0x229
+ 1521 06ff A4000000 		.4byte	0xa4
+ 1522 0703 89010000 		.4byte	.LLST9
+ 1523 0707 20       		.uleb128 0x20
+ 1524 0708 04       		.byte	0x4
+ 1525 0709 01       		.byte	0x1
+ 1526 070a 2B02     		.2byte	0x22b
+ 1527 070c 41070000 		.4byte	0x741
+ 1528 0710 21       		.uleb128 0x21
+ 1529 0711 70747200 		.ascii	"ptr\000"
+ 1530 0715 01       		.byte	0x1
+ 1531 0716 2D02     		.2byte	0x22d
+ 1532 0718 82070000 		.4byte	0x782
+ 1533 071c 22       		.uleb128 0x22
+ 1534 071d 44000000 		.4byte	.LASF105
+ 1535 0721 01       		.byte	0x1
+ 1536 0722 2E02     		.2byte	0x22e
+ 1537 0724 8E070000 		.4byte	0x78e
+ 1538 0728 22       		.uleb128 0x22
+ 1539 0729 0E060000 		.4byte	.LASF106
+ 1540 072d 01       		.byte	0x1
+ 1541 072e 2F02     		.2byte	0x22f
+ 1542 0730 99070000 		.4byte	0x799
+ 1543 0734 22       		.uleb128 0x22
+ 1544 0735 C5040000 		.4byte	.LASF107
+ 1545 0739 01       		.byte	0x1
+ 1546 073a 3002     		.2byte	0x230
+ 1547 073c A4070000 		.4byte	0x7a4
+ 1548 0740 00       		.byte	0
+ 1549 0741 17       		.uleb128 0x17
+ 1550 0742 3A040000 		.4byte	.LASF108
+ 1551 0746 01       		.byte	0x1
+ 1552 0747 3102     		.2byte	0x231
+ 1553 0749 07070000 		.4byte	0x707
+ 1554 074d B2010000 		.4byte	.LLST10
+ 1555 0751 1A       		.uleb128 0x1a
+ 1556 0752 0C000000 		.4byte	.LVL30
+ 1557 0756 AE050000 		.4byte	0x5ae
+ 1558 075a 6C070000 		.4byte	0x76c
+ 1559 075e 1B       		.uleb128 0x1b
+ 1560 075f 01       		.uleb128 0x1
+ 1561 0760 51       		.byte	0x51
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 44
+
+
+ 1562 0761 02       		.uleb128 0x2
+ 1563 0762 7D       		.byte	0x7d
+ 1564 0763 00       		.sleb128 0
+ 1565 0764 1B       		.uleb128 0x1b
+ 1566 0765 01       		.uleb128 0x1
+ 1567 0766 50       		.byte	0x50
+ 1568 0767 03       		.uleb128 0x3
+ 1569 0768 F3       		.byte	0xf3
+ 1570 0769 01       		.uleb128 0x1
+ 1571 076a 50       		.byte	0x50
+ 1572 076b 00       		.byte	0
+ 1573 076c 1C       		.uleb128 0x1c
+ 1574 076d 4E000000 		.4byte	.LVL36
+ 1575 0771 450A0000 		.4byte	0xa45
+ 1576 0775 1B       		.uleb128 0x1b
+ 1577 0776 01       		.uleb128 0x1
+ 1578 0777 50       		.byte	0x50
+ 1579 0778 01       		.uleb128 0x1
+ 1580 0779 30       		.byte	0x30
+ 1581 077a 00       		.byte	0
+ 1582 077b 00       		.byte	0
+ 1583 077c 11       		.uleb128 0x11
+ 1584 077d 04       		.byte	0x4
+ 1585 077e 83000000 		.4byte	0x83
+ 1586 0782 11       		.uleb128 0x11
+ 1587 0783 04       		.byte	0x4
+ 1588 0784 88070000 		.4byte	0x788
+ 1589 0788 1D       		.uleb128 0x1d
+ 1590 0789 8D070000 		.4byte	0x78d
+ 1591 078d 23       		.uleb128 0x23
+ 1592 078e 11       		.uleb128 0x11
+ 1593 078f 04       		.byte	0x4
+ 1594 0790 94070000 		.4byte	0x794
+ 1595 0794 1D       		.uleb128 0x1d
+ 1596 0795 B0000000 		.4byte	0xb0
+ 1597 0799 11       		.uleb128 0x11
+ 1598 079a 04       		.byte	0x4
+ 1599 079b 9F070000 		.4byte	0x79f
+ 1600 079f 1D       		.uleb128 0x1d
+ 1601 07a0 B5000000 		.4byte	0xb5
+ 1602 07a4 11       		.uleb128 0x11
+ 1603 07a5 04       		.byte	0x4
+ 1604 07a6 AA070000 		.4byte	0x7aa
+ 1605 07aa 1D       		.uleb128 0x1d
+ 1606 07ab C6000000 		.4byte	0xc6
+ 1607 07af 1E       		.uleb128 0x1e
+ 1608 07b0 83050000 		.4byte	.LASF110
+ 1609 07b4 01       		.byte	0x1
+ 1610 07b5 8D02     		.2byte	0x28d
+ 1611 07b7 A4000000 		.4byte	0xa4
+ 1612 07bb 00000000 		.4byte	.LFB4
+ 1613 07bf 58000000 		.4byte	.LFE4-.LFB4
+ 1614 07c3 01       		.uleb128 0x1
+ 1615 07c4 9C       		.byte	0x9c
+ 1616 07c5 79080000 		.4byte	0x879
+ 1617 07c9 15       		.uleb128 0x15
+ 1618 07ca 38030000 		.4byte	.LASF96
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 45
+
+
+ 1619 07ce 01       		.byte	0x1
+ 1620 07cf 8D02     		.2byte	0x28d
+ 1621 07d1 83000000 		.4byte	0x83
+ 1622 07d5 C5010000 		.4byte	.LLST11
+ 1623 07d9 15       		.uleb128 0x15
+ 1624 07da D2010000 		.4byte	.LASF104
+ 1625 07de 01       		.byte	0x1
+ 1626 07df 8D02     		.2byte	0x28d
+ 1627 07e1 83000000 		.4byte	0x83
+ 1628 07e5 E6010000 		.4byte	.LLST12
+ 1629 07e9 17       		.uleb128 0x17
+ 1630 07ea 7E060000 		.4byte	.LASF98
+ 1631 07ee 01       		.byte	0x1
+ 1632 07ef 8F02     		.2byte	0x28f
+ 1633 07f1 A4000000 		.4byte	0xa4
+ 1634 07f5 44020000 		.4byte	.LLST13
+ 1635 07f9 1F       		.uleb128 0x1f
+ 1636 07fa 9C010000 		.4byte	.LASF97
+ 1637 07fe 01       		.byte	0x1
+ 1638 07ff 9002     		.2byte	0x290
+ 1639 0801 A3050000 		.4byte	0x5a3
+ 1640 0805 02       		.uleb128 0x2
+ 1641 0806 91       		.byte	0x91
+ 1642 0807 68       		.sleb128 -24
+ 1643 0808 20       		.uleb128 0x20
+ 1644 0809 04       		.byte	0x4
+ 1645 080a 01       		.byte	0x1
+ 1646 080b 9202     		.2byte	0x292
+ 1647 080d 42080000 		.4byte	0x842
+ 1648 0811 21       		.uleb128 0x21
+ 1649 0812 70747200 		.ascii	"ptr\000"
+ 1650 0816 01       		.byte	0x1
+ 1651 0817 9402     		.2byte	0x294
+ 1652 0819 79080000 		.4byte	0x879
+ 1653 081d 22       		.uleb128 0x22
+ 1654 081e 44000000 		.4byte	.LASF105
+ 1655 0822 01       		.byte	0x1
+ 1656 0823 9502     		.2byte	0x295
+ 1657 0825 7F080000 		.4byte	0x87f
+ 1658 0829 22       		.uleb128 0x22
+ 1659 082a 0E060000 		.4byte	.LASF106
+ 1660 082e 01       		.byte	0x1
+ 1661 082f 9602     		.2byte	0x296
+ 1662 0831 85080000 		.4byte	0x885
+ 1663 0835 22       		.uleb128 0x22
+ 1664 0836 C5040000 		.4byte	.LASF107
+ 1665 083a 01       		.byte	0x1
+ 1666 083b 9702     		.2byte	0x297
+ 1667 083d 8B080000 		.4byte	0x88b
+ 1668 0841 00       		.byte	0
+ 1669 0842 24       		.uleb128 0x24
+ 1670 0843 3A040000 		.4byte	.LASF108
+ 1671 0847 01       		.byte	0x1
+ 1672 0848 9802     		.2byte	0x298
+ 1673 084a 08080000 		.4byte	0x808
+ 1674 084e 1A       		.uleb128 0x1a
+ 1675 084f 0C000000 		.4byte	.LVL41
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 46
+
+
+ 1676 0853 AE050000 		.4byte	0x5ae
+ 1677 0857 69080000 		.4byte	0x869
+ 1678 085b 1B       		.uleb128 0x1b
+ 1679 085c 01       		.uleb128 0x1
+ 1680 085d 51       		.byte	0x51
+ 1681 085e 02       		.uleb128 0x2
+ 1682 085f 7D       		.byte	0x7d
+ 1683 0860 00       		.sleb128 0
+ 1684 0861 1B       		.uleb128 0x1b
+ 1685 0862 01       		.uleb128 0x1
+ 1686 0863 50       		.byte	0x50
+ 1687 0864 03       		.uleb128 0x3
+ 1688 0865 F3       		.byte	0xf3
+ 1689 0866 01       		.uleb128 0x1
+ 1690 0867 50       		.byte	0x50
+ 1691 0868 00       		.byte	0
+ 1692 0869 1C       		.uleb128 0x1c
+ 1693 086a 4C000000 		.4byte	.LVL48
+ 1694 086e 450A0000 		.4byte	0xa45
+ 1695 0872 1B       		.uleb128 0x1b
+ 1696 0873 01       		.uleb128 0x1
+ 1697 0874 50       		.byte	0x50
+ 1698 0875 01       		.uleb128 0x1
+ 1699 0876 30       		.byte	0x30
+ 1700 0877 00       		.byte	0
+ 1701 0878 00       		.byte	0
+ 1702 0879 11       		.uleb128 0x11
+ 1703 087a 04       		.byte	0x4
+ 1704 087b 8D070000 		.4byte	0x78d
+ 1705 087f 11       		.uleb128 0x11
+ 1706 0880 04       		.byte	0x4
+ 1707 0881 B0000000 		.4byte	0xb0
+ 1708 0885 11       		.uleb128 0x11
+ 1709 0886 04       		.byte	0x4
+ 1710 0887 B5000000 		.4byte	0xb5
+ 1711 088b 11       		.uleb128 0x11
+ 1712 088c 04       		.byte	0x4
+ 1713 088d C6000000 		.4byte	0xc6
+ 1714 0891 1E       		.uleb128 0x1e
+ 1715 0892 4D040000 		.4byte	.LASF111
+ 1716 0896 01       		.byte	0x1
+ 1717 0897 EE02     		.2byte	0x2ee
+ 1718 0899 83000000 		.4byte	0x83
+ 1719 089d 00000000 		.4byte	.LFB5
+ 1720 08a1 20000000 		.4byte	.LFE5-.LFB5
+ 1721 08a5 01       		.uleb128 0x1
+ 1722 08a6 9C       		.byte	0x9c
+ 1723 08a7 CC080000 		.4byte	0x8cc
+ 1724 08ab 17       		.uleb128 0x17
+ 1725 08ac 7E060000 		.4byte	.LASF98
+ 1726 08b0 01       		.byte	0x1
+ 1727 08b1 F002     		.2byte	0x2f0
+ 1728 08b3 83000000 		.4byte	0x83
+ 1729 08b7 6D020000 		.4byte	.LLST14
+ 1730 08bb 17       		.uleb128 0x17
+ 1731 08bc DD000000 		.4byte	.LASF112
+ 1732 08c0 01       		.byte	0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 47
+
+
+ 1733 08c1 F102     		.2byte	0x2f1
+ 1734 08c3 83000000 		.4byte	0x83
+ 1735 08c7 8C020000 		.4byte	.LLST15
+ 1736 08cb 00       		.byte	0
+ 1737 08cc 1E       		.uleb128 0x1e
+ 1738 08cd 2C000000 		.4byte	.LASF113
+ 1739 08d1 01       		.byte	0x1
+ 1740 08d2 1603     		.2byte	0x316
+ 1741 08d4 83000000 		.4byte	0x83
+ 1742 08d8 00000000 		.4byte	.LFB6
+ 1743 08dc 24000000 		.4byte	.LFE6-.LFB6
+ 1744 08e0 01       		.uleb128 0x1
+ 1745 08e1 9C       		.byte	0x9c
+ 1746 08e2 07090000 		.4byte	0x907
+ 1747 08e6 15       		.uleb128 0x15
+ 1748 08e7 E3020000 		.4byte	.LASF91
+ 1749 08eb 01       		.byte	0x1
+ 1750 08ec 1603     		.2byte	0x316
+ 1751 08ee 83000000 		.4byte	0x83
+ 1752 08f2 C1020000 		.4byte	.LLST16
+ 1753 08f6 17       		.uleb128 0x17
+ 1754 08f7 7E060000 		.4byte	.LASF98
+ 1755 08fb 01       		.byte	0x1
+ 1756 08fc 1803     		.2byte	0x318
+ 1757 08fe 83000000 		.4byte	0x83
+ 1758 0902 FB020000 		.4byte	.LLST17
+ 1759 0906 00       		.byte	0
+ 1760 0907 1E       		.uleb128 0x1e
+ 1761 0908 63030000 		.4byte	.LASF114
+ 1762 090c 01       		.byte	0x1
+ 1763 090d 4803     		.2byte	0x348
+ 1764 090f 83000000 		.4byte	0x83
+ 1765 0913 00000000 		.4byte	.LFB7
+ 1766 0917 34000000 		.4byte	.LFE7-.LFB7
+ 1767 091b 01       		.uleb128 0x1
+ 1768 091c 9C       		.byte	0x9c
+ 1769 091d 50090000 		.4byte	0x950
+ 1770 0921 15       		.uleb128 0x15
+ 1771 0922 E3020000 		.4byte	.LASF91
+ 1772 0926 01       		.byte	0x1
+ 1773 0927 4803     		.2byte	0x348
+ 1774 0929 83000000 		.4byte	0x83
+ 1775 092d 31030000 		.4byte	.LLST18
+ 1776 0931 16       		.uleb128 0x16
+ 1777 0932 71010000 		.4byte	.LASF115
+ 1778 0936 01       		.byte	0x1
+ 1779 0937 4803     		.2byte	0x348
+ 1780 0939 83000000 		.4byte	0x83
+ 1781 093d 01       		.uleb128 0x1
+ 1782 093e 51       		.byte	0x51
+ 1783 093f 17       		.uleb128 0x17
+ 1784 0940 7E060000 		.4byte	.LASF98
+ 1785 0944 01       		.byte	0x1
+ 1786 0945 4A03     		.2byte	0x34a
+ 1787 0947 83000000 		.4byte	0x83
+ 1788 094b 84030000 		.4byte	.LLST19
+ 1789 094f 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 48
+
+
+ 1790 0950 0A       		.uleb128 0xa
+ 1791 0951 6B000000 		.4byte	0x6b
+ 1792 0955 60090000 		.4byte	0x960
+ 1793 0959 0B       		.uleb128 0xb
+ 1794 095a CB000000 		.4byte	0xcb
+ 1795 095e 01       		.byte	0x1
+ 1796 095f 00       		.byte	0
+ 1797 0960 25       		.uleb128 0x25
+ 1798 0961 05030000 		.4byte	.LASF116
+ 1799 0965 01       		.byte	0x1
+ 1800 0966 49       		.byte	0x49
+ 1801 0967 50090000 		.4byte	0x950
+ 1802 096b 05       		.uleb128 0x5
+ 1803 096c 03       		.byte	0x3
+ 1804 096d 04000000 		.4byte	CSD_debounceButton0
+ 1805 0971 0A       		.uleb128 0xa
+ 1806 0972 3B050000 		.4byte	0x53b
+ 1807 0976 81090000 		.4byte	0x981
+ 1808 097a 0B       		.uleb128 0xb
+ 1809 097b CB000000 		.4byte	0xcb
+ 1810 097f 01       		.byte	0x1
+ 1811 0980 00       		.byte	0
+ 1812 0981 25       		.uleb128 0x25
+ 1813 0982 4C030000 		.4byte	.LASF117
+ 1814 0986 01       		.byte	0x1
+ 1815 0987 4F       		.byte	0x4f
+ 1816 0988 71090000 		.4byte	0x971
+ 1817 098c 05       		.uleb128 0x5
+ 1818 098d 03       		.byte	0x3
+ 1819 098e 00000000 		.4byte	CSD_fltrHistoryButton0
+ 1820 0992 25       		.uleb128 0x25
+ 1821 0993 4D000000 		.4byte	.LASF118
+ 1822 0997 01       		.byte	0x1
+ 1823 0998 94       		.byte	0x94
+ 1824 0999 A3090000 		.4byte	0x9a3
+ 1825 099d 05       		.uleb128 0x5
+ 1826 099e 03       		.byte	0x3
+ 1827 099f 20000000 		.4byte	CSD_ramWidgetInit
+ 1828 09a3 1D       		.uleb128 0x1d
+ 1829 09a4 D6010000 		.4byte	0x1d6
+ 1830 09a8 25       		.uleb128 0x25
+ 1831 09a9 A8040000 		.4byte	.LASF119
+ 1832 09ad 01       		.byte	0x1
+ 1833 09ae A9       		.byte	0xa9
+ 1834 09af B9090000 		.4byte	0x9b9
+ 1835 09b3 05       		.uleb128 0x5
+ 1836 09b4 03       		.byte	0x3
+ 1837 09b5 00000000 		.4byte	CSD_ramIdacInit
+ 1838 09b9 1D       		.uleb128 0x1d
+ 1839 09ba 50090000 		.4byte	0x950
+ 1840 09be 26       		.uleb128 0x26
+ 1841 09bf 22000000 		.4byte	.LASF120
+ 1842 09c3 01       		.byte	0x1
+ 1843 09c4 42       		.byte	0x42
+ 1844 09c5 83030000 		.4byte	0x383
+ 1845 09c9 05       		.uleb128 0x5
+ 1846 09ca 03       		.byte	0x3
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 49
+
+
+ 1847 09cb 00000000 		.4byte	CSD_dsRam
+ 1848 09cf 26       		.uleb128 0x26
+ 1849 09d0 07040000 		.4byte	.LASF121
+ 1850 09d4 01       		.byte	0x1
+ 1851 09d5 5E       		.byte	0x5e
+ 1852 09d6 E0090000 		.4byte	0x9e0
+ 1853 09da 05       		.uleb128 0x5
+ 1854 09db 03       		.byte	0x3
+ 1855 09dc 00000000 		.4byte	CSD_dsFlash
+ 1856 09e0 1D       		.uleb128 0x1d
+ 1857 09e1 E5040000 		.4byte	0x4e5
+ 1858 09e5 0A       		.uleb128 0xa
+ 1859 09e6 14040000 		.4byte	0x414
+ 1860 09ea F5090000 		.4byte	0x9f5
+ 1861 09ee 0B       		.uleb128 0xb
+ 1862 09ef CB000000 		.4byte	0xcb
+ 1863 09f3 01       		.byte	0x1
+ 1864 09f4 00       		.byte	0
+ 1865 09f5 26       		.uleb128 0x26
+ 1866 09f6 AC020000 		.4byte	.LASF122
+ 1867 09fa 01       		.byte	0x1
+ 1868 09fb 74       		.byte	0x74
+ 1869 09fc 060A0000 		.4byte	0xa06
+ 1870 0a00 05       		.uleb128 0x5
+ 1871 0a01 03       		.byte	0x3
+ 1872 0a02 00000000 		.4byte	CSD_ioList
+ 1873 0a06 1D       		.uleb128 0x1d
+ 1874 0a07 E5090000 		.4byte	0x9e5
+ 1875 0a0b 27       		.uleb128 0x27
+ 1876 0a0c 7C050000 		.4byte	.LASF123
+ 1877 0a10 D2000000 		.4byte	0xd2
+ 1878 0a14 280A0000 		.4byte	0xa28
+ 1879 0a18 28       		.uleb128 0x28
+ 1880 0a19 D2000000 		.4byte	0xd2
+ 1881 0a1d 28       		.uleb128 0x28
+ 1882 0a1e 5D000000 		.4byte	0x5d
+ 1883 0a22 28       		.uleb128 0x28
+ 1884 0a23 CB000000 		.4byte	0xcb
+ 1885 0a27 00       		.byte	0
+ 1886 0a28 27       		.uleb128 0x27
+ 1887 0a29 24010000 		.4byte	.LASF124
+ 1888 0a2d D2000000 		.4byte	0xd2
+ 1889 0a31 450A0000 		.4byte	0xa45
+ 1890 0a35 28       		.uleb128 0x28
+ 1891 0a36 D2000000 		.4byte	0xd2
+ 1892 0a3a 28       		.uleb128 0x28
+ 1893 0a3b 9F040000 		.4byte	0x49f
+ 1894 0a3f 28       		.uleb128 0x28
+ 1895 0a40 CB000000 		.4byte	0xcb
+ 1896 0a44 00       		.byte	0
+ 1897 0a45 29       		.uleb128 0x29
+ 1898 0a46 77060000 		.4byte	.LASF130
+ 1899 0a4a 05       		.byte	0x5
+ 1900 0a4b E7       		.byte	0xe7
+ 1901 0a4c 28       		.uleb128 0x28
+ 1902 0a4d 6B000000 		.4byte	0x6b
+ 1903 0a51 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 50
+
+
+ 1904 0a52 00       		.byte	0
+ 1905              		.section	.debug_abbrev,"",%progbits
+ 1906              	.Ldebug_abbrev0:
+ 1907 0000 01       		.uleb128 0x1
+ 1908 0001 11       		.uleb128 0x11
+ 1909 0002 01       		.byte	0x1
+ 1910 0003 25       		.uleb128 0x25
+ 1911 0004 0E       		.uleb128 0xe
+ 1912 0005 13       		.uleb128 0x13
+ 1913 0006 0B       		.uleb128 0xb
+ 1914 0007 03       		.uleb128 0x3
+ 1915 0008 0E       		.uleb128 0xe
+ 1916 0009 1B       		.uleb128 0x1b
+ 1917 000a 0E       		.uleb128 0xe
+ 1918 000b 55       		.uleb128 0x55
+ 1919 000c 17       		.uleb128 0x17
+ 1920 000d 11       		.uleb128 0x11
+ 1921 000e 01       		.uleb128 0x1
+ 1922 000f 10       		.uleb128 0x10
+ 1923 0010 17       		.uleb128 0x17
+ 1924 0011 00       		.byte	0
+ 1925 0012 00       		.byte	0
+ 1926 0013 02       		.uleb128 0x2
+ 1927 0014 24       		.uleb128 0x24
+ 1928 0015 00       		.byte	0
+ 1929 0016 0B       		.uleb128 0xb
+ 1930 0017 0B       		.uleb128 0xb
+ 1931 0018 3E       		.uleb128 0x3e
+ 1932 0019 0B       		.uleb128 0xb
+ 1933 001a 03       		.uleb128 0x3
+ 1934 001b 0E       		.uleb128 0xe
+ 1935 001c 00       		.byte	0
+ 1936 001d 00       		.byte	0
+ 1937 001e 03       		.uleb128 0x3
+ 1938 001f 24       		.uleb128 0x24
+ 1939 0020 00       		.byte	0
+ 1940 0021 0B       		.uleb128 0xb
+ 1941 0022 0B       		.uleb128 0xb
+ 1942 0023 3E       		.uleb128 0x3e
+ 1943 0024 0B       		.uleb128 0xb
+ 1944 0025 03       		.uleb128 0x3
+ 1945 0026 08       		.uleb128 0x8
+ 1946 0027 00       		.byte	0
+ 1947 0028 00       		.byte	0
+ 1948 0029 04       		.uleb128 0x4
+ 1949 002a 16       		.uleb128 0x16
+ 1950 002b 00       		.byte	0
+ 1951 002c 03       		.uleb128 0x3
+ 1952 002d 0E       		.uleb128 0xe
+ 1953 002e 3A       		.uleb128 0x3a
+ 1954 002f 0B       		.uleb128 0xb
+ 1955 0030 3B       		.uleb128 0x3b
+ 1956 0031 05       		.uleb128 0x5
+ 1957 0032 49       		.uleb128 0x49
+ 1958 0033 13       		.uleb128 0x13
+ 1959 0034 00       		.byte	0
+ 1960 0035 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 51
+
+
+ 1961 0036 05       		.uleb128 0x5
+ 1962 0037 35       		.uleb128 0x35
+ 1963 0038 00       		.byte	0
+ 1964 0039 49       		.uleb128 0x49
+ 1965 003a 13       		.uleb128 0x13
+ 1966 003b 00       		.byte	0
+ 1967 003c 00       		.byte	0
+ 1968 003d 06       		.uleb128 0x6
+ 1969 003e 0F       		.uleb128 0xf
+ 1970 003f 00       		.byte	0
+ 1971 0040 0B       		.uleb128 0xb
+ 1972 0041 0B       		.uleb128 0xb
+ 1973 0042 00       		.byte	0
+ 1974 0043 00       		.byte	0
+ 1975 0044 07       		.uleb128 0x7
+ 1976 0045 16       		.uleb128 0x16
+ 1977 0046 00       		.byte	0
+ 1978 0047 03       		.uleb128 0x3
+ 1979 0048 0E       		.uleb128 0xe
+ 1980 0049 3A       		.uleb128 0x3a
+ 1981 004a 0B       		.uleb128 0xb
+ 1982 004b 3B       		.uleb128 0x3b
+ 1983 004c 0B       		.uleb128 0xb
+ 1984 004d 49       		.uleb128 0x49
+ 1985 004e 13       		.uleb128 0x13
+ 1986 004f 00       		.byte	0
+ 1987 0050 00       		.byte	0
+ 1988 0051 08       		.uleb128 0x8
+ 1989 0052 04       		.uleb128 0x4
+ 1990 0053 01       		.byte	0x1
+ 1991 0054 0B       		.uleb128 0xb
+ 1992 0055 0B       		.uleb128 0xb
+ 1993 0056 3A       		.uleb128 0x3a
+ 1994 0057 0B       		.uleb128 0xb
+ 1995 0058 3B       		.uleb128 0x3b
+ 1996 0059 0B       		.uleb128 0xb
+ 1997 005a 01       		.uleb128 0x1
+ 1998 005b 13       		.uleb128 0x13
+ 1999 005c 00       		.byte	0
+ 2000 005d 00       		.byte	0
+ 2001 005e 09       		.uleb128 0x9
+ 2002 005f 28       		.uleb128 0x28
+ 2003 0060 00       		.byte	0
+ 2004 0061 03       		.uleb128 0x3
+ 2005 0062 0E       		.uleb128 0xe
+ 2006 0063 1C       		.uleb128 0x1c
+ 2007 0064 0D       		.uleb128 0xd
+ 2008 0065 00       		.byte	0
+ 2009 0066 00       		.byte	0
+ 2010 0067 0A       		.uleb128 0xa
+ 2011 0068 01       		.uleb128 0x1
+ 2012 0069 01       		.byte	0x1
+ 2013 006a 49       		.uleb128 0x49
+ 2014 006b 13       		.uleb128 0x13
+ 2015 006c 01       		.uleb128 0x1
+ 2016 006d 13       		.uleb128 0x13
+ 2017 006e 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 52
+
+
+ 2018 006f 00       		.byte	0
+ 2019 0070 0B       		.uleb128 0xb
+ 2020 0071 21       		.uleb128 0x21
+ 2021 0072 00       		.byte	0
+ 2022 0073 49       		.uleb128 0x49
+ 2023 0074 13       		.uleb128 0x13
+ 2024 0075 2F       		.uleb128 0x2f
+ 2025 0076 0B       		.uleb128 0xb
+ 2026 0077 00       		.byte	0
+ 2027 0078 00       		.byte	0
+ 2028 0079 0C       		.uleb128 0xc
+ 2029 007a 13       		.uleb128 0x13
+ 2030 007b 01       		.byte	0x1
+ 2031 007c 0B       		.uleb128 0xb
+ 2032 007d 0B       		.uleb128 0xb
+ 2033 007e 3A       		.uleb128 0x3a
+ 2034 007f 0B       		.uleb128 0xb
+ 2035 0080 3B       		.uleb128 0x3b
+ 2036 0081 0B       		.uleb128 0xb
+ 2037 0082 01       		.uleb128 0x1
+ 2038 0083 13       		.uleb128 0x13
+ 2039 0084 00       		.byte	0
+ 2040 0085 00       		.byte	0
+ 2041 0086 0D       		.uleb128 0xd
+ 2042 0087 0D       		.uleb128 0xd
+ 2043 0088 00       		.byte	0
+ 2044 0089 03       		.uleb128 0x3
+ 2045 008a 0E       		.uleb128 0xe
+ 2046 008b 3A       		.uleb128 0x3a
+ 2047 008c 0B       		.uleb128 0xb
+ 2048 008d 3B       		.uleb128 0x3b
+ 2049 008e 0B       		.uleb128 0xb
+ 2050 008f 49       		.uleb128 0x49
+ 2051 0090 13       		.uleb128 0x13
+ 2052 0091 38       		.uleb128 0x38
+ 2053 0092 0B       		.uleb128 0xb
+ 2054 0093 00       		.byte	0
+ 2055 0094 00       		.byte	0
+ 2056 0095 0E       		.uleb128 0xe
+ 2057 0096 13       		.uleb128 0x13
+ 2058 0097 01       		.byte	0x1
+ 2059 0098 0B       		.uleb128 0xb
+ 2060 0099 0B       		.uleb128 0xb
+ 2061 009a 3A       		.uleb128 0x3a
+ 2062 009b 0B       		.uleb128 0xb
+ 2063 009c 3B       		.uleb128 0x3b
+ 2064 009d 05       		.uleb128 0x5
+ 2065 009e 01       		.uleb128 0x1
+ 2066 009f 13       		.uleb128 0x13
+ 2067 00a0 00       		.byte	0
+ 2068 00a1 00       		.byte	0
+ 2069 00a2 0F       		.uleb128 0xf
+ 2070 00a3 0D       		.uleb128 0xd
+ 2071 00a4 00       		.byte	0
+ 2072 00a5 03       		.uleb128 0x3
+ 2073 00a6 0E       		.uleb128 0xe
+ 2074 00a7 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 53
+
+
+ 2075 00a8 0B       		.uleb128 0xb
+ 2076 00a9 3B       		.uleb128 0x3b
+ 2077 00aa 05       		.uleb128 0x5
+ 2078 00ab 49       		.uleb128 0x49
+ 2079 00ac 13       		.uleb128 0x13
+ 2080 00ad 38       		.uleb128 0x38
+ 2081 00ae 0B       		.uleb128 0xb
+ 2082 00af 00       		.byte	0
+ 2083 00b0 00       		.byte	0
+ 2084 00b1 10       		.uleb128 0x10
+ 2085 00b2 0D       		.uleb128 0xd
+ 2086 00b3 00       		.byte	0
+ 2087 00b4 03       		.uleb128 0x3
+ 2088 00b5 08       		.uleb128 0x8
+ 2089 00b6 3A       		.uleb128 0x3a
+ 2090 00b7 0B       		.uleb128 0xb
+ 2091 00b8 3B       		.uleb128 0x3b
+ 2092 00b9 05       		.uleb128 0x5
+ 2093 00ba 49       		.uleb128 0x49
+ 2094 00bb 13       		.uleb128 0x13
+ 2095 00bc 38       		.uleb128 0x38
+ 2096 00bd 0B       		.uleb128 0xb
+ 2097 00be 00       		.byte	0
+ 2098 00bf 00       		.byte	0
+ 2099 00c0 11       		.uleb128 0x11
+ 2100 00c1 0F       		.uleb128 0xf
+ 2101 00c2 00       		.byte	0
+ 2102 00c3 0B       		.uleb128 0xb
+ 2103 00c4 0B       		.uleb128 0xb
+ 2104 00c5 49       		.uleb128 0x49
+ 2105 00c6 13       		.uleb128 0x13
+ 2106 00c7 00       		.byte	0
+ 2107 00c8 00       		.byte	0
+ 2108 00c9 12       		.uleb128 0x12
+ 2109 00ca 26       		.uleb128 0x26
+ 2110 00cb 00       		.byte	0
+ 2111 00cc 00       		.byte	0
+ 2112 00cd 00       		.byte	0
+ 2113 00ce 13       		.uleb128 0x13
+ 2114 00cf 0D       		.uleb128 0xd
+ 2115 00d0 00       		.byte	0
+ 2116 00d1 03       		.uleb128 0x3
+ 2117 00d2 08       		.uleb128 0x8
+ 2118 00d3 3A       		.uleb128 0x3a
+ 2119 00d4 0B       		.uleb128 0xb
+ 2120 00d5 3B       		.uleb128 0x3b
+ 2121 00d6 0B       		.uleb128 0xb
+ 2122 00d7 49       		.uleb128 0x49
+ 2123 00d8 13       		.uleb128 0x13
+ 2124 00d9 38       		.uleb128 0x38
+ 2125 00da 0B       		.uleb128 0xb
+ 2126 00db 00       		.byte	0
+ 2127 00dc 00       		.byte	0
+ 2128 00dd 14       		.uleb128 0x14
+ 2129 00de 2E       		.uleb128 0x2e
+ 2130 00df 01       		.byte	0x1
+ 2131 00e0 03       		.uleb128 0x3
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 54
+
+
+ 2132 00e1 0E       		.uleb128 0xe
+ 2133 00e2 3A       		.uleb128 0x3a
+ 2134 00e3 0B       		.uleb128 0xb
+ 2135 00e4 3B       		.uleb128 0x3b
+ 2136 00e5 05       		.uleb128 0x5
+ 2137 00e6 27       		.uleb128 0x27
+ 2138 00e7 19       		.uleb128 0x19
+ 2139 00e8 49       		.uleb128 0x49
+ 2140 00e9 13       		.uleb128 0x13
+ 2141 00ea 11       		.uleb128 0x11
+ 2142 00eb 01       		.uleb128 0x1
+ 2143 00ec 12       		.uleb128 0x12
+ 2144 00ed 06       		.uleb128 0x6
+ 2145 00ee 40       		.uleb128 0x40
+ 2146 00ef 18       		.uleb128 0x18
+ 2147 00f0 9742     		.uleb128 0x2117
+ 2148 00f2 19       		.uleb128 0x19
+ 2149 00f3 01       		.uleb128 0x1
+ 2150 00f4 13       		.uleb128 0x13
+ 2151 00f5 00       		.byte	0
+ 2152 00f6 00       		.byte	0
+ 2153 00f7 15       		.uleb128 0x15
+ 2154 00f8 05       		.uleb128 0x5
+ 2155 00f9 00       		.byte	0
+ 2156 00fa 03       		.uleb128 0x3
+ 2157 00fb 0E       		.uleb128 0xe
+ 2158 00fc 3A       		.uleb128 0x3a
+ 2159 00fd 0B       		.uleb128 0xb
+ 2160 00fe 3B       		.uleb128 0x3b
+ 2161 00ff 05       		.uleb128 0x5
+ 2162 0100 49       		.uleb128 0x49
+ 2163 0101 13       		.uleb128 0x13
+ 2164 0102 02       		.uleb128 0x2
+ 2165 0103 17       		.uleb128 0x17
+ 2166 0104 00       		.byte	0
+ 2167 0105 00       		.byte	0
+ 2168 0106 16       		.uleb128 0x16
+ 2169 0107 05       		.uleb128 0x5
+ 2170 0108 00       		.byte	0
+ 2171 0109 03       		.uleb128 0x3
+ 2172 010a 0E       		.uleb128 0xe
+ 2173 010b 3A       		.uleb128 0x3a
+ 2174 010c 0B       		.uleb128 0xb
+ 2175 010d 3B       		.uleb128 0x3b
+ 2176 010e 05       		.uleb128 0x5
+ 2177 010f 49       		.uleb128 0x49
+ 2178 0110 13       		.uleb128 0x13
+ 2179 0111 02       		.uleb128 0x2
+ 2180 0112 18       		.uleb128 0x18
+ 2181 0113 00       		.byte	0
+ 2182 0114 00       		.byte	0
+ 2183 0115 17       		.uleb128 0x17
+ 2184 0116 34       		.uleb128 0x34
+ 2185 0117 00       		.byte	0
+ 2186 0118 03       		.uleb128 0x3
+ 2187 0119 0E       		.uleb128 0xe
+ 2188 011a 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 55
+
+
+ 2189 011b 0B       		.uleb128 0xb
+ 2190 011c 3B       		.uleb128 0x3b
+ 2191 011d 05       		.uleb128 0x5
+ 2192 011e 49       		.uleb128 0x49
+ 2193 011f 13       		.uleb128 0x13
+ 2194 0120 02       		.uleb128 0x2
+ 2195 0121 17       		.uleb128 0x17
+ 2196 0122 00       		.byte	0
+ 2197 0123 00       		.byte	0
+ 2198 0124 18       		.uleb128 0x18
+ 2199 0125 2E       		.uleb128 0x2e
+ 2200 0126 01       		.byte	0x1
+ 2201 0127 3F       		.uleb128 0x3f
+ 2202 0128 19       		.uleb128 0x19
+ 2203 0129 03       		.uleb128 0x3
+ 2204 012a 0E       		.uleb128 0xe
+ 2205 012b 3A       		.uleb128 0x3a
+ 2206 012c 0B       		.uleb128 0xb
+ 2207 012d 3B       		.uleb128 0x3b
+ 2208 012e 0B       		.uleb128 0xb
+ 2209 012f 27       		.uleb128 0x27
+ 2210 0130 19       		.uleb128 0x19
+ 2211 0131 11       		.uleb128 0x11
+ 2212 0132 01       		.uleb128 0x1
+ 2213 0133 12       		.uleb128 0x12
+ 2214 0134 06       		.uleb128 0x6
+ 2215 0135 40       		.uleb128 0x40
+ 2216 0136 18       		.uleb128 0x18
+ 2217 0137 9742     		.uleb128 0x2117
+ 2218 0139 19       		.uleb128 0x19
+ 2219 013a 01       		.uleb128 0x1
+ 2220 013b 13       		.uleb128 0x13
+ 2221 013c 00       		.byte	0
+ 2222 013d 00       		.byte	0
+ 2223 013e 19       		.uleb128 0x19
+ 2224 013f 34       		.uleb128 0x34
+ 2225 0140 00       		.byte	0
+ 2226 0141 03       		.uleb128 0x3
+ 2227 0142 0E       		.uleb128 0xe
+ 2228 0143 3A       		.uleb128 0x3a
+ 2229 0144 0B       		.uleb128 0xb
+ 2230 0145 3B       		.uleb128 0x3b
+ 2231 0146 0B       		.uleb128 0xb
+ 2232 0147 49       		.uleb128 0x49
+ 2233 0148 13       		.uleb128 0x13
+ 2234 0149 02       		.uleb128 0x2
+ 2235 014a 17       		.uleb128 0x17
+ 2236 014b 00       		.byte	0
+ 2237 014c 00       		.byte	0
+ 2238 014d 1A       		.uleb128 0x1a
+ 2239 014e 898201   		.uleb128 0x4109
+ 2240 0151 01       		.byte	0x1
+ 2241 0152 11       		.uleb128 0x11
+ 2242 0153 01       		.uleb128 0x1
+ 2243 0154 31       		.uleb128 0x31
+ 2244 0155 13       		.uleb128 0x13
+ 2245 0156 01       		.uleb128 0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 56
+
+
+ 2246 0157 13       		.uleb128 0x13
+ 2247 0158 00       		.byte	0
+ 2248 0159 00       		.byte	0
+ 2249 015a 1B       		.uleb128 0x1b
+ 2250 015b 8A8201   		.uleb128 0x410a
+ 2251 015e 00       		.byte	0
+ 2252 015f 02       		.uleb128 0x2
+ 2253 0160 18       		.uleb128 0x18
+ 2254 0161 9142     		.uleb128 0x2111
+ 2255 0163 18       		.uleb128 0x18
+ 2256 0164 00       		.byte	0
+ 2257 0165 00       		.byte	0
+ 2258 0166 1C       		.uleb128 0x1c
+ 2259 0167 898201   		.uleb128 0x4109
+ 2260 016a 01       		.byte	0x1
+ 2261 016b 11       		.uleb128 0x11
+ 2262 016c 01       		.uleb128 0x1
+ 2263 016d 31       		.uleb128 0x31
+ 2264 016e 13       		.uleb128 0x13
+ 2265 016f 00       		.byte	0
+ 2266 0170 00       		.byte	0
+ 2267 0171 1D       		.uleb128 0x1d
+ 2268 0172 26       		.uleb128 0x26
+ 2269 0173 00       		.byte	0
+ 2270 0174 49       		.uleb128 0x49
+ 2271 0175 13       		.uleb128 0x13
+ 2272 0176 00       		.byte	0
+ 2273 0177 00       		.byte	0
+ 2274 0178 1E       		.uleb128 0x1e
+ 2275 0179 2E       		.uleb128 0x2e
+ 2276 017a 01       		.byte	0x1
+ 2277 017b 3F       		.uleb128 0x3f
+ 2278 017c 19       		.uleb128 0x19
+ 2279 017d 03       		.uleb128 0x3
+ 2280 017e 0E       		.uleb128 0xe
+ 2281 017f 3A       		.uleb128 0x3a
+ 2282 0180 0B       		.uleb128 0xb
+ 2283 0181 3B       		.uleb128 0x3b
+ 2284 0182 05       		.uleb128 0x5
+ 2285 0183 27       		.uleb128 0x27
+ 2286 0184 19       		.uleb128 0x19
+ 2287 0185 49       		.uleb128 0x49
+ 2288 0186 13       		.uleb128 0x13
+ 2289 0187 11       		.uleb128 0x11
+ 2290 0188 01       		.uleb128 0x1
+ 2291 0189 12       		.uleb128 0x12
+ 2292 018a 06       		.uleb128 0x6
+ 2293 018b 40       		.uleb128 0x40
+ 2294 018c 18       		.uleb128 0x18
+ 2295 018d 9742     		.uleb128 0x2117
+ 2296 018f 19       		.uleb128 0x19
+ 2297 0190 01       		.uleb128 0x1
+ 2298 0191 13       		.uleb128 0x13
+ 2299 0192 00       		.byte	0
+ 2300 0193 00       		.byte	0
+ 2301 0194 1F       		.uleb128 0x1f
+ 2302 0195 34       		.uleb128 0x34
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 57
+
+
+ 2303 0196 00       		.byte	0
+ 2304 0197 03       		.uleb128 0x3
+ 2305 0198 0E       		.uleb128 0xe
+ 2306 0199 3A       		.uleb128 0x3a
+ 2307 019a 0B       		.uleb128 0xb
+ 2308 019b 3B       		.uleb128 0x3b
+ 2309 019c 05       		.uleb128 0x5
+ 2310 019d 49       		.uleb128 0x49
+ 2311 019e 13       		.uleb128 0x13
+ 2312 019f 02       		.uleb128 0x2
+ 2313 01a0 18       		.uleb128 0x18
+ 2314 01a1 00       		.byte	0
+ 2315 01a2 00       		.byte	0
+ 2316 01a3 20       		.uleb128 0x20
+ 2317 01a4 17       		.uleb128 0x17
+ 2318 01a5 01       		.byte	0x1
+ 2319 01a6 0B       		.uleb128 0xb
+ 2320 01a7 0B       		.uleb128 0xb
+ 2321 01a8 3A       		.uleb128 0x3a
+ 2322 01a9 0B       		.uleb128 0xb
+ 2323 01aa 3B       		.uleb128 0x3b
+ 2324 01ab 05       		.uleb128 0x5
+ 2325 01ac 01       		.uleb128 0x1
+ 2326 01ad 13       		.uleb128 0x13
+ 2327 01ae 00       		.byte	0
+ 2328 01af 00       		.byte	0
+ 2329 01b0 21       		.uleb128 0x21
+ 2330 01b1 0D       		.uleb128 0xd
+ 2331 01b2 00       		.byte	0
+ 2332 01b3 03       		.uleb128 0x3
+ 2333 01b4 08       		.uleb128 0x8
+ 2334 01b5 3A       		.uleb128 0x3a
+ 2335 01b6 0B       		.uleb128 0xb
+ 2336 01b7 3B       		.uleb128 0x3b
+ 2337 01b8 05       		.uleb128 0x5
+ 2338 01b9 49       		.uleb128 0x49
+ 2339 01ba 13       		.uleb128 0x13
+ 2340 01bb 00       		.byte	0
+ 2341 01bc 00       		.byte	0
+ 2342 01bd 22       		.uleb128 0x22
+ 2343 01be 0D       		.uleb128 0xd
+ 2344 01bf 00       		.byte	0
+ 2345 01c0 03       		.uleb128 0x3
+ 2346 01c1 0E       		.uleb128 0xe
+ 2347 01c2 3A       		.uleb128 0x3a
+ 2348 01c3 0B       		.uleb128 0xb
+ 2349 01c4 3B       		.uleb128 0x3b
+ 2350 01c5 05       		.uleb128 0x5
+ 2351 01c6 49       		.uleb128 0x49
+ 2352 01c7 13       		.uleb128 0x13
+ 2353 01c8 00       		.byte	0
+ 2354 01c9 00       		.byte	0
+ 2355 01ca 23       		.uleb128 0x23
+ 2356 01cb 35       		.uleb128 0x35
+ 2357 01cc 00       		.byte	0
+ 2358 01cd 00       		.byte	0
+ 2359 01ce 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 58
+
+
+ 2360 01cf 24       		.uleb128 0x24
+ 2361 01d0 34       		.uleb128 0x34
+ 2362 01d1 00       		.byte	0
+ 2363 01d2 03       		.uleb128 0x3
+ 2364 01d3 0E       		.uleb128 0xe
+ 2365 01d4 3A       		.uleb128 0x3a
+ 2366 01d5 0B       		.uleb128 0xb
+ 2367 01d6 3B       		.uleb128 0x3b
+ 2368 01d7 05       		.uleb128 0x5
+ 2369 01d8 49       		.uleb128 0x49
+ 2370 01d9 13       		.uleb128 0x13
+ 2371 01da 00       		.byte	0
+ 2372 01db 00       		.byte	0
+ 2373 01dc 25       		.uleb128 0x25
+ 2374 01dd 34       		.uleb128 0x34
+ 2375 01de 00       		.byte	0
+ 2376 01df 03       		.uleb128 0x3
+ 2377 01e0 0E       		.uleb128 0xe
+ 2378 01e1 3A       		.uleb128 0x3a
+ 2379 01e2 0B       		.uleb128 0xb
+ 2380 01e3 3B       		.uleb128 0x3b
+ 2381 01e4 0B       		.uleb128 0xb
+ 2382 01e5 49       		.uleb128 0x49
+ 2383 01e6 13       		.uleb128 0x13
+ 2384 01e7 02       		.uleb128 0x2
+ 2385 01e8 18       		.uleb128 0x18
+ 2386 01e9 00       		.byte	0
+ 2387 01ea 00       		.byte	0
+ 2388 01eb 26       		.uleb128 0x26
+ 2389 01ec 34       		.uleb128 0x34
+ 2390 01ed 00       		.byte	0
+ 2391 01ee 03       		.uleb128 0x3
+ 2392 01ef 0E       		.uleb128 0xe
+ 2393 01f0 3A       		.uleb128 0x3a
+ 2394 01f1 0B       		.uleb128 0xb
+ 2395 01f2 3B       		.uleb128 0x3b
+ 2396 01f3 0B       		.uleb128 0xb
+ 2397 01f4 49       		.uleb128 0x49
+ 2398 01f5 13       		.uleb128 0x13
+ 2399 01f6 3F       		.uleb128 0x3f
+ 2400 01f7 19       		.uleb128 0x19
+ 2401 01f8 02       		.uleb128 0x2
+ 2402 01f9 18       		.uleb128 0x18
+ 2403 01fa 00       		.byte	0
+ 2404 01fb 00       		.byte	0
+ 2405 01fc 27       		.uleb128 0x27
+ 2406 01fd 2E       		.uleb128 0x2e
+ 2407 01fe 01       		.byte	0x1
+ 2408 01ff 3F       		.uleb128 0x3f
+ 2409 0200 19       		.uleb128 0x19
+ 2410 0201 03       		.uleb128 0x3
+ 2411 0202 0E       		.uleb128 0xe
+ 2412 0203 27       		.uleb128 0x27
+ 2413 0204 19       		.uleb128 0x19
+ 2414 0205 49       		.uleb128 0x49
+ 2415 0206 13       		.uleb128 0x13
+ 2416 0207 34       		.uleb128 0x34
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 59
+
+
+ 2417 0208 19       		.uleb128 0x19
+ 2418 0209 3C       		.uleb128 0x3c
+ 2419 020a 19       		.uleb128 0x19
+ 2420 020b 01       		.uleb128 0x1
+ 2421 020c 13       		.uleb128 0x13
+ 2422 020d 00       		.byte	0
+ 2423 020e 00       		.byte	0
+ 2424 020f 28       		.uleb128 0x28
+ 2425 0210 05       		.uleb128 0x5
+ 2426 0211 00       		.byte	0
+ 2427 0212 49       		.uleb128 0x49
+ 2428 0213 13       		.uleb128 0x13
+ 2429 0214 00       		.byte	0
+ 2430 0215 00       		.byte	0
+ 2431 0216 29       		.uleb128 0x29
+ 2432 0217 2E       		.uleb128 0x2e
+ 2433 0218 01       		.byte	0x1
+ 2434 0219 3F       		.uleb128 0x3f
+ 2435 021a 19       		.uleb128 0x19
+ 2436 021b 03       		.uleb128 0x3
+ 2437 021c 0E       		.uleb128 0xe
+ 2438 021d 3A       		.uleb128 0x3a
+ 2439 021e 0B       		.uleb128 0xb
+ 2440 021f 3B       		.uleb128 0x3b
+ 2441 0220 0B       		.uleb128 0xb
+ 2442 0221 27       		.uleb128 0x27
+ 2443 0222 19       		.uleb128 0x19
+ 2444 0223 3C       		.uleb128 0x3c
+ 2445 0224 19       		.uleb128 0x19
+ 2446 0225 00       		.byte	0
+ 2447 0226 00       		.byte	0
+ 2448 0227 00       		.byte	0
+ 2449              		.section	.debug_loc,"",%progbits
+ 2450              	.Ldebug_loc0:
+ 2451              	.LLST0:
+ 2452 0000 00000000 		.4byte	.LVL0
+ 2453 0004 24000000 		.4byte	.LVL2
+ 2454 0008 0100     		.2byte	0x1
+ 2455 000a 50       		.byte	0x50
+ 2456 000b 24000000 		.4byte	.LVL2
+ 2457 000f 74000000 		.4byte	.LFE2
+ 2458 0013 0400     		.2byte	0x4
+ 2459 0015 F3       		.byte	0xf3
+ 2460 0016 01       		.uleb128 0x1
+ 2461 0017 50       		.byte	0x50
+ 2462 0018 9F       		.byte	0x9f
+ 2463 0019 00000000 		.4byte	0
+ 2464 001d 00000000 		.4byte	0
+ 2465              	.LLST1:
+ 2466 0021 02000000 		.4byte	.LVL1
+ 2467 0025 3E000000 		.4byte	.LVL3
+ 2468 0029 0200     		.2byte	0x2
+ 2469 002b 30       		.byte	0x30
+ 2470 002c 9F       		.byte	0x9f
+ 2471 002d 3E000000 		.4byte	.LVL3
+ 2472 0031 44000000 		.4byte	.LVL4
+ 2473 0035 0100     		.2byte	0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 60
+
+
+ 2474 0037 50       		.byte	0x50
+ 2475 0038 44000000 		.4byte	.LVL4
+ 2476 003c 48000000 		.4byte	.LVL5
+ 2477 0040 0200     		.2byte	0x2
+ 2478 0042 30       		.byte	0x30
+ 2479 0043 9F       		.byte	0x9f
+ 2480 0044 48000000 		.4byte	.LVL5
+ 2481 0048 6A000000 		.4byte	.LVL7
+ 2482 004c 0100     		.2byte	0x1
+ 2483 004e 50       		.byte	0x50
+ 2484 004f 6C000000 		.4byte	.LVL8
+ 2485 0053 6E000000 		.4byte	.LVL9
+ 2486 0057 0100     		.2byte	0x1
+ 2487 0059 50       		.byte	0x50
+ 2488 005a 70000000 		.4byte	.LVL10
+ 2489 005e 74000000 		.4byte	.LFE2
+ 2490 0062 0100     		.2byte	0x1
+ 2491 0064 50       		.byte	0x50
+ 2492 0065 00000000 		.4byte	0
+ 2493 0069 00000000 		.4byte	0
+ 2494              	.LLST2:
+ 2495 006d 3E000000 		.4byte	.LVL17
+ 2496 0071 40000000 		.4byte	.LVL18
+ 2497 0075 0100     		.2byte	0x1
+ 2498 0077 53       		.byte	0x53
+ 2499 0078 40000000 		.4byte	.LVL18
+ 2500 007c 4A000000 		.4byte	.LVL21
+ 2501 0080 0100     		.2byte	0x1
+ 2502 0082 50       		.byte	0x50
+ 2503 0083 4A000000 		.4byte	.LVL21
+ 2504 0087 4C000000 		.4byte	.LVL22
+ 2505 008b 0100     		.2byte	0x1
+ 2506 008d 53       		.byte	0x53
+ 2507 008e 4C000000 		.4byte	.LVL22
+ 2508 0092 54000000 		.4byte	.LVL24
+ 2509 0096 0100     		.2byte	0x1
+ 2510 0098 50       		.byte	0x50
+ 2511 0099 00000000 		.4byte	0
+ 2512 009d 00000000 		.4byte	0
+ 2513              	.LLST3:
+ 2514 00a1 32000000 		.4byte	.LVL14
+ 2515 00a5 3A000000 		.4byte	.LVL15
+ 2516 00a9 0200     		.2byte	0x2
+ 2517 00ab 31       		.byte	0x31
+ 2518 00ac 9F       		.byte	0x9f
+ 2519 00ad 3A000000 		.4byte	.LVL15
+ 2520 00b1 54000000 		.4byte	.LVL24
+ 2521 00b5 0100     		.2byte	0x1
+ 2522 00b7 55       		.byte	0x55
+ 2523 00b8 54000000 		.4byte	.LVL24
+ 2524 00bc 56000000 		.4byte	.LVL25
+ 2525 00c0 0100     		.2byte	0x1
+ 2526 00c2 53       		.byte	0x53
+ 2527 00c3 56000000 		.4byte	.LVL25
+ 2528 00c7 5A000000 		.4byte	.LVL27
+ 2529 00cb 0100     		.2byte	0x1
+ 2530 00cd 55       		.byte	0x55
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 61
+
+
+ 2531 00ce 5A000000 		.4byte	.LVL27
+ 2532 00d2 68000000 		.4byte	.LFE1
+ 2533 00d6 0300     		.2byte	0x3
+ 2534 00d8 73       		.byte	0x73
+ 2535 00d9 7F       		.sleb128 -1
+ 2536 00da 9F       		.byte	0x9f
+ 2537 00db 00000000 		.4byte	0
+ 2538 00df 00000000 		.4byte	0
+ 2539              	.LLST4:
+ 2540 00e3 3C000000 		.4byte	.LVL16
+ 2541 00e7 54000000 		.4byte	.LVL24
+ 2542 00eb 0100     		.2byte	0x1
+ 2543 00ed 51       		.byte	0x51
+ 2544 00ee 00000000 		.4byte	0
+ 2545 00f2 00000000 		.4byte	0
+ 2546              	.LLST5:
+ 2547 00f6 32000000 		.4byte	.LVL14
+ 2548 00fa 3A000000 		.4byte	.LVL15
+ 2549 00fe 0600     		.2byte	0x6
+ 2550 0100 03       		.byte	0x3
+ 2551 0101 00000000 		.4byte	CSD_dsFlash
+ 2552 0105 9F       		.byte	0x9f
+ 2553 0106 3A000000 		.4byte	.LVL15
+ 2554 010a 5A000000 		.4byte	.LVL26
+ 2555 010e 0100     		.2byte	0x1
+ 2556 0110 54       		.byte	0x54
+ 2557 0111 00000000 		.4byte	0
+ 2558 0115 00000000 		.4byte	0
+ 2559              	.LLST6:
+ 2560 0119 02000000 		.4byte	.LVL12
+ 2561 011d 3A000000 		.4byte	.LVL15
+ 2562 0121 0600     		.2byte	0x6
+ 2563 0123 03       		.byte	0x3
+ 2564 0124 00000000 		.4byte	CSD_ramIdacInit
+ 2565 0128 9F       		.byte	0x9f
+ 2566 0129 3A000000 		.4byte	.LVL15
+ 2567 012d 68000000 		.4byte	.LFE1
+ 2568 0131 0100     		.2byte	0x1
+ 2569 0133 52       		.byte	0x52
+ 2570 0134 00000000 		.4byte	0
+ 2571 0138 00000000 		.4byte	0
+ 2572              	.LLST7:
+ 2573 013c 00000000 		.4byte	.LVL28
+ 2574 0140 0B000000 		.4byte	.LVL30-1
+ 2575 0144 0100     		.2byte	0x1
+ 2576 0146 50       		.byte	0x50
+ 2577 0147 0B000000 		.4byte	.LVL30-1
+ 2578 014b 5C000000 		.4byte	.LFE3
+ 2579 014f 0400     		.2byte	0x4
+ 2580 0151 F3       		.byte	0xf3
+ 2581 0152 01       		.uleb128 0x1
+ 2582 0153 50       		.byte	0x50
+ 2583 0154 9F       		.byte	0x9f
+ 2584 0155 00000000 		.4byte	0
+ 2585 0159 00000000 		.4byte	0
+ 2586              	.LLST8:
+ 2587 015d 00000000 		.4byte	.LVL28
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 62
+
+
+ 2588 0161 08000000 		.4byte	.LVL29
+ 2589 0165 0100     		.2byte	0x1
+ 2590 0167 51       		.byte	0x51
+ 2591 0168 08000000 		.4byte	.LVL29
+ 2592 016c 52000000 		.4byte	.LVL38
+ 2593 0170 0100     		.2byte	0x1
+ 2594 0172 55       		.byte	0x55
+ 2595 0173 52000000 		.4byte	.LVL38
+ 2596 0177 5C000000 		.4byte	.LFE3
+ 2597 017b 0400     		.2byte	0x4
+ 2598 017d F3       		.byte	0xf3
+ 2599 017e 01       		.uleb128 0x1
+ 2600 017f 51       		.byte	0x51
+ 2601 0180 9F       		.byte	0x9f
+ 2602 0181 00000000 		.4byte	0
+ 2603 0185 00000000 		.4byte	0
+ 2604              	.LLST9:
+ 2605 0189 0E000000 		.4byte	.LVL31
+ 2606 018d 4A000000 		.4byte	.LVL35
+ 2607 0191 0100     		.2byte	0x1
+ 2608 0193 50       		.byte	0x50
+ 2609 0194 4A000000 		.4byte	.LVL35
+ 2610 0198 52000000 		.4byte	.LVL37
+ 2611 019c 0100     		.2byte	0x1
+ 2612 019e 54       		.byte	0x54
+ 2613 019f 52000000 		.4byte	.LVL37
+ 2614 01a3 5C000000 		.4byte	.LFE3
+ 2615 01a7 0100     		.2byte	0x1
+ 2616 01a9 50       		.byte	0x50
+ 2617 01aa 00000000 		.4byte	0
+ 2618 01ae 00000000 		.4byte	0
+ 2619              	.LLST10:
+ 2620 01b2 24000000 		.4byte	.LVL33
+ 2621 01b6 28000000 		.4byte	.LVL34
+ 2622 01ba 0100     		.2byte	0x1
+ 2623 01bc 52       		.byte	0x52
+ 2624 01bd 00000000 		.4byte	0
+ 2625 01c1 00000000 		.4byte	0
+ 2626              	.LLST11:
+ 2627 01c5 00000000 		.4byte	.LVL39
+ 2628 01c9 0B000000 		.4byte	.LVL41-1
+ 2629 01cd 0100     		.2byte	0x1
+ 2630 01cf 50       		.byte	0x50
+ 2631 01d0 0B000000 		.4byte	.LVL41-1
+ 2632 01d4 58000000 		.4byte	.LFE4
+ 2633 01d8 0400     		.2byte	0x4
+ 2634 01da F3       		.byte	0xf3
+ 2635 01db 01       		.uleb128 0x1
+ 2636 01dc 50       		.byte	0x50
+ 2637 01dd 9F       		.byte	0x9f
+ 2638 01de 00000000 		.4byte	0
+ 2639 01e2 00000000 		.4byte	0
+ 2640              	.LLST12:
+ 2641 01e6 00000000 		.4byte	.LVL39
+ 2642 01ea 08000000 		.4byte	.LVL40
+ 2643 01ee 0100     		.2byte	0x1
+ 2644 01f0 51       		.byte	0x51
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 63
+
+
+ 2645 01f1 08000000 		.4byte	.LVL40
+ 2646 01f5 30000000 		.4byte	.LVL44
+ 2647 01f9 0100     		.2byte	0x1
+ 2648 01fb 55       		.byte	0x55
+ 2649 01fc 30000000 		.4byte	.LVL44
+ 2650 0200 34000000 		.4byte	.LVL45
+ 2651 0204 0400     		.2byte	0x4
+ 2652 0206 F3       		.byte	0xf3
+ 2653 0207 01       		.uleb128 0x1
+ 2654 0208 51       		.byte	0x51
+ 2655 0209 9F       		.byte	0x9f
+ 2656 020a 34000000 		.4byte	.LVL45
+ 2657 020e 3A000000 		.4byte	.LVL46
+ 2658 0212 0100     		.2byte	0x1
+ 2659 0214 55       		.byte	0x55
+ 2660 0215 3A000000 		.4byte	.LVL46
+ 2661 0219 3E000000 		.4byte	.LVL47
+ 2662 021d 0400     		.2byte	0x4
+ 2663 021f F3       		.byte	0xf3
+ 2664 0220 01       		.uleb128 0x1
+ 2665 0221 51       		.byte	0x51
+ 2666 0222 9F       		.byte	0x9f
+ 2667 0223 3E000000 		.4byte	.LVL47
+ 2668 0227 4C000000 		.4byte	.LVL48
+ 2669 022b 0100     		.2byte	0x1
+ 2670 022d 55       		.byte	0x55
+ 2671 022e 4C000000 		.4byte	.LVL48
+ 2672 0232 58000000 		.4byte	.LFE4
+ 2673 0236 0400     		.2byte	0x4
+ 2674 0238 F3       		.byte	0xf3
+ 2675 0239 01       		.uleb128 0x1
+ 2676 023a 51       		.byte	0x51
+ 2677 023b 9F       		.byte	0x9f
+ 2678 023c 00000000 		.4byte	0
+ 2679 0240 00000000 		.4byte	0
+ 2680              	.LLST13:
+ 2681 0244 0E000000 		.4byte	.LVL42
+ 2682 0248 1A000000 		.4byte	.LVL43
+ 2683 024c 0100     		.2byte	0x1
+ 2684 024e 50       		.byte	0x50
+ 2685 024f 1A000000 		.4byte	.LVL43
+ 2686 0253 50000000 		.4byte	.LVL49
+ 2687 0257 0100     		.2byte	0x1
+ 2688 0259 54       		.byte	0x54
+ 2689 025a 50000000 		.4byte	.LVL49
+ 2690 025e 58000000 		.4byte	.LFE4
+ 2691 0262 0100     		.2byte	0x1
+ 2692 0264 50       		.byte	0x50
+ 2693 0265 00000000 		.4byte	0
+ 2694 0269 00000000 		.4byte	0
+ 2695              	.LLST14:
+ 2696 026d 00000000 		.4byte	.LVL50
+ 2697 0271 06000000 		.4byte	.LVL51
+ 2698 0275 0200     		.2byte	0x2
+ 2699 0277 30       		.byte	0x30
+ 2700 0278 9F       		.byte	0x9f
+ 2701 0279 06000000 		.4byte	.LVL51
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 64
+
+
+ 2702 027d 20000000 		.4byte	.LFE5
+ 2703 0281 0100     		.2byte	0x1
+ 2704 0283 50       		.byte	0x50
+ 2705 0284 00000000 		.4byte	0
+ 2706 0288 00000000 		.4byte	0
+ 2707              	.LLST15:
+ 2708 028c 00000000 		.4byte	.LVL50
+ 2709 0290 06000000 		.4byte	.LVL51
+ 2710 0294 0200     		.2byte	0x2
+ 2711 0296 31       		.byte	0x31
+ 2712 0297 9F       		.byte	0x9f
+ 2713 0298 06000000 		.4byte	.LVL51
+ 2714 029c 12000000 		.4byte	.LVL53
+ 2715 02a0 0100     		.2byte	0x1
+ 2716 02a2 52       		.byte	0x52
+ 2717 02a3 12000000 		.4byte	.LVL53
+ 2718 02a7 14000000 		.4byte	.LVL54
+ 2719 02ab 0100     		.2byte	0x1
+ 2720 02ad 53       		.byte	0x53
+ 2721 02ae 14000000 		.4byte	.LVL54
+ 2722 02b2 20000000 		.4byte	.LFE5
+ 2723 02b6 0100     		.2byte	0x1
+ 2724 02b8 52       		.byte	0x52
+ 2725 02b9 00000000 		.4byte	0
+ 2726 02bd 00000000 		.4byte	0
+ 2727              	.LLST16:
+ 2728 02c1 00000000 		.4byte	.LVL55
+ 2729 02c5 18000000 		.4byte	.LVL56
+ 2730 02c9 0100     		.2byte	0x1
+ 2731 02cb 50       		.byte	0x50
+ 2732 02cc 18000000 		.4byte	.LVL56
+ 2733 02d0 1C000000 		.4byte	.LVL58
+ 2734 02d4 0400     		.2byte	0x4
+ 2735 02d6 F3       		.byte	0xf3
+ 2736 02d7 01       		.uleb128 0x1
+ 2737 02d8 50       		.byte	0x50
+ 2738 02d9 9F       		.byte	0x9f
+ 2739 02da 1C000000 		.4byte	.LVL58
+ 2740 02de 1E000000 		.4byte	.LVL59
+ 2741 02e2 0100     		.2byte	0x1
+ 2742 02e4 50       		.byte	0x50
+ 2743 02e5 1E000000 		.4byte	.LVL59
+ 2744 02e9 24000000 		.4byte	.LFE6
+ 2745 02ed 0400     		.2byte	0x4
+ 2746 02ef F3       		.byte	0xf3
+ 2747 02f0 01       		.uleb128 0x1
+ 2748 02f1 50       		.byte	0x50
+ 2749 02f2 9F       		.byte	0x9f
+ 2750 02f3 00000000 		.4byte	0
+ 2751 02f7 00000000 		.4byte	0
+ 2752              	.LLST17:
+ 2753 02fb 00000000 		.4byte	.LVL55
+ 2754 02ff 1A000000 		.4byte	.LVL57
+ 2755 0303 0200     		.2byte	0x2
+ 2756 0305 30       		.byte	0x30
+ 2757 0306 9F       		.byte	0x9f
+ 2758 0307 1A000000 		.4byte	.LVL57
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 65
+
+
+ 2759 030b 1C000000 		.4byte	.LVL58
+ 2760 030f 0100     		.2byte	0x1
+ 2761 0311 50       		.byte	0x50
+ 2762 0312 1C000000 		.4byte	.LVL58
+ 2763 0316 1E000000 		.4byte	.LVL59
+ 2764 031a 0200     		.2byte	0x2
+ 2765 031c 30       		.byte	0x30
+ 2766 031d 9F       		.byte	0x9f
+ 2767 031e 1E000000 		.4byte	.LVL59
+ 2768 0322 24000000 		.4byte	.LFE6
+ 2769 0326 0100     		.2byte	0x1
+ 2770 0328 50       		.byte	0x50
+ 2771 0329 00000000 		.4byte	0
+ 2772 032d 00000000 		.4byte	0
+ 2773              	.LLST18:
+ 2774 0331 00000000 		.4byte	.LVL60
+ 2775 0335 18000000 		.4byte	.LVL61
+ 2776 0339 0100     		.2byte	0x1
+ 2777 033b 50       		.byte	0x50
+ 2778 033c 18000000 		.4byte	.LVL61
+ 2779 0340 22000000 		.4byte	.LVL63
+ 2780 0344 0400     		.2byte	0x4
+ 2781 0346 F3       		.byte	0xf3
+ 2782 0347 01       		.uleb128 0x1
+ 2783 0348 50       		.byte	0x50
+ 2784 0349 9F       		.byte	0x9f
+ 2785 034a 22000000 		.4byte	.LVL63
+ 2786 034e 24000000 		.4byte	.LVL64
+ 2787 0352 0100     		.2byte	0x1
+ 2788 0354 50       		.byte	0x50
+ 2789 0355 24000000 		.4byte	.LVL64
+ 2790 0359 26000000 		.4byte	.LVL65
+ 2791 035d 0400     		.2byte	0x4
+ 2792 035f F3       		.byte	0xf3
+ 2793 0360 01       		.uleb128 0x1
+ 2794 0361 50       		.byte	0x50
+ 2795 0362 9F       		.byte	0x9f
+ 2796 0363 26000000 		.4byte	.LVL65
+ 2797 0367 28000000 		.4byte	.LVL66
+ 2798 036b 0100     		.2byte	0x1
+ 2799 036d 50       		.byte	0x50
+ 2800 036e 28000000 		.4byte	.LVL66
+ 2801 0372 34000000 		.4byte	.LFE7
+ 2802 0376 0400     		.2byte	0x4
+ 2803 0378 F3       		.byte	0xf3
+ 2804 0379 01       		.uleb128 0x1
+ 2805 037a 50       		.byte	0x50
+ 2806 037b 9F       		.byte	0x9f
+ 2807 037c 00000000 		.4byte	0
+ 2808 0380 00000000 		.4byte	0
+ 2809              	.LLST19:
+ 2810 0384 00000000 		.4byte	.LVL60
+ 2811 0388 20000000 		.4byte	.LVL62
+ 2812 038c 0200     		.2byte	0x2
+ 2813 038e 30       		.byte	0x30
+ 2814 038f 9F       		.byte	0x9f
+ 2815 0390 20000000 		.4byte	.LVL62
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 66
+
+
+ 2816 0394 22000000 		.4byte	.LVL63
+ 2817 0398 0100     		.2byte	0x1
+ 2818 039a 50       		.byte	0x50
+ 2819 039b 22000000 		.4byte	.LVL63
+ 2820 039f 28000000 		.4byte	.LVL66
+ 2821 03a3 0200     		.2byte	0x2
+ 2822 03a5 30       		.byte	0x30
+ 2823 03a6 9F       		.byte	0x9f
+ 2824 03a7 28000000 		.4byte	.LVL66
+ 2825 03ab 34000000 		.4byte	.LFE7
+ 2826 03af 0100     		.2byte	0x1
+ 2827 03b1 50       		.byte	0x50
+ 2828 03b2 00000000 		.4byte	0
+ 2829 03b6 00000000 		.4byte	0
+ 2830              		.section	.debug_aranges,"",%progbits
+ 2831 0000 4C000000 		.4byte	0x4c
+ 2832 0004 0200     		.2byte	0x2
+ 2833 0006 00000000 		.4byte	.Ldebug_info0
+ 2834 000a 04       		.byte	0x4
+ 2835 000b 00       		.byte	0
+ 2836 000c 0000     		.2byte	0
+ 2837 000e 0000     		.2byte	0
+ 2838 0010 00000000 		.4byte	.LFB2
+ 2839 0014 74000000 		.4byte	.LFE2-.LFB2
+ 2840 0018 00000000 		.4byte	.LFB1
+ 2841 001c 68000000 		.4byte	.LFE1-.LFB1
+ 2842 0020 00000000 		.4byte	.LFB3
+ 2843 0024 5C000000 		.4byte	.LFE3-.LFB3
+ 2844 0028 00000000 		.4byte	.LFB4
+ 2845 002c 58000000 		.4byte	.LFE4-.LFB4
+ 2846 0030 00000000 		.4byte	.LFB5
+ 2847 0034 20000000 		.4byte	.LFE5-.LFB5
+ 2848 0038 00000000 		.4byte	.LFB6
+ 2849 003c 24000000 		.4byte	.LFE6-.LFB6
+ 2850 0040 00000000 		.4byte	.LFB7
+ 2851 0044 34000000 		.4byte	.LFE7-.LFB7
+ 2852 0048 00000000 		.4byte	0
+ 2853 004c 00000000 		.4byte	0
+ 2854              		.section	.debug_ranges,"",%progbits
+ 2855              	.Ldebug_ranges0:
+ 2856 0000 00000000 		.4byte	.LFB2
+ 2857 0004 74000000 		.4byte	.LFE2
+ 2858 0008 00000000 		.4byte	.LFB1
+ 2859 000c 68000000 		.4byte	.LFE1
+ 2860 0010 00000000 		.4byte	.LFB3
+ 2861 0014 5C000000 		.4byte	.LFE3
+ 2862 0018 00000000 		.4byte	.LFB4
+ 2863 001c 58000000 		.4byte	.LFE4
+ 2864 0020 00000000 		.4byte	.LFB5
+ 2865 0024 20000000 		.4byte	.LFE5
+ 2866 0028 00000000 		.4byte	.LFB6
+ 2867 002c 24000000 		.4byte	.LFE6
+ 2868 0030 00000000 		.4byte	.LFB7
+ 2869 0034 34000000 		.4byte	.LFE7
+ 2870 0038 00000000 		.4byte	0
+ 2871 003c 00000000 		.4byte	0
+ 2872              		.section	.debug_line,"",%progbits
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 67
+
+
+ 2873              	.Ldebug_line0:
+ 2874 0000 A9010000 		.section	.debug_str,"MS",%progbits,1
+ 2874      02007F00 
+ 2874      00000201 
+ 2874      FB0E0D00 
+ 2874      01010101 
+ 2875              	.LASF10:
+ 2876 0000 75696E74 		.ascii	"uint16\000"
+ 2876      313600
+ 2877              	.LASF92:
+ 2878 0007 61666665 		.ascii	"affectsCrc\000"
+ 2878      63747343 
+ 2878      726300
+ 2879              	.LASF95:
+ 2880 0012 50415241 		.ascii	"PARAM_ID_STRUCT\000"
+ 2880      4D5F4944 
+ 2880      5F535452 
+ 2880      55435400 
+ 2881              	.LASF120:
+ 2882 0022 4353445F 		.ascii	"CSD_dsRam\000"
+ 2882      64735261 
+ 2882      6D00
+ 2883              	.LASF113:
+ 2884 002c 4353445F 		.ascii	"CSD_IsWidgetActive\000"
+ 2884      49735769 
+ 2884      64676574 
+ 2884      41637469 
+ 2884      766500
+ 2885              	.LASF94:
+ 2886 003f 74797065 		.ascii	"type\000"
+ 2886      00
+ 2887              	.LASF105:
+ 2888 0044 70747255 		.ascii	"ptrUint8\000"
+ 2888      696E7438 
+ 2888      00
+ 2889              	.LASF118:
+ 2890 004d 4353445F 		.ascii	"CSD_ramWidgetInit\000"
+ 2890      72616D57 
+ 2890      69646765 
+ 2890      74496E69 
+ 2890      7400
+ 2891              	.LASF7:
+ 2892 005f 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2892      206C6F6E 
+ 2892      6720756E 
+ 2892      7369676E 
+ 2892      65642069 
+ 2893              	.LASF74:
+ 2894 0076 70747232 		.ascii	"ptr2SnsFlash\000"
+ 2894      536E7346 
+ 2894      6C617368 
+ 2894      00
+ 2895              	.LASF42:
+ 2896 0083 64696666 		.ascii	"diff\000"
+ 2896      00
+ 2897              	.LASF64:
+ 2898 0088 6873696F 		.ascii	"hsiomPtr\000"
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 68
+
+
+ 2898      6D507472 
+ 2898      00
+ 2899              	.LASF25:
+ 2900 0091 4353445F 		.ascii	"CSD_WD_PROXIMITY_E\000"
+ 2900      57445F50 
+ 2900      524F5849 
+ 2900      4D495459 
+ 2900      5F4500
+ 2901              	.LASF60:
+ 2902 00a4 736E7254 		.ascii	"snrTestSensorId\000"
+ 2902      65737453 
+ 2902      656E736F 
+ 2902      72496400 
+ 2903              	.LASF100:
+ 2904 00b4 77646774 		.ascii	"wdgtId\000"
+ 2904      496400
+ 2905              	.LASF6:
+ 2906 00bb 6C6F6E67 		.ascii	"long long int\000"
+ 2906      206C6F6E 
+ 2906      6720696E 
+ 2906      7400
+ 2907              	.LASF0:
+ 2908 00c9 7369676E 		.ascii	"signed char\000"
+ 2908      65642063 
+ 2908      68617200 
+ 2909              	.LASF38:
+ 2910 00d5 62757474 		.ascii	"button0\000"
+ 2910      6F6E3000 
+ 2911              	.LASF112:
+ 2912 00dd 7764576F 		.ascii	"wdWord\000"
+ 2912      726400
+ 2913              	.LASF54:
+ 2914 00e4 736E7353 		.ascii	"snsStatus\000"
+ 2914      74617475 
+ 2914      7300
+ 2915              	.LASF24:
+ 2916 00ee 4353445F 		.ascii	"CSD_WD_TOUCHPAD_E\000"
+ 2916      57445F54 
+ 2916      4F554348 
+ 2916      5041445F 
+ 2916      4500
+ 2917              	.LASF4:
+ 2918 0100 6C6F6E67 		.ascii	"long int\000"
+ 2918      20696E74 
+ 2918      00
+ 2919              	.LASF56:
+ 2920 0109 6D6F6443 		.ascii	"modCsdClk\000"
+ 2920      7364436C 
+ 2920      6B00
+ 2921              	.LASF76:
+ 2922 0113 70747232 		.ascii	"ptr2SnsRam\000"
+ 2922      536E7352 
+ 2922      616D00
+ 2923              	.LASF67:
+ 2924 011e 70735074 		.ascii	"psPtr\000"
+ 2924      7200
+ 2925              	.LASF124:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 69
+
+
+ 2926 0124 6D656D63 		.ascii	"memcpy\000"
+ 2926      707900
+ 2927              	.LASF9:
+ 2928 012b 75696E74 		.ascii	"uint8\000"
+ 2928      3800
+ 2929              	.LASF45:
+ 2930 0131 4353445F 		.ascii	"CSD_RAM_SNS_STRUCT\000"
+ 2930      52414D5F 
+ 2930      534E535F 
+ 2930      53545255 
+ 2930      435400
+ 2931              	.LASF13:
+ 2932 0144 646F7562 		.ascii	"double\000"
+ 2932      6C6500
+ 2933              	.LASF20:
+ 2934 014b 4353445F 		.ascii	"CSD_WD_BUTTON_E\000"
+ 2934      57445F42 
+ 2934      5554544F 
+ 2934      4E5F4500 
+ 2935              	.LASF62:
+ 2936 015b 736E7254 		.ascii	"snrTestRawCount\000"
+ 2936      65737452 
+ 2936      6177436F 
+ 2936      756E7400 
+ 2937              	.LASF72:
+ 2938 016b 73686966 		.ascii	"shift\000"
+ 2938      7400
+ 2939              	.LASF115:
+ 2940 0171 73656E73 		.ascii	"sensorId\000"
+ 2940      6F724964 
+ 2940      00
+ 2941              	.LASF71:
+ 2942 017a 64725368 		.ascii	"drShift\000"
+ 2942      69667400 
+ 2943              	.LASF11:
+ 2944 0182 75696E74 		.ascii	"uint32\000"
+ 2944      333200
+ 2945              	.LASF18:
+ 2946 0189 4353445F 		.ascii	"CSD_THRESHOLD_TYPE\000"
+ 2946      54485245 
+ 2946      53484F4C 
+ 2946      445F5459 
+ 2946      504500
+ 2947              	.LASF97:
+ 2948 019c 70446174 		.ascii	"pData\000"
+ 2948      6100
+ 2949              	.LASF89:
+ 2950 01a2 4353445F 		.ascii	"CSD_REGULAR_FLTR_STRUCT\000"
+ 2950      52454755 
+ 2950      4C41525F 
+ 2950      464C5452 
+ 2950      5F535452 
+ 2951              	.LASF69:
+ 2952 01ba 6D61736B 		.ascii	"mask\000"
+ 2952      00
+ 2953              	.LASF41:
+ 2954 01bf 62736C6E 		.ascii	"bslnExt\000"
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 70
+
+
+ 2954      45787400 
+ 2955              	.LASF53:
+ 2956 01c7 77646774 		.ascii	"wdgtStatus\000"
+ 2956      53746174 
+ 2956      757300
+ 2957              	.LASF104:
+ 2958 01d2 76616C75 		.ascii	"value\000"
+ 2958      6500
+ 2959              	.LASF86:
+ 2960 01d8 69697248 		.ascii	"iirHistory\000"
+ 2960      6973746F 
+ 2960      727900
+ 2961              	.LASF40:
+ 2962 01e3 62736C6E 		.ascii	"bsln\000"
+ 2962      00
+ 2963              	.LASF102:
+ 2964 01e8 70747246 		.ascii	"ptrFlashWdgt\000"
+ 2964      6C617368 
+ 2964      57646774 
+ 2964      00
+ 2965              	.LASF8:
+ 2966 01f5 756E7369 		.ascii	"unsigned int\000"
+ 2966      676E6564 
+ 2966      20696E74 
+ 2966      00
+ 2967              	.LASF59:
+ 2968 0202 736E7254 		.ascii	"snrTestWidgetId\000"
+ 2968      65737457 
+ 2968      69646765 
+ 2968      74496400 
+ 2969              	.LASF5:
+ 2970 0212 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2970      20756E73 
+ 2970      69676E65 
+ 2970      6420696E 
+ 2970      7400
+ 2971              	.LASF19:
+ 2972 0224 4353445F 		.ascii	"CSD_LOW_BSLN_RST_TYPE\000"
+ 2972      4C4F575F 
+ 2972      42534C4E 
+ 2972      5F525354 
+ 2972      5F545950 
+ 2973              	.LASF52:
+ 2974 023a 77646774 		.ascii	"wdgtEnable\000"
+ 2974      456E6162 
+ 2974      6C6500
+ 2975              	.LASF32:
+ 2976 0245 6C6F7742 		.ascii	"lowBslnRst\000"
+ 2976      736C6E52 
+ 2976      737400
+ 2977              	.LASF101:
+ 2978 0250 70747253 		.ascii	"ptrSns\000"
+ 2978      6E7300
+ 2979              	.LASF87:
+ 2980 0257 4353445F 		.ascii	"CSD_REGULAR_FLTR_CHANNEL_STRUCT\000"
+ 2980      52454755 
+ 2980      4C41525F 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 71
+
+
+ 2980      464C5452 
+ 2980      5F434841 
+ 2981              	.LASF3:
+ 2982 0277 73686F72 		.ascii	"short unsigned int\000"
+ 2982      7420756E 
+ 2982      7369676E 
+ 2982      65642069 
+ 2982      6E7400
+ 2983              	.LASF58:
+ 2984 028a 736E734C 		.ascii	"snsList\000"
+ 2984      69737400 
+ 2985              	.LASF47:
+ 2986 0292 636F6E66 		.ascii	"configId\000"
+ 2986      69674964 
+ 2986      00
+ 2987              	.LASF129:
+ 2988 029b 4353445F 		.ascii	"CSD_DsInitialize\000"
+ 2988      4473496E 
+ 2988      69746961 
+ 2988      6C697A65 
+ 2988      00
+ 2989              	.LASF122:
+ 2990 02ac 4353445F 		.ascii	"CSD_ioList\000"
+ 2990      696F4C69 
+ 2990      737400
+ 2991              	.LASF55:
+ 2992 02b7 63736430 		.ascii	"csd0Config\000"
+ 2992      436F6E66 
+ 2992      696700
+ 2993              	.LASF75:
+ 2994 02c2 70747232 		.ascii	"ptr2WdgtRam\000"
+ 2994      57646774 
+ 2994      52616D00 
+ 2995              	.LASF48:
+ 2996 02ce 64657669 		.ascii	"deviceId\000"
+ 2996      63654964 
+ 2996      00
+ 2997              	.LASF93:
+ 2998 02d7 666C6173 		.ascii	"flash\000"
+ 2998      6800
+ 2999              	.LASF16:
+ 3000 02dd 72656733 		.ascii	"reg32\000"
+ 3000      3200
+ 3001              	.LASF91:
+ 3002 02e3 77696467 		.ascii	"widgetId\000"
+ 3002      65744964 
+ 3002      00
+ 3003              	.LASF34:
+ 3004 02ec 69646163 		.ascii	"idacMod\000"
+ 3004      4D6F6400 
+ 3005              	.LASF82:
+ 3006 02f4 6E756D43 		.ascii	"numCols\000"
+ 3006      6F6C7300 
+ 3007              	.LASF17:
+ 3008 02fc 73697A65 		.ascii	"sizetype\000"
+ 3008      74797065 
+ 3008      00
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 72
+
+
+ 3009              	.LASF116:
+ 3010 0305 4353445F 		.ascii	"CSD_debounceButton0\000"
+ 3010      6465626F 
+ 3010      756E6365 
+ 3010      42757474 
+ 3010      6F6E3000 
+ 3011              	.LASF79:
+ 3012 0319 73746174 		.ascii	"staticConfig\000"
+ 3012      6963436F 
+ 3012      6E666967 
+ 3012      00
+ 3013              	.LASF29:
+ 3014 0326 6E4E6F69 		.ascii	"nNoiseTh\000"
+ 3014      73655468 
+ 3014      00
+ 3015              	.LASF81:
+ 3016 032f 77646774 		.ascii	"wdgtType\000"
+ 3016      54797065 
+ 3016      00
+ 3017              	.LASF96:
+ 3018 0338 70617261 		.ascii	"paramId\000"
+ 3018      6D496400 
+ 3019              	.LASF50:
+ 3020 0340 7363616E 		.ascii	"scanCounter\000"
+ 3020      436F756E 
+ 3020      74657200 
+ 3021              	.LASF117:
+ 3022 034c 4353445F 		.ascii	"CSD_fltrHistoryButton0\000"
+ 3022      666C7472 
+ 3022      48697374 
+ 3022      6F727942 
+ 3022      7574746F 
+ 3023              	.LASF114:
+ 3024 0363 4353445F 		.ascii	"CSD_IsSensorActive\000"
+ 3024      49735365 
+ 3024      6E736F72 
+ 3024      41637469 
+ 3024      766500
+ 3025              	.LASF49:
+ 3026 0376 74756E65 		.ascii	"tunerCmd\000"
+ 3026      72436D64 
+ 3026      00
+ 3027              	.LASF12:
+ 3028 037f 666C6F61 		.ascii	"float\000"
+ 3028      7400
+ 3029              	.LASF63:
+ 3030 0385 4353445F 		.ascii	"CSD_RAM_STRUCT\000"
+ 3030      52414D5F 
+ 3030      53545255 
+ 3030      435400
+ 3031              	.LASF73:
+ 3032 0394 4353445F 		.ascii	"CSD_FLASH_IO_STRUCT\000"
+ 3032      464C4153 
+ 3032      485F494F 
+ 3032      5F535452 
+ 3032      55435400 
+ 3033              	.LASF33:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 73
+
+
+ 3034 03a8 62736C6E 		.ascii	"bslnCoeff\000"
+ 3034      436F6566 
+ 3034      6600
+ 3035              	.LASF88:
+ 3036 03b2 72656775 		.ascii	"regularChannel\000"
+ 3036      6C617243 
+ 3036      68616E6E 
+ 3036      656C00
+ 3037              	.LASF30:
+ 3038 03c1 68797374 		.ascii	"hysteresis\000"
+ 3038      65726573 
+ 3038      697300
+ 3039              	.LASF1:
+ 3040 03cc 756E7369 		.ascii	"unsigned char\000"
+ 3040      676E6564 
+ 3040      20636861 
+ 3040      7200
+ 3041              	.LASF39:
+ 3042 03da 4353445F 		.ascii	"CSD_RAM_WD_LIST_STRUCT\000"
+ 3042      52414D5F 
+ 3042      57445F4C 
+ 3042      4953545F 
+ 3042      53545255 
+ 3043              	.LASF103:
+ 3044 03f1 70747249 		.ascii	"ptrIdacInit\000"
+ 3044      64616349 
+ 3044      6E697400 
+ 3045              	.LASF2:
+ 3046 03fd 73686F72 		.ascii	"short int\000"
+ 3046      7420696E 
+ 3046      7400
+ 3047              	.LASF121:
+ 3048 0407 4353445F 		.ascii	"CSD_dsFlash\000"
+ 3048      6473466C 
+ 3048      61736800 
+ 3049              	.LASF77:
+ 3050 0413 70747232 		.ascii	"ptr2FltrHistory\000"
+ 3050      466C7472 
+ 3050      48697374 
+ 3050      6F727900 
+ 3051              	.LASF23:
+ 3052 0423 4353445F 		.ascii	"CSD_WD_MATRIX_BUTTON_E\000"
+ 3052      57445F4D 
+ 3052      41545249 
+ 3052      585F4255 
+ 3052      54544F4E 
+ 3053              	.LASF108:
+ 3054 043a 70747244 		.ascii	"ptrData\000"
+ 3054      61746100 
+ 3055              	.LASF70:
+ 3056 0442 6873696F 		.ascii	"hsiomShift\000"
+ 3056      6D536869 
+ 3056      667400
+ 3057              	.LASF111:
+ 3058 044d 4353445F 		.ascii	"CSD_IsAnyWidgetActive\000"
+ 3058      4973416E 
+ 3058      79576964 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 74
+
+
+ 3058      67657441 
+ 3058      63746976 
+ 3059              	.LASF83:
+ 3060 0463 4353445F 		.ascii	"CSD_FLASH_WD_STRUCT\000"
+ 3060      464C4153 
+ 3060      485F5744 
+ 3060      5F535452 
+ 3060      55435400 
+ 3061              	.LASF26:
+ 3062 0477 7265736F 		.ascii	"resolution\000"
+ 3062      6C757469 
+ 3062      6F6E00
+ 3063              	.LASF57:
+ 3064 0482 77646774 		.ascii	"wdgtList\000"
+ 3064      4C697374 
+ 3064      00
+ 3065              	.LASF46:
+ 3066 048b 4353445F 		.ascii	"CSD_RAM_SNS_LIST_STRUCT\000"
+ 3066      52414D5F 
+ 3066      534E535F 
+ 3066      4C495354 
+ 3066      5F535452 
+ 3067              	.LASF14:
+ 3068 04a3 63686172 		.ascii	"char\000"
+ 3068      00
+ 3069              	.LASF119:
+ 3070 04a8 4353445F 		.ascii	"CSD_ramIdacInit\000"
+ 3070      72616D49 
+ 3070      64616349 
+ 3070      6E697400 
+ 3071              	.LASF66:
+ 3072 04b8 64725074 		.ascii	"drPtr\000"
+ 3072      7200
+ 3073              	.LASF35:
+ 3074 04be 736E7343 		.ascii	"snsClk\000"
+ 3074      6C6B00
+ 3075              	.LASF107:
+ 3076 04c5 70747255 		.ascii	"ptrUint32\000"
+ 3076      696E7433 
+ 3076      3200
+ 3077              	.LASF31:
+ 3078 04cf 6F6E4465 		.ascii	"onDebounce\000"
+ 3078      626F756E 
+ 3078      636500
+ 3079              	.LASF21:
+ 3080 04da 4353445F 		.ascii	"CSD_WD_LINEAR_SLIDER_E\000"
+ 3080      57445F4C 
+ 3080      494E4541 
+ 3080      525F534C 
+ 3080      49444552 
+ 3081              	.LASF37:
+ 3082 04f1 4353445F 		.ascii	"CSD_RAM_WD_BUTTON_STRUCT\000"
+ 3082      52414D5F 
+ 3082      57445F42 
+ 3082      5554544F 
+ 3082      4E5F5354 
+ 3083              	.LASF90:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 75
+
+
+ 3084 050a 6F666673 		.ascii	"offset\000"
+ 3084      657400
+ 3085              	.LASF44:
+ 3086 0511 69646163 		.ascii	"idacComp\000"
+ 3086      436F6D70 
+ 3086      00
+ 3087              	.LASF43:
+ 3088 051a 6E656742 		.ascii	"negBslnRstCnt\000"
+ 3088      736C6E52 
+ 3088      7374436E 
+ 3088      7400
+ 3089              	.LASF80:
+ 3090 0528 746F7461 		.ascii	"totalNumSns\000"
+ 3090      6C4E756D 
+ 3090      536E7300 
+ 3091              	.LASF126:
+ 3092 0534 47656E65 		.ascii	"Generated_Source\\PSoC4\\CSD_Structure.c\000"
+ 3092      72617465 
+ 3092      645F536F 
+ 3092      75726365 
+ 3092      5C50536F 
+ 3093              	.LASF78:
+ 3094 055b 70747232 		.ascii	"ptr2DebounceArr\000"
+ 3094      4465626F 
+ 3094      756E6365 
+ 3094      41727200 
+ 3095              	.LASF85:
+ 3096 056b 4353445F 		.ascii	"CSD_FLASH_STRUCT\000"
+ 3096      464C4153 
+ 3096      485F5354 
+ 3096      52554354 
+ 3096      00
+ 3097              	.LASF123:
+ 3098 057c 6D656D73 		.ascii	"memset\000"
+ 3098      657400
+ 3099              	.LASF110:
+ 3100 0583 4353445F 		.ascii	"CSD_SetParam\000"
+ 3100      53657450 
+ 3100      6172616D 
+ 3100      00
+ 3101              	.LASF51:
+ 3102 0590 73746174 		.ascii	"status\000"
+ 3102      757300
+ 3103              	.LASF127:
+ 3104 0597 433A5C47 		.ascii	"C:\\Git\\WA101\\projects\\PSoC\\WA101_AnalogCoProce"
+ 3104      69745C57 
+ 3104      41313031 
+ 3104      5C70726F 
+ 3104      6A656374 
+ 3105 05c5 73736F72 		.ascii	"ssor\\WA101_AnalogCoProcessor.cydsn\000"
+ 3105      5C574131 
+ 3105      30315F41 
+ 3105      6E616C6F 
+ 3105      67436F50 
+ 3106              	.LASF84:
+ 3107 05e8 77646774 		.ascii	"wdgtArray\000"
+ 3107      41727261 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 76
+
+
+ 3107      7900
+ 3108              	.LASF128:
+ 3109 05f2 44735061 		.ascii	"DsParseParamId\000"
+ 3109      72736550 
+ 3109      6172616D 
+ 3109      496400
+ 3110              	.LASF109:
+ 3111 0601 4353445F 		.ascii	"CSD_GetParam\000"
+ 3111      47657450 
+ 3111      6172616D 
+ 3111      00
+ 3112              	.LASF106:
+ 3113 060e 70747255 		.ascii	"ptrUint16\000"
+ 3113      696E7431 
+ 3113      3600
+ 3114              	.LASF36:
+ 3115 0618 736E7343 		.ascii	"snsClkSource\000"
+ 3115      6C6B536F 
+ 3115      75726365 
+ 3115      00
+ 3116              	.LASF15:
+ 3117 0625 63797374 		.ascii	"cystatus\000"
+ 3117      61747573 
+ 3117      00
+ 3118              	.LASF99:
+ 3119 062e 736E7349 		.ascii	"snsId\000"
+ 3119      6400
+ 3120              	.LASF27:
+ 3121 0634 66696E67 		.ascii	"fingerTh\000"
+ 3121      65725468 
+ 3121      00
+ 3122              	.LASF65:
+ 3123 063d 70635074 		.ascii	"pcPtr\000"
+ 3123      7200
+ 3124              	.LASF61:
+ 3125 0643 736E7254 		.ascii	"snrTestScanCounter\000"
+ 3125      65737453 
+ 3125      63616E43 
+ 3125      6F756E74 
+ 3125      657200
+ 3126              	.LASF68:
+ 3127 0656 6873696F 		.ascii	"hsiomMask\000"
+ 3127      6D4D6173 
+ 3127      6B00
+ 3128              	.LASF22:
+ 3129 0660 4353445F 		.ascii	"CSD_WD_RADIAL_SLIDER_E\000"
+ 3129      57445F52 
+ 3129      41444941 
+ 3129      4C5F534C 
+ 3129      49444552 
+ 3130              	.LASF130:
+ 3131 0677 43794861 		.ascii	"CyHalt\000"
+ 3131      6C7400
+ 3132              	.LASF98:
+ 3133 067e 72657375 		.ascii	"result\000"
+ 3133      6C7400
+ 3134              	.LASF125:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccVN6WGf.s 			page 77
+
+
+ 3135 0685 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 3135      4320342E 
+ 3135      392E3320 
+ 3135      32303135 
+ 3135      30333033 
+ 3136 06b8 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m0plus -mthumb -"
+ 3136      20726576 
+ 3136      6973696F 
+ 3136      6E203232 
+ 3136      31323230 
+ 3137 06eb 67202D4F 		.ascii	"g -Og -ffunction-sections -ffat-lto-objects\000"
+ 3137      67202D66 
+ 3137      66756E63 
+ 3137      74696F6E 
+ 3137      2D736563 
+ 3138              	.LASF28:
+ 3139 0717 6E6F6973 		.ascii	"noiseTh\000"
+ 3139      65546800 
+ 3140              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

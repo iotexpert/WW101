@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file CyFlash.h
-* \version 5.40
+* \version 5.50
 *
 * \brief Provides the function definitions for the FLASH.
 *
@@ -117,7 +117,7 @@ void   CySysFlashSetWaitCycles  (uint32 freq);
 #define CY_SYS_FLASH_INVALID_ADDR       (0x04u)
 /** Specified flash row is protected. */
 #define CY_SYS_FLASH_PROTECTED          (0x05u)
-/** Resume Completed – All non-blocking API’s have completed. The resume/abort function cannot be called until the
+/** Resume Completed. All non-blocking calls have completed. The resume/abort function cannot be called until the
 next non-blocking. */
 #define CY_SYS_FLASH_RESUME_COMPLETED   (0x07u)
 /** \brief Pending Resume. A non-blocking was initiated and must be completed by calling the resume API, before any other
@@ -251,12 +251,13 @@ typedef struct cySysFlashClockBackupStruct
     #define CY_FLASH_CTL_PTR            ( (reg32 *) CYREG_CPUSS_FLASH_CTL)
 #endif  /* (CY_IP_CPUSS_FLASHC_PRESENT) */
 
+
 #define CY_FLASH_API_RETURN             (((CY_FLASH_CPUSS_SYSARG_REG & 0xF0000000u) == 0xF0000000u) ? \
                                          (CY_FLASH_CPUSS_SYSARG_REG & 0x000000FFu) : \
                                          (((CY_FLASH_CPUSS_SYSARG_REG & 0xF0000000u) == 0xA0000000u) ? \
                                             CYRET_SUCCESS : CY_FLASH_CPUSS_SYSARG_REG))
 
-                                            
+
 /*******************************************************************************
 * Thne following code is OBSOLETE and must not be used starting with cy_boot
 * 4.20.

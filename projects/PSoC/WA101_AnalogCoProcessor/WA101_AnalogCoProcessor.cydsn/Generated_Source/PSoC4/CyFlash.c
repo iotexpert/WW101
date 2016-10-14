@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file CyFlash.c
-* \version 5.40
+* \version 5.50
 *
 * \brief Provides an API for the FLASH.
 *
@@ -225,16 +225,15 @@ uint32 CySysFlashWriteRow(uint32 rowNum, const uint8 rowData[])
 * Use CySysFlashResumeWriteRow() to resume flash writes and 
 * CySysFlashGetWriteRowStatus() to ascertain status of the write operation.
 *
-* This API is applicable only for CCG3 device families.
-*
-* For CCG3 devices, parallel code execution and programming of flash is
-* supported since 128k flash is available as two banks of 64k. Please refer to
-* the device TRM for more details.
-*
-* CCG3 devices require HFCLK to be sourced by 48 MHz IMO during flash write.
+* The devices require HFCLK to be sourced by 48 MHz IMO during flash write.
 * This API will modify IMO configuration; it can be later restored to original
 * configuration by calling \ref CySysFlashGetWriteRowStatus().
 *
+* \note The non-blocking operation does not return success status 
+* CY_SYS_FLASH_SUCCESS until the last \ref CySysFlashResumeWriteRow API 
+* is complete. The CPUSS_SYSARG register will be reflecting the SRAM address 
+* during an ongoing non-blocking operation.
+*    
 * \param rowNum The flash row number. The number of the flash rows is defined by
 * the \ref CY_FLASH_NUMBER_ROWS macro for the selected device. Refer to the
 * device datasheet for the details.
@@ -293,7 +292,7 @@ uint32 CySysFlashStartWriteRow(uint32 rowNum, const uint8 rowData[])
                 retValue = CySysFlashClockConfig();
             }
         #else
-            CySysFlashClockBackup();
+            (void)CySysFlashClockBackup();
         #endif  /* (CY_IP_SPCIF_SYNCHRONOUS) */
 
             if(retValue == CY_SYS_FLASH_SUCCESS)
@@ -327,15 +326,12 @@ uint32 CySysFlashStartWriteRow(uint32 rowNum, const uint8 rowData[])
 *
 * Returns the current status of the flash write operation.
 *
-* This API is applicable only for CCG3 device families.
-*
-* For CCG3 devices, parallel code execution and programming of flash is
-* supported since 128k flash is available as two banks of 64k. Please refer to
-* the device TRM for more details.
-*
-* CCG3 devices require HFCLK to be sourced by 48 MHz IMO during flash write.
-* This API will restore original IMO configuration; that has been earlier
-* modified by \ref CySysFlashStartWriteRow().
+** \note The non-blocking operation does not return success status 
+* CY_SYS_FLASH_SUCCESS until the last \ref CySysFlashResumeWriteRow API 
+* is complete. The CPUSS_SYSARG register will be reflecting the SRAM address 
+* during an ongoing non-blocking operation.
+* Calling this API before starting a non-blocking write row operation 
+* using the \ref CySysFlashStartWriteRow() API will cause improper operation.
 *
 * \return \ref group_flash_status_codes
 *
@@ -351,7 +347,6 @@ uint32 CySysFlashGetWriteRowStatus(void)
 
     return (retValue);
 }
-
 
 
 /*******************************************************************************
@@ -375,12 +370,12 @@ uint32 CySysFlashGetWriteRowStatus(void)
 * vector table is placed in the flash macro which is not getting programmed by
 * configuring the VTOR register.
 *
-* This API is applicable only for CCG3 device families.
+* \note The non-blocking operation does not return success status 
+* CY_SYS_FLASH_SUCCESS until the last Resume API is complete. 
+* The CPUSS_SYSARG register will be reflecting the SRAM address during an 
+* ongoing non-blocking operation.
 *
 * \return \ref group_flash_status_codes
-*
-* \note Please consult the example project NonBlockingFlashWrite_Example for an
-* implementation.
 *
 *******************************************************************************/
 uint32 CySysFlashResumeWriteRow(void)
