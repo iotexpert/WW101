@@ -116,7 +116,7 @@ int main()
     {
         /* LED processing */
         /* Green LED is driven from P0_3 (Arduino A1) */
-        GreenLED_Write(~P0_3_Read());
+        GreenLED_Write(~A1_Read());
         
         /* Red and Blue LEDs based on I2C values */
         if(i2cBuffer.RedLED) /* Turn on Red LED */
