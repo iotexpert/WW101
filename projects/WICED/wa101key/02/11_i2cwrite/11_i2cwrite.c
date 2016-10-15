@@ -1,5 +1,9 @@
 #include "wiced.h"
 
+#define I2C_ADDRESS (0x08)
+#define RETRIES (1)
+#define DISABLE_DMA (0)
+#define NUM_MESSAGES (1)
 
 volatile wiced_bool_t buttonPress = WICED_FALSE;
 
@@ -22,7 +26,7 @@ void application_start( )
     /* Setup I2C master */
     const wiced_i2c_device_t i2cDevice = {
     	.port = WICED_I2C_1,
-		.address = 0x08,
+		.address = I2C_ADDRESS,
 		.address_width = I2C_ADDRESS_WIDTH_7BIT,
 		.speed_mode = I2C_STANDARD_SPEED_MODE
     };
@@ -32,7 +36,7 @@ void application_start( )
     /* Setup transmit buffer and message */
     uint8_t tx_buffer[] = {0, redLed, blueLed};
     wiced_i2c_message_t msg;
-    wiced_i2c_init_tx_message(&msg, tx_buffer, sizeof(tx_buffer), 1, 0);
+    wiced_i2c_init_tx_message(&msg, tx_buffer, sizeof(tx_buffer), RETRIES, DISABLE_DMA);
 
     while ( 1 )
     {
@@ -45,7 +49,7 @@ void application_start( )
     		/* Send new I2C data */
     		tx_buffer[1] = redLed;
     		tx_buffer[2] = blueLed;
-    		wiced_i2c_transfer(&i2cDevice, &msg, 1);
+    		wiced_i2c_transfer(&i2cDevice, &msg, NUM_MESSAGES);
 
     		buttonPress = WICED_FALSE; /* Reset flag for next button press */
     	}
