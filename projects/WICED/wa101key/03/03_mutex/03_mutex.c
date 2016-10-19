@@ -41,7 +41,7 @@ void led2Thread(wiced_thread_arg_t arg)
 	{
 		wiced_rtos_lock_mutex(&printMutexHandle);
 		WPRINT_APP_INFO(("TOGGLE LED2\n"));
-		//wiced_rtos_unlock_mutex(&printMutexHandle);
+		wiced_rtos_unlock_mutex(&printMutexHandle);
 
 		/* Toggle LED2 */
 		if ( led2 == WICED_TRUE )
