@@ -8,7 +8,7 @@
 # written permission of Broadcom Corporation.
 #
 
-NAME := App_tcp_client_response
+NAME := App_WA101_06_01_tcp_client_response
 
 $(NAME)_SOURCES := 02_client_response.c
 
