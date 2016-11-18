@@ -97,7 +97,7 @@ static wiced_tcp_socket_t socket;
 #define INTERFACE WICED_STA_INTERFACE
 static const wiced_ip_setting_t sta_ip_settings =
 {
-    INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  1 ) ),
+    INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) ),
     INITIALISER_IPV4_ADDRESS( .netmask,    MAKE_IPV4_ADDRESS( 255,255,255,  0 ) ),
     INITIALISER_IPV4_ADDRESS( .gateway,    MAKE_IPV4_ADDRESS( 198,51,  100,  1 ) ),
 };
@@ -119,7 +119,7 @@ void application_start(void)
     wiced_init( );
 
 #ifdef USE_STA
-    wiced_network_up( INTERFACE, WICED_USE_STATIC_IP, &ap_ip_settings );
+    wiced_network_up( INTERFACE, WICED_USE_STATIC_IP, &sta_ip_settings );
 #else
     wiced_network_up( WICED_AP_INTERFACE, WICED_USE_INTERNAL_DHCP_SERVER, &ap_ip_settings );
 #endif
@@ -147,8 +147,15 @@ static void tcp_server_thread_main(uint32_t arg)
 
     // setup the server by creating the socket and hooking it to the correct TCP Port
 	result = wiced_tcp_create_socket(&socket, INTERFACE);
+	if(WICED_SUCCESS != result)
+	{
+		WPRINT_APP_INFO(("Create socket failed\n"));
+	}
 	result = wiced_tcp_listen( &socket, TCP_SERVER_LISTEN_PORT );
-
+	if(WICED_SUCCESS != result)
+	{
+		WPRINT_APP_INFO(("Listen socket failed\n"));
+	}
 	WPRINT_APP_INFO(("IP\t\tPort\tC\tDEVICE\tREGID\tVALUE\tDBSIZE\n"));
 	WPRINT_APP_INFO(("----------------------------------------------------------------------\n"));
 
