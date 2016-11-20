@@ -61,6 +61,11 @@ void changeNetwork(const char *ssid,const char * passkey,wiced_security_t securi
 }
 
 
+inline void printInstructions()
+{
+	WPRINT_APP_INFO(("0: Set network to WA101WPA\n1: Set network to WA101OPEN\n? Commands\np Print Current DCT\n"));
+
+}
 
 void application_start( void )
 {
@@ -71,6 +76,7 @@ void application_start( void )
     uint32_t expected_data_size = 1;
 	wiced_init();	/* Initialize the WICED device */
 
+	printInstructions();
     while ( 1 )
     {
     	wiced_uart_receive_bytes( STDIO_UART, &receiveChar, &expected_data_size, WICED_NEVER_TIMEOUT );
@@ -85,6 +91,10 @@ void application_start( void )
         case 'p':
         	printNetworkDCT();
         	break;
+        case '?':
+        	printInstructions();
+        	break;
+
         }
 
     }

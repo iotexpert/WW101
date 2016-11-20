@@ -8,7 +8,7 @@
 # written permission of Broadcom Corporation.
 #
 
-NAME := App_02_Attach
+NAME := App_05_02_Attach
 
 $(NAME)_SOURCES := 02_attach_wpa2.c
 

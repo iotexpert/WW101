@@ -8,7 +8,7 @@
 # written permission of Broadcom Corporation.
 #
 
-NAME := App_01_Attach
+NAME := App_05_01_Attach
 
 $(NAME)_SOURCES := 01_attach_open.c
 
