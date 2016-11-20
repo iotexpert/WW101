@@ -8,8 +8,8 @@
 # written permission of Broadcom Corporation.
 #
 
-NAME := App_01_Attach
+NAME := App_05_04_Attach_Switch
 
-$(NAME)_SOURCES := 01_attach.c
+$(NAME)_SOURCES := 04_attach_switch.c
 
 WIFI_CONFIG_DCT_H := wifi_config_dct.h

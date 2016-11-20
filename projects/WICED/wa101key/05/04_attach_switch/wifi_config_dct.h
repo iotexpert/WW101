@@ -14,11 +14,13 @@
 
 /* This is the default AP the device will connect to (as a client)*/
 
-#define CLIENT_AP_SSID       "test24"
-#define CLIENT_AP_PASSPHRASE "12345678"
-
+#define CLIENT_AP_SSID       "creek"
+#define CLIENT_AP_PASSPHRASE "nicholas03"
+#define CLIENT_AP_SECURITY   WICED_SECURITY_WPA_MIXED_PSK
+//#define CLIENT_AP_SSID       "Guest"
+//#define CLIENT_AP_PASSPHRASE ""
+//#define CLIENT_AP_SECURITY   WICED_SECURITY_OPEN
 #define CLIENT_AP_BSS_TYPE   WICED_BSS_TYPE_INFRASTRUCTURE
-#define CLIENT_AP_SECURITY   WICED_SECURITY_WPA2_MIXED_PSK
 #define CLIENT_AP_CHANNEL    7
 #define CLIENT_AP_BAND       WICED_802_11_BAND_2_4GHZ
 
