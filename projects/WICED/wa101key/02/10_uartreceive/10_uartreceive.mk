@@ -8,7 +8,7 @@
 # written permission of Broadcom Corporation.
 #
 
-NAME := App_10_UartReceive
+NAME := App_WA101_02_10_uartreceive
 
 $(NAME)_SOURCES := 10_uartreceive.c
 
