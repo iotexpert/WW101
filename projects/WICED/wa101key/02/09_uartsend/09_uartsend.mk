@@ -8,7 +8,7 @@
 # written permission of Broadcom Corporation.
 #
 
-NAME := App_09_UartSend
+NAME := App_WA101_02_09_uartsend
 
 $(NAME)_SOURCES := 09_uartsend.c
 

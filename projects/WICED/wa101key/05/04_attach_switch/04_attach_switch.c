@@ -9,7 +9,7 @@
 void printNetworkDCT()
 {
 	platform_dct_wifi_config_t*     dct_wifi_config          = NULL;
-	wiced_dct_read_lock( (void**) &dct_wifi_config, WICED_FALSE, DCT_WIFI_CONFIG_SECTION, 0, sizeof( *dct_wifi_config ) );
+	wiced_dct_read_lock( (void**) &dct_wifi_config, WICED_FALSE, DCT_WIFI_CONFIG_SECTION, 0, sizeof( platform_dct_wifi_config_t ) );
 
 	WPRINT_APP_INFO(("SSID = %s\n",dct_wifi_config->stored_ap_list[0].details.SSID.value));
 	WPRINT_APP_INFO(("SSID Length = %d\n",dct_wifi_config->stored_ap_list[0].details.SSID.length));
