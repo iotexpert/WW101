@@ -29,14 +29,14 @@ extern "C"
 #define CONFIG_AP_PASSPHRASE "12345678"
 
 /* This is the soft AP available for normal operation (if used)*/
-#define SOFT_AP_SSID         "WA101WPA"
+#define SOFT_AP_SSID         "wa1"
 #define SOFT_AP_CHANNEL      1
 #define SOFT_AP_SECURITY     WICED_SECURITY_WPA2_AES_PSK
 #define SOFT_AP_PASSPHRASE   "kywpa123"
 
 /* This is the default AP the device will connect to (as a client)*/
-#define CLIENT_AP_SSID       "CYFI-BAK"
-#define CLIENT_AP_PASSPHRASE "WF7YzSnw"
+#define CLIENT_AP_SSID       "WA101WPA"
+#define CLIENT_AP_PASSPHRASE "kywpa123"
 #define CLIENT_AP_BSS_TYPE   WICED_BSS_TYPE_INFRASTRUCTURE
 #define CLIENT_AP_SECURITY   WICED_SECURITY_WPA2_MIXED_PSK
 #define CLIENT_AP_CHANNEL    1

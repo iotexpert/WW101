@@ -8,9 +8,9 @@
 # written permission of Broadcom Corporation.
 #
 
-NAME := App_WA101_06_03_tcp_server
+NAME := App_WA101_06_04_server
 
-$(NAME)_SOURCES := 03_server.c
+$(NAME)_SOURCES := 04_server.c
 
 #GLOBAL_DEFINES     += RX_PACKET_POOL_SIZE=6
 #GLOBAL_DEFINES     += TX_PACKET_POOL_SIZE=6
