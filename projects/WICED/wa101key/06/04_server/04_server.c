@@ -105,7 +105,7 @@ static const wiced_ip_setting_t sta_ip_settings =
 // could be a soft AP or a station.  To make it a station uncomment the #define USE_STA
 //
 
-//#define USE_STA
+#define USE_STA
 
 #ifdef USE_STA
 #define INTERFACE WICED_STA_INTERFACE
