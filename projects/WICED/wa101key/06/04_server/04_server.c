@@ -87,14 +87,9 @@ static void tcp_server_thread_main(uint32_t arg);
 static wiced_thread_t      tcp_thread;
 static wiced_tcp_socket_t socket;
 
-static const wiced_ip_setting_t ap_ip_settings =
-{
-		INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) ),
-		INITIALISER_IPV4_ADDRESS( .netmask,    MAKE_IPV4_ADDRESS( 255,255,255,  0 ) ),
-		INITIALISER_IPV4_ADDRESS( .gateway,    MAKE_IPV4_ADDRESS( 198,51,  100,  1 ) ),
-};
 
-static const wiced_ip_setting_t sta_ip_settings =
+
+static const wiced_ip_setting_t ip_settings =
 {
 		INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) ),
 		INITIALISER_IPV4_ADDRESS( .netmask,    MAKE_IPV4_ADDRESS( 255,255,255,  0 ) ),
@@ -121,7 +116,7 @@ void application_start(void)
 
 	wiced_init( );
 
-	wiced_network_up( INTERFACE, DHCP_MODE, &sta_ip_settings );
+	wiced_network_up( INTERFACE, DHCP_MODE, &ip_settings );
 
 	// I created all of the server code in a separate thread to make it easier to put the server
 	// and client together in one application.
@@ -176,98 +171,80 @@ static void tcp_server_thread_main(uint32_t arg)
 		uint16_t        available_data_length;
 		wiced_packet_t* temp_packet = NULL;
 
-		wiced_bool_t validConnection = WICED_TRUE;
-		while(validConnection)
+
+		if(wiced_tcp_receive( &socket, &temp_packet, 500 ) == WICED_SUCCESS) // get the data from the client
 		{
-			if(wiced_tcp_receive( &socket, &temp_packet, 500 ) == WICED_SUCCESS) // get the data from the client
+			char *rbuffer;
+			dbEntry_t receive;
+			char commandId;
+			int err=1;
+			char returnMessage[15];
+
+			// get the pointer to the packet sent by the client and the data
+			wiced_packet_get_data( temp_packet, 0, (uint8_t**) &rbuffer, &request_length, &available_data_length );
+			sscanf(rbuffer,"%c%4x%2x%4x",&commandId,(unsigned int *)&receive.deviceId,(unsigned int *)&receive.regId,(unsigned int *)&receive.value);
+			wiced_packet_delete( temp_packet ); // free the packet
+
+			if(request_length >= 11 && request_length <= 13  ) //11 if no end 12 if CR 13 if CRLF
 			{
-				char *rbuffer;
-				dbEntry_t receive;
-				char commandId;
-				int err=1;
-				char returnMessage[15];
-
-				// get the pointer to the packet sent by the client and the data
-				wiced_packet_get_data( temp_packet, 0, (uint8_t**) &rbuffer, &request_length, &available_data_length );
-				sscanf(rbuffer,"%c%4x%2x%4x",&commandId,(unsigned int *)&receive.deviceId,(unsigned int *)&receive.regId,(unsigned int *)&receive.value);
-				wiced_packet_delete( temp_packet ); // free the packet
-
-				if(request_length >= 11 && request_length <= 13  ) //11 if no end 12 if CR 13 if CRLF
+				dbEntry_t *newDbEntry;
+				switch(commandId)
 				{
-					dbEntry_t *newDbEntry;
-					switch(commandId)
+				case 'R': // they sent a Read command
+					newDbEntry = dbFind(&receive); // look through the database to find a previous write of the deviceId/regId
+					if(newDbEntry)
 					{
-					case 'R': // they sent a Read command
-						newDbEntry = dbFind(&receive); // look through the database to find a previous write of the deviceId/regId
-						if(newDbEntry)
-						{
-							err=0;
-							sprintf(returnMessage,"A%04X%02X%04X",(unsigned int)newDbEntry->deviceId,(unsigned int)newDbEntry->regId,(unsigned int)newDbEntry->value);
-						}
-						else
-							err = 1;
-						break;
-					case 'W': // they sent a Write command
-						sprintf(returnMessage,"A%04X%02X%04X",(unsigned int)receive.deviceId,(unsigned int)receive.regId,(unsigned int)receive.value);
-						dbEntry_t *newDB;
-						newDB = malloc(sizeof(dbEntry_t)); // make a new entry to put in the database
-						memcpy(newDB,&receive,sizeof(dbEntry_t)); // copy the received data into the new entry
-						dbSetValue(newDB); // save it.
-						err = 0;
-						break;
-					default: // if they don't send a legal command then it is an error
-						err = 1;
-						break;
+						err=0;
+						sprintf(returnMessage,"A%04X%02X%04X",(unsigned int)newDbEntry->deviceId,(unsigned int)newDbEntry->regId,(unsigned int)newDbEntry->value);
 					}
+					else
+						err = 1;
+					break;
+				case 'W': // they sent a Write command
+					sprintf(returnMessage,"A%04X%02X%04X",(unsigned int)receive.deviceId,(unsigned int)receive.regId,(unsigned int)receive.value);
+					dbEntry_t *newDB;
+					newDB = malloc(sizeof(dbEntry_t)); // make a new entry to put in the database
+					memcpy(newDB,&receive,sizeof(dbEntry_t)); // copy the received data into the new entry
+					dbSetValue(newDB); // save it.
+					err = 0;
+					break;
+				default: // if they don't send a legal command then it is an error
+					err = 1;
+					break;
 				}
-
-
-				WPRINT_APP_INFO(("%u.%u.%u.%u\t",
-								(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 24),
-								(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 16),
-								(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 8),
-								(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 0)));
-
-				WPRINT_APP_INFO(("%d\t",peerPort));
-				if(err)
-				{
-					strcpy(returnMessage,"X");
-					WPRINT_APP_INFO(("X length=%d\n",available_data_length));
-				}
-				else
-				{
-					uint32_t count;
-					linked_list_get_count(&db,&count);
-					WPRINT_APP_INFO(("%c\t%4X\t%2X\t%4X\t%d\n",commandId,(unsigned int)receive.deviceId,(unsigned int)receive.regId,(unsigned int)receive.value,(int)count));
-				}
-
-				// send response packet
-				wiced_packet_t* tx_packet;
-				uint8_t *tx_data;
-				wiced_packet_create_tcp(&socket, strlen(returnMessage), &tx_packet, (uint8_t**)&tx_data, &available_data_length);
-				memcpy(tx_data, returnMessage, strlen(returnMessage));
-				wiced_packet_set_data_end(tx_packet, (uint8_t*)&tx_data[strlen(returnMessage)]);
-				wiced_tcp_send_packet(&socket, tx_packet);
-				wiced_packet_delete(tx_packet);
-
-
 			}
-			else // find out if the socket is still open
+
+
+			WPRINT_APP_INFO(("%u.%u.%u.%u\t",
+					(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 24),
+					(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 16),
+					(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 8),
+					(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 0)));
+
+			WPRINT_APP_INFO(("%d\t",peerPort));
+			if(err)
 			{
-				wiced_socket_state_t rval;
-				wiced_tcp_get_socket_state(&socket,&rval);
-
-				switch(rval)
-				{
-				case WICED_SOCKET_CLOSED: 		validConnection = WICED_FALSE;  break;
-				case WICED_SOCKET_CLOSING: 		validConnection = WICED_FALSE;  break;
-				case WICED_SOCKET_CONNECTING: 	validConnection = WICED_TRUE;  break; // I dont think that this state is possible
-				case WICED_SOCKET_CONNECTED: 	validConnection = WICED_TRUE;  break;
-				case WICED_SOCKET_DATA_PENDING:	validConnection = WICED_TRUE;  break; // I dont think that this state is possible
-				case WICED_SOCKET_LISTEN: 		validConnection = WICED_FALSE; break; // I dont think that this state is possible
-				case WICED_SOCKET_ERROR: 		validConnection = WICED_FALSE; break; // I dont know what would cause this state
-				}
+				strcpy(returnMessage,"X");
+				WPRINT_APP_INFO(("X length=%d\n",available_data_length));
 			}
+			else
+			{
+				uint32_t count;
+				linked_list_get_count(&db,&count);
+				WPRINT_APP_INFO(("%c\t%4X\t%2X\t%4X\t%d\n",commandId,(unsigned int)receive.deviceId,(unsigned int)receive.regId,(unsigned int)receive.value,(int)count));
+			}
+
+			// send response packet
+			wiced_packet_t* tx_packet;
+			uint8_t *tx_data;
+			wiced_packet_create_tcp(&socket, strlen(returnMessage), &tx_packet, (uint8_t**)&tx_data, &available_data_length);
+			memcpy(tx_data, returnMessage, strlen(returnMessage));
+			wiced_packet_set_data_end(tx_packet, (uint8_t*)&tx_data[strlen(returnMessage)]);
+			wiced_tcp_send_packet(&socket, tx_packet);
+			wiced_packet_delete(tx_packet);
+
+			wiced_tcp_disconnect(&socket); // disconnect the connection
+
 		}
 
 	}

@@ -271,6 +271,7 @@ static wiced_result_t received_data_callback( wiced_tcp_socket_t* socket, void* 
 		wiced_tcp_send_packet(socket, tx_packet);
 		wiced_packet_delete(tx_packet);
 
+		wiced_tcp_server_disconnect(&tcp_server,socket);
 	}
     return WICED_SUCCESS;
 }
