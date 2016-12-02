@@ -90,14 +90,8 @@ static void tcp_server_thread_main(uint32_t arg);
 static wiced_thread_t      tcp_thread;
 static wiced_tcp_socket_t socket;
 
-static const wiced_ip_setting_t ap_ip_settings =
-{
-		INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) ),
-		INITIALISER_IPV4_ADDRESS( .netmask,    MAKE_IPV4_ADDRESS( 255,255,255,  0 ) ),
-		INITIALISER_IPV4_ADDRESS( .gateway,    MAKE_IPV4_ADDRESS( 198,51,  100,  1 ) ),
-};
 
-static const wiced_ip_setting_t sta_ip_settings =
+static const wiced_ip_setting_t ip_settings =
 {
 		INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) ),
 		INITIALISER_IPV4_ADDRESS( .netmask,    MAKE_IPV4_ADDRESS( 255,255,255,  0 ) ),
@@ -124,7 +118,7 @@ void application_start(void)
 
 	wiced_init( );
 
-	wiced_network_up( INTERFACE, DHCP_MODE, &sta_ip_settings );
+	wiced_network_up( INTERFACE, DHCP_MODE, &ip_settings );
 
 	// I created all of the server code in a separate thread to make it easier to put the server
 	// and client together in one application.
@@ -270,6 +264,7 @@ static wiced_result_t received_data_callback( wiced_tcp_socket_t* socket, void* 
 		wiced_tcp_send_packet(socket, tx_packet);
 		wiced_packet_delete(tx_packet);
 
+		wiced_tcp_disconnect(socket);
 	}
     return WICED_SUCCESS;
 }
