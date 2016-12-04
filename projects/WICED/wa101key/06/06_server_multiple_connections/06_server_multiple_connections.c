@@ -89,14 +89,7 @@ void dbSetValue(dbEntry_t *newValue)
 static void tcp_server_thread_main(uint32_t arg);
 static wiced_thread_t      tcp_thread;
 
-static const wiced_ip_setting_t ap_ip_settings =
-{
-		INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) ),
-		INITIALISER_IPV4_ADDRESS( .netmask,    MAKE_IPV4_ADDRESS( 255,255,255,  0 ) ),
-		INITIALISER_IPV4_ADDRESS( .gateway,    MAKE_IPV4_ADDRESS( 198,51,  100,  1 ) ),
-};
-
-static const wiced_ip_setting_t sta_ip_settings =
+static const wiced_ip_setting_t ip_settings =
 {
 		INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) ),
 		INITIALISER_IPV4_ADDRESS( .netmask,    MAKE_IPV4_ADDRESS( 255,255,255,  0 ) ),
@@ -107,7 +100,7 @@ static const wiced_ip_setting_t sta_ip_settings =
 // could be a soft AP or a station.  To make it a station uncomment the #define USE_STA
 //
 
-#define USE_STA
+//#define USE_STA
 
 #ifdef USE_STA
 #define INTERFACE WICED_STA_INTERFACE
@@ -123,7 +116,7 @@ void application_start(void)
 
 	wiced_init( );
 
-	wiced_network_up( INTERFACE, DHCP_MODE, &sta_ip_settings );
+	wiced_network_up( INTERFACE, DHCP_MODE, &ip_settings );
 
 	// I created all of the server code in a separate thread to make it easier to put the server
 	// and client together in one application.
@@ -134,60 +127,122 @@ void application_start(void)
 
 wiced_tcp_server_t tcp_server;
 
+void printStatus()
+{
+
+	linked_list_node_t* current;
+
+	linked_list_get_front_node( &tcp_server.socket_list, &current);
+
+	while(current)
+	{
+		wiced_tcp_socket_t *socket;
+
+		wiced_tcp_server_socket_t *serverSocket;
+		serverSocket = (wiced_tcp_server_socket_t *) current->data;
+		socket = &serverSocket->socket;
+
+
+		wiced_socket_state_t ss;
+		wiced_tcp_get_socket_state( socket, &ss);
+
+		switch(ss)
+		{
+		case WICED_SOCKET_CLOSED: WPRINT_APP_INFO(("Status:closed\n")); break;
+		case   WICED_SOCKET_CLOSING: WPRINT_APP_INFO(("Status:closing\n")); break;
+		case   WICED_SOCKET_CONNECTING: WPRINT_APP_INFO(("Status:connecting\n")); break;
+		case   WICED_SOCKET_CONNECTED: WPRINT_APP_INFO(("Status:connected\n")); break;
+		case   WICED_SOCKET_DATA_PENDING: WPRINT_APP_INFO(("Status:data pending\n")); break;
+		case   WICED_SOCKET_LISTEN: WPRINT_APP_INFO(("Status:listen\n")); break;
+		case   WICED_SOCKET_ERROR: WPRINT_APP_INFO(("Status:error\n")); break;
+		}
+
+		current = current->next;
+	}
+
+}
 
 static void tcp_server_thread_main(uint32_t arg)
 {
 
-	wiced_result_t result;
 
+	// 5 Connections maximum at a time
 	wiced_tcp_server_start(&tcp_server,INTERFACE,TCP_SERVER_LISTEN_PORT,5, client_connected_callback, received_data_callback, client_disconnected_callback, NULL );
 
 	WPRINT_APP_INFO(("IP\t\tPort\tC\tDEVICE\tREGID\tVALUE\tDBSIZE\n"));
 	WPRINT_APP_INFO(("----------------------------------------------------------------------\n"));
 
-	// just blink the led while the whole thing is running
+	char receiveChar;
+	uint32_t expected_data_size=1;
+
 	while(1)
 	{
-		wiced_gpio_output_low( WICED_LED1 );
-		wiced_rtos_delay_milliseconds( 250 );
-		wiced_gpio_output_high( WICED_LED1 );
-		wiced_rtos_delay_milliseconds( 250 );
-	}
+		wiced_uart_receive_bytes( STDIO_UART, &receiveChar, &expected_data_size, WICED_NEVER_TIMEOUT );
+		switch(receiveChar)
+		{
+		case 'p':
+			printStatus();
+			break;
+		case '?':
+			WPRINT_APP_INFO(("p: print status of server sockets\n"));
+			break;
 
+		}
+	}
 }
+
 
 
 static wiced_result_t client_connected_callback( wiced_tcp_socket_t* socket, void* arg )
 {
 
-    UNUSED_PARAMETER( arg );
+	UNUSED_PARAMETER( arg );
 
-
-    WPRINT_APP_INFO(("Client connected\n"));
-    /* Accept connection request */
-    wiced_result_t result;
-    result = wiced_tcp_server_accept( 	&tcp_server, socket );
-    if( result == WICED_SUCCESS )
-    {
-        return WICED_SUCCESS;
-    }
-    return WICED_ERROR;
+	/* Accept connection request */
+	wiced_result_t result;
+	result = wiced_tcp_server_accept( 	&tcp_server, socket );
+	if( result == WICED_SUCCESS )
+	{
+		return WICED_SUCCESS;
+	}
+	return WICED_ERROR;
 }
 
 static wiced_result_t client_disconnected_callback( wiced_tcp_socket_t* socket, void* arg )
 {
-    UNUSED_PARAMETER( arg );
+	UNUSED_PARAMETER( arg );
 
-    wiced_tcp_disconnect(socket);
-    /* Start listening on the socket again */
-    if ( wiced_tcp_listen( socket, TCP_SERVER_LISTEN_PORT ) != WICED_SUCCESS )
+	// There are two ways to get here
+	// 1. You disconnected the socket ... then this calls back for you to listen again (WICED_SOCKET_CLOSED)
+	// 2. The client disconnected (in which case the state is WICED_SOCKET_CLOSING
+
+	wiced_socket_state_t ss;
+	wiced_tcp_get_socket_state( socket, &ss);
+
+	/*
+ // Debug prints
+    switch(ss)
     {
-        WPRINT_APP_INFO( ("TCP server socket re-initialization failed\r\n") );
-        wiced_tcp_delete_socket( socket );
-        return WICED_ERROR;
+    case WICED_SOCKET_CLOSED: WPRINT_APP_INFO(("closed\n")); break;
+    case   WICED_SOCKET_CLOSING: WPRINT_APP_INFO(("closing\n")); break;
+    case   WICED_SOCKET_CONNECTING: WPRINT_APP_INFO(("connecting\n")); break;
+    case   WICED_SOCKET_CONNECTED: WPRINT_APP_INFO(("connected\n")); break;
+    case   WICED_SOCKET_DATA_PENDING: WPRINT_APP_INFO(("data pending\n")); break;
+    case   WICED_SOCKET_LISTEN: WPRINT_APP_INFO(("listen\n")); break;
+    case   WICED_SOCKET_ERROR: WPRINT_APP_INFO(("error\n")); break;
     }
+	 */
 
-    return WICED_SUCCESS;
+
+	if(ss == WICED_SOCKET_CLOSED)
+	{
+		wiced_tcp_listen( socket, TCP_SERVER_LISTEN_PORT );
+		return WICED_SUCCESS;
+	}
+
+	wiced_tcp_disconnect(socket);
+
+	return WICED_SUCCESS;
 }
 
 static wiced_result_t received_data_callback( wiced_tcp_socket_t* socket, void* arg )
@@ -239,15 +294,15 @@ static wiced_result_t received_data_callback( wiced_tcp_socket_t* socket, void* 
 			}
 		}
 
-	    wiced_ip_address_t peerAddress;
-	    uint16_t	peerPort;
-    	wiced_tcp_server_peer(socket,&peerAddress,&peerPort);
+		wiced_ip_address_t peerAddress;
+		uint16_t	peerPort;
+		wiced_tcp_server_peer(socket,&peerAddress,&peerPort);
 
 		WPRINT_APP_INFO(("%u.%u.%u.%u\t",
-						(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 24),
-						(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 16),
-						(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 8),
-						(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 0)));
+				(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 24),
+				(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 16),
+				(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 8),
+				(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 0)));
 
 		WPRINT_APP_INFO(("%d\t",peerPort));
 		if(err)
@@ -271,8 +326,9 @@ static wiced_result_t received_data_callback( wiced_tcp_socket_t* socket, void* 
 		wiced_tcp_send_packet(socket, tx_packet);
 		wiced_packet_delete(tx_packet);
 
-		wiced_tcp_server_disconnect(&tcp_server,socket);
+		wiced_tcp_server_disconnect_socket(&tcp_server,socket);
+
 	}
-    return WICED_SUCCESS;
+	return WICED_SUCCESS;
 }
 
