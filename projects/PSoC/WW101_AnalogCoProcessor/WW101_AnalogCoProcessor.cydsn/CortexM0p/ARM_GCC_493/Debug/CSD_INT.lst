@@ -1,0 +1,3275 @@
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"CSD_INT.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.CSD_CSDPostSingleScan,"ax",%progbits
+  18              		.align	2
+  19              		.global	CSD_CSDPostSingleScan
+  20              		.code	16
+  21              		.thumb_func
+  22              		.type	CSD_CSDPostSingleScan, %function
+  23              	CSD_CSDPostSingleScan:
+  24              	.LFB1:
+  25              		.file 1 "Generated_Source\\PSoC4\\CSD_INT.c"
+   1:Generated_Source\PSoC4/CSD_INT.c **** /***************************************************************************//**
+   2:Generated_Source\PSoC4/CSD_INT.c **** * \file CSD_INT.c
+   3:Generated_Source\PSoC4/CSD_INT.c **** * \version 3.10
+   4:Generated_Source\PSoC4/CSD_INT.c **** *
+   5:Generated_Source\PSoC4/CSD_INT.c **** * \brief
+   6:Generated_Source\PSoC4/CSD_INT.c **** *   This file contains the source code for implementation of the CapSense component
+   7:Generated_Source\PSoC4/CSD_INT.c **** *   Interrupt Service Routine (ISR).
+   8:Generated_Source\PSoC4/CSD_INT.c **** *
+   9:Generated_Source\PSoC4/CSD_INT.c **** * \see CapSense P4 v3.10 Datasheet
+  10:Generated_Source\PSoC4/CSD_INT.c **** *
+  11:Generated_Source\PSoC4/CSD_INT.c **** *//*****************************************************************************
+  12:Generated_Source\PSoC4/CSD_INT.c **** * Copyright (2016), Cypress Semiconductor Corporation.
+  13:Generated_Source\PSoC4/CSD_INT.c **** ********************************************************************************
+  14:Generated_Source\PSoC4/CSD_INT.c **** * This software is owned by Cypress Semiconductor Corporation (Cypress) and is
+  15:Generated_Source\PSoC4/CSD_INT.c **** * protected by and subject to worldwide patent protection (United States and
+  16:Generated_Source\PSoC4/CSD_INT.c **** * foreign), United States copyright laws and international treaty provisions.
+  17:Generated_Source\PSoC4/CSD_INT.c **** * Cypress hereby grants to licensee a personal, non-exclusive, non-transferable
+  18:Generated_Source\PSoC4/CSD_INT.c **** * license to copy, use, modify, create derivative works of, and compile the
+  19:Generated_Source\PSoC4/CSD_INT.c **** * Cypress Source Code and derivative works for the sole purpose of creating
+  20:Generated_Source\PSoC4/CSD_INT.c **** * custom software in support of licensee product to be used only in conjunction
+  21:Generated_Source\PSoC4/CSD_INT.c **** * with a Cypress integrated circuit as specified in the applicable agreement.
+  22:Generated_Source\PSoC4/CSD_INT.c **** * Any reproduction, modification, translation, compilation, or representation of
+  23:Generated_Source\PSoC4/CSD_INT.c **** * this software except as specified above is prohibited without the express
+  24:Generated_Source\PSoC4/CSD_INT.c **** * written permission of Cypress.
+  25:Generated_Source\PSoC4/CSD_INT.c **** *
+  26:Generated_Source\PSoC4/CSD_INT.c **** * Disclaimer: CYPRESS MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH
+  27:Generated_Source\PSoC4/CSD_INT.c **** * REGARD TO THIS MATERIAL, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  28:Generated_Source\PSoC4/CSD_INT.c **** * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  29:Generated_Source\PSoC4/CSD_INT.c **** * Cypress reserves the right to make changes without further notice to the
+  30:Generated_Source\PSoC4/CSD_INT.c **** * materials described herein. Cypress does not assume any liability arising out
+  31:Generated_Source\PSoC4/CSD_INT.c **** * of the application or use of any product or circuit described herein. Cypress
+  32:Generated_Source\PSoC4/CSD_INT.c **** * does not authorize its products for use as critical components in life-support
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 2
+
+
+  33:Generated_Source\PSoC4/CSD_INT.c **** * systems where a malfunction or failure may reasonably be expected to result in
+  34:Generated_Source\PSoC4/CSD_INT.c **** * significant injury to the user. The inclusion of Cypress' product in a life-
+  35:Generated_Source\PSoC4/CSD_INT.c **** * support systems application implies that the manufacturer assumes all risk of
+  36:Generated_Source\PSoC4/CSD_INT.c **** * such use and in doing so indemnifies Cypress against all charges. Use may be
+  37:Generated_Source\PSoC4/CSD_INT.c **** * limited by and subject to the applicable Cypress software license agreement.
+  38:Generated_Source\PSoC4/CSD_INT.c **** *******************************************************************************/
+  39:Generated_Source\PSoC4/CSD_INT.c **** #include "cytypes.h"
+  40:Generated_Source\PSoC4/CSD_INT.c **** #include "cyfitter.h"
+  41:Generated_Source\PSoC4/CSD_INT.c **** #include "CSD_Configuration.h"
+  42:Generated_Source\PSoC4/CSD_INT.c **** #include "CSD_Sensing.h"
+  43:Generated_Source\PSoC4/CSD_INT.c **** 
+  44:Generated_Source\PSoC4/CSD_INT.c **** 
+  45:Generated_Source\PSoC4/CSD_INT.c **** /*******************************************************************************
+  46:Generated_Source\PSoC4/CSD_INT.c **** * Static Function Prototypes
+  47:Generated_Source\PSoC4/CSD_INT.c **** *******************************************************************************/
+  48:Generated_Source\PSoC4/CSD_INT.c **** /**
+  49:Generated_Source\PSoC4/CSD_INT.c **** * \if SECTION_CAPSENSE_INTERNAL
+  50:Generated_Source\PSoC4/CSD_INT.c **** * \addtogroup group_capsense_internal
+  51:Generated_Source\PSoC4/CSD_INT.c **** * \{
+  52:Generated_Source\PSoC4/CSD_INT.c **** */
+  53:Generated_Source\PSoC4/CSD_INT.c **** 
+  54:Generated_Source\PSoC4/CSD_INT.c **** #if (((CSD_ENABLE == CSD_CSD_EN) || (CSD_ENABLE == CSD_CSD_CSX_EN)) && \
+  55:Generated_Source\PSoC4/CSD_INT.c ****      (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN))
+  56:Generated_Source\PSoC4/CSD_INT.c ****     static void CSD_SsNextFrequencyScan(void);
+  57:Generated_Source\PSoC4/CSD_INT.c **** #endif /* (((CSD_ENABLE == CSD_CSD_EN) || (CSD_ENABLE == CSD_CSD_CSX_EN)) && \
+  58:Generated_Source\PSoC4/CSD_INT.c ****             (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)) */
+  59:Generated_Source\PSoC4/CSD_INT.c **** 
+  60:Generated_Source\PSoC4/CSD_INT.c **** #if ((CSD_ENABLE == CSD_CSD_EN) || (CSD_ENABLE == CSD_CSD_CSX_EN))
+  61:Generated_Source\PSoC4/CSD_INT.c ****     CY_INLINE static void CSD_SsCSDPostScan(void);
+  62:Generated_Source\PSoC4/CSD_INT.c ****     CY_INLINE static void CSD_SsCSDInitNextScan(void);
+  63:Generated_Source\PSoC4/CSD_INT.c **** #endif /* ((CSD_ENABLE == CSD_CSD_EN) || (CSD_ENABLE == CSD_CSD_CSX_EN)) */ 
+  64:Generated_Source\PSoC4/CSD_INT.c **** 
+  65:Generated_Source\PSoC4/CSD_INT.c **** #if (CSD_ENABLE == CSD_CSD2X_EN)
+  66:Generated_Source\PSoC4/CSD_INT.c ****     #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+  67:Generated_Source\PSoC4/CSD_INT.c ****         CY_INLINE static void CSD_SsCSD2XCheckNextScan(void);
+  68:Generated_Source\PSoC4/CSD_INT.c ****         static void CSD_SsCSD2XNextFrequencyScan(void);
+  69:Generated_Source\PSoC4/CSD_INT.c ****     #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+  70:Generated_Source\PSoC4/CSD_INT.c ****     CY_INLINE static void CSD_SsCSD2XInitNextScan(void);
+  71:Generated_Source\PSoC4/CSD_INT.c **** #endif /* (CSD_ENABLE == CSD_CSD2X_EN) */
+  72:Generated_Source\PSoC4/CSD_INT.c **** 
+  73:Generated_Source\PSoC4/CSD_INT.c ****    
+  74:Generated_Source\PSoC4/CSD_INT.c **** /** \}
+  75:Generated_Source\PSoC4/CSD_INT.c **** * \endif */
+  76:Generated_Source\PSoC4/CSD_INT.c **** 
+  77:Generated_Source\PSoC4/CSD_INT.c **** 
+  78:Generated_Source\PSoC4/CSD_INT.c **** /**
+  79:Generated_Source\PSoC4/CSD_INT.c **** * \if SECTION_CAPSENSE_INTERRUPT
+  80:Generated_Source\PSoC4/CSD_INT.c **** * \addtogroup group_capsense_interrupt
+  81:Generated_Source\PSoC4/CSD_INT.c **** * \{
+  82:Generated_Source\PSoC4/CSD_INT.c **** */
+  83:Generated_Source\PSoC4/CSD_INT.c **** 
+  84:Generated_Source\PSoC4/CSD_INT.c **** 
+  85:Generated_Source\PSoC4/CSD_INT.c **** #if ((CSD_ENABLE == CSD_CSD_EN) || (CSD_ENABLE == CSD_CSD_CSX_EN))
+  86:Generated_Source\PSoC4/CSD_INT.c **** 
+  87:Generated_Source\PSoC4/CSD_INT.c **** #if (CSD_ENABLE == CSD_CSDV2)
+  88:Generated_Source\PSoC4/CSD_INT.c ****     /*  CSDv2 HW IP block part */
+  89:Generated_Source\PSoC4/CSD_INT.c **** 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 3
+
+
+  90:Generated_Source\PSoC4/CSD_INT.c ****     /*******************************************************************************
+  91:Generated_Source\PSoC4/CSD_INT.c ****     * Function Name: CSD_CSDPostSingleScan
+  92:Generated_Source\PSoC4/CSD_INT.c ****     ****************************************************************************//**
+  93:Generated_Source\PSoC4/CSD_INT.c ****     *
+  94:Generated_Source\PSoC4/CSD_INT.c ****     * \brief
+  95:Generated_Source\PSoC4/CSD_INT.c ****     *  This is an internal ISR function for single-sensor scanning implementation.
+  96:Generated_Source\PSoC4/CSD_INT.c ****     *
+  97:Generated_Source\PSoC4/CSD_INT.c ****     * \details
+  98:Generated_Source\PSoC4/CSD_INT.c ****     *  This ISR handler is triggered when the user calls the
+  99:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_CSDScanExt() function.
+ 100:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 101:Generated_Source\PSoC4/CSD_INT.c ****     *  The following tasks are performed for CSDv1 HW IP block:
+ 102:Generated_Source\PSoC4/CSD_INT.c ****     *    1. Disable the CSD interrupt
+ 103:Generated_Source\PSoC4/CSD_INT.c ****     *    2. Read the Counter register and update the data structure with raw data
+ 104:Generated_Source\PSoC4/CSD_INT.c ****     *    3. Connect the Vref buffer to the AMUX bus
+ 105:Generated_Source\PSoC4/CSD_INT.c ****     *    4. Update the Scan Counter
+ 106:Generated_Source\PSoC4/CSD_INT.c ****     *    5. Reset the BUSY flag
+ 107:Generated_Source\PSoC4/CSD_INT.c ****     *    6. Enable the CSD interrupt.
+ 108:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 109:Generated_Source\PSoC4/CSD_INT.c ****     *  The following tasks are performed for CSDv2 HW IP block:
+ 110:Generated_Source\PSoC4/CSD_INT.c ****     *    1. Check if the raw data is not noisy
+ 111:Generated_Source\PSoC4/CSD_INT.c ****     *    2. Read the Counter register and update the data structure with raw data
+ 112:Generated_Source\PSoC4/CSD_INT.c ****     *    3. Configure and start the scan for the next frequency if the
+ 113:Generated_Source\PSoC4/CSD_INT.c ****     *      multi-frequency is enabled
+ 114:Generated_Source\PSoC4/CSD_INT.c ****     *    4. Update the Scan Counter
+ 115:Generated_Source\PSoC4/CSD_INT.c ****     *    5. Reset the BUSY flag
+ 116:Generated_Source\PSoC4/CSD_INT.c ****     *    6. Enable the CSD interrupt.
+ 117:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 118:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler changes IMO and initializes scanning for the next frequency
+ 119:Generated_Source\PSoC4/CSD_INT.c ****     *  channels when multi-frequency scanning is enabled.
+ 120:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 121:Generated_Source\PSoC4/CSD_INT.c **** 	*  This function has two Macro Callbacks that allow calling the user code
+ 122:Generated_Source\PSoC4/CSD_INT.c ****     *  from macros specified in a component's generated code. Refer to the 
+ 123:Generated_Source\PSoC4/CSD_INT.c ****     *  \ref group_capsense_macrocallbacks section of PSoC Creator User Guide 
+ 124:Generated_Source\PSoC4/CSD_INT.c ****     *  for details. 
+ 125:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 126:Generated_Source\PSoC4/CSD_INT.c ****     *******************************************************************************/
+ 127:Generated_Source\PSoC4/CSD_INT.c ****     CY_ISR(CSD_CSDPostSingleScan)
+ 128:Generated_Source\PSoC4/CSD_INT.c ****     {
+  26              		.loc 1 128 0
+  27              		.cfi_startproc
+ 129:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_ENTRY_CALLBACK
+ 130:Generated_Source\PSoC4/CSD_INT.c ****             CSD_EntryCallback();
+ 131:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_ENTRY_CALLBACK */
+ 132:Generated_Source\PSoC4/CSD_INT.c **** 
+ 133:Generated_Source\PSoC4/CSD_INT.c ****         /* Clear pending interrupt */
+ 134:Generated_Source\PSoC4/CSD_INT.c ****         CY_SET_REG32(CSD_INTR_PTR, CSD_INTR_SET_MASK);
+  28              		.loc 1 134 0
+  29 0000 8322     		mov	r2, #131
+  30 0002 5200     		lsl	r2, r2, #1
+  31 0004 144B     		ldr	r3, .L4
+  32 0006 1A60     		str	r2, [r3]
+  33              	.LBB4:
+  34              	.LBB5:
+ 135:Generated_Source\PSoC4/CSD_INT.c **** 
+ 136:Generated_Source\PSoC4/CSD_INT.c ****     #if (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN)
+ 137:Generated_Source\PSoC4/CSD_INT.c ****         if ((CSD_CSD_NOISE_METRIC_TH < ((CY_GET_REG32(CSD_RESULT_VAL1_PTR) &
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 4
+
+
+ 138:Generated_Source\PSoC4/CSD_INT.c ****                                                     CSD_RESULT_VAL1_BAD_CONVS_MASK) >>
+ 139:Generated_Source\PSoC4/CSD_INT.c ****                                                     CSD_RESULT_VAL1_BAD_CONVS_SHIFT)) &&
+ 140:Generated_Source\PSoC4/CSD_INT.c ****                                                     (0u < CSD_badConversionsNum))
+ 141:Generated_Source\PSoC4/CSD_INT.c ****         {
+ 142:Generated_Source\PSoC4/CSD_INT.c ****             /* Decrement bad conversions number */
+ 143:Generated_Source\PSoC4/CSD_INT.c ****             CSD_badConversionsNum--;
+ 144:Generated_Source\PSoC4/CSD_INT.c **** 
+ 145:Generated_Source\PSoC4/CSD_INT.c ****             /* Start the re-scan */
+ 146:Generated_Source\PSoC4/CSD_INT.c ****             CY_SET_REG32(CSD_SEQ_START_PTR, CSD_SEQ_START_AZ0_SKIP_MASK |
+ 147:Generated_Source\PSoC4/CSD_INT.c ****                                                          CSD_SEQ_START_AZ1_SKIP_MASK |
+ 148:Generated_Source\PSoC4/CSD_INT.c ****                                                          CSD_SEQ_START_START_MASK);
+ 149:Generated_Source\PSoC4/CSD_INT.c ****         }
+ 150:Generated_Source\PSoC4/CSD_INT.c ****         else
+ 151:Generated_Source\PSoC4/CSD_INT.c ****         {
+ 152:Generated_Source\PSoC4/CSD_INT.c ****     #endif /* (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN) */
+ 153:Generated_Source\PSoC4/CSD_INT.c **** 
+ 154:Generated_Source\PSoC4/CSD_INT.c ****             CSD_SsCSDPostScan();
+ 155:Generated_Source\PSoC4/CSD_INT.c **** 
+ 156:Generated_Source\PSoC4/CSD_INT.c ****             #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+ 157:Generated_Source\PSoC4/CSD_INT.c ****                 if (CSD_FREQ_CHANNEL_2 > CSD_scanFreqIndex)
+ 158:Generated_Source\PSoC4/CSD_INT.c ****                 {
+ 159:Generated_Source\PSoC4/CSD_INT.c ****                     /* Scan the next channel */
+ 160:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_SsNextFrequencyScan();
+ 161:Generated_Source\PSoC4/CSD_INT.c ****                 }
+ 162:Generated_Source\PSoC4/CSD_INT.c ****                 else
+ 163:Generated_Source\PSoC4/CSD_INT.c ****                 {
+ 164:Generated_Source\PSoC4/CSD_INT.c ****                     /* All channels are scanned. Set IMO to zero channel */
+ 165:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_scanFreqIndex = CSD_FREQ_CHANNEL_0;
+ 166:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_SsChangeImoFreq(CSD_FREQ_CHANNEL_0);
+ 167:Generated_Source\PSoC4/CSD_INT.c **** 
+ 168:Generated_Source\PSoC4/CSD_INT.c ****                     #if (CSD_ENABLE == CSD_BLOCK_OFF_AFTER_SCAN_EN)
+ 169:Generated_Source\PSoC4/CSD_INT.c ****                         /*  Disable CSDv2 block */
+ 170:Generated_Source\PSoC4/CSD_INT.c ****                         CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd);
+ 171:Generated_Source\PSoC4/CSD_INT.c ****                     #endif /* (CSD_ENABLE == CSD_BLOCK_OFF_AFTER_SCAN_EN) */
+ 172:Generated_Source\PSoC4/CSD_INT.c **** 
+ 173:Generated_Source\PSoC4/CSD_INT.c ****                     /* Update Scan Counter */
+ 174:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_dsRam.scanCounter++;
+ 175:Generated_Source\PSoC4/CSD_INT.c **** 
+ 176:Generated_Source\PSoC4/CSD_INT.c ****                     /* Sensor is totally scanned. Reset BUSY flag */
+ 177:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_dsRam.status &= ~(CSD_SW_STS_BUSY | CSD_WDGT_SW_STS_BUSY);
+ 178:Generated_Source\PSoC4/CSD_INT.c ****                 }
+ 179:Generated_Source\PSoC4/CSD_INT.c ****             #else
+ 180:Generated_Source\PSoC4/CSD_INT.c ****                 {
+ 181:Generated_Source\PSoC4/CSD_INT.c ****                     #if (CSD_ENABLE == CSD_BLOCK_OFF_AFTER_SCAN_EN)
+ 182:Generated_Source\PSoC4/CSD_INT.c ****                         /*  Disable CSDv2 block */
+ 183:Generated_Source\PSoC4/CSD_INT.c ****                         CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd);
+ 184:Generated_Source\PSoC4/CSD_INT.c ****                     #endif /* (CSD_ENABLE == CSD_BLOCK_OFF_AFTER_SCAN_EN) */
+ 185:Generated_Source\PSoC4/CSD_INT.c **** 
+ 186:Generated_Source\PSoC4/CSD_INT.c ****                     /* Update Scan Counter */
+ 187:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_dsRam.scanCounter++;
+ 188:Generated_Source\PSoC4/CSD_INT.c **** 
+ 189:Generated_Source\PSoC4/CSD_INT.c ****                     /* Sensor is totally scanned. Reset BUSY flag */
+ 190:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_dsRam.status &= ~(CSD_SW_STS_BUSY | CSD_WDGT_SW_STS_BUSY);
+ 191:Generated_Source\PSoC4/CSD_INT.c ****                 }
+ 192:Generated_Source\PSoC4/CSD_INT.c ****             #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 193:Generated_Source\PSoC4/CSD_INT.c ****     #if (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN)
+ 194:Generated_Source\PSoC4/CSD_INT.c ****         }
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 5
+
+
+ 195:Generated_Source\PSoC4/CSD_INT.c ****     #endif /* (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN) */
+ 196:Generated_Source\PSoC4/CSD_INT.c **** 
+ 197:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_EXIT_CALLBACK
+ 198:Generated_Source\PSoC4/CSD_INT.c ****             CSD_ExitCallback();
+ 199:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_EXIT_CALLBACK */
+ 200:Generated_Source\PSoC4/CSD_INT.c ****     }
+ 201:Generated_Source\PSoC4/CSD_INT.c **** 
+ 202:Generated_Source\PSoC4/CSD_INT.c **** 
+ 203:Generated_Source\PSoC4/CSD_INT.c ****     /*******************************************************************************
+ 204:Generated_Source\PSoC4/CSD_INT.c ****     * Function Name: CSD_CSDPostMultiScan
+ 205:Generated_Source\PSoC4/CSD_INT.c ****     ****************************************************************************//**
+ 206:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 207:Generated_Source\PSoC4/CSD_INT.c ****     * \brief
+ 208:Generated_Source\PSoC4/CSD_INT.c ****     *  This is an internal ISR function for multiple-sensor scanning 
+ 209:Generated_Source\PSoC4/CSD_INT.c ****     *  implementation.
+ 210:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 211:Generated_Source\PSoC4/CSD_INT.c ****     * \details
+ 212:Generated_Source\PSoC4/CSD_INT.c ****     *  This ISR handler is triggered when the user calls the
+ 213:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_Scan() or CSD_ScanAllWidgets() APIs.
+ 214:Generated_Source\PSoC4/CSD_INT.c ****     *  
+ 215:Generated_Source\PSoC4/CSD_INT.c ****     *  The following tasks are performed:
+ 216:Generated_Source\PSoC4/CSD_INT.c ****     *    1. Disable the CSD interrupt
+ 217:Generated_Source\PSoC4/CSD_INT.c ****     *    2. Read the Counter register and update the data structure with raw data
+ 218:Generated_Source\PSoC4/CSD_INT.c ****     *    3. Connect the Vref buffer to the AMUX bus
+ 219:Generated_Source\PSoC4/CSD_INT.c ****     *    4. Disable the CSD block (after the widget has been scanned)
+ 220:Generated_Source\PSoC4/CSD_INT.c ****     *    5. Update Scan Counter
+ 221:Generated_Source\PSoC4/CSD_INT.c ****     *    6. Reset the BUSY flag
+ 222:Generated_Source\PSoC4/CSD_INT.c ****     *    7. Enable the CSD interrupt.
+ 223:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 224:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler initializes scanning for the previous sensor when the 
+ 225:Generated_Source\PSoC4/CSD_INT.c ****     *  widget has more than one sensor.
+ 226:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler initializes scanning for the next widget when the
+ 227:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_ScanAllWidgets() APIs are called and the project has
+ 228:Generated_Source\PSoC4/CSD_INT.c ****     *  more than one widget.
+ 229:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler changes the IMO and initializes scanning for the next
+ 230:Generated_Source\PSoC4/CSD_INT.c ****     *  frequency channels when multi-frequency scanning is enabled.
+ 231:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 232:Generated_Source\PSoC4/CSD_INT.c ****     *  This function has two Macro Callbacks that allow calling the user 
+ 233:Generated_Source\PSoC4/CSD_INT.c ****     *  code from macros specified in a component's generated code. Refer to the 
+ 234:Generated_Source\PSoC4/CSD_INT.c ****     *  \ref group_capsense_macrocallbacks section of PSoC Creator User Guide 
+ 235:Generated_Source\PSoC4/CSD_INT.c ****     *  for details.
+ 236:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 237:Generated_Source\PSoC4/CSD_INT.c ****     *******************************************************************************/
+ 238:Generated_Source\PSoC4/CSD_INT.c ****     CY_ISR(CSD_CSDPostMultiScan)
+ 239:Generated_Source\PSoC4/CSD_INT.c ****     {
+ 240:Generated_Source\PSoC4/CSD_INT.c ****         /*  Declare and initialise ptr to sensor IO structure to appropriate address        */
+ 241:Generated_Source\PSoC4/CSD_INT.c ****         CSD_FLASH_IO_STRUCT const *curSnsIOPtr = (CSD_FLASH_IO_STRUCT const *)
+ 242:Generated_Source\PSoC4/CSD_INT.c ****                                                           CSD_dsFlash.wdgtArray[CSD_widgetIndex].pt
+ 243:Generated_Source\PSoC4/CSD_INT.c ****                                                           + CSD_sensorIndex;
+ 244:Generated_Source\PSoC4/CSD_INT.c **** 
+ 245:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_ENTRY_CALLBACK
+ 246:Generated_Source\PSoC4/CSD_INT.c ****             CSD_EntryCallback();
+ 247:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_ENTRY_CALLBACK */
+ 248:Generated_Source\PSoC4/CSD_INT.c **** 
+ 249:Generated_Source\PSoC4/CSD_INT.c ****         /* Clear pending interrupt */
+ 250:Generated_Source\PSoC4/CSD_INT.c ****         CY_SET_REG32(CSD_INTR_PTR, CSD_INTR_SET_MASK);
+ 251:Generated_Source\PSoC4/CSD_INT.c **** 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 6
+
+
+ 252:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN)
+ 253:Generated_Source\PSoC4/CSD_INT.c ****             if ((CSD_CSD_NOISE_METRIC_TH < ((CY_GET_REG32(CSD_RESULT_VAL1_PTR) &
+ 254:Generated_Source\PSoC4/CSD_INT.c ****                                                       CSD_RESULT_VAL1_BAD_CONVS_MASK) >>
+ 255:Generated_Source\PSoC4/CSD_INT.c ****                                                       CSD_RESULT_VAL1_BAD_CONVS_SHIFT)) &&
+ 256:Generated_Source\PSoC4/CSD_INT.c ****                                                       (0u < CSD_badConversionsNum))
+ 257:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 258:Generated_Source\PSoC4/CSD_INT.c ****                 /* Decrement bad conversions number */
+ 259:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_badConversionsNum--;
+ 260:Generated_Source\PSoC4/CSD_INT.c **** 
+ 261:Generated_Source\PSoC4/CSD_INT.c ****                 /* Start the re-scan */
+ 262:Generated_Source\PSoC4/CSD_INT.c ****                 CY_SET_REG32(CSD_SEQ_START_PTR, CSD_SEQ_START_AZ0_SKIP_MASK |
+ 263:Generated_Source\PSoC4/CSD_INT.c ****                                                              CSD_SEQ_START_AZ1_SKIP_MASK |
+ 264:Generated_Source\PSoC4/CSD_INT.c ****                                                              CSD_SEQ_START_START_MASK);
+ 265:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 266:Generated_Source\PSoC4/CSD_INT.c ****             else
+ 267:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 268:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN) */
+ 269:Generated_Source\PSoC4/CSD_INT.c **** 
+ 270:Generated_Source\PSoC4/CSD_INT.c ****             CSD_SsCSDPostScan();
+ 271:Generated_Source\PSoC4/CSD_INT.c **** 
+ 272:Generated_Source\PSoC4/CSD_INT.c ****             #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+ 273:Generated_Source\PSoC4/CSD_INT.c ****                 /* Disable sensor when all frequency channels are scanned */
+ 274:Generated_Source\PSoC4/CSD_INT.c ****                 if (CSD_FREQ_CHANNEL_2 == CSD_scanFreqIndex)
+ 275:Generated_Source\PSoC4/CSD_INT.c ****                 {
+ 276:Generated_Source\PSoC4/CSD_INT.c ****                     /* Disable sensor */
+ 277:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_CSDDisconnectSns(curSnsIOPtr);
+ 278:Generated_Source\PSoC4/CSD_INT.c ****                 }
+ 279:Generated_Source\PSoC4/CSD_INT.c ****             #else
+ 280:Generated_Source\PSoC4/CSD_INT.c ****                 /* Disable sensor */
+ 281:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_CSDDisconnectSns(curSnsIOPtr);
+ 282:Generated_Source\PSoC4/CSD_INT.c ****             #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 283:Generated_Source\PSoC4/CSD_INT.c **** 
+ 284:Generated_Source\PSoC4/CSD_INT.c ****             #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+ 285:Generated_Source\PSoC4/CSD_INT.c ****                 if (CSD_FREQ_CHANNEL_2 > CSD_scanFreqIndex)
+ 286:Generated_Source\PSoC4/CSD_INT.c ****                 {
+ 287:Generated_Source\PSoC4/CSD_INT.c ****                      /* Scan the next channel */
+ 288:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_SsNextFrequencyScan();
+ 289:Generated_Source\PSoC4/CSD_INT.c ****                 }
+ 290:Generated_Source\PSoC4/CSD_INT.c ****                 else
+ 291:Generated_Source\PSoC4/CSD_INT.c ****                 {
+ 292:Generated_Source\PSoC4/CSD_INT.c ****                      /* All channels are scanned. Set IMO to zero channel */
+ 293:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_scanFreqIndex = CSD_FREQ_CHANNEL_0;
+ 294:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_SsChangeImoFreq(CSD_FREQ_CHANNEL_0);
+ 295:Generated_Source\PSoC4/CSD_INT.c **** 
+ 296:Generated_Source\PSoC4/CSD_INT.c ****                      /* Scan the next sensor */
+ 297:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_SsCSDInitNextScan();
+ 298:Generated_Source\PSoC4/CSD_INT.c ****                 }
+ 299:Generated_Source\PSoC4/CSD_INT.c ****             #else
+ 300:Generated_Source\PSoC4/CSD_INT.c ****                 /* Scan the next sensor */
+ 301:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsCSDInitNextScan();
+ 302:Generated_Source\PSoC4/CSD_INT.c ****             #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 303:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN)
+ 304:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 305:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN) */
+ 306:Generated_Source\PSoC4/CSD_INT.c **** 
+ 307:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_EXIT_CALLBACK
+ 308:Generated_Source\PSoC4/CSD_INT.c ****             CSD_ExitCallback();
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 7
+
+
+ 309:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_EXIT_CALLBACK */
+ 310:Generated_Source\PSoC4/CSD_INT.c ****     }
+ 311:Generated_Source\PSoC4/CSD_INT.c **** 
+ 312:Generated_Source\PSoC4/CSD_INT.c **** 
+ 313:Generated_Source\PSoC4/CSD_INT.c ****     #if (CSD_ENABLE == CSD_CSD_GANGED_SNS_EN)
+ 314:Generated_Source\PSoC4/CSD_INT.c ****     /*******************************************************************************
+ 315:Generated_Source\PSoC4/CSD_INT.c ****     * Function Name: CSD_CSDPostMultiScanGanged
+ 316:Generated_Source\PSoC4/CSD_INT.c ****     ****************************************************************************//**
+ 317:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 318:Generated_Source\PSoC4/CSD_INT.c ****     * \brief
+ 319:Generated_Source\PSoC4/CSD_INT.c ****     *  This is an internal ISR function for multiple-sensor scanning 
+ 320:Generated_Source\PSoC4/CSD_INT.c ****     *  implementation for ganged sensors.
+ 321:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 322:Generated_Source\PSoC4/CSD_INT.c ****     * \details
+ 323:Generated_Source\PSoC4/CSD_INT.c ****     *  This ISR handler is triggered when the user calls the
+ 324:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_Scan() API for a ganged sensor or the
+ 325:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_ScanAllWidgets() API in the project with ganged sensors.
+ 326:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 327:Generated_Source\PSoC4/CSD_INT.c ****     *  The following tasks are performed:
+ 328:Generated_Source\PSoC4/CSD_INT.c ****     *    1. Disable the CSD interrupt
+ 329:Generated_Source\PSoC4/CSD_INT.c ****     *    2. Read the Counter register and update the data structure with raw data
+ 330:Generated_Source\PSoC4/CSD_INT.c ****     *    3. Connect the Vref buffer to the AMUX bus
+ 331:Generated_Source\PSoC4/CSD_INT.c ****     *    4. Disable the CSD block (after the widget has been scanned)
+ 332:Generated_Source\PSoC4/CSD_INT.c ****     *    5. Update Scan Counter
+ 333:Generated_Source\PSoC4/CSD_INT.c ****     *    6. Reset the BUSY flag
+ 334:Generated_Source\PSoC4/CSD_INT.c ****     *    7. Enable the CSD interrupt.
+ 335:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 336:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler initializes scanning for the previous sensor when the
+ 337:Generated_Source\PSoC4/CSD_INT.c ****     *  widget has more than one sensor.
+ 338:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler initializes scanning for the next widget when the
+ 339:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_ScanAllWidgets() APIs are called and the project has 
+ 340:Generated_Source\PSoC4/CSD_INT.c ****     *  more than one widget.
+ 341:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler changes the IMO and initializes scanning for the next 
+ 342:Generated_Source\PSoC4/CSD_INT.c ****     *  frequency channels when multi-frequency scanning is enabled.
+ 343:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 344:Generated_Source\PSoC4/CSD_INT.c ****     *  This function has two Macro Callbacks that allow calling the user 
+ 345:Generated_Source\PSoC4/CSD_INT.c ****     *  code from macros specified in a component's generated code. Refer to the 
+ 346:Generated_Source\PSoC4/CSD_INT.c ****     *  \ref group_capsense_macrocallbacks section of PSoC Creator User Guide 
+ 347:Generated_Source\PSoC4/CSD_INT.c ****     *  for details.
+ 348:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 349:Generated_Source\PSoC4/CSD_INT.c ****     *******************************************************************************/
+ 350:Generated_Source\PSoC4/CSD_INT.c ****     CY_ISR(CSD_CSDPostMultiScanGanged)
+ 351:Generated_Source\PSoC4/CSD_INT.c ****     {
+ 352:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_ENTRY_CALLBACK
+ 353:Generated_Source\PSoC4/CSD_INT.c ****             CSD_EntryCallback();
+ 354:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_ENTRY_CALLBACK */
+ 355:Generated_Source\PSoC4/CSD_INT.c **** 
+ 356:Generated_Source\PSoC4/CSD_INT.c ****         /* Clear pending interrupt */
+ 357:Generated_Source\PSoC4/CSD_INT.c ****         CY_SET_REG32(CSD_INTR_PTR, CSD_INTR_SET_MASK);
+ 358:Generated_Source\PSoC4/CSD_INT.c **** 
+ 359:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN)
+ 360:Generated_Source\PSoC4/CSD_INT.c ****             if ((CSD_CSD_NOISE_METRIC_TH < ((CY_GET_REG32(CSD_RESULT_VAL1_PTR) &
+ 361:Generated_Source\PSoC4/CSD_INT.c ****                                                       CSD_RESULT_VAL1_BAD_CONVS_MASK) >>
+ 362:Generated_Source\PSoC4/CSD_INT.c ****                                                       CSD_RESULT_VAL1_BAD_CONVS_SHIFT)) &&
+ 363:Generated_Source\PSoC4/CSD_INT.c ****                                                       (0u < CSD_badConversionsNum))
+ 364:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 365:Generated_Source\PSoC4/CSD_INT.c ****                 /* Decrement bad conversions number */
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 8
+
+
+ 366:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_badConversionsNum--;
+ 367:Generated_Source\PSoC4/CSD_INT.c **** 
+ 368:Generated_Source\PSoC4/CSD_INT.c ****                 /* Start the re-scan */
+ 369:Generated_Source\PSoC4/CSD_INT.c ****                 CY_SET_REG32(CSD_SEQ_START_PTR, CSD_SEQ_START_AZ0_SKIP_MASK |
+ 370:Generated_Source\PSoC4/CSD_INT.c ****                                                              CSD_SEQ_START_AZ1_SKIP_MASK |
+ 371:Generated_Source\PSoC4/CSD_INT.c ****                                                              CSD_SEQ_START_START_MASK);
+ 372:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 373:Generated_Source\PSoC4/CSD_INT.c ****             else
+ 374:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 375:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN) */
+ 376:Generated_Source\PSoC4/CSD_INT.c **** 
+ 377:Generated_Source\PSoC4/CSD_INT.c ****             CSD_SsCSDPostScan();
+ 378:Generated_Source\PSoC4/CSD_INT.c **** 
+ 379:Generated_Source\PSoC4/CSD_INT.c ****             #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+ 380:Generated_Source\PSoC4/CSD_INT.c ****                 if (CSD_FREQ_CHANNEL_2 == CSD_scanFreqIndex)
+ 381:Generated_Source\PSoC4/CSD_INT.c ****                 {
+ 382:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_SsCSDDisconnectSnsExt((uint32)CSD_widgetIndex, (uint32)CSD_sensorIndex);
+ 383:Generated_Source\PSoC4/CSD_INT.c ****                 }
+ 384:Generated_Source\PSoC4/CSD_INT.c ****             #else
+ 385:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsCSDDisconnectSnsExt((uint32)CSD_widgetIndex, (uint32)CSD_sensorIndex);
+ 386:Generated_Source\PSoC4/CSD_INT.c ****             #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 387:Generated_Source\PSoC4/CSD_INT.c **** 
+ 388:Generated_Source\PSoC4/CSD_INT.c ****             #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+ 389:Generated_Source\PSoC4/CSD_INT.c ****                 if (CSD_FREQ_CHANNEL_2 > CSD_scanFreqIndex)
+ 390:Generated_Source\PSoC4/CSD_INT.c ****                 {
+ 391:Generated_Source\PSoC4/CSD_INT.c ****                      /* Scan the next channel */
+ 392:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_SsNextFrequencyScan();
+ 393:Generated_Source\PSoC4/CSD_INT.c ****                 }
+ 394:Generated_Source\PSoC4/CSD_INT.c ****                 else
+ 395:Generated_Source\PSoC4/CSD_INT.c ****                 {
+ 396:Generated_Source\PSoC4/CSD_INT.c ****                     /* All channels are scanned. Set IMO to zero channel */
+ 397:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_scanFreqIndex = CSD_FREQ_CHANNEL_0;
+ 398:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_SsChangeImoFreq(CSD_FREQ_CHANNEL_0);
+ 399:Generated_Source\PSoC4/CSD_INT.c **** 
+ 400:Generated_Source\PSoC4/CSD_INT.c ****                      /* Scan the next sensor */
+ 401:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_SsCSDInitNextScan();
+ 402:Generated_Source\PSoC4/CSD_INT.c ****                 }
+ 403:Generated_Source\PSoC4/CSD_INT.c ****             #else
+ 404:Generated_Source\PSoC4/CSD_INT.c ****                  /* Scan the next sensor */
+ 405:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsCSDInitNextScan();
+ 406:Generated_Source\PSoC4/CSD_INT.c ****             #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 407:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN)
+ 408:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 409:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN) */
+ 410:Generated_Source\PSoC4/CSD_INT.c **** 
+ 411:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_EXIT_CALLBACK
+ 412:Generated_Source\PSoC4/CSD_INT.c ****             CSD_ExitCallback();
+ 413:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_EXIT_CALLBACK */
+ 414:Generated_Source\PSoC4/CSD_INT.c ****     }
+ 415:Generated_Source\PSoC4/CSD_INT.c ****     #endif /* (CSD_ENABLE == CSD_CSD_GANGED_SNS_EN) */
+ 416:Generated_Source\PSoC4/CSD_INT.c **** 
+ 417:Generated_Source\PSoC4/CSD_INT.c **** #else
+ 418:Generated_Source\PSoC4/CSD_INT.c ****     /* CSDv1 part */
+ 419:Generated_Source\PSoC4/CSD_INT.c **** 
+ 420:Generated_Source\PSoC4/CSD_INT.c ****     /*******************************************************************************
+ 421:Generated_Source\PSoC4/CSD_INT.c ****     * Function Name: CSD_CSDPostSingleScan
+ 422:Generated_Source\PSoC4/CSD_INT.c ****     ****************************************************************************//**
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 9
+
+
+ 423:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 424:Generated_Source\PSoC4/CSD_INT.c ****     * \brief
+ 425:Generated_Source\PSoC4/CSD_INT.c ****     *  This is an internal ISR function for single-sensor scanning implementation.
+ 426:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 427:Generated_Source\PSoC4/CSD_INT.c ****     * \details
+ 428:Generated_Source\PSoC4/CSD_INT.c ****     *  This ISR handler is triggered when the user calls the
+ 429:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_CSDScanExt() function.
+ 430:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 431:Generated_Source\PSoC4/CSD_INT.c ****     *  The following tasks are performed for CSDv1 HW IP block:
+ 432:Generated_Source\PSoC4/CSD_INT.c ****     *    1. Disable the CSD interrupt
+ 433:Generated_Source\PSoC4/CSD_INT.c ****     *    2. Read the Counter register and update the data structure with raw data
+ 434:Generated_Source\PSoC4/CSD_INT.c ****     *    3. Connect the Vref buffer to the AMUX bus
+ 435:Generated_Source\PSoC4/CSD_INT.c ****     *    4. Update the Scan Counter
+ 436:Generated_Source\PSoC4/CSD_INT.c ****     *    5. Reset the BUSY flag
+ 437:Generated_Source\PSoC4/CSD_INT.c ****     *    6. Enable the CSD interrupt.
+ 438:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 439:Generated_Source\PSoC4/CSD_INT.c ****     *  The following tasks are performed for CSDv2 HW IP block:
+ 440:Generated_Source\PSoC4/CSD_INT.c ****     *    1. Check if the raw data is not noisy
+ 441:Generated_Source\PSoC4/CSD_INT.c ****     *    2. Read the Counter register and update the data structure with raw data
+ 442:Generated_Source\PSoC4/CSD_INT.c ****     *    3. Configure and start the scan for the next frequency if the
+ 443:Generated_Source\PSoC4/CSD_INT.c ****     *      multi-frequency is enabled
+ 444:Generated_Source\PSoC4/CSD_INT.c ****     *    4. Update the Scan Counter
+ 445:Generated_Source\PSoC4/CSD_INT.c ****     *    5. Reset the BUSY flag
+ 446:Generated_Source\PSoC4/CSD_INT.c ****     *    6. Enable the CSD interrupt.
+ 447:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 448:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler changes IMO and initializes scanning for the next frequency
+ 449:Generated_Source\PSoC4/CSD_INT.c ****     *  channels when multi-frequency scanning is enabled.
+ 450:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 451:Generated_Source\PSoC4/CSD_INT.c **** 	*  This function has two Macro Callbacks that allow calling the user code
+ 452:Generated_Source\PSoC4/CSD_INT.c ****     *  from macros specified in a component's generated code. Refer to the 
+ 453:Generated_Source\PSoC4/CSD_INT.c ****     *  \ref group_capsense_macrocallbacks section of PSoC Creator User Guide 
+ 454:Generated_Source\PSoC4/CSD_INT.c ****     *  for details. 
+ 455:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 456:Generated_Source\PSoC4/CSD_INT.c ****     *******************************************************************************/
+ 457:Generated_Source\PSoC4/CSD_INT.c ****     CY_ISR(CSD_CSDPostSingleScan)
+ 458:Generated_Source\PSoC4/CSD_INT.c ****     {
+ 459:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_ENTRY_CALLBACK
+ 460:Generated_Source\PSoC4/CSD_INT.c ****             CSD_EntryCallback();
+ 461:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_ENTRY_CALLBACK */
+ 462:Generated_Source\PSoC4/CSD_INT.c **** 
+ 463:Generated_Source\PSoC4/CSD_INT.c ****         /* Clear pending interrupt */
+ 464:Generated_Source\PSoC4/CSD_INT.c ****         CY_SET_REG32(CSD_INTR_PTR, CSD_INTR_SET_MASK);
+ 465:Generated_Source\PSoC4/CSD_INT.c **** 
+ 466:Generated_Source\PSoC4/CSD_INT.c ****         /* Read Rawdata */
+ 467:Generated_Source\PSoC4/CSD_INT.c ****         CSD_SsCSDPostScan();
+ 468:Generated_Source\PSoC4/CSD_INT.c **** 
+ 469:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+ 470:Generated_Source\PSoC4/CSD_INT.c ****             if (CSD_FREQ_CHANNEL_2 > CSD_scanFreqIndex)
+ 471:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 472:Generated_Source\PSoC4/CSD_INT.c ****                 /*  Connect Vref Buffer to AMUX bus. CSDv1 block is enabled */
+ 473:Generated_Source\PSoC4/CSD_INT.c ****                 CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CTANK_PRECHARGE_CONFIG_CSD_EN);
+ 474:Generated_Source\PSoC4/CSD_INT.c **** 
+ 475:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsNextFrequencyScan();
+ 476:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 477:Generated_Source\PSoC4/CSD_INT.c ****             else
+ 478:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 479:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_scanFreqIndex = CSD_FREQ_CHANNEL_0;
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 10
+
+
+ 480:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsChangeImoFreq(CSD_FREQ_CHANNEL_0);
+ 481:Generated_Source\PSoC4/CSD_INT.c **** 
+ 482:Generated_Source\PSoC4/CSD_INT.c ****                 #if (CSD_ENABLE == CSD_BLOCK_OFF_AFTER_SCAN_EN)
+ 483:Generated_Source\PSoC4/CSD_INT.c ****                     /*  Disable CSDv1 block. Connect Vref Buffer to AMUX bus */
+ 484:Generated_Source\PSoC4/CSD_INT.c ****                     #if ((CSD_CSH_PRECHARGE_IO_BUF == CSD_CSD_CSH_PRECHARGE_SRC) &&\
+ 485:Generated_Source\PSoC4/CSD_INT.c ****                          (CSD_ENABLE == CSD_CSD_SHIELD_TANK_EN))
+ 486:Generated_Source\PSoC4/CSD_INT.c ****                         CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CMOD_PRECHARGE_CONFIG);
+ 487:Generated_Source\PSoC4/CSD_INT.c ****                     #else
+ 488:Generated_Source\PSoC4/CSD_INT.c ****                         CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CTANK_PRECHARGE_CONFIG);
+ 489:Generated_Source\PSoC4/CSD_INT.c ****                     #endif /* ((CSD_CSH_PRECHARGE_IO_BUF == CSD_CSD_CSH_PRECHARGE_SRC) &&\
+ 490:Generated_Source\PSoC4/CSD_INT.c ****                                (CSD_ENABLE == CSD_CSD_SHIELD_TANK_EN)) */
+ 491:Generated_Source\PSoC4/CSD_INT.c ****                 #else
+ 492:Generated_Source\PSoC4/CSD_INT.c ****                     /*  Connect Vref Buffer to AMUX bus. CSDv1 block is enabled */
+ 493:Generated_Source\PSoC4/CSD_INT.c ****                     CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CTANK_PRECHARGE_CONFIG_CSD_EN)
+ 494:Generated_Source\PSoC4/CSD_INT.c ****                 #endif /* (CSD_ENABLE == CSD_BLOCK_OFF_AFTER_SCAN_EN) */
+ 495:Generated_Source\PSoC4/CSD_INT.c **** 
+ 496:Generated_Source\PSoC4/CSD_INT.c ****                 /* Update Scan Counter */
+ 497:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_dsRam.scanCounter++;
+ 498:Generated_Source\PSoC4/CSD_INT.c **** 
+ 499:Generated_Source\PSoC4/CSD_INT.c ****                 /* Sensor is totally scanned. Reset BUSY flag */
+ 500:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_dsRam.status &= ~(CSD_SW_STS_BUSY | CSD_WDGT_SW_STS_BUSY);
+ 501:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 502:Generated_Source\PSoC4/CSD_INT.c ****         #else
+ 503:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 504:Generated_Source\PSoC4/CSD_INT.c ****                 #if (CSD_ENABLE == CSD_BLOCK_OFF_AFTER_SCAN_EN)
+ 505:Generated_Source\PSoC4/CSD_INT.c ****                     /*  Disable CSDv1 block. Connect Vref Buffer to AMUX bus */
+ 506:Generated_Source\PSoC4/CSD_INT.c ****                     #if ((CSD_CSH_PRECHARGE_IO_BUF == CSD_CSD_CSH_PRECHARGE_SRC) &&\
+ 507:Generated_Source\PSoC4/CSD_INT.c ****                          (CSD_ENABLE == CSD_CSD_SHIELD_TANK_EN))
+ 508:Generated_Source\PSoC4/CSD_INT.c ****                         CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CMOD_PRECHARGE_CONFIG);
+ 509:Generated_Source\PSoC4/CSD_INT.c ****                     #else
+ 510:Generated_Source\PSoC4/CSD_INT.c ****                         CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CTANK_PRECHARGE_CONFIG);
+ 511:Generated_Source\PSoC4/CSD_INT.c ****                     #endif /* ((CSD_CSH_PRECHARGE_IO_BUF == CSD_CSD_CSH_PRECHARGE_SRC) &&\
+ 512:Generated_Source\PSoC4/CSD_INT.c ****                                (CSD_ENABLE == CSD_CSD_SHIELD_TANK_EN)) */
+ 513:Generated_Source\PSoC4/CSD_INT.c ****                 #else
+ 514:Generated_Source\PSoC4/CSD_INT.c ****                     /*  Connect Vref Buffer to AMUX bus. CSDv1 block is enabled */
+ 515:Generated_Source\PSoC4/CSD_INT.c ****                     CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CTANK_PRECHARGE_CONFIG_CSD_EN)
+ 516:Generated_Source\PSoC4/CSD_INT.c ****                 #endif /* (CSD_ENABLE == CSD_BLOCK_OFF_AFTER_SCAN_EN) */
+ 517:Generated_Source\PSoC4/CSD_INT.c **** 
+ 518:Generated_Source\PSoC4/CSD_INT.c ****                 /* Update Scan Counter */
+ 519:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_dsRam.scanCounter++;
+ 520:Generated_Source\PSoC4/CSD_INT.c **** 
+ 521:Generated_Source\PSoC4/CSD_INT.c ****                 /* Sensor is totally scanned. Reset BUSY flag */
+ 522:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_dsRam.status &= ~(CSD_SW_STS_BUSY | CSD_WDGT_SW_STS_BUSY);
+ 523:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 524:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 525:Generated_Source\PSoC4/CSD_INT.c **** 
+ 526:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_EXIT_CALLBACK
+ 527:Generated_Source\PSoC4/CSD_INT.c ****             CSD_ExitCallback();
+ 528:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_EXIT_CALLBACK */
+ 529:Generated_Source\PSoC4/CSD_INT.c ****     }
+ 530:Generated_Source\PSoC4/CSD_INT.c **** 
+ 531:Generated_Source\PSoC4/CSD_INT.c **** 
+ 532:Generated_Source\PSoC4/CSD_INT.c ****     /*******************************************************************************
+ 533:Generated_Source\PSoC4/CSD_INT.c ****     * Function Name: CSD_CSDPostMultiScan
+ 534:Generated_Source\PSoC4/CSD_INT.c ****     ****************************************************************************//**
+ 535:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 536:Generated_Source\PSoC4/CSD_INT.c ****     * \brief
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 11
+
+
+ 537:Generated_Source\PSoC4/CSD_INT.c ****     *  This is an internal ISR function for multiple-sensor scanning 
+ 538:Generated_Source\PSoC4/CSD_INT.c ****     *  implementation.
+ 539:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 540:Generated_Source\PSoC4/CSD_INT.c ****     * \details
+ 541:Generated_Source\PSoC4/CSD_INT.c ****     *  This ISR handler is triggered when the user calls the
+ 542:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_Scan() or CSD_ScanAllWidgets() APIs.
+ 543:Generated_Source\PSoC4/CSD_INT.c ****     *  
+ 544:Generated_Source\PSoC4/CSD_INT.c ****     *  The following tasks are performed:
+ 545:Generated_Source\PSoC4/CSD_INT.c ****     *    1. Disable the CSD interrupt
+ 546:Generated_Source\PSoC4/CSD_INT.c ****     *    2. Read the Counter register and update the data structure with raw data
+ 547:Generated_Source\PSoC4/CSD_INT.c ****     *    3. Connect the Vref buffer to the AMUX bus
+ 548:Generated_Source\PSoC4/CSD_INT.c ****     *    4. Disable the CSD block (after the widget has been scanned)
+ 549:Generated_Source\PSoC4/CSD_INT.c ****     *    5. Update Scan Counter
+ 550:Generated_Source\PSoC4/CSD_INT.c ****     *    6. Reset the BUSY flag
+ 551:Generated_Source\PSoC4/CSD_INT.c ****     *    7. Enable the CSD interrupt.
+ 552:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 553:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler initializes scanning for the previous sensor when the 
+ 554:Generated_Source\PSoC4/CSD_INT.c ****     *  widget has more than one sensor.
+ 555:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler initializes scanning for the next widget when the
+ 556:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_ScanAllWidgets() APIs are called and the project has
+ 557:Generated_Source\PSoC4/CSD_INT.c ****     *  more than one widget.
+ 558:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler changes the IMO and initializes scanning for the next
+ 559:Generated_Source\PSoC4/CSD_INT.c ****     *  frequency channels when multi-frequency scanning is enabled.
+ 560:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 561:Generated_Source\PSoC4/CSD_INT.c ****     *  This function has two Macro Callbacks that allow calling the user 
+ 562:Generated_Source\PSoC4/CSD_INT.c ****     *  code from macros specified in a component's generated code. Refer to the 
+ 563:Generated_Source\PSoC4/CSD_INT.c ****     *  \ref group_capsense_macrocallbacks section of PSoC Creator User Guide 
+ 564:Generated_Source\PSoC4/CSD_INT.c ****     *  for details.
+ 565:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 566:Generated_Source\PSoC4/CSD_INT.c ****     *******************************************************************************/
+ 567:Generated_Source\PSoC4/CSD_INT.c ****     CY_ISR(CSD_CSDPostMultiScan)
+ 568:Generated_Source\PSoC4/CSD_INT.c ****     {
+ 569:Generated_Source\PSoC4/CSD_INT.c ****         /*  Declare and initialise ptr to sensor IO structure to appropriate address        */
+ 570:Generated_Source\PSoC4/CSD_INT.c ****         CSD_FLASH_IO_STRUCT const *curSnsIOPtr = (CSD_FLASH_IO_STRUCT const *)
+ 571:Generated_Source\PSoC4/CSD_INT.c ****                                                           CSD_dsFlash.wdgtArray[CSD_widgetIndex].pt
+ 572:Generated_Source\PSoC4/CSD_INT.c ****                                                           + CSD_sensorIndex;
+ 573:Generated_Source\PSoC4/CSD_INT.c **** 
+ 574:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_ENTRY_CALLBACK
+ 575:Generated_Source\PSoC4/CSD_INT.c ****             CSD_EntryCallback();
+ 576:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_ENTRY_CALLBACK */
+ 577:Generated_Source\PSoC4/CSD_INT.c **** 
+ 578:Generated_Source\PSoC4/CSD_INT.c ****         /* Clear pending interrupt */
+ 579:Generated_Source\PSoC4/CSD_INT.c ****         CY_SET_REG32(CSD_INTR_PTR, CSD_INTR_SET_MASK);
+ 580:Generated_Source\PSoC4/CSD_INT.c **** 
+ 581:Generated_Source\PSoC4/CSD_INT.c ****          /* Read Rawdata */
+ 582:Generated_Source\PSoC4/CSD_INT.c ****         CSD_SsCSDPostScan();
+ 583:Generated_Source\PSoC4/CSD_INT.c **** 
+ 584:Generated_Source\PSoC4/CSD_INT.c ****         /*  Connect Vref Buffer to AMUX bus */
+ 585:Generated_Source\PSoC4/CSD_INT.c ****         CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CTANK_PRECHARGE_CONFIG_CSD_EN);
+ 586:Generated_Source\PSoC4/CSD_INT.c **** 
+ 587:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+ 588:Generated_Source\PSoC4/CSD_INT.c ****             /* Disable sensor when all frequency channels are scanned */
+ 589:Generated_Source\PSoC4/CSD_INT.c ****             if (CSD_FREQ_CHANNEL_2 == CSD_scanFreqIndex)
+ 590:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 591:Generated_Source\PSoC4/CSD_INT.c ****                 /* Disable sensor */
+ 592:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_CSDDisconnectSns(curSnsIOPtr);
+ 593:Generated_Source\PSoC4/CSD_INT.c ****             }
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 12
+
+
+ 594:Generated_Source\PSoC4/CSD_INT.c ****         #else
+ 595:Generated_Source\PSoC4/CSD_INT.c ****             /* Disable sensor */
+ 596:Generated_Source\PSoC4/CSD_INT.c ****             CSD_CSDDisconnectSns(curSnsIOPtr);
+ 597:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 598:Generated_Source\PSoC4/CSD_INT.c **** 
+ 599:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+ 600:Generated_Source\PSoC4/CSD_INT.c ****             if (CSD_FREQ_CHANNEL_2 > CSD_scanFreqIndex)
+ 601:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 602:Generated_Source\PSoC4/CSD_INT.c ****                  /* Scan the next channel */
+ 603:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsNextFrequencyScan();
+ 604:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 605:Generated_Source\PSoC4/CSD_INT.c ****             else
+ 606:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 607:Generated_Source\PSoC4/CSD_INT.c ****                  /* All channels are scanned. Set IMO to zero channel */
+ 608:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_scanFreqIndex = CSD_FREQ_CHANNEL_0;
+ 609:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsChangeImoFreq(CSD_FREQ_CHANNEL_0);
+ 610:Generated_Source\PSoC4/CSD_INT.c **** 
+ 611:Generated_Source\PSoC4/CSD_INT.c ****                  /* Scan the next sensor */
+ 612:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsCSDInitNextScan();
+ 613:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 614:Generated_Source\PSoC4/CSD_INT.c ****         #else
+ 615:Generated_Source\PSoC4/CSD_INT.c ****             /* Scan the next sensor */
+ 616:Generated_Source\PSoC4/CSD_INT.c ****             CSD_SsCSDInitNextScan();
+ 617:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 618:Generated_Source\PSoC4/CSD_INT.c **** 
+ 619:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_EXIT_CALLBACK
+ 620:Generated_Source\PSoC4/CSD_INT.c ****             CSD_ExitCallback();
+ 621:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_EXIT_CALLBACK */
+ 622:Generated_Source\PSoC4/CSD_INT.c ****     }
+ 623:Generated_Source\PSoC4/CSD_INT.c **** 
+ 624:Generated_Source\PSoC4/CSD_INT.c **** 
+ 625:Generated_Source\PSoC4/CSD_INT.c ****     #if (CSD_ENABLE == CSD_CSD_GANGED_SNS_EN)
+ 626:Generated_Source\PSoC4/CSD_INT.c ****     /*******************************************************************************
+ 627:Generated_Source\PSoC4/CSD_INT.c ****     * Function Name: CSD_CSDPostMultiScanGanged
+ 628:Generated_Source\PSoC4/CSD_INT.c ****     ****************************************************************************//**
+ 629:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 630:Generated_Source\PSoC4/CSD_INT.c ****     * \brief
+ 631:Generated_Source\PSoC4/CSD_INT.c ****     *  This is an internal ISR function for multiple-sensor scanning 
+ 632:Generated_Source\PSoC4/CSD_INT.c ****     *  implementation for ganged sensors.
+ 633:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 634:Generated_Source\PSoC4/CSD_INT.c ****     * \details
+ 635:Generated_Source\PSoC4/CSD_INT.c ****     *  This ISR handler is triggered when the user calls the
+ 636:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_Scan() API for a ganged sensor or the
+ 637:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_ScanAllWidgets() API in the project with ganged sensors.
+ 638:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 639:Generated_Source\PSoC4/CSD_INT.c ****     *  The following tasks are performed:
+ 640:Generated_Source\PSoC4/CSD_INT.c ****     *    1. Disable the CSD interrupt
+ 641:Generated_Source\PSoC4/CSD_INT.c ****     *    2. Read the Counter register and update the data structure with raw data
+ 642:Generated_Source\PSoC4/CSD_INT.c ****     *    3. Connect the Vref buffer to the AMUX bus
+ 643:Generated_Source\PSoC4/CSD_INT.c ****     *    4. Disable the CSD block (after the widget has been scanned)
+ 644:Generated_Source\PSoC4/CSD_INT.c ****     *    5. Update Scan Counter
+ 645:Generated_Source\PSoC4/CSD_INT.c ****     *    6. Reset the BUSY flag
+ 646:Generated_Source\PSoC4/CSD_INT.c ****     *    7. Enable the CSD interrupt.
+ 647:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 648:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler initializes scanning for the previous sensor when the
+ 649:Generated_Source\PSoC4/CSD_INT.c ****     *  widget has more than one sensor.
+ 650:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler initializes scanning for the next widget when the
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 13
+
+
+ 651:Generated_Source\PSoC4/CSD_INT.c ****     *  CSD_ScanAllWidgets() APIs are called and the project has 
+ 652:Generated_Source\PSoC4/CSD_INT.c ****     *  more than one widget.
+ 653:Generated_Source\PSoC4/CSD_INT.c ****     *  The ISR handler changes the IMO and initializes scanning for the next 
+ 654:Generated_Source\PSoC4/CSD_INT.c ****     *  frequency channels when multi-frequency scanning is enabled.
+ 655:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 656:Generated_Source\PSoC4/CSD_INT.c ****     *  This function has two Macro Callbacks that allow calling the user 
+ 657:Generated_Source\PSoC4/CSD_INT.c ****     *  code from macros specified in a component's generated code. Refer to the 
+ 658:Generated_Source\PSoC4/CSD_INT.c ****     *  \ref group_capsense_macrocallbacks section of PSoC Creator User Guide 
+ 659:Generated_Source\PSoC4/CSD_INT.c ****     *  for details.
+ 660:Generated_Source\PSoC4/CSD_INT.c ****     *
+ 661:Generated_Source\PSoC4/CSD_INT.c ****     *******************************************************************************/
+ 662:Generated_Source\PSoC4/CSD_INT.c ****     CY_ISR(CSD_CSDPostMultiScanGanged)
+ 663:Generated_Source\PSoC4/CSD_INT.c ****     {
+ 664:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_ENTRY_CALLBACK
+ 665:Generated_Source\PSoC4/CSD_INT.c ****             CSD_EntryCallback();
+ 666:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_ENTRY_CALLBACK */
+ 667:Generated_Source\PSoC4/CSD_INT.c **** 
+ 668:Generated_Source\PSoC4/CSD_INT.c ****         /* Clear pending interrupt */
+ 669:Generated_Source\PSoC4/CSD_INT.c ****         CY_SET_REG32(CSD_INTR_PTR, CSD_INTR_SET_MASK);
+ 670:Generated_Source\PSoC4/CSD_INT.c **** 
+ 671:Generated_Source\PSoC4/CSD_INT.c ****          /* Read Rawdata */
+ 672:Generated_Source\PSoC4/CSD_INT.c ****         CSD_SsCSDPostScan();
+ 673:Generated_Source\PSoC4/CSD_INT.c **** 
+ 674:Generated_Source\PSoC4/CSD_INT.c ****         /*  Connect Vref Buffer to AMUX bus */
+ 675:Generated_Source\PSoC4/CSD_INT.c ****         CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CTANK_PRECHARGE_CONFIG_CSD_EN);
+ 676:Generated_Source\PSoC4/CSD_INT.c **** 
+ 677:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+ 678:Generated_Source\PSoC4/CSD_INT.c ****             if (CSD_FREQ_CHANNEL_2 == CSD_scanFreqIndex)
+ 679:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 680:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsCSDDisconnectSnsExt((uint32)CSD_widgetIndex, (uint32)CSD_sensorIndex);
+ 681:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 682:Generated_Source\PSoC4/CSD_INT.c ****         #else
+ 683:Generated_Source\PSoC4/CSD_INT.c ****             CSD_SsCSDDisconnectSnsExt((uint32)CSD_widgetIndex, (uint32)CSD_sensorIndex);
+ 684:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 685:Generated_Source\PSoC4/CSD_INT.c **** 
+ 686:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN)
+ 687:Generated_Source\PSoC4/CSD_INT.c ****             if (CSD_FREQ_CHANNEL_2 > CSD_scanFreqIndex)
+ 688:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 689:Generated_Source\PSoC4/CSD_INT.c ****                  /* Scan the next channel */
+ 690:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsNextFrequencyScan();
+ 691:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 692:Generated_Source\PSoC4/CSD_INT.c ****             else
+ 693:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 694:Generated_Source\PSoC4/CSD_INT.c ****                 /* All channels are scanned. Set IMO to zero channel */
+ 695:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_scanFreqIndex = CSD_FREQ_CHANNEL_0;
+ 696:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsChangeImoFreq(CSD_FREQ_CHANNEL_0);
+ 697:Generated_Source\PSoC4/CSD_INT.c **** 
+ 698:Generated_Source\PSoC4/CSD_INT.c ****                  /* Scan the next sensor */
+ 699:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsCSDInitNextScan();
+ 700:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 701:Generated_Source\PSoC4/CSD_INT.c ****         #else
+ 702:Generated_Source\PSoC4/CSD_INT.c ****              /* Scan the next sensor */
+ 703:Generated_Source\PSoC4/CSD_INT.c ****             CSD_SsCSDInitNextScan();
+ 704:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 705:Generated_Source\PSoC4/CSD_INT.c **** 
+ 706:Generated_Source\PSoC4/CSD_INT.c ****         #ifdef CSD_EXIT_CALLBACK
+ 707:Generated_Source\PSoC4/CSD_INT.c ****             CSD_ExitCallback();
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 14
+
+
+ 708:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* CSD_EXIT_CALLBACK */
+ 709:Generated_Source\PSoC4/CSD_INT.c ****     }
+ 710:Generated_Source\PSoC4/CSD_INT.c ****     #endif /* (CSD_ENABLE == CSD_CSD_GANGED_SNS_EN) */
+ 711:Generated_Source\PSoC4/CSD_INT.c **** 
+ 712:Generated_Source\PSoC4/CSD_INT.c **** #endif /* (CSD_ENABLE == CSD_CSDV2) */
+ 713:Generated_Source\PSoC4/CSD_INT.c **** 
+ 714:Generated_Source\PSoC4/CSD_INT.c **** #endif /* ((CSD_ENABLE == CSD_CSD_EN) || (CSD_ENABLE == CSD_CSD_CSX_EN)) */
+ 715:Generated_Source\PSoC4/CSD_INT.c **** 
+ 716:Generated_Source\PSoC4/CSD_INT.c **** /** \}
+ 717:Generated_Source\PSoC4/CSD_INT.c ****  * \endif */
+ 718:Generated_Source\PSoC4/CSD_INT.c **** 
+ 719:Generated_Source\PSoC4/CSD_INT.c **** 
+ 720:Generated_Source\PSoC4/CSD_INT.c **** #if ((CSD_ENABLE == CSD_CSD_EN) || (CSD_ENABLE == CSD_CSD_CSX_EN))
+ 721:Generated_Source\PSoC4/CSD_INT.c **** 
+ 722:Generated_Source\PSoC4/CSD_INT.c **** /*******************************************************************************
+ 723:Generated_Source\PSoC4/CSD_INT.c **** * Function Name: CSD_SsCSDPostScan
+ 724:Generated_Source\PSoC4/CSD_INT.c **** ****************************************************************************//**
+ 725:Generated_Source\PSoC4/CSD_INT.c **** *
+ 726:Generated_Source\PSoC4/CSD_INT.c **** * \brief
+ 727:Generated_Source\PSoC4/CSD_INT.c **** *   This function reads rawdata and releases required HW resources after scan.
+ 728:Generated_Source\PSoC4/CSD_INT.c **** *
+ 729:Generated_Source\PSoC4/CSD_INT.c **** * \details
+ 730:Generated_Source\PSoC4/CSD_INT.c **** *   This function performs following tasks after scan:
+ 731:Generated_Source\PSoC4/CSD_INT.c **** *   - Reads SlotResult from Raw Counter;
+ 732:Generated_Source\PSoC4/CSD_INT.c **** *   - Inits bad Conversions number;
+ 733:Generated_Source\PSoC4/CSD_INT.c **** *   - Disconnects Vrefhi from AMUBUF positive input;
+ 734:Generated_Source\PSoC4/CSD_INT.c **** *   - Disconnects AMUBUF output from CSDBUSB with sych PHI2+HSCMP;
+ 735:Generated_Source\PSoC4/CSD_INT.c **** *   - Opens HCBV and HCBG switches.
+ 736:Generated_Source\PSoC4/CSD_INT.c **** *
+ 737:Generated_Source\PSoC4/CSD_INT.c **** *******************************************************************************/
+ 738:Generated_Source\PSoC4/CSD_INT.c **** CY_INLINE static void CSD_SsCSDPostScan(void)
+ 739:Generated_Source\PSoC4/CSD_INT.c **** {
+ 740:Generated_Source\PSoC4/CSD_INT.c ****     #if (CSD_ENABLE == CSD_CSDV2)
+ 741:Generated_Source\PSoC4/CSD_INT.c **** 
+ 742:Generated_Source\PSoC4/CSD_INT.c ****         uint32 tmpRawData;
+ 743:Generated_Source\PSoC4/CSD_INT.c ****         uint32 tmpMaxCount;
+ 744:Generated_Source\PSoC4/CSD_INT.c ****         CSD_RAM_WD_BASE_STRUCT const *ptrWdgt = (CSD_RAM_WD_BASE_STRUCT *)
+ 745:Generated_Source\PSoC4/CSD_INT.c ****                                             CSD_dsFlash.wdgtArray[CSD_widgetIndex].ptr2WdgtRam;
+  35              		.loc 1 745 0
+  36 0008 144B     		ldr	r3, .L4+4
+  37 000a 1A78     		ldrb	r2, [r3]
+ 744:Generated_Source\PSoC4/CSD_INT.c ****                                             CSD_dsFlash.wdgtArray[CSD_widgetIndex].ptr2WdgtRam;
+  38              		.loc 1 744 0
+  39 000c D300     		lsl	r3, r2, #3
+  40 000e 9B1A     		sub	r3, r3, r2
+  41 0010 9B00     		lsl	r3, r3, #2
+  42 0012 134A     		ldr	r2, .L4+8
+  43 0014 D318     		add	r3, r2, r3
+  44 0016 5B68     		ldr	r3, [r3, #4]
+  45              	.LVL0:
+ 746:Generated_Source\PSoC4/CSD_INT.c **** 
+ 747:Generated_Source\PSoC4/CSD_INT.c ****         /* Read SlotResult from Raw Counter */
+ 748:Generated_Source\PSoC4/CSD_INT.c ****         tmpRawData = CSD_RESULT_VAL1_VALUE_MASK & CY_GET_REG32(CSD_COUNTER_PTR);
+  46              		.loc 1 748 0
+  47 0018 124A     		ldr	r2, .L4+12
+  48 001a 1268     		ldr	r2, [r2]
+  49 001c 1204     		lsl	r2, r2, #16
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 15
+
+
+  50 001e 120C     		lsr	r2, r2, #16
+  51              	.LVL1:
+ 749:Generated_Source\PSoC4/CSD_INT.c **** 
+ 750:Generated_Source\PSoC4/CSD_INT.c ****         tmpMaxCount = ((1uL << ptrWdgt->resolution) - 1uL);
+  52              		.loc 1 750 0
+  53 0020 1988     		ldrh	r1, [r3]
+  54 0022 0123     		mov	r3, #1
+  55              	.LVL2:
+  56 0024 8B40     		lsl	r3, r3, r1
+  57 0026 013B     		sub	r3, r3, #1
+  58              	.LVL3:
+ 751:Generated_Source\PSoC4/CSD_INT.c ****         if(tmpRawData < tmpMaxCount)
+  59              		.loc 1 751 0
+  60 0028 9A42     		cmp	r2, r3
+  61 002a 06D2     		bcs	.L2
+ 752:Generated_Source\PSoC4/CSD_INT.c ****         {
+ 753:Generated_Source\PSoC4/CSD_INT.c ****             CSD_curRamSnsPtr->raw[CSD_scanFreqIndex] = LO16(tmpRawData);
+  62              		.loc 1 753 0
+  63 002c 0E4B     		ldr	r3, .L4+16
+  64              	.LVL4:
+  65 002e 1968     		ldr	r1, [r3]
+  66              	.LVL5:
+  67 0030 0E4B     		ldr	r3, .L4+20
+  68 0032 1B78     		ldrb	r3, [r3]
+  69 0034 5B00     		lsl	r3, r3, #1
+  70 0036 CA52     		strh	r2, [r1, r3]
+  71 0038 05E0     		b	.L3
+  72              	.LVL6:
+  73              	.L2:
+ 754:Generated_Source\PSoC4/CSD_INT.c ****         }
+ 755:Generated_Source\PSoC4/CSD_INT.c ****         else
+ 756:Generated_Source\PSoC4/CSD_INT.c ****         {
+ 757:Generated_Source\PSoC4/CSD_INT.c ****             CSD_curRamSnsPtr->raw[CSD_scanFreqIndex] = LO16(tmpMaxCount);
+  74              		.loc 1 757 0
+  75 003a 0B4A     		ldr	r2, .L4+16
+  76              	.LVL7:
+  77 003c 1168     		ldr	r1, [r2]
+  78 003e 0B4A     		ldr	r2, .L4+20
+  79 0040 1278     		ldrb	r2, [r2]
+  80 0042 5200     		lsl	r2, r2, #1
+  81 0044 8B52     		strh	r3, [r1, r2]
+  82              	.LVL8:
+  83              	.L3:
+  84              	.LBE5:
+  85              	.LBE4:
+ 187:Generated_Source\PSoC4/CSD_INT.c **** 
+  86              		.loc 1 187 0
+  87 0046 0A4B     		ldr	r3, .L4+24
+  88 0048 DA88     		ldrh	r2, [r3, #6]
+  89 004a 0132     		add	r2, r2, #1
+  90 004c DA80     		strh	r2, [r3, #6]
+ 190:Generated_Source\PSoC4/CSD_INT.c ****                 }
+  91              		.loc 1 190 0
+  92 004e 094A     		ldr	r2, .L4+28
+  93 0050 9968     		ldr	r1, [r3, #8]
+  94 0052 0A40     		and	r2, r1
+  95 0054 9A60     		str	r2, [r3, #8]
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 16
+
+
+ 200:Generated_Source\PSoC4/CSD_INT.c **** 
+  96              		.loc 1 200 0
+  97              		@ sp needed
+  98 0056 7047     		bx	lr
+  99              	.L5:
+ 100              		.align	2
+ 101              	.L4:
+ 102 0058 F0000C40 		.word	1074528496
+ 103 005c 00000000 		.word	CSD_widgetIndex
+ 104 0060 00000000 		.word	CSD_dsFlash
+ 105 0064 D0000C40 		.word	1074528464
+ 106 0068 00000000 		.word	CSD_curRamSnsPtr
+ 107 006c 00000000 		.word	CSD_scanFreqIndex
+ 108 0070 00000000 		.word	CSD_dsRam
+ 109 0074 7FFFFEFF 		.word	-65665
+ 110              		.cfi_endproc
+ 111              	.LFE1:
+ 112              		.size	CSD_CSDPostSingleScan, .-CSD_CSDPostSingleScan
+ 113              		.section	.text.CSD_CSDPostMultiScan,"ax",%progbits
+ 114              		.align	2
+ 115              		.global	CSD_CSDPostMultiScan
+ 116              		.code	16
+ 117              		.thumb_func
+ 118              		.type	CSD_CSDPostMultiScan, %function
+ 119              	CSD_CSDPostMultiScan:
+ 120              	.LFB2:
+ 239:Generated_Source\PSoC4/CSD_INT.c ****         /*  Declare and initialise ptr to sensor IO structure to appropriate address        */
+ 121              		.loc 1 239 0
+ 122              		.cfi_startproc
+ 123 0000 38B5     		push	{r3, r4, r5, lr}
+ 124              		.cfi_def_cfa_offset 16
+ 125              		.cfi_offset 3, -16
+ 126              		.cfi_offset 4, -12
+ 127              		.cfi_offset 5, -8
+ 128              		.cfi_offset 14, -4
+ 241:Generated_Source\PSoC4/CSD_INT.c ****                                                           CSD_dsFlash.wdgtArray[CSD_widgetIndex].pt
+ 129              		.loc 1 241 0
+ 130 0002 3C4B     		ldr	r3, .L12
+ 131 0004 1978     		ldrb	r1, [r3]
+ 242:Generated_Source\PSoC4/CSD_INT.c ****                                                           + CSD_sensorIndex;
+ 132              		.loc 1 242 0
+ 133 0006 3C4C     		ldr	r4, .L12+4
+ 134 0008 CA00     		lsl	r2, r1, #3
+ 135 000a 521A     		sub	r2, r2, r1
+ 136 000c 9200     		lsl	r2, r2, #2
+ 137 000e 1059     		ldr	r0, [r2, r4]
+ 243:Generated_Source\PSoC4/CSD_INT.c **** 
+ 138              		.loc 1 243 0
+ 139 0010 3A4A     		ldr	r2, .L12+8
+ 140 0012 1578     		ldrb	r5, [r2]
+ 141 0014 E900     		lsl	r1, r5, #3
+ 142 0016 4A1B     		sub	r2, r1, r5
+ 143 0018 9200     		lsl	r2, r2, #2
+ 241:Generated_Source\PSoC4/CSD_INT.c ****                                                           CSD_dsFlash.wdgtArray[CSD_widgetIndex].pt
+ 144              		.loc 1 241 0
+ 145 001a 8018     		add	r0, r0, r2
+ 146              	.LVL9:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 17
+
+
+ 250:Generated_Source\PSoC4/CSD_INT.c **** 
+ 147              		.loc 1 250 0
+ 148 001c 8321     		mov	r1, #131
+ 149 001e 4900     		lsl	r1, r1, #1
+ 150 0020 374A     		ldr	r2, .L12+12
+ 151 0022 1160     		str	r1, [r2]
+ 152              	.LBB10:
+ 153              	.LBB11:
+ 745:Generated_Source\PSoC4/CSD_INT.c **** 
+ 154              		.loc 1 745 0
+ 155 0024 1B78     		ldrb	r3, [r3]
+ 744:Generated_Source\PSoC4/CSD_INT.c ****                                             CSD_dsFlash.wdgtArray[CSD_widgetIndex].ptr2WdgtRam;
+ 156              		.loc 1 744 0
+ 157 0026 DA00     		lsl	r2, r3, #3
+ 158 0028 D31A     		sub	r3, r2, r3
+ 159 002a 9B00     		lsl	r3, r3, #2
+ 160 002c E318     		add	r3, r4, r3
+ 161 002e 5B68     		ldr	r3, [r3, #4]
+ 162              	.LVL10:
+ 748:Generated_Source\PSoC4/CSD_INT.c **** 
+ 163              		.loc 1 748 0
+ 164 0030 344A     		ldr	r2, .L12+16
+ 165 0032 1268     		ldr	r2, [r2]
+ 166 0034 1204     		lsl	r2, r2, #16
+ 167 0036 120C     		lsr	r2, r2, #16
+ 168              	.LVL11:
+ 750:Generated_Source\PSoC4/CSD_INT.c ****         if(tmpRawData < tmpMaxCount)
+ 169              		.loc 1 750 0
+ 170 0038 1988     		ldrh	r1, [r3]
+ 171 003a 0123     		mov	r3, #1
+ 172              	.LVL12:
+ 173 003c 8B40     		lsl	r3, r3, r1
+ 174 003e 013B     		sub	r3, r3, #1
+ 175              	.LVL13:
+ 751:Generated_Source\PSoC4/CSD_INT.c ****         {
+ 176              		.loc 1 751 0
+ 177 0040 9A42     		cmp	r2, r3
+ 178 0042 06D2     		bcs	.L7
+ 753:Generated_Source\PSoC4/CSD_INT.c ****         }
+ 179              		.loc 1 753 0
+ 180 0044 304B     		ldr	r3, .L12+20
+ 181              	.LVL14:
+ 182 0046 1968     		ldr	r1, [r3]
+ 183              	.LVL15:
+ 184 0048 304B     		ldr	r3, .L12+24
+ 185 004a 1B78     		ldrb	r3, [r3]
+ 186 004c 5B00     		lsl	r3, r3, #1
+ 187 004e CA52     		strh	r2, [r1, r3]
+ 188 0050 05E0     		b	.L8
+ 189              	.LVL16:
+ 190              	.L7:
+ 191              		.loc 1 757 0
+ 192 0052 2D4A     		ldr	r2, .L12+20
+ 193              	.LVL17:
+ 194 0054 1168     		ldr	r1, [r2]
+ 195 0056 2D4A     		ldr	r2, .L12+24
+ 196 0058 1278     		ldrb	r2, [r2]
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 18
+
+
+ 197 005a 5200     		lsl	r2, r2, #1
+ 198 005c 8B52     		strh	r3, [r1, r2]
+ 199              	.LVL18:
+ 200              	.L8:
+ 201              	.LBE11:
+ 202              	.LBE10:
+ 281:Generated_Source\PSoC4/CSD_INT.c ****             #endif /* (CSD_ENABLE == CSD_MULTI_FREQ_SCAN_EN) */
+ 203              		.loc 1 281 0
+ 204 005e FFF7FEFF 		bl	CSD_CSDDisconnectSns
+ 205              	.LVL19:
+ 206              	.LBB12:
+ 207              	.LBB13:
+ 758:Generated_Source\PSoC4/CSD_INT.c ****         }
+ 759:Generated_Source\PSoC4/CSD_INT.c **** 
+ 760:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN)
+ 761:Generated_Source\PSoC4/CSD_INT.c ****             /*  Init bad Conversions number */
+ 762:Generated_Source\PSoC4/CSD_INT.c ****             CSD_badConversionsNum = CSD_BAD_CONVERSIONS_NUM;
+ 763:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_CSD_NOISE_METRIC_EN) */
+ 764:Generated_Source\PSoC4/CSD_INT.c **** 
+ 765:Generated_Source\PSoC4/CSD_INT.c ****         #if ((CSD_ENABLE == CSD_CSD_SHIELD_EN) && \
+ 766:Generated_Source\PSoC4/CSD_INT.c ****              (CSD_2000_MV <= CSD_CYDEV_VDDA_MV))
+ 767:Generated_Source\PSoC4/CSD_INT.c ****             /*  Disconnect Vrefhi from AMUBUF positive input. Disconnect AMUBUF output from CSDBUSB
+ 768:Generated_Source\PSoC4/CSD_INT.c ****             CY_SET_REG32(CSD_SW_AMUXBUF_SEL_PTR, CSD_SW_AMUXBUF_SEL_SW_DEFAULT);
+ 769:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* ((CSD_ENABLE == CSD_CSD_SHIELD_EN) && \
+ 770:Generated_Source\PSoC4/CSD_INT.c ****                    (CSD_2000_MV <= CSD_CYDEV_VDDA_MV)) */
+ 771:Generated_Source\PSoC4/CSD_INT.c **** 
+ 772:Generated_Source\PSoC4/CSD_INT.c ****         #if (CSD_ENABLE == CSD_CSD_SHIELD_EN)
+ 773:Generated_Source\PSoC4/CSD_INT.c ****             /* Open HCBV and HCBG switches */
+ 774:Generated_Source\PSoC4/CSD_INT.c ****             CY_SET_REG32(CSD_SW_SHIELD_SEL_PTR, CSD_SW_SHIELD_SEL_SW_HCBV_STATIC_OPEN |
+ 775:Generated_Source\PSoC4/CSD_INT.c ****                                                              CSD_SW_SHIELD_SEL_SW_HCBG_STATIC_OPEN)
+ 776:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* (CSD_ENABLE == CSD_CSD_SHIELD_EN) */
+ 777:Generated_Source\PSoC4/CSD_INT.c **** 
+ 778:Generated_Source\PSoC4/CSD_INT.c ****     #else
+ 779:Generated_Source\PSoC4/CSD_INT.c **** 
+ 780:Generated_Source\PSoC4/CSD_INT.c ****         /* Read SlotResult from Raw Counter */
+ 781:Generated_Source\PSoC4/CSD_INT.c ****        CSD_curRamSnsPtr->raw[CSD_scanFreqIndex] = (uint16)CY_GET_REG32(CSD_COUNTER_PTR);
+ 782:Generated_Source\PSoC4/CSD_INT.c **** 
+ 783:Generated_Source\PSoC4/CSD_INT.c ****     #endif /* (CSD_ENABLE == CSD_CSDV2) */
+ 784:Generated_Source\PSoC4/CSD_INT.c **** }
+ 785:Generated_Source\PSoC4/CSD_INT.c **** 
+ 786:Generated_Source\PSoC4/CSD_INT.c **** 
+ 787:Generated_Source\PSoC4/CSD_INT.c **** /*******************************************************************************
+ 788:Generated_Source\PSoC4/CSD_INT.c **** * Function Name: CSD_SsCSDInitNextScan
+ 789:Generated_Source\PSoC4/CSD_INT.c **** ****************************************************************************//**
+ 790:Generated_Source\PSoC4/CSD_INT.c **** *
+ 791:Generated_Source\PSoC4/CSD_INT.c **** * \brief
+ 792:Generated_Source\PSoC4/CSD_INT.c **** *   This function initializes the next sensor scan.
+ 793:Generated_Source\PSoC4/CSD_INT.c **** *
+ 794:Generated_Source\PSoC4/CSD_INT.c **** * \details
+ 795:Generated_Source\PSoC4/CSD_INT.c **** *   The function decrements the sensor index, updates sense clock for matrix
+ 796:Generated_Source\PSoC4/CSD_INT.c **** *   or touchpad widgets only, sets up Compensation IDAC, enables the sensor and
+ 797:Generated_Source\PSoC4/CSD_INT.c **** *   scans it. When all sensors are scanned it continues to set up the next widget
+ 798:Generated_Source\PSoC4/CSD_INT.c **** *   until all widgets are scanned. The CSD block is disabled when all widgets are
+ 799:Generated_Source\PSoC4/CSD_INT.c **** *   scanned.
+ 800:Generated_Source\PSoC4/CSD_INT.c **** *
+ 801:Generated_Source\PSoC4/CSD_INT.c **** *******************************************************************************/
+ 802:Generated_Source\PSoC4/CSD_INT.c **** CY_INLINE static void CSD_SsCSDInitNextScan(void)
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 19
+
+
+ 803:Generated_Source\PSoC4/CSD_INT.c **** {
+ 804:Generated_Source\PSoC4/CSD_INT.c ****     /*  Declare and initialise ptr to widget and sensor structures to appropriate address */
+ 805:Generated_Source\PSoC4/CSD_INT.c ****     #if (((CSD_ENABLE == CSD_CSD_IDAC_COMP_EN) || \
+ 806:Generated_Source\PSoC4/CSD_INT.c ****              (CSD_ENABLE == (CSD_CSD_MATRIX_WIDGET_EN | CSD_CSD_TOUCHPAD_WIDGET_EN))) || \
+ 807:Generated_Source\PSoC4/CSD_INT.c ****          (((CSD_DISABLE == CSD_CSD_COMMON_SNS_CLK_EN) && \
+ 808:Generated_Source\PSoC4/CSD_INT.c ****            (CSD_ENABLE == CSD_CSDV2) && \
+ 809:Generated_Source\PSoC4/CSD_INT.c ****           (CSD_ENABLE == (CSD_CSD_MATRIX_WIDGET_EN | CSD_CSD_TOUCHPAD_WIDGET_EN)))))
+ 810:Generated_Source\PSoC4/CSD_INT.c ****         CSD_RAM_WD_BASE_STRUCT *ptrWdgt = (CSD_RAM_WD_BASE_STRUCT *)
+ 811:Generated_Source\PSoC4/CSD_INT.c ****                                                         CSD_dsFlash.wdgtArray[CSD_widgetIndex].ptr2
+ 208              		.loc 1 811 0
+ 209 0062 244B     		ldr	r3, .L12
+ 210 0064 1878     		ldrb	r0, [r3]
+ 810:Generated_Source\PSoC4/CSD_INT.c ****                                                         CSD_dsFlash.wdgtArray[CSD_widgetIndex].ptr2
+ 211              		.loc 1 810 0
+ 212 0066 2449     		ldr	r1, .L12+4
+ 213 0068 C200     		lsl	r2, r0, #3
+ 214 006a 121A     		sub	r2, r2, r0
+ 215 006c 9200     		lsl	r2, r2, #2
+ 216 006e 8A18     		add	r2, r1, r2
+ 217 0070 5068     		ldr	r0, [r2, #4]
+ 218              	.LVL20:
+ 812:Generated_Source\PSoC4/CSD_INT.c ****     #endif /* ((((CSD_ENABLE == CSD_CSD_IDAC_COMP_EN) && \
+ 813:Generated_Source\PSoC4/CSD_INT.c ****                (CSD_ENABLE == (CSD_CSD_MATRIX_WIDGET_EN | CSD_CSD_TOUCHPAD_WIDGET_EN)))) || \
+ 814:Generated_Source\PSoC4/CSD_INT.c ****                (((CSD_DISABLE == CSD_CSD_COMMON_SNS_CLK_EN) && \
+ 815:Generated_Source\PSoC4/CSD_INT.c ****                (CSD_ENABLE == (CSD_CSD_MATRIX_WIDGET_EN | CSD_CSD_TOUCHPAD_WIDGET_EN))) && \
+ 816:Generated_Source\PSoC4/CSD_INT.c ****                (CSD_CLK_SOURCE_DIRECT == CSD_CSD_SNS_CLK_SOURCE))) */
+ 817:Generated_Source\PSoC4/CSD_INT.c **** 
+ 818:Generated_Source\PSoC4/CSD_INT.c ****     /* Check if all sensors are scanned in widget */
+ 819:Generated_Source\PSoC4/CSD_INT.c ****     if (((uint8)CSD_dsFlash.wdgtArray[(CSD_widgetIndex)].totalNumSns - 1u) > CSD_sensorIndex)
+ 219              		.loc 1 819 0
+ 220 0072 1B78     		ldrb	r3, [r3]
+ 221 0074 DA00     		lsl	r2, r3, #3
+ 222 0076 D31A     		sub	r3, r2, r3
+ 223 0078 9B00     		lsl	r3, r3, #2
+ 224 007a CB18     		add	r3, r1, r3
+ 225 007c 9B7D     		ldrb	r3, [r3, #22]
+ 226 007e 1F4A     		ldr	r2, .L12+8
+ 227 0080 1278     		ldrb	r2, [r2]
+ 228 0082 013B     		sub	r3, r3, #1
+ 229 0084 9342     		cmp	r3, r2
+ 230 0086 1DD9     		bls	.L9
+ 820:Generated_Source\PSoC4/CSD_INT.c ****     {
+ 821:Generated_Source\PSoC4/CSD_INT.c ****         /*  Decrement snsIndex to configure next sensor in widget */
+ 822:Generated_Source\PSoC4/CSD_INT.c ****         CSD_sensorIndex++;
+ 231              		.loc 1 822 0
+ 232 0088 1C4C     		ldr	r4, .L12+8
+ 233 008a 2378     		ldrb	r3, [r4]
+ 234 008c 0133     		add	r3, r3, #1
+ 235 008e DBB2     		uxtb	r3, r3
+ 236 0090 2370     		strb	r3, [r4]
+ 823:Generated_Source\PSoC4/CSD_INT.c **** 
+ 824:Generated_Source\PSoC4/CSD_INT.c ****         /*  Update global pointer to CSD_RAM_SNS_STRUCT to current sensor  */
+ 825:Generated_Source\PSoC4/CSD_INT.c ****         CSD_curRamSnsPtr = (CSD_RAM_SNS_STRUCT *)
+ 826:Generated_Source\PSoC4/CSD_INT.c ****                                                   CSD_dsFlash.wdgtArray[CSD_widgetIndex].ptr2SnsRam
+ 237              		.loc 1 826 0
+ 238 0092 184D     		ldr	r5, .L12
+ 239 0094 2A78     		ldrb	r2, [r5]
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 20
+
+
+ 240 0096 D300     		lsl	r3, r2, #3
+ 241 0098 9B1A     		sub	r3, r3, r2
+ 242 009a 9B00     		lsl	r3, r3, #2
+ 243 009c CB18     		add	r3, r1, r3
+ 244 009e 9968     		ldr	r1, [r3, #8]
+ 827:Generated_Source\PSoC4/CSD_INT.c ****                                                   + CSD_sensorIndex;
+ 245              		.loc 1 827 0
+ 246 00a0 2278     		ldrb	r2, [r4]
+ 247 00a2 9300     		lsl	r3, r2, #2
+ 248 00a4 9B18     		add	r3, r3, r2
+ 249 00a6 5B00     		lsl	r3, r3, #1
+ 250 00a8 CB18     		add	r3, r1, r3
+ 825:Generated_Source\PSoC4/CSD_INT.c ****                                                   CSD_dsFlash.wdgtArray[CSD_widgetIndex].ptr2SnsRam
+ 251              		.loc 1 825 0
+ 252 00aa 174A     		ldr	r2, .L12+20
+ 253 00ac 1360     		str	r3, [r2]
+ 828:Generated_Source\PSoC4/CSD_INT.c **** 
+ 829:Generated_Source\PSoC4/CSD_INT.c ****         /* Configure clock divider to row or column */
+ 830:Generated_Source\PSoC4/CSD_INT.c ****         #if ((CSD_DISABLE == CSD_CSD_COMMON_SNS_CLK_EN) && \
+ 831:Generated_Source\PSoC4/CSD_INT.c ****              (CSD_ENABLE == (CSD_CSD_MATRIX_WIDGET_EN | CSD_CSD_TOUCHPAD_WIDGET_EN)))
+ 832:Generated_Source\PSoC4/CSD_INT.c ****             if ((CSD_WD_TOUCHPAD_E == (CSD_WD_TYPE_ENUM)CSD_dsFlash.wdgtArray[(CSD_widgetIndex)].wd
+ 833:Generated_Source\PSoC4/CSD_INT.c ****                 (CSD_WD_MATRIX_BUTTON_E == (CSD_WD_TYPE_ENUM)CSD_dsFlash.wdgtArray[(CSD_widgetIndex
+ 834:Generated_Source\PSoC4/CSD_INT.c ****             {
+ 835:Generated_Source\PSoC4/CSD_INT.c ****                 CSD_SsCSDConfigClock();
+ 836:Generated_Source\PSoC4/CSD_INT.c **** 
+ 837:Generated_Source\PSoC4/CSD_INT.c ****                 #if (CSD_ENABLE == CSD_CSDV2)
+ 838:Generated_Source\PSoC4/CSD_INT.c ****                      /* Set up scanning resolution */
+ 839:Generated_Source\PSoC4/CSD_INT.c ****                     CSD_SsCSDCalculateScanDuration(ptrWdgt);
+ 840:Generated_Source\PSoC4/CSD_INT.c ****                 #endif /* (CSD_ENABLE == CSD_CSDV2) */
+ 841:Generated_Source\PSoC4/CSD_INT.c ****             }
+ 842:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* ((CSD_DISABLE == CSD_CSD_COMMON_SNS_CLK_EN) && \
+ 843:Generated_Source\PSoC4/CSD_INT.c ****                    (CSD_ENABLE == (CSD_CSD_MATRIX_WIDGET_EN | CSD_CSD_TOUCHPAD_WIDGET_EN)))) */
+ 844:Generated_Source\PSoC4/CSD_INT.c **** 
+ 845:Generated_Source\PSoC4/CSD_INT.c ****         /* Setup Compensation IDAC for next sensor in widget */
+ 846:Generated_Source\PSoC4/CSD_INT.c ****         #if ((CSD_ENABLE == CSD_CSD_IDAC_COMP_EN) || \
+ 847:Generated_Source\PSoC4/CSD_INT.c ****              (CSD_ENABLE == (CSD_CSD_MATRIX_WIDGET_EN | CSD_CSD_TOUCHPAD_WIDGET_EN)))
+ 848:Generated_Source\PSoC4/CSD_INT.c ****             CSD_SsCSDSetUpIdacs(ptrWdgt);
+ 254              		.loc 1 848 0
+ 255 00ae FFF7FEFF 		bl	CSD_SsCSDSetUpIdacs
+ 256              	.LVL21:
+ 849:Generated_Source\PSoC4/CSD_INT.c ****         #endif /* ((CSD_ENABLE == CSD_CSD_IDAC_COMP_EN) || \
+ 850:Generated_Source\PSoC4/CSD_INT.c ****              (CSD_ENABLE == (CSD_CSD_MATRIX_WIDGET_EN | CSD_CSD_TOUCHPAD_WIDGET_EN)))*/
+ 851:Generated_Source\PSoC4/CSD_INT.c **** 
+ 852:Generated_Source\PSoC4/CSD_INT.c ****         /* Enable sensor */
+ 853:Generated_Source\PSoC4/CSD_INT.c ****         CSD_SsCSDConnectSensorExt((uint32)CSD_widgetIndex, (uint32)CSD_sensorIndex);
+ 257              		.loc 1 853 0
+ 258 00b2 2878     		ldrb	r0, [r5]
+ 259 00b4 C0B2     		uxtb	r0, r0
+ 260 00b6 2178     		ldrb	r1, [r4]
+ 261 00b8 C9B2     		uxtb	r1, r1
+ 262 00ba FFF7FEFF 		bl	CSD_SsCSDConnectSensorExt
+ 263              	.LVL22:
+ 854:Generated_Source\PSoC4/CSD_INT.c **** 
+ 855:Generated_Source\PSoC4/CSD_INT.c ****         /* Proceed scanning */
+ 856:Generated_Source\PSoC4/CSD_INT.c ****         CSD_SsCSDStartSample();
+ 264              		.loc 1 856 0
+ 265 00be FFF7FEFF 		bl	CSD_SsCSDStartSample
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 21
+
+
+ 266              	.LVL23:
+ 267 00c2 15E0     		b	.L6
+ 268              	.LVL24:
+ 269              	.L9:
+ 857:Generated_Source\PSoC4/CSD_INT.c ****     }
+ 858:Generated_Source\PSoC4/CSD_INT.c ****     /*    Call scan next widget API if requested, if not, complete the scan  */
+ 859:Generated_Source\PSoC4/CSD_INT.c ****     else
+ 860:Generated_Source\PSoC4/CSD_INT.c ****     {
+ 861:Generated_Source\PSoC4/CSD_INT.c ****         CSD_sensorIndex = 0u;
+ 270              		.loc 1 861 0
+ 271 00c4 0022     		mov	r2, #0
+ 272 00c6 0D4B     		ldr	r3, .L12+8
+ 273 00c8 1A70     		strb	r2, [r3]
+ 862:Generated_Source\PSoC4/CSD_INT.c **** 
+ 863:Generated_Source\PSoC4/CSD_INT.c ****         /* Current widget is totally scanned. Reset WIDGET BUSY flag */
+ 864:Generated_Source\PSoC4/CSD_INT.c ****         CSD_dsRam.status &= ~CSD_WDGT_SW_STS_BUSY;
+ 274              		.loc 1 864 0
+ 275 00ca 114A     		ldr	r2, .L12+28
+ 276 00cc 114B     		ldr	r3, .L12+32
+ 277 00ce 9168     		ldr	r1, [r2, #8]
+ 278 00d0 0B40     		and	r3, r1
+ 279 00d2 9360     		str	r3, [r2, #8]
+ 865:Generated_Source\PSoC4/CSD_INT.c **** 
+ 866:Generated_Source\PSoC4/CSD_INT.c ****         /* Check if all widgets have been scanned */
+ 867:Generated_Source\PSoC4/CSD_INT.c ****         if (CSD_ENABLE == CSD_requestScanAllWidget)
+ 280              		.loc 1 867 0
+ 281 00d4 104A     		ldr	r2, .L12+36
+ 282 00d6 1278     		ldrb	r2, [r2]
+ 283 00d8 012A     		cmp	r2, #1
+ 284 00da 02D1     		bne	.L11
+ 868:Generated_Source\PSoC4/CSD_INT.c ****         {
+ 869:Generated_Source\PSoC4/CSD_INT.c ****             /* Configure and begin scanning next widget */
+ 870:Generated_Source\PSoC4/CSD_INT.c ****             CSD_SsPostAllWidgetsScan();
+ 285              		.loc 1 870 0
+ 286 00dc FFF7FEFF 		bl	CSD_SsPostAllWidgetsScan
+ 287              	.LVL25:
+ 288 00e0 06E0     		b	.L6
+ 289              	.LVL26:
+ 290              	.L11:
+ 871:Generated_Source\PSoC4/CSD_INT.c ****         }
+ 872:Generated_Source\PSoC4/CSD_INT.c ****         else
+ 873:Generated_Source\PSoC4/CSD_INT.c ****         {
+ 874:Generated_Source\PSoC4/CSD_INT.c ****             #if (CSD_ENABLE == CSD_BLOCK_OFF_AFTER_SCAN_EN)
+ 875:Generated_Source\PSoC4/CSD_INT.c ****                 #if (CSD_ENABLE == CSD_CSDV2)
+ 876:Generated_Source\PSoC4/CSD_INT.c ****                     /*  Disable the CSD block */
+ 877:Generated_Source\PSoC4/CSD_INT.c ****                     CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd);
+ 878:Generated_Source\PSoC4/CSD_INT.c ****                 #else
+ 879:Generated_Source\PSoC4/CSD_INT.c ****                     /*  Disable the CSD block. Connect Vref Buffer to AMUX bus */
+ 880:Generated_Source\PSoC4/CSD_INT.c ****                     #if ((CSD_CSH_PRECHARGE_IO_BUF == CSD_CSD_CSH_PRECHARGE_SRC) &&\
+ 881:Generated_Source\PSoC4/CSD_INT.c ****                          (CSD_ENABLE == CSD_CSD_SHIELD_TANK_EN))
+ 882:Generated_Source\PSoC4/CSD_INT.c ****                         CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CMOD_PRECHARGE_CONFIG);
+ 883:Generated_Source\PSoC4/CSD_INT.c ****                     #else
+ 884:Generated_Source\PSoC4/CSD_INT.c ****                         CY_SET_REG32(CSD_CONFIG_PTR, CSD_configCsd | CSD_CTANK_PRECHARGE_CONFIG);
+ 885:Generated_Source\PSoC4/CSD_INT.c ****                     #endif /* ((CSD_CSH_PRECHARGE_IO_BUF == CSD_CSD_CSH_PRECHARGE_SRC) &&\
+ 886:Generated_Source\PSoC4/CSD_INT.c ****                                (CSD_ENABLE == CSD_CSD_SHIELD_TANK_EN)) */
+ 887:Generated_Source\PSoC4/CSD_INT.c ****                 #endif /* (CSD_ENABLE == CSD_CSDV2) */
+ 888:Generated_Source\PSoC4/CSD_INT.c ****             #endif /* (CSD_ENABLE == CSD_BLOCK_OFF_AFTER_SCAN_EN) */
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 22
+
+
+ 889:Generated_Source\PSoC4/CSD_INT.c **** 
+ 890:Generated_Source\PSoC4/CSD_INT.c ****             /* All widgets are totally scanned. Reset BUSY flag */
+ 891:Generated_Source\PSoC4/CSD_INT.c ****             CSD_dsRam.status &= ~CSD_SW_STS_BUSY;
+ 291              		.loc 1 891 0
+ 292 00e2 0B4A     		ldr	r2, .L12+28
+ 293 00e4 8021     		mov	r1, #128
+ 294 00e6 8B43     		bic	r3, r1
+ 295 00e8 9360     		str	r3, [r2, #8]
+ 892:Generated_Source\PSoC4/CSD_INT.c **** 
+ 893:Generated_Source\PSoC4/CSD_INT.c ****             /* Update scan Counter */
+ 894:Generated_Source\PSoC4/CSD_INT.c ****             CSD_dsRam.scanCounter++;
+ 296              		.loc 1 894 0
+ 297 00ea D388     		ldrh	r3, [r2, #6]
+ 298 00ec 0133     		add	r3, r3, #1
+ 299 00ee D380     		strh	r3, [r2, #6]
+ 300              	.LVL27:
+ 301              	.L6:
+ 302              	.LBE13:
+ 303              	.LBE12:
+ 310:Generated_Source\PSoC4/CSD_INT.c **** 
+ 304              		.loc 1 310 0
+ 305              		@ sp needed
+ 306 00f0 38BD     		pop	{r3, r4, r5, pc}
+ 307              	.L13:
+ 308 00f2 C046     		.align	2
+ 309              	.L12:
+ 310 00f4 00000000 		.word	CSD_widgetIndex
+ 311 00f8 00000000 		.word	CSD_dsFlash
+ 312 00fc 00000000 		.word	CSD_sensorIndex
+ 313 0100 F0000C40 		.word	1074528496
+ 314 0104 D0000C40 		.word	1074528464
+ 315 0108 00000000 		.word	CSD_curRamSnsPtr
+ 316 010c 00000000 		.word	CSD_scanFreqIndex
+ 317 0110 00000000 		.word	CSD_dsRam
+ 318 0114 FFFFFEFF 		.word	-65537
+ 319 0118 00000000 		.word	CSD_requestScanAllWidget
+ 320              		.cfi_endproc
+ 321              	.LFE2:
+ 322              		.size	CSD_CSDPostMultiScan, .-CSD_CSDPostMultiScan
+ 323              		.text
+ 324              	.Letext0:
+ 325              		.file 2 "Generated_Source\\PSoC4\\cytypes.h"
+ 326              		.file 3 "Generated_Source\\PSoC4\\CSD_Configuration.h"
+ 327              		.file 4 "Generated_Source\\PSoC4\\CSD_Structure.h"
+ 328              		.file 5 "Generated_Source\\PSoC4\\CSD_Sensing.h"
+ 329              		.file 6 "Generated_Source\\PSoC4\\CSD_SensingCSD_LL.h"
+ 330              		.section	.debug_info,"",%progbits
+ 331              	.Ldebug_info0:
+ 332 0000 4F070000 		.4byte	0x74f
+ 333 0004 0400     		.2byte	0x4
+ 334 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 335 000a 04       		.byte	0x4
+ 336 000b 01       		.uleb128 0x1
+ 337 000c 76050000 		.4byte	.LASF98
+ 338 0010 01       		.byte	0x1
+ 339 0011 26050000 		.4byte	.LASF99
+ 340 0015 CD000000 		.4byte	.LASF100
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 23
+
+
+ 341 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 342 001d 00000000 		.4byte	0
+ 343 0021 00000000 		.4byte	.Ldebug_line0
+ 344 0025 02       		.uleb128 0x2
+ 345 0026 01       		.byte	0x1
+ 346 0027 06       		.byte	0x6
+ 347 0028 A6000000 		.4byte	.LASF0
+ 348 002c 02       		.uleb128 0x2
+ 349 002d 01       		.byte	0x1
+ 350 002e 08       		.byte	0x8
+ 351 002f 96030000 		.4byte	.LASF1
+ 352 0033 02       		.uleb128 0x2
+ 353 0034 02       		.byte	0x2
+ 354 0035 05       		.byte	0x5
+ 355 0036 E4030000 		.4byte	.LASF2
+ 356 003a 02       		.uleb128 0x2
+ 357 003b 02       		.byte	0x2
+ 358 003c 07       		.byte	0x7
+ 359 003d 12020000 		.4byte	.LASF3
+ 360 0041 02       		.uleb128 0x2
+ 361 0042 04       		.byte	0x4
+ 362 0043 05       		.byte	0x5
+ 363 0044 C4000000 		.4byte	.LASF4
+ 364 0048 02       		.uleb128 0x2
+ 365 0049 04       		.byte	0x4
+ 366 004a 07       		.byte	0x7
+ 367 004b C1010000 		.4byte	.LASF5
+ 368 004f 02       		.uleb128 0x2
+ 369 0050 08       		.byte	0x8
+ 370 0051 05       		.byte	0x5
+ 371 0052 98000000 		.4byte	.LASF6
+ 372 0056 02       		.uleb128 0x2
+ 373 0057 08       		.byte	0x8
+ 374 0058 07       		.byte	0x7
+ 375 0059 27000000 		.4byte	.LASF7
+ 376 005d 03       		.uleb128 0x3
+ 377 005e 04       		.byte	0x4
+ 378 005f 05       		.byte	0x5
+ 379 0060 696E7400 		.ascii	"int\000"
+ 380 0064 02       		.uleb128 0x2
+ 381 0065 04       		.byte	0x4
+ 382 0066 07       		.byte	0x7
+ 383 0067 A4010000 		.4byte	.LASF8
+ 384 006b 04       		.uleb128 0x4
+ 385 006c 2F010000 		.4byte	.LASF9
+ 386 0070 02       		.byte	0x2
+ 387 0071 B901     		.2byte	0x1b9
+ 388 0073 2C000000 		.4byte	0x2c
+ 389 0077 04       		.uleb128 0x4
+ 390 0078 00000000 		.4byte	.LASF10
+ 391 007c 02       		.byte	0x2
+ 392 007d BA01     		.2byte	0x1ba
+ 393 007f 3A000000 		.4byte	0x3a
+ 394 0083 04       		.uleb128 0x4
+ 395 0084 6D010000 		.4byte	.LASF11
+ 396 0088 02       		.byte	0x2
+ 397 0089 BB01     		.2byte	0x1bb
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 24
+
+
+ 398 008b 48000000 		.4byte	0x48
+ 399 008f 02       		.uleb128 0x2
+ 400 0090 04       		.byte	0x4
+ 401 0091 04       		.byte	0x4
+ 402 0092 2F030000 		.4byte	.LASF12
+ 403 0096 02       		.uleb128 0x2
+ 404 0097 08       		.byte	0x8
+ 405 0098 04       		.byte	0x4
+ 406 0099 48010000 		.4byte	.LASF13
+ 407 009d 02       		.uleb128 0x2
+ 408 009e 01       		.byte	0x1
+ 409 009f 08       		.byte	0x8
+ 410 00a0 55040000 		.4byte	.LASF14
+ 411 00a4 05       		.uleb128 0x5
+ 412 00a5 6B000000 		.4byte	0x6b
+ 413 00a9 04       		.uleb128 0x4
+ 414 00aa A2020000 		.4byte	.LASF15
+ 415 00ae 02       		.byte	0x2
+ 416 00af 6502     		.2byte	0x265
+ 417 00b1 B5000000 		.4byte	0xb5
+ 418 00b5 05       		.uleb128 0x5
+ 419 00b6 83000000 		.4byte	0x83
+ 420 00ba 06       		.uleb128 0x6
+ 421 00bb 74010000 		.4byte	.LASF16
+ 422 00bf 03       		.byte	0x3
+ 423 00c0 D8       		.byte	0xd8
+ 424 00c1 77000000 		.4byte	0x77
+ 425 00c5 06       		.uleb128 0x6
+ 426 00c6 D3010000 		.4byte	.LASF17
+ 427 00ca 03       		.byte	0x3
+ 428 00cb DC       		.byte	0xdc
+ 429 00cc 6B000000 		.4byte	0x6b
+ 430 00d0 02       		.uleb128 0x2
+ 431 00d1 04       		.byte	0x4
+ 432 00d2 07       		.byte	0x7
+ 433 00d3 E2020000 		.4byte	.LASF18
+ 434 00d7 07       		.uleb128 0x7
+ 435 00d8 04       		.byte	0x4
+ 436 00d9 08       		.uleb128 0x8
+ 437 00da 0E       		.byte	0xe
+ 438 00db 04       		.byte	0x4
+ 439 00dc 7C       		.byte	0x7c
+ 440 00dd 66010000 		.4byte	0x166
+ 441 00e1 09       		.uleb128 0x9
+ 442 00e2 29040000 		.4byte	.LASF19
+ 443 00e6 04       		.byte	0x4
+ 444 00e7 82       		.byte	0x82
+ 445 00e8 77000000 		.4byte	0x77
+ 446 00ec 00       		.byte	0
+ 447 00ed 09       		.uleb128 0x9
+ 448 00ee 1D050000 		.4byte	.LASF20
+ 449 00f2 04       		.byte	0x4
+ 450 00f3 87       		.byte	0x87
+ 451 00f4 BA000000 		.4byte	0xba
+ 452 00f8 02       		.byte	0x2
+ 453 00f9 09       		.uleb128 0x9
+ 454 00fa 08060000 		.4byte	.LASF21
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 25
+
+
+ 455 00fe 04       		.byte	0x4
+ 456 00ff 8C       		.byte	0x8c
+ 457 0100 6B000000 		.4byte	0x6b
+ 458 0104 04       		.byte	0x4
+ 459 0105 09       		.uleb128 0x9
+ 460 0106 F8020000 		.4byte	.LASF22
+ 461 010a 04       		.byte	0x4
+ 462 010b 91       		.byte	0x91
+ 463 010c 6B000000 		.4byte	0x6b
+ 464 0110 05       		.byte	0x5
+ 465 0111 09       		.uleb128 0x9
+ 466 0112 8B030000 		.4byte	.LASF23
+ 467 0116 04       		.byte	0x4
+ 468 0117 96       		.byte	0x96
+ 469 0118 6B000000 		.4byte	0x6b
+ 470 011c 06       		.byte	0x6
+ 471 011d 09       		.uleb128 0x9
+ 472 011e 79040000 		.4byte	.LASF24
+ 473 0122 04       		.byte	0x4
+ 474 0123 9B       		.byte	0x9b
+ 475 0124 6B000000 		.4byte	0x6b
+ 476 0128 07       		.byte	0x7
+ 477 0129 09       		.uleb128 0x9
+ 478 012a FF010000 		.4byte	.LASF25
+ 479 012e 04       		.byte	0x4
+ 480 012f A1       		.byte	0xa1
+ 481 0130 C5000000 		.4byte	0xc5
+ 482 0134 08       		.byte	0x8
+ 483 0135 09       		.uleb128 0x9
+ 484 0136 68030000 		.4byte	.LASF26
+ 485 013a 04       		.byte	0x4
+ 486 013b A6       		.byte	0xa6
+ 487 013c 6B000000 		.4byte	0x6b
+ 488 0140 09       		.byte	0x9
+ 489 0141 09       		.uleb128 0x9
+ 490 0142 D2020000 		.4byte	.LASF27
+ 491 0146 04       		.byte	0x4
+ 492 0147 AD       		.byte	0xad
+ 493 0148 66010000 		.4byte	0x166
+ 494 014c 0A       		.byte	0xa
+ 495 014d 09       		.uleb128 0x9
+ 496 014e 72040000 		.4byte	.LASF28
+ 497 0152 04       		.byte	0x4
+ 498 0153 B4       		.byte	0xb4
+ 499 0154 6B000000 		.4byte	0x6b
+ 500 0158 0B       		.byte	0xb
+ 501 0159 09       		.uleb128 0x9
+ 502 015a FE040000 		.4byte	.LASF29
+ 503 015e 04       		.byte	0x4
+ 504 015f B9       		.byte	0xb9
+ 505 0160 6B000000 		.4byte	0x6b
+ 506 0164 0C       		.byte	0xc
+ 507 0165 00       		.byte	0
+ 508 0166 0A       		.uleb128 0xa
+ 509 0167 6B000000 		.4byte	0x6b
+ 510 016b 76010000 		.4byte	0x176
+ 511 016f 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 26
+
+
+ 512 0170 D0000000 		.4byte	0xd0
+ 513 0174 00       		.byte	0
+ 514 0175 00       		.byte	0
+ 515 0176 06       		.uleb128 0x6
+ 516 0177 8B020000 		.4byte	.LASF30
+ 517 017b 04       		.byte	0x4
+ 518 017c BA       		.byte	0xba
+ 519 017d D9000000 		.4byte	0xd9
+ 520 0181 08       		.uleb128 0x8
+ 521 0182 0E       		.byte	0xe
+ 522 0183 04       		.byte	0x4
+ 523 0184 BF       		.byte	0xbf
+ 524 0185 0E020000 		.4byte	0x20e
+ 525 0189 09       		.uleb128 0x9
+ 526 018a 29040000 		.4byte	.LASF19
+ 527 018e 04       		.byte	0x4
+ 528 018f C5       		.byte	0xc5
+ 529 0190 77000000 		.4byte	0x77
+ 530 0194 00       		.byte	0
+ 531 0195 09       		.uleb128 0x9
+ 532 0196 1D050000 		.4byte	.LASF20
+ 533 019a 04       		.byte	0x4
+ 534 019b CA       		.byte	0xca
+ 535 019c BA000000 		.4byte	0xba
+ 536 01a0 02       		.byte	0x2
+ 537 01a1 09       		.uleb128 0x9
+ 538 01a2 08060000 		.4byte	.LASF21
+ 539 01a6 04       		.byte	0x4
+ 540 01a7 CF       		.byte	0xcf
+ 541 01a8 6B000000 		.4byte	0x6b
+ 542 01ac 04       		.byte	0x4
+ 543 01ad 09       		.uleb128 0x9
+ 544 01ae F8020000 		.4byte	.LASF22
+ 545 01b2 04       		.byte	0x4
+ 546 01b3 D4       		.byte	0xd4
+ 547 01b4 6B000000 		.4byte	0x6b
+ 548 01b8 05       		.byte	0x5
+ 549 01b9 09       		.uleb128 0x9
+ 550 01ba 8B030000 		.4byte	.LASF23
+ 551 01be 04       		.byte	0x4
+ 552 01bf D9       		.byte	0xd9
+ 553 01c0 6B000000 		.4byte	0x6b
+ 554 01c4 06       		.byte	0x6
+ 555 01c5 09       		.uleb128 0x9
+ 556 01c6 79040000 		.4byte	.LASF24
+ 557 01ca 04       		.byte	0x4
+ 558 01cb DE       		.byte	0xde
+ 559 01cc 6B000000 		.4byte	0x6b
+ 560 01d0 07       		.byte	0x7
+ 561 01d1 09       		.uleb128 0x9
+ 562 01d2 FF010000 		.4byte	.LASF25
+ 563 01d6 04       		.byte	0x4
+ 564 01d7 E4       		.byte	0xe4
+ 565 01d8 C5000000 		.4byte	0xc5
+ 566 01dc 08       		.byte	0x8
+ 567 01dd 09       		.uleb128 0x9
+ 568 01de 68030000 		.4byte	.LASF26
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 27
+
+
+ 569 01e2 04       		.byte	0x4
+ 570 01e3 E9       		.byte	0xe9
+ 571 01e4 6B000000 		.4byte	0x6b
+ 572 01e8 09       		.byte	0x9
+ 573 01e9 09       		.uleb128 0x9
+ 574 01ea D2020000 		.4byte	.LASF27
+ 575 01ee 04       		.byte	0x4
+ 576 01ef F0       		.byte	0xf0
+ 577 01f0 66010000 		.4byte	0x166
+ 578 01f4 0A       		.byte	0xa
+ 579 01f5 09       		.uleb128 0x9
+ 580 01f6 72040000 		.4byte	.LASF28
+ 581 01fa 04       		.byte	0x4
+ 582 01fb F7       		.byte	0xf7
+ 583 01fc 6B000000 		.4byte	0x6b
+ 584 0200 0B       		.byte	0xb
+ 585 0201 09       		.uleb128 0x9
+ 586 0202 FE040000 		.4byte	.LASF29
+ 587 0206 04       		.byte	0x4
+ 588 0207 FC       		.byte	0xfc
+ 589 0208 6B000000 		.4byte	0x6b
+ 590 020c 0C       		.byte	0xc
+ 591 020d 00       		.byte	0
+ 592 020e 06       		.uleb128 0x6
+ 593 020f 84040000 		.4byte	.LASF31
+ 594 0213 04       		.byte	0x4
+ 595 0214 FD       		.byte	0xfd
+ 596 0215 81010000 		.4byte	0x181
+ 597 0219 0C       		.uleb128 0xc
+ 598 021a 0E       		.byte	0xe
+ 599 021b 04       		.byte	0x4
+ 600 021c 0301     		.2byte	0x103
+ 601 021e 30020000 		.4byte	0x230
+ 602 0222 0D       		.uleb128 0xd
+ 603 0223 B2000000 		.4byte	.LASF32
+ 604 0227 04       		.byte	0x4
+ 605 0228 0801     		.2byte	0x108
+ 606 022a 0E020000 		.4byte	0x20e
+ 607 022e 00       		.byte	0
+ 608 022f 00       		.byte	0
+ 609 0230 04       		.uleb128 0x4
+ 610 0231 B9030000 		.4byte	.LASF33
+ 611 0235 04       		.byte	0x4
+ 612 0236 0901     		.2byte	0x109
+ 613 0238 19020000 		.4byte	0x219
+ 614 023c 0C       		.uleb128 0xc
+ 615 023d 0A       		.byte	0xa
+ 616 023e 04       		.byte	0x4
+ 617 023f 0F01     		.2byte	0x10f
+ 618 0241 94020000 		.4byte	0x294
+ 619 0245 0E       		.uleb128 0xe
+ 620 0246 72617700 		.ascii	"raw\000"
+ 621 024a 04       		.byte	0x4
+ 622 024b 1401     		.2byte	0x114
+ 623 024d 94020000 		.4byte	0x294
+ 624 0251 00       		.byte	0
+ 625 0252 0D       		.uleb128 0xd
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 28
+
+
+ 626 0253 9F010000 		.4byte	.LASF34
+ 627 0257 04       		.byte	0x4
+ 628 0258 1901     		.2byte	0x119
+ 629 025a 94020000 		.4byte	0x294
+ 630 025e 02       		.byte	0x2
+ 631 025f 0D       		.uleb128 0xd
+ 632 0260 8C010000 		.4byte	.LASF35
+ 633 0264 04       		.byte	0x4
+ 634 0265 1F01     		.2byte	0x11f
+ 635 0267 66010000 		.4byte	0x166
+ 636 026b 04       		.byte	0x4
+ 637 026c 0D       		.uleb128 0xd
+ 638 026d 4B000000 		.4byte	.LASF36
+ 639 0271 04       		.byte	0x4
+ 640 0272 2401     		.2byte	0x124
+ 641 0274 BA000000 		.4byte	0xba
+ 642 0278 06       		.byte	0x6
+ 643 0279 0D       		.uleb128 0xd
+ 644 027a A6040000 		.4byte	.LASF37
+ 645 027e 04       		.byte	0x4
+ 646 027f 2901     		.2byte	0x129
+ 647 0281 A4020000 		.4byte	0x2a4
+ 648 0285 08       		.byte	0x8
+ 649 0286 0D       		.uleb128 0xd
+ 650 0287 9D040000 		.4byte	.LASF38
+ 651 028b 04       		.byte	0x4
+ 652 028c 2F01     		.2byte	0x12f
+ 653 028e 66010000 		.4byte	0x166
+ 654 0292 09       		.byte	0x9
+ 655 0293 00       		.byte	0
+ 656 0294 0A       		.uleb128 0xa
+ 657 0295 77000000 		.4byte	0x77
+ 658 0299 A4020000 		.4byte	0x2a4
+ 659 029d 0B       		.uleb128 0xb
+ 660 029e D0000000 		.4byte	0xd0
+ 661 02a2 00       		.byte	0
+ 662 02a3 00       		.byte	0
+ 663 02a4 0A       		.uleb128 0xa
+ 664 02a5 C5000000 		.4byte	0xc5
+ 665 02a9 B4020000 		.4byte	0x2b4
+ 666 02ad 0B       		.uleb128 0xb
+ 667 02ae D0000000 		.4byte	0xd0
+ 668 02b2 00       		.byte	0
+ 669 02b3 00       		.byte	0
+ 670 02b4 04       		.uleb128 0x4
+ 671 02b5 35010000 		.4byte	.LASF39
+ 672 02b9 04       		.byte	0x4
+ 673 02ba 3001     		.2byte	0x130
+ 674 02bc 3C020000 		.4byte	0x23c
+ 675 02c0 0C       		.uleb128 0xc
+ 676 02c1 14       		.byte	0x14
+ 677 02c2 04       		.byte	0x4
+ 678 02c3 3601     		.2byte	0x136
+ 679 02c5 D7020000 		.4byte	0x2d7
+ 680 02c9 0D       		.uleb128 0xd
+ 681 02ca B2000000 		.4byte	.LASF32
+ 682 02ce 04       		.byte	0x4
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 29
+
+
+ 683 02cf 3B01     		.2byte	0x13b
+ 684 02d1 D7020000 		.4byte	0x2d7
+ 685 02d5 00       		.byte	0
+ 686 02d6 00       		.byte	0
+ 687 02d7 0A       		.uleb128 0xa
+ 688 02d8 B4020000 		.4byte	0x2b4
+ 689 02dc E7020000 		.4byte	0x2e7
+ 690 02e0 0B       		.uleb128 0xb
+ 691 02e1 D0000000 		.4byte	0xd0
+ 692 02e5 01       		.byte	0x1
+ 693 02e6 00       		.byte	0
+ 694 02e7 04       		.uleb128 0x4
+ 695 02e8 3D040000 		.4byte	.LASF40
+ 696 02ec 04       		.byte	0x4
+ 697 02ed 3C01     		.2byte	0x13c
+ 698 02ef C0020000 		.4byte	0x2c0
+ 699 02f3 0C       		.uleb128 0xc
+ 700 02f4 44       		.byte	0x44
+ 701 02f5 04       		.byte	0x4
+ 702 02f6 4301     		.2byte	0x143
+ 703 02f8 CD030000 		.4byte	0x3cd
+ 704 02fc 0D       		.uleb128 0xd
+ 705 02fd 58020000 		.4byte	.LASF41
+ 706 0301 04       		.byte	0x4
+ 707 0302 4901     		.2byte	0x149
+ 708 0304 77000000 		.4byte	0x77
+ 709 0308 00       		.byte	0
+ 710 0309 0D       		.uleb128 0xd
+ 711 030a 78020000 		.4byte	.LASF42
+ 712 030e 04       		.byte	0x4
+ 713 030f 4E01     		.2byte	0x14e
+ 714 0311 77000000 		.4byte	0x77
+ 715 0315 02       		.byte	0x2
+ 716 0316 0D       		.uleb128 0xd
+ 717 0317 26030000 		.4byte	.LASF43
+ 718 031b 04       		.byte	0x4
+ 719 031c 5401     		.2byte	0x154
+ 720 031e 77000000 		.4byte	0x77
+ 721 0322 04       		.byte	0x4
+ 722 0323 0D       		.uleb128 0xd
+ 723 0324 0A030000 		.4byte	.LASF44
+ 724 0328 04       		.byte	0x4
+ 725 0329 5901     		.2byte	0x159
+ 726 032b 77000000 		.4byte	0x77
+ 727 032f 06       		.byte	0x6
+ 728 0330 0D       		.uleb128 0xd
+ 729 0331 D0040000 		.4byte	.LASF45
+ 730 0335 04       		.byte	0x4
+ 731 0336 5E01     		.2byte	0x15e
+ 732 0338 83000000 		.4byte	0x83
+ 733 033c 08       		.byte	0x8
+ 734 033d 0D       		.uleb128 0xd
+ 735 033e E9010000 		.4byte	.LASF46
+ 736 0342 04       		.byte	0x4
+ 737 0343 6301     		.2byte	0x163
+ 738 0345 CD030000 		.4byte	0x3cd
+ 739 0349 0C       		.byte	0xc
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 30
+
+
+ 740 034a 0D       		.uleb128 0xd
+ 741 034b 94010000 		.4byte	.LASF47
+ 742 034f 04       		.byte	0x4
+ 743 0350 6801     		.2byte	0x168
+ 744 0352 CD030000 		.4byte	0x3cd
+ 745 0356 10       		.byte	0x10
+ 746 0357 0D       		.uleb128 0xd
+ 747 0358 BA000000 		.4byte	.LASF48
+ 748 035c 04       		.byte	0x4
+ 749 035d 7601     		.2byte	0x176
+ 750 035f 66010000 		.4byte	0x166
+ 751 0363 14       		.byte	0x14
+ 752 0364 0D       		.uleb128 0xd
+ 753 0365 61020000 		.4byte	.LASF49
+ 754 0369 04       		.byte	0x4
+ 755 036a 7B01     		.2byte	0x17b
+ 756 036c 77000000 		.4byte	0x77
+ 757 0370 16       		.byte	0x16
+ 758 0371 0D       		.uleb128 0xd
+ 759 0372 81020000 		.4byte	.LASF50
+ 760 0376 04       		.byte	0x4
+ 761 0377 8001     		.2byte	0x180
+ 762 0379 6B000000 		.4byte	0x6b
+ 763 037d 18       		.byte	0x18
+ 764 037e 0D       		.uleb128 0xd
+ 765 037f 34040000 		.4byte	.LASF51
+ 766 0383 04       		.byte	0x4
+ 767 0384 8501     		.2byte	0x185
+ 768 0386 30020000 		.4byte	0x230
+ 769 038a 1A       		.byte	0x1a
+ 770 038b 0D       		.uleb128 0xd
+ 771 038c 50020000 		.4byte	.LASF52
+ 772 0390 04       		.byte	0x4
+ 773 0391 8A01     		.2byte	0x18a
+ 774 0393 E7020000 		.4byte	0x2e7
+ 775 0397 28       		.byte	0x28
+ 776 0398 0D       		.uleb128 0xd
+ 777 0399 B1010000 		.4byte	.LASF53
+ 778 039d 04       		.byte	0x4
+ 779 039e 8F01     		.2byte	0x18f
+ 780 03a0 6B000000 		.4byte	0x6b
+ 781 03a4 3C       		.byte	0x3c
+ 782 03a5 0D       		.uleb128 0xd
+ 783 03a6 73000000 		.4byte	.LASF54
+ 784 03aa 04       		.byte	0x4
+ 785 03ab 9401     		.2byte	0x194
+ 786 03ad 6B000000 		.4byte	0x6b
+ 787 03b1 3D       		.byte	0x3d
+ 788 03b2 0D       		.uleb128 0xd
+ 789 03b3 4D050000 		.4byte	.LASF55
+ 790 03b7 04       		.byte	0x4
+ 791 03b8 9901     		.2byte	0x199
+ 792 03ba 77000000 		.4byte	0x77
+ 793 03be 3E       		.byte	0x3e
+ 794 03bf 0D       		.uleb128 0xd
+ 795 03c0 4F010000 		.4byte	.LASF56
+ 796 03c4 04       		.byte	0x4
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 31
+
+
+ 797 03c5 9E01     		.2byte	0x19e
+ 798 03c7 94020000 		.4byte	0x294
+ 799 03cb 40       		.byte	0x40
+ 800 03cc 00       		.byte	0
+ 801 03cd 0A       		.uleb128 0xa
+ 802 03ce 83000000 		.4byte	0x83
+ 803 03d2 DD030000 		.4byte	0x3dd
+ 804 03d6 0B       		.uleb128 0xb
+ 805 03d7 D0000000 		.4byte	0xd0
+ 806 03db 00       		.byte	0
+ 807 03dc 00       		.byte	0
+ 808 03dd 04       		.uleb128 0x4
+ 809 03de 35030000 		.4byte	.LASF57
+ 810 03e2 04       		.byte	0x4
+ 811 03e3 9F01     		.2byte	0x19f
+ 812 03e5 F3020000 		.4byte	0x2f3
+ 813 03e9 0C       		.uleb128 0xc
+ 814 03ea 1C       		.byte	0x1c
+ 815 03eb 04       		.byte	0x4
+ 816 03ec A501     		.2byte	0x1a5
+ 817 03ee 68040000 		.4byte	0x468
+ 818 03f2 0D       		.uleb128 0xd
+ 819 03f3 6A000000 		.4byte	.LASF58
+ 820 03f7 04       		.byte	0x4
+ 821 03f8 AA01     		.2byte	0x1aa
+ 822 03fa 68040000 		.4byte	0x468
+ 823 03fe 00       		.byte	0
+ 824 03ff 0D       		.uleb128 0xd
+ 825 0400 47050000 		.4byte	.LASF59
+ 826 0404 04       		.byte	0x4
+ 827 0405 AF01     		.2byte	0x1af
+ 828 0407 68040000 		.4byte	0x468
+ 829 040b 04       		.byte	0x4
+ 830 040c 0D       		.uleb128 0xd
+ 831 040d 6C040000 		.4byte	.LASF60
+ 832 0411 04       		.byte	0x4
+ 833 0412 B401     		.2byte	0x1b4
+ 834 0414 68040000 		.4byte	0x468
+ 835 0418 08       		.byte	0x8
+ 836 0419 0D       		.uleb128 0xd
+ 837 041a 29010000 		.4byte	.LASF61
+ 838 041e 04       		.byte	0x4
+ 839 041f B901     		.2byte	0x1b9
+ 840 0421 68040000 		.4byte	0x468
+ 841 0425 0C       		.byte	0xc
+ 842 0426 0D       		.uleb128 0xd
+ 843 0427 60050000 		.4byte	.LASF62
+ 844 042b 04       		.byte	0x4
+ 845 042c BE01     		.2byte	0x1be
+ 846 042e 83000000 		.4byte	0x83
+ 847 0432 10       		.byte	0x10
+ 848 0433 0D       		.uleb128 0xd
+ 849 0434 87010000 		.4byte	.LASF63
+ 850 0438 04       		.byte	0x4
+ 851 0439 C301     		.2byte	0x1c3
+ 852 043b 83000000 		.4byte	0x83
+ 853 043f 14       		.byte	0x14
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 32
+
+
+ 854 0440 0D       		.uleb128 0xd
+ 855 0441 0A040000 		.4byte	.LASF64
+ 856 0445 04       		.byte	0x4
+ 857 0446 C801     		.2byte	0x1c8
+ 858 0448 6B000000 		.4byte	0x6b
+ 859 044c 18       		.byte	0x18
+ 860 044d 0D       		.uleb128 0xd
+ 861 044e 65010000 		.4byte	.LASF65
+ 862 0452 04       		.byte	0x4
+ 863 0453 CD01     		.2byte	0x1cd
+ 864 0455 6B000000 		.4byte	0x6b
+ 865 0459 19       		.byte	0x19
+ 866 045a 0D       		.uleb128 0xd
+ 867 045b 5F010000 		.4byte	.LASF66
+ 868 045f 04       		.byte	0x4
+ 869 0460 D201     		.2byte	0x1d2
+ 870 0462 6B000000 		.4byte	0x6b
+ 871 0466 1A       		.byte	0x1a
+ 872 0467 00       		.byte	0
+ 873 0468 0F       		.uleb128 0xf
+ 874 0469 04       		.byte	0x4
+ 875 046a A9000000 		.4byte	0xa9
+ 876 046e 04       		.uleb128 0x4
+ 877 046f 44030000 		.4byte	.LASF67
+ 878 0473 04       		.byte	0x4
+ 879 0474 D301     		.2byte	0x1d3
+ 880 0476 E9030000 		.4byte	0x3e9
+ 881 047a 0C       		.uleb128 0xc
+ 882 047b 1C       		.byte	0x1c
+ 883 047c 04       		.byte	0x4
+ 884 047d FE01     		.2byte	0x1fe
+ 885 047f F9040000 		.4byte	0x4f9
+ 886 0483 0D       		.uleb128 0xd
+ 887 0484 3E000000 		.4byte	.LASF68
+ 888 0488 04       		.byte	0x4
+ 889 0489 0702     		.2byte	0x207
+ 890 048b F9040000 		.4byte	0x4f9
+ 891 048f 00       		.byte	0
+ 892 0490 0D       		.uleb128 0xd
+ 893 0491 6C020000 		.4byte	.LASF69
+ 894 0495 04       		.byte	0x4
+ 895 0496 0D02     		.2byte	0x20d
+ 896 0498 D7000000 		.4byte	0xd7
+ 897 049c 04       		.byte	0x4
+ 898 049d 0D       		.uleb128 0xd
+ 899 049e 1E010000 		.4byte	.LASF70
+ 900 04a2 04       		.byte	0x4
+ 901 04a3 1302     		.2byte	0x213
+ 902 04a5 00050000 		.4byte	0x500
+ 903 04a9 08       		.byte	0x8
+ 904 04aa 0D       		.uleb128 0xd
+ 905 04ab FA030000 		.4byte	.LASF71
+ 906 04af 04       		.byte	0x4
+ 907 04b0 1802     		.2byte	0x218
+ 908 04b2 D7000000 		.4byte	0xd7
+ 909 04b6 0C       		.byte	0xc
+ 910 04b7 0D       		.uleb128 0xd
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 33
+
+
+ 911 04b8 C0040000 		.4byte	.LASF72
+ 912 04bc 04       		.byte	0x4
+ 913 04bd 1F02     		.2byte	0x21f
+ 914 04bf 06050000 		.4byte	0x506
+ 915 04c3 10       		.byte	0x10
+ 916 04c4 0D       		.uleb128 0xd
+ 917 04c5 EB020000 		.4byte	.LASF73
+ 918 04c9 04       		.byte	0x4
+ 919 04ca 2402     		.2byte	0x224
+ 920 04cc 77000000 		.4byte	0x77
+ 921 04d0 14       		.byte	0x14
+ 922 04d1 0D       		.uleb128 0xd
+ 923 04d2 B4040000 		.4byte	.LASF74
+ 924 04d6 04       		.byte	0x4
+ 925 04d7 2B02     		.2byte	0x22b
+ 926 04d9 77000000 		.4byte	0x77
+ 927 04dd 16       		.byte	0x16
+ 928 04de 0D       		.uleb128 0xd
+ 929 04df 01030000 		.4byte	.LASF75
+ 930 04e3 04       		.byte	0x4
+ 931 04e4 3602     		.2byte	0x236
+ 932 04e6 6B000000 		.4byte	0x6b
+ 933 04ea 18       		.byte	0x18
+ 934 04eb 0D       		.uleb128 0xd
+ 935 04ec DA020000 		.4byte	.LASF76
+ 936 04f0 04       		.byte	0x4
+ 937 04f1 3E02     		.2byte	0x23e
+ 938 04f3 6B000000 		.4byte	0x6b
+ 939 04f7 19       		.byte	0x19
+ 940 04f8 00       		.byte	0
+ 941 04f9 0F       		.uleb128 0xf
+ 942 04fa 04       		.byte	0x4
+ 943 04fb FF040000 		.4byte	0x4ff
+ 944 04ff 10       		.uleb128 0x10
+ 945 0500 0F       		.uleb128 0xf
+ 946 0501 04       		.byte	0x4
+ 947 0502 B4020000 		.4byte	0x2b4
+ 948 0506 0F       		.uleb128 0xf
+ 949 0507 04       		.byte	0x4
+ 950 0508 6B000000 		.4byte	0x6b
+ 951 050c 04       		.uleb128 0x4
+ 952 050d 15040000 		.4byte	.LASF77
+ 953 0511 04       		.byte	0x4
+ 954 0512 3F02     		.2byte	0x23f
+ 955 0514 7A040000 		.4byte	0x47a
+ 956 0518 0C       		.uleb128 0xc
+ 957 0519 1C       		.byte	0x1c
+ 958 051a 04       		.byte	0x4
+ 959 051b 4502     		.2byte	0x245
+ 960 051d 2F050000 		.4byte	0x52f
+ 961 0521 0D       		.uleb128 0xd
+ 962 0522 E8040000 		.4byte	.LASF78
+ 963 0526 04       		.byte	0x4
+ 964 0527 4A02     		.2byte	0x24a
+ 965 0529 2F050000 		.4byte	0x52f
+ 966 052d 00       		.byte	0
+ 967 052e 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 34
+
+
+ 968 052f 0A       		.uleb128 0xa
+ 969 0530 0C050000 		.4byte	0x50c
+ 970 0534 3F050000 		.4byte	0x53f
+ 971 0538 0B       		.uleb128 0xb
+ 972 0539 D0000000 		.4byte	0xd0
+ 973 053d 00       		.byte	0
+ 974 053e 00       		.byte	0
+ 975 053f 04       		.uleb128 0x4
+ 976 0540 D7040000 		.4byte	.LASF79
+ 977 0544 04       		.byte	0x4
+ 978 0545 4B02     		.2byte	0x24b
+ 979 0547 18050000 		.4byte	0x518
+ 980 054b 11       		.uleb128 0x11
+ 981 054c 5A040000 		.4byte	.LASF83
+ 982 0550 01       		.byte	0x1
+ 983 0551 E202     		.2byte	0x2e2
+ 984 0553 03       		.byte	0x3
+ 985 0554 7D050000 		.4byte	0x57d
+ 986 0558 12       		.uleb128 0x12
+ 987 0559 F4010000 		.4byte	.LASF80
+ 988 055d 01       		.byte	0x1
+ 989 055e E602     		.2byte	0x2e6
+ 990 0560 83000000 		.4byte	0x83
+ 991 0564 12       		.uleb128 0x12
+ 992 0565 6A050000 		.4byte	.LASF81
+ 993 0569 01       		.byte	0x1
+ 994 056a E702     		.2byte	0x2e7
+ 995 056c 83000000 		.4byte	0x83
+ 996 0570 12       		.uleb128 0x12
+ 997 0571 0A020000 		.4byte	.LASF82
+ 998 0575 01       		.byte	0x1
+ 999 0576 E802     		.2byte	0x2e8
+ 1000 0578 7D050000 		.4byte	0x57d
+ 1001 057c 00       		.byte	0
+ 1002 057d 0F       		.uleb128 0xf
+ 1003 057e 04       		.byte	0x4
+ 1004 057f 83050000 		.4byte	0x583
+ 1005 0583 13       		.uleb128 0x13
+ 1006 0584 76010000 		.4byte	0x176
+ 1007 0588 14       		.uleb128 0x14
+ 1008 0589 11000000 		.4byte	.LASF85
+ 1009 058d 01       		.byte	0x1
+ 1010 058e 7F       		.byte	0x7f
+ 1011 058f 00000000 		.4byte	.LFB1
+ 1012 0593 78000000 		.4byte	.LFE1-.LFB1
+ 1013 0597 01       		.uleb128 0x1
+ 1014 0598 9C       		.byte	0x9c
+ 1015 0599 D3050000 		.4byte	0x5d3
+ 1016 059d 15       		.uleb128 0x15
+ 1017 059e 4B050000 		.4byte	0x54b
+ 1018 05a2 08000000 		.4byte	.LBB4
+ 1019 05a6 3E000000 		.4byte	.LBE4-.LBB4
+ 1020 05aa 01       		.byte	0x1
+ 1021 05ab 9A       		.byte	0x9a
+ 1022 05ac 16       		.uleb128 0x16
+ 1023 05ad 08000000 		.4byte	.LBB5
+ 1024 05b1 3E000000 		.4byte	.LBE5-.LBB5
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 35
+
+
+ 1025 05b5 17       		.uleb128 0x17
+ 1026 05b6 58050000 		.4byte	0x558
+ 1027 05ba 00000000 		.4byte	.LLST0
+ 1028 05be 17       		.uleb128 0x17
+ 1029 05bf 64050000 		.4byte	0x564
+ 1030 05c3 13000000 		.4byte	.LLST1
+ 1031 05c7 17       		.uleb128 0x17
+ 1032 05c8 70050000 		.4byte	0x570
+ 1033 05cc 42000000 		.4byte	.LLST2
+ 1034 05d0 00       		.byte	0
+ 1035 05d1 00       		.byte	0
+ 1036 05d2 00       		.byte	0
+ 1037 05d3 11       		.uleb128 0x11
+ 1038 05d4 25020000 		.4byte	.LASF84
+ 1039 05d8 01       		.byte	0x1
+ 1040 05d9 2203     		.2byte	0x322
+ 1041 05db 03       		.byte	0x3
+ 1042 05dc ED050000 		.4byte	0x5ed
+ 1043 05e0 12       		.uleb128 0x12
+ 1044 05e1 0A020000 		.4byte	.LASF82
+ 1045 05e5 01       		.byte	0x1
+ 1046 05e6 2A03     		.2byte	0x32a
+ 1047 05e8 ED050000 		.4byte	0x5ed
+ 1048 05ec 00       		.byte	0
+ 1049 05ed 0F       		.uleb128 0xf
+ 1050 05ee 04       		.byte	0x4
+ 1051 05ef 76010000 		.4byte	0x176
+ 1052 05f3 14       		.uleb128 0x14
+ 1053 05f4 83000000 		.4byte	.LASF86
+ 1054 05f8 01       		.byte	0x1
+ 1055 05f9 EE       		.byte	0xee
+ 1056 05fa 00000000 		.4byte	.LFB2
+ 1057 05fe 1C010000 		.4byte	.LFE2-.LFB2
+ 1058 0602 01       		.uleb128 0x1
+ 1059 0603 9C       		.byte	0x9c
+ 1060 0604 A7060000 		.4byte	0x6a7
+ 1061 0608 18       		.uleb128 0x18
+ 1062 0609 F2040000 		.4byte	.LASF101
+ 1063 060d 01       		.byte	0x1
+ 1064 060e F1       		.byte	0xf1
+ 1065 060f A7060000 		.4byte	0x6a7
+ 1066 0613 55000000 		.4byte	.LLST3
+ 1067 0617 19       		.uleb128 0x19
+ 1068 0618 4B050000 		.4byte	0x54b
+ 1069 061c 24000000 		.4byte	.LBB10
+ 1070 0620 3A000000 		.4byte	.LBE10-.LBB10
+ 1071 0624 01       		.byte	0x1
+ 1072 0625 0E01     		.2byte	0x10e
+ 1073 0627 51060000 		.4byte	0x651
+ 1074 062b 16       		.uleb128 0x16
+ 1075 062c 24000000 		.4byte	.LBB11
+ 1076 0630 3A000000 		.4byte	.LBE11-.LBB11
+ 1077 0634 17       		.uleb128 0x17
+ 1078 0635 58050000 		.4byte	0x558
+ 1079 0639 68000000 		.4byte	.LLST4
+ 1080 063d 17       		.uleb128 0x17
+ 1081 063e 64050000 		.4byte	0x564
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 36
+
+
+ 1082 0642 7B000000 		.4byte	.LLST5
+ 1083 0646 17       		.uleb128 0x17
+ 1084 0647 70050000 		.4byte	0x570
+ 1085 064b AA000000 		.4byte	.LLST6
+ 1086 064f 00       		.byte	0
+ 1087 0650 00       		.byte	0
+ 1088 0651 19       		.uleb128 0x19
+ 1089 0652 D3050000 		.4byte	0x5d3
+ 1090 0656 62000000 		.4byte	.LBB12
+ 1091 065a 8E000000 		.4byte	.LBE12-.LBB12
+ 1092 065e 01       		.byte	0x1
+ 1093 065f 2D01     		.2byte	0x12d
+ 1094 0661 9D060000 		.4byte	0x69d
+ 1095 0665 16       		.uleb128 0x16
+ 1096 0666 62000000 		.4byte	.LBB13
+ 1097 066a 8E000000 		.4byte	.LBE13-.LBB13
+ 1098 066e 17       		.uleb128 0x17
+ 1099 066f E0050000 		.4byte	0x5e0
+ 1100 0673 BD000000 		.4byte	.LLST7
+ 1101 0677 1A       		.uleb128 0x1a
+ 1102 0678 B2000000 		.4byte	.LVL21
+ 1103 067c 10070000 		.4byte	0x710
+ 1104 0680 1A       		.uleb128 0x1a
+ 1105 0681 BE000000 		.4byte	.LVL22
+ 1106 0685 21070000 		.4byte	0x721
+ 1107 0689 1A       		.uleb128 0x1a
+ 1108 068a C2000000 		.4byte	.LVL23
+ 1109 068e 37070000 		.4byte	0x737
+ 1110 0692 1A       		.uleb128 0x1a
+ 1111 0693 E0000000 		.4byte	.LVL25
+ 1112 0697 3E070000 		.4byte	0x73e
+ 1113 069b 00       		.byte	0
+ 1114 069c 00       		.byte	0
+ 1115 069d 1A       		.uleb128 0x1a
+ 1116 069e 62000000 		.4byte	.LVL19
+ 1117 06a2 45070000 		.4byte	0x745
+ 1118 06a6 00       		.byte	0
+ 1119 06a7 0F       		.uleb128 0xf
+ 1120 06a8 04       		.byte	0x4
+ 1121 06a9 AD060000 		.4byte	0x6ad
+ 1122 06ad 13       		.uleb128 0x13
+ 1123 06ae 6E040000 		.4byte	0x46e
+ 1124 06b2 1B       		.uleb128 0x1b
+ 1125 06b3 07000000 		.4byte	.LASF87
+ 1126 06b7 04       		.byte	0x4
+ 1127 06b8 A203     		.2byte	0x3a2
+ 1128 06ba DD030000 		.4byte	0x3dd
+ 1129 06be 1B       		.uleb128 0x1b
+ 1130 06bf EE030000 		.4byte	.LASF88
+ 1131 06c3 04       		.byte	0x4
+ 1132 06c4 A303     		.2byte	0x3a3
+ 1133 06c6 CA060000 		.4byte	0x6ca
+ 1134 06ca 13       		.uleb128 0x13
+ 1135 06cb 3F050000 		.4byte	0x53f
+ 1136 06cf 1B       		.uleb128 0x1b
+ 1137 06d0 0B050000 		.4byte	.LASF89
+ 1138 06d4 05       		.byte	0x5
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 37
+
+
+ 1139 06d5 4905     		.2byte	0x549
+ 1140 06d7 DB060000 		.4byte	0x6db
+ 1141 06db 13       		.uleb128 0x13
+ 1142 06dc 6B000000 		.4byte	0x6b
+ 1143 06e0 1B       		.uleb128 0x1b
+ 1144 06e1 16030000 		.4byte	.LASF90
+ 1145 06e5 05       		.byte	0x5
+ 1146 06e6 5105     		.2byte	0x551
+ 1147 06e8 A4000000 		.4byte	0xa4
+ 1148 06ec 1B       		.uleb128 0x1b
+ 1149 06ed 58030000 		.4byte	.LASF91
+ 1150 06f1 05       		.byte	0x5
+ 1151 06f2 5205     		.2byte	0x552
+ 1152 06f4 A4000000 		.4byte	0xa4
+ 1153 06f8 1B       		.uleb128 0x1b
+ 1154 06f9 72030000 		.4byte	.LASF92
+ 1155 06fd 05       		.byte	0x5
+ 1156 06fe 5405     		.2byte	0x554
+ 1157 0700 6B000000 		.4byte	0x6b
+ 1158 0704 1B       		.uleb128 0x1b
+ 1159 0705 A8020000 		.4byte	.LASF93
+ 1160 0709 05       		.byte	0x5
+ 1161 070a 5905     		.2byte	0x559
+ 1162 070c 00050000 		.4byte	0x500
+ 1163 0710 1C       		.uleb128 0x1c
+ 1164 0711 D0030000 		.4byte	.LASF94
+ 1165 0715 06       		.byte	0x6
+ 1166 0716 54       		.byte	0x54
+ 1167 0717 21070000 		.4byte	0x721
+ 1168 071b 1D       		.uleb128 0x1d
+ 1169 071c 7D050000 		.4byte	0x57d
+ 1170 0720 00       		.byte	0
+ 1171 0721 1C       		.uleb128 0x1c
+ 1172 0722 50000000 		.4byte	.LASF95
+ 1173 0726 06       		.byte	0x6
+ 1174 0727 60       		.byte	0x60
+ 1175 0728 37070000 		.4byte	0x737
+ 1176 072c 1D       		.uleb128 0x1d
+ 1177 072d 83000000 		.4byte	0x83
+ 1178 0731 1D       		.uleb128 0x1d
+ 1179 0732 83000000 		.4byte	0x83
+ 1180 0736 00       		.byte	0
+ 1181 0737 1E       		.uleb128 0x1e
+ 1182 0738 A4030000 		.4byte	.LASF96
+ 1183 073c 06       		.byte	0x6
+ 1184 073d 53       		.byte	0x53
+ 1185 073e 1E       		.uleb128 0x1e
+ 1186 073f B9020000 		.4byte	.LASF97
+ 1187 0743 05       		.byte	0x5
+ 1188 0744 7E       		.byte	0x7e
+ 1189 0745 1F       		.uleb128 0x1f
+ 1190 0746 3B020000 		.4byte	.LASF102
+ 1191 074a 06       		.byte	0x6
+ 1192 074b 44       		.byte	0x44
+ 1193 074c 1D       		.uleb128 0x1d
+ 1194 074d A7060000 		.4byte	0x6a7
+ 1195 0751 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 38
+
+
+ 1196 0752 00       		.byte	0
+ 1197              		.section	.debug_abbrev,"",%progbits
+ 1198              	.Ldebug_abbrev0:
+ 1199 0000 01       		.uleb128 0x1
+ 1200 0001 11       		.uleb128 0x11
+ 1201 0002 01       		.byte	0x1
+ 1202 0003 25       		.uleb128 0x25
+ 1203 0004 0E       		.uleb128 0xe
+ 1204 0005 13       		.uleb128 0x13
+ 1205 0006 0B       		.uleb128 0xb
+ 1206 0007 03       		.uleb128 0x3
+ 1207 0008 0E       		.uleb128 0xe
+ 1208 0009 1B       		.uleb128 0x1b
+ 1209 000a 0E       		.uleb128 0xe
+ 1210 000b 55       		.uleb128 0x55
+ 1211 000c 17       		.uleb128 0x17
+ 1212 000d 11       		.uleb128 0x11
+ 1213 000e 01       		.uleb128 0x1
+ 1214 000f 10       		.uleb128 0x10
+ 1215 0010 17       		.uleb128 0x17
+ 1216 0011 00       		.byte	0
+ 1217 0012 00       		.byte	0
+ 1218 0013 02       		.uleb128 0x2
+ 1219 0014 24       		.uleb128 0x24
+ 1220 0015 00       		.byte	0
+ 1221 0016 0B       		.uleb128 0xb
+ 1222 0017 0B       		.uleb128 0xb
+ 1223 0018 3E       		.uleb128 0x3e
+ 1224 0019 0B       		.uleb128 0xb
+ 1225 001a 03       		.uleb128 0x3
+ 1226 001b 0E       		.uleb128 0xe
+ 1227 001c 00       		.byte	0
+ 1228 001d 00       		.byte	0
+ 1229 001e 03       		.uleb128 0x3
+ 1230 001f 24       		.uleb128 0x24
+ 1231 0020 00       		.byte	0
+ 1232 0021 0B       		.uleb128 0xb
+ 1233 0022 0B       		.uleb128 0xb
+ 1234 0023 3E       		.uleb128 0x3e
+ 1235 0024 0B       		.uleb128 0xb
+ 1236 0025 03       		.uleb128 0x3
+ 1237 0026 08       		.uleb128 0x8
+ 1238 0027 00       		.byte	0
+ 1239 0028 00       		.byte	0
+ 1240 0029 04       		.uleb128 0x4
+ 1241 002a 16       		.uleb128 0x16
+ 1242 002b 00       		.byte	0
+ 1243 002c 03       		.uleb128 0x3
+ 1244 002d 0E       		.uleb128 0xe
+ 1245 002e 3A       		.uleb128 0x3a
+ 1246 002f 0B       		.uleb128 0xb
+ 1247 0030 3B       		.uleb128 0x3b
+ 1248 0031 05       		.uleb128 0x5
+ 1249 0032 49       		.uleb128 0x49
+ 1250 0033 13       		.uleb128 0x13
+ 1251 0034 00       		.byte	0
+ 1252 0035 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 39
+
+
+ 1253 0036 05       		.uleb128 0x5
+ 1254 0037 35       		.uleb128 0x35
+ 1255 0038 00       		.byte	0
+ 1256 0039 49       		.uleb128 0x49
+ 1257 003a 13       		.uleb128 0x13
+ 1258 003b 00       		.byte	0
+ 1259 003c 00       		.byte	0
+ 1260 003d 06       		.uleb128 0x6
+ 1261 003e 16       		.uleb128 0x16
+ 1262 003f 00       		.byte	0
+ 1263 0040 03       		.uleb128 0x3
+ 1264 0041 0E       		.uleb128 0xe
+ 1265 0042 3A       		.uleb128 0x3a
+ 1266 0043 0B       		.uleb128 0xb
+ 1267 0044 3B       		.uleb128 0x3b
+ 1268 0045 0B       		.uleb128 0xb
+ 1269 0046 49       		.uleb128 0x49
+ 1270 0047 13       		.uleb128 0x13
+ 1271 0048 00       		.byte	0
+ 1272 0049 00       		.byte	0
+ 1273 004a 07       		.uleb128 0x7
+ 1274 004b 0F       		.uleb128 0xf
+ 1275 004c 00       		.byte	0
+ 1276 004d 0B       		.uleb128 0xb
+ 1277 004e 0B       		.uleb128 0xb
+ 1278 004f 00       		.byte	0
+ 1279 0050 00       		.byte	0
+ 1280 0051 08       		.uleb128 0x8
+ 1281 0052 13       		.uleb128 0x13
+ 1282 0053 01       		.byte	0x1
+ 1283 0054 0B       		.uleb128 0xb
+ 1284 0055 0B       		.uleb128 0xb
+ 1285 0056 3A       		.uleb128 0x3a
+ 1286 0057 0B       		.uleb128 0xb
+ 1287 0058 3B       		.uleb128 0x3b
+ 1288 0059 0B       		.uleb128 0xb
+ 1289 005a 01       		.uleb128 0x1
+ 1290 005b 13       		.uleb128 0x13
+ 1291 005c 00       		.byte	0
+ 1292 005d 00       		.byte	0
+ 1293 005e 09       		.uleb128 0x9
+ 1294 005f 0D       		.uleb128 0xd
+ 1295 0060 00       		.byte	0
+ 1296 0061 03       		.uleb128 0x3
+ 1297 0062 0E       		.uleb128 0xe
+ 1298 0063 3A       		.uleb128 0x3a
+ 1299 0064 0B       		.uleb128 0xb
+ 1300 0065 3B       		.uleb128 0x3b
+ 1301 0066 0B       		.uleb128 0xb
+ 1302 0067 49       		.uleb128 0x49
+ 1303 0068 13       		.uleb128 0x13
+ 1304 0069 38       		.uleb128 0x38
+ 1305 006a 0B       		.uleb128 0xb
+ 1306 006b 00       		.byte	0
+ 1307 006c 00       		.byte	0
+ 1308 006d 0A       		.uleb128 0xa
+ 1309 006e 01       		.uleb128 0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 40
+
+
+ 1310 006f 01       		.byte	0x1
+ 1311 0070 49       		.uleb128 0x49
+ 1312 0071 13       		.uleb128 0x13
+ 1313 0072 01       		.uleb128 0x1
+ 1314 0073 13       		.uleb128 0x13
+ 1315 0074 00       		.byte	0
+ 1316 0075 00       		.byte	0
+ 1317 0076 0B       		.uleb128 0xb
+ 1318 0077 21       		.uleb128 0x21
+ 1319 0078 00       		.byte	0
+ 1320 0079 49       		.uleb128 0x49
+ 1321 007a 13       		.uleb128 0x13
+ 1322 007b 2F       		.uleb128 0x2f
+ 1323 007c 0B       		.uleb128 0xb
+ 1324 007d 00       		.byte	0
+ 1325 007e 00       		.byte	0
+ 1326 007f 0C       		.uleb128 0xc
+ 1327 0080 13       		.uleb128 0x13
+ 1328 0081 01       		.byte	0x1
+ 1329 0082 0B       		.uleb128 0xb
+ 1330 0083 0B       		.uleb128 0xb
+ 1331 0084 3A       		.uleb128 0x3a
+ 1332 0085 0B       		.uleb128 0xb
+ 1333 0086 3B       		.uleb128 0x3b
+ 1334 0087 05       		.uleb128 0x5
+ 1335 0088 01       		.uleb128 0x1
+ 1336 0089 13       		.uleb128 0x13
+ 1337 008a 00       		.byte	0
+ 1338 008b 00       		.byte	0
+ 1339 008c 0D       		.uleb128 0xd
+ 1340 008d 0D       		.uleb128 0xd
+ 1341 008e 00       		.byte	0
+ 1342 008f 03       		.uleb128 0x3
+ 1343 0090 0E       		.uleb128 0xe
+ 1344 0091 3A       		.uleb128 0x3a
+ 1345 0092 0B       		.uleb128 0xb
+ 1346 0093 3B       		.uleb128 0x3b
+ 1347 0094 05       		.uleb128 0x5
+ 1348 0095 49       		.uleb128 0x49
+ 1349 0096 13       		.uleb128 0x13
+ 1350 0097 38       		.uleb128 0x38
+ 1351 0098 0B       		.uleb128 0xb
+ 1352 0099 00       		.byte	0
+ 1353 009a 00       		.byte	0
+ 1354 009b 0E       		.uleb128 0xe
+ 1355 009c 0D       		.uleb128 0xd
+ 1356 009d 00       		.byte	0
+ 1357 009e 03       		.uleb128 0x3
+ 1358 009f 08       		.uleb128 0x8
+ 1359 00a0 3A       		.uleb128 0x3a
+ 1360 00a1 0B       		.uleb128 0xb
+ 1361 00a2 3B       		.uleb128 0x3b
+ 1362 00a3 05       		.uleb128 0x5
+ 1363 00a4 49       		.uleb128 0x49
+ 1364 00a5 13       		.uleb128 0x13
+ 1365 00a6 38       		.uleb128 0x38
+ 1366 00a7 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 41
+
+
+ 1367 00a8 00       		.byte	0
+ 1368 00a9 00       		.byte	0
+ 1369 00aa 0F       		.uleb128 0xf
+ 1370 00ab 0F       		.uleb128 0xf
+ 1371 00ac 00       		.byte	0
+ 1372 00ad 0B       		.uleb128 0xb
+ 1373 00ae 0B       		.uleb128 0xb
+ 1374 00af 49       		.uleb128 0x49
+ 1375 00b0 13       		.uleb128 0x13
+ 1376 00b1 00       		.byte	0
+ 1377 00b2 00       		.byte	0
+ 1378 00b3 10       		.uleb128 0x10
+ 1379 00b4 26       		.uleb128 0x26
+ 1380 00b5 00       		.byte	0
+ 1381 00b6 00       		.byte	0
+ 1382 00b7 00       		.byte	0
+ 1383 00b8 11       		.uleb128 0x11
+ 1384 00b9 2E       		.uleb128 0x2e
+ 1385 00ba 01       		.byte	0x1
+ 1386 00bb 03       		.uleb128 0x3
+ 1387 00bc 0E       		.uleb128 0xe
+ 1388 00bd 3A       		.uleb128 0x3a
+ 1389 00be 0B       		.uleb128 0xb
+ 1390 00bf 3B       		.uleb128 0x3b
+ 1391 00c0 05       		.uleb128 0x5
+ 1392 00c1 27       		.uleb128 0x27
+ 1393 00c2 19       		.uleb128 0x19
+ 1394 00c3 20       		.uleb128 0x20
+ 1395 00c4 0B       		.uleb128 0xb
+ 1396 00c5 01       		.uleb128 0x1
+ 1397 00c6 13       		.uleb128 0x13
+ 1398 00c7 00       		.byte	0
+ 1399 00c8 00       		.byte	0
+ 1400 00c9 12       		.uleb128 0x12
+ 1401 00ca 34       		.uleb128 0x34
+ 1402 00cb 00       		.byte	0
+ 1403 00cc 03       		.uleb128 0x3
+ 1404 00cd 0E       		.uleb128 0xe
+ 1405 00ce 3A       		.uleb128 0x3a
+ 1406 00cf 0B       		.uleb128 0xb
+ 1407 00d0 3B       		.uleb128 0x3b
+ 1408 00d1 05       		.uleb128 0x5
+ 1409 00d2 49       		.uleb128 0x49
+ 1410 00d3 13       		.uleb128 0x13
+ 1411 00d4 00       		.byte	0
+ 1412 00d5 00       		.byte	0
+ 1413 00d6 13       		.uleb128 0x13
+ 1414 00d7 26       		.uleb128 0x26
+ 1415 00d8 00       		.byte	0
+ 1416 00d9 49       		.uleb128 0x49
+ 1417 00da 13       		.uleb128 0x13
+ 1418 00db 00       		.byte	0
+ 1419 00dc 00       		.byte	0
+ 1420 00dd 14       		.uleb128 0x14
+ 1421 00de 2E       		.uleb128 0x2e
+ 1422 00df 01       		.byte	0x1
+ 1423 00e0 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 42
+
+
+ 1424 00e1 19       		.uleb128 0x19
+ 1425 00e2 03       		.uleb128 0x3
+ 1426 00e3 0E       		.uleb128 0xe
+ 1427 00e4 3A       		.uleb128 0x3a
+ 1428 00e5 0B       		.uleb128 0xb
+ 1429 00e6 3B       		.uleb128 0x3b
+ 1430 00e7 0B       		.uleb128 0xb
+ 1431 00e8 27       		.uleb128 0x27
+ 1432 00e9 19       		.uleb128 0x19
+ 1433 00ea 11       		.uleb128 0x11
+ 1434 00eb 01       		.uleb128 0x1
+ 1435 00ec 12       		.uleb128 0x12
+ 1436 00ed 06       		.uleb128 0x6
+ 1437 00ee 40       		.uleb128 0x40
+ 1438 00ef 18       		.uleb128 0x18
+ 1439 00f0 9742     		.uleb128 0x2117
+ 1440 00f2 19       		.uleb128 0x19
+ 1441 00f3 01       		.uleb128 0x1
+ 1442 00f4 13       		.uleb128 0x13
+ 1443 00f5 00       		.byte	0
+ 1444 00f6 00       		.byte	0
+ 1445 00f7 15       		.uleb128 0x15
+ 1446 00f8 1D       		.uleb128 0x1d
+ 1447 00f9 01       		.byte	0x1
+ 1448 00fa 31       		.uleb128 0x31
+ 1449 00fb 13       		.uleb128 0x13
+ 1450 00fc 11       		.uleb128 0x11
+ 1451 00fd 01       		.uleb128 0x1
+ 1452 00fe 12       		.uleb128 0x12
+ 1453 00ff 06       		.uleb128 0x6
+ 1454 0100 58       		.uleb128 0x58
+ 1455 0101 0B       		.uleb128 0xb
+ 1456 0102 59       		.uleb128 0x59
+ 1457 0103 0B       		.uleb128 0xb
+ 1458 0104 00       		.byte	0
+ 1459 0105 00       		.byte	0
+ 1460 0106 16       		.uleb128 0x16
+ 1461 0107 0B       		.uleb128 0xb
+ 1462 0108 01       		.byte	0x1
+ 1463 0109 11       		.uleb128 0x11
+ 1464 010a 01       		.uleb128 0x1
+ 1465 010b 12       		.uleb128 0x12
+ 1466 010c 06       		.uleb128 0x6
+ 1467 010d 00       		.byte	0
+ 1468 010e 00       		.byte	0
+ 1469 010f 17       		.uleb128 0x17
+ 1470 0110 34       		.uleb128 0x34
+ 1471 0111 00       		.byte	0
+ 1472 0112 31       		.uleb128 0x31
+ 1473 0113 13       		.uleb128 0x13
+ 1474 0114 02       		.uleb128 0x2
+ 1475 0115 17       		.uleb128 0x17
+ 1476 0116 00       		.byte	0
+ 1477 0117 00       		.byte	0
+ 1478 0118 18       		.uleb128 0x18
+ 1479 0119 34       		.uleb128 0x34
+ 1480 011a 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 43
+
+
+ 1481 011b 03       		.uleb128 0x3
+ 1482 011c 0E       		.uleb128 0xe
+ 1483 011d 3A       		.uleb128 0x3a
+ 1484 011e 0B       		.uleb128 0xb
+ 1485 011f 3B       		.uleb128 0x3b
+ 1486 0120 0B       		.uleb128 0xb
+ 1487 0121 49       		.uleb128 0x49
+ 1488 0122 13       		.uleb128 0x13
+ 1489 0123 02       		.uleb128 0x2
+ 1490 0124 17       		.uleb128 0x17
+ 1491 0125 00       		.byte	0
+ 1492 0126 00       		.byte	0
+ 1493 0127 19       		.uleb128 0x19
+ 1494 0128 1D       		.uleb128 0x1d
+ 1495 0129 01       		.byte	0x1
+ 1496 012a 31       		.uleb128 0x31
+ 1497 012b 13       		.uleb128 0x13
+ 1498 012c 11       		.uleb128 0x11
+ 1499 012d 01       		.uleb128 0x1
+ 1500 012e 12       		.uleb128 0x12
+ 1501 012f 06       		.uleb128 0x6
+ 1502 0130 58       		.uleb128 0x58
+ 1503 0131 0B       		.uleb128 0xb
+ 1504 0132 59       		.uleb128 0x59
+ 1505 0133 05       		.uleb128 0x5
+ 1506 0134 01       		.uleb128 0x1
+ 1507 0135 13       		.uleb128 0x13
+ 1508 0136 00       		.byte	0
+ 1509 0137 00       		.byte	0
+ 1510 0138 1A       		.uleb128 0x1a
+ 1511 0139 898201   		.uleb128 0x4109
+ 1512 013c 00       		.byte	0
+ 1513 013d 11       		.uleb128 0x11
+ 1514 013e 01       		.uleb128 0x1
+ 1515 013f 31       		.uleb128 0x31
+ 1516 0140 13       		.uleb128 0x13
+ 1517 0141 00       		.byte	0
+ 1518 0142 00       		.byte	0
+ 1519 0143 1B       		.uleb128 0x1b
+ 1520 0144 34       		.uleb128 0x34
+ 1521 0145 00       		.byte	0
+ 1522 0146 03       		.uleb128 0x3
+ 1523 0147 0E       		.uleb128 0xe
+ 1524 0148 3A       		.uleb128 0x3a
+ 1525 0149 0B       		.uleb128 0xb
+ 1526 014a 3B       		.uleb128 0x3b
+ 1527 014b 05       		.uleb128 0x5
+ 1528 014c 49       		.uleb128 0x49
+ 1529 014d 13       		.uleb128 0x13
+ 1530 014e 3F       		.uleb128 0x3f
+ 1531 014f 19       		.uleb128 0x19
+ 1532 0150 3C       		.uleb128 0x3c
+ 1533 0151 19       		.uleb128 0x19
+ 1534 0152 00       		.byte	0
+ 1535 0153 00       		.byte	0
+ 1536 0154 1C       		.uleb128 0x1c
+ 1537 0155 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 44
+
+
+ 1538 0156 01       		.byte	0x1
+ 1539 0157 3F       		.uleb128 0x3f
+ 1540 0158 19       		.uleb128 0x19
+ 1541 0159 03       		.uleb128 0x3
+ 1542 015a 0E       		.uleb128 0xe
+ 1543 015b 3A       		.uleb128 0x3a
+ 1544 015c 0B       		.uleb128 0xb
+ 1545 015d 3B       		.uleb128 0x3b
+ 1546 015e 0B       		.uleb128 0xb
+ 1547 015f 27       		.uleb128 0x27
+ 1548 0160 19       		.uleb128 0x19
+ 1549 0161 3C       		.uleb128 0x3c
+ 1550 0162 19       		.uleb128 0x19
+ 1551 0163 01       		.uleb128 0x1
+ 1552 0164 13       		.uleb128 0x13
+ 1553 0165 00       		.byte	0
+ 1554 0166 00       		.byte	0
+ 1555 0167 1D       		.uleb128 0x1d
+ 1556 0168 05       		.uleb128 0x5
+ 1557 0169 00       		.byte	0
+ 1558 016a 49       		.uleb128 0x49
+ 1559 016b 13       		.uleb128 0x13
+ 1560 016c 00       		.byte	0
+ 1561 016d 00       		.byte	0
+ 1562 016e 1E       		.uleb128 0x1e
+ 1563 016f 2E       		.uleb128 0x2e
+ 1564 0170 00       		.byte	0
+ 1565 0171 3F       		.uleb128 0x3f
+ 1566 0172 19       		.uleb128 0x19
+ 1567 0173 03       		.uleb128 0x3
+ 1568 0174 0E       		.uleb128 0xe
+ 1569 0175 3A       		.uleb128 0x3a
+ 1570 0176 0B       		.uleb128 0xb
+ 1571 0177 3B       		.uleb128 0x3b
+ 1572 0178 0B       		.uleb128 0xb
+ 1573 0179 27       		.uleb128 0x27
+ 1574 017a 19       		.uleb128 0x19
+ 1575 017b 3C       		.uleb128 0x3c
+ 1576 017c 19       		.uleb128 0x19
+ 1577 017d 00       		.byte	0
+ 1578 017e 00       		.byte	0
+ 1579 017f 1F       		.uleb128 0x1f
+ 1580 0180 2E       		.uleb128 0x2e
+ 1581 0181 01       		.byte	0x1
+ 1582 0182 3F       		.uleb128 0x3f
+ 1583 0183 19       		.uleb128 0x19
+ 1584 0184 03       		.uleb128 0x3
+ 1585 0185 0E       		.uleb128 0xe
+ 1586 0186 3A       		.uleb128 0x3a
+ 1587 0187 0B       		.uleb128 0xb
+ 1588 0188 3B       		.uleb128 0x3b
+ 1589 0189 0B       		.uleb128 0xb
+ 1590 018a 27       		.uleb128 0x27
+ 1591 018b 19       		.uleb128 0x19
+ 1592 018c 3C       		.uleb128 0x3c
+ 1593 018d 19       		.uleb128 0x19
+ 1594 018e 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 45
+
+
+ 1595 018f 00       		.byte	0
+ 1596 0190 00       		.byte	0
+ 1597              		.section	.debug_loc,"",%progbits
+ 1598              	.Ldebug_loc0:
+ 1599              	.LLST0:
+ 1600 0000 20000000 		.4byte	.LVL1
+ 1601 0004 3C000000 		.4byte	.LVL7
+ 1602 0008 0100     		.2byte	0x1
+ 1603 000a 52       		.byte	0x52
+ 1604 000b 00000000 		.4byte	0
+ 1605 000f 00000000 		.4byte	0
+ 1606              	.LLST1:
+ 1607 0013 28000000 		.4byte	.LVL3
+ 1608 0017 2E000000 		.4byte	.LVL4
+ 1609 001b 0100     		.2byte	0x1
+ 1610 001d 53       		.byte	0x53
+ 1611 001e 2E000000 		.4byte	.LVL4
+ 1612 0022 30000000 		.4byte	.LVL5
+ 1613 0026 0700     		.2byte	0x7
+ 1614 0028 31       		.byte	0x31
+ 1615 0029 71       		.byte	0x71
+ 1616 002a 00       		.sleb128 0
+ 1617 002b 24       		.byte	0x24
+ 1618 002c 31       		.byte	0x31
+ 1619 002d 1C       		.byte	0x1c
+ 1620 002e 9F       		.byte	0x9f
+ 1621 002f 3A000000 		.4byte	.LVL6
+ 1622 0033 46000000 		.4byte	.LVL8
+ 1623 0037 0100     		.2byte	0x1
+ 1624 0039 53       		.byte	0x53
+ 1625 003a 00000000 		.4byte	0
+ 1626 003e 00000000 		.4byte	0
+ 1627              	.LLST2:
+ 1628 0042 18000000 		.4byte	.LVL0
+ 1629 0046 24000000 		.4byte	.LVL2
+ 1630 004a 0100     		.2byte	0x1
+ 1631 004c 53       		.byte	0x53
+ 1632 004d 00000000 		.4byte	0
+ 1633 0051 00000000 		.4byte	0
+ 1634              	.LLST3:
+ 1635 0055 1C000000 		.4byte	.LVL9
+ 1636 0059 61000000 		.4byte	.LVL19-1
+ 1637 005d 0100     		.2byte	0x1
+ 1638 005f 50       		.byte	0x50
+ 1639 0060 00000000 		.4byte	0
+ 1640 0064 00000000 		.4byte	0
+ 1641              	.LLST4:
+ 1642 0068 38000000 		.4byte	.LVL11
+ 1643 006c 54000000 		.4byte	.LVL17
+ 1644 0070 0100     		.2byte	0x1
+ 1645 0072 52       		.byte	0x52
+ 1646 0073 00000000 		.4byte	0
+ 1647 0077 00000000 		.4byte	0
+ 1648              	.LLST5:
+ 1649 007b 40000000 		.4byte	.LVL13
+ 1650 007f 46000000 		.4byte	.LVL14
+ 1651 0083 0100     		.2byte	0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 46
+
+
+ 1652 0085 53       		.byte	0x53
+ 1653 0086 46000000 		.4byte	.LVL14
+ 1654 008a 48000000 		.4byte	.LVL15
+ 1655 008e 0700     		.2byte	0x7
+ 1656 0090 31       		.byte	0x31
+ 1657 0091 71       		.byte	0x71
+ 1658 0092 00       		.sleb128 0
+ 1659 0093 24       		.byte	0x24
+ 1660 0094 31       		.byte	0x31
+ 1661 0095 1C       		.byte	0x1c
+ 1662 0096 9F       		.byte	0x9f
+ 1663 0097 52000000 		.4byte	.LVL16
+ 1664 009b 5E000000 		.4byte	.LVL18
+ 1665 009f 0100     		.2byte	0x1
+ 1666 00a1 53       		.byte	0x53
+ 1667 00a2 00000000 		.4byte	0
+ 1668 00a6 00000000 		.4byte	0
+ 1669              	.LLST6:
+ 1670 00aa 30000000 		.4byte	.LVL10
+ 1671 00ae 3C000000 		.4byte	.LVL12
+ 1672 00b2 0100     		.2byte	0x1
+ 1673 00b4 53       		.byte	0x53
+ 1674 00b5 00000000 		.4byte	0
+ 1675 00b9 00000000 		.4byte	0
+ 1676              	.LLST7:
+ 1677 00bd 72000000 		.4byte	.LVL20
+ 1678 00c1 B1000000 		.4byte	.LVL21-1
+ 1679 00c5 0100     		.2byte	0x1
+ 1680 00c7 50       		.byte	0x50
+ 1681 00c8 C4000000 		.4byte	.LVL24
+ 1682 00cc DF000000 		.4byte	.LVL25-1
+ 1683 00d0 0100     		.2byte	0x1
+ 1684 00d2 50       		.byte	0x50
+ 1685 00d3 E2000000 		.4byte	.LVL26
+ 1686 00d7 F0000000 		.4byte	.LVL27
+ 1687 00db 0100     		.2byte	0x1
+ 1688 00dd 50       		.byte	0x50
+ 1689 00de 00000000 		.4byte	0
+ 1690 00e2 00000000 		.4byte	0
+ 1691              		.section	.debug_aranges,"",%progbits
+ 1692 0000 24000000 		.4byte	0x24
+ 1693 0004 0200     		.2byte	0x2
+ 1694 0006 00000000 		.4byte	.Ldebug_info0
+ 1695 000a 04       		.byte	0x4
+ 1696 000b 00       		.byte	0
+ 1697 000c 0000     		.2byte	0
+ 1698 000e 0000     		.2byte	0
+ 1699 0010 00000000 		.4byte	.LFB1
+ 1700 0014 78000000 		.4byte	.LFE1-.LFB1
+ 1701 0018 00000000 		.4byte	.LFB2
+ 1702 001c 1C010000 		.4byte	.LFE2-.LFB2
+ 1703 0020 00000000 		.4byte	0
+ 1704 0024 00000000 		.4byte	0
+ 1705              		.section	.debug_ranges,"",%progbits
+ 1706              	.Ldebug_ranges0:
+ 1707 0000 00000000 		.4byte	.LFB1
+ 1708 0004 78000000 		.4byte	.LFE1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 47
+
+
+ 1709 0008 00000000 		.4byte	.LFB2
+ 1710 000c 1C010000 		.4byte	.LFE2
+ 1711 0010 00000000 		.4byte	0
+ 1712 0014 00000000 		.4byte	0
+ 1713              		.section	.debug_line,"",%progbits
+ 1714              	.Ldebug_line0:
+ 1715 0000 00010000 		.section	.debug_str,"MS",%progbits,1
+ 1715      02009600 
+ 1715      00000201 
+ 1715      FB0E0D00 
+ 1715      01010101 
+ 1716              	.LASF10:
+ 1717 0000 75696E74 		.ascii	"uint16\000"
+ 1717      313600
+ 1718              	.LASF87:
+ 1719 0007 4353445F 		.ascii	"CSD_dsRam\000"
+ 1719      64735261 
+ 1719      6D00
+ 1720              	.LASF85:
+ 1721 0011 4353445F 		.ascii	"CSD_CSDPostSingleScan\000"
+ 1721      43534450 
+ 1721      6F737453 
+ 1721      696E676C 
+ 1721      65536361 
+ 1722              	.LASF7:
+ 1723 0027 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1723      206C6F6E 
+ 1723      6720756E 
+ 1723      7369676E 
+ 1723      65642069 
+ 1724              	.LASF68:
+ 1725 003e 70747232 		.ascii	"ptr2SnsFlash\000"
+ 1725      536E7346 
+ 1725      6C617368 
+ 1725      00
+ 1726              	.LASF36:
+ 1727 004b 64696666 		.ascii	"diff\000"
+ 1727      00
+ 1728              	.LASF95:
+ 1729 0050 4353445F 		.ascii	"CSD_SsCSDConnectSensorExt\000"
+ 1729      53734353 
+ 1729      44436F6E 
+ 1729      6E656374 
+ 1729      53656E73 
+ 1730              	.LASF58:
+ 1731 006a 6873696F 		.ascii	"hsiomPtr\000"
+ 1731      6D507472 
+ 1731      00
+ 1732              	.LASF54:
+ 1733 0073 736E7254 		.ascii	"snrTestSensorId\000"
+ 1733      65737453 
+ 1733      656E736F 
+ 1733      72496400 
+ 1734              	.LASF86:
+ 1735 0083 4353445F 		.ascii	"CSD_CSDPostMultiScan\000"
+ 1735      43534450 
+ 1735      6F73744D 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 48
+
+
+ 1735      756C7469 
+ 1735      5363616E 
+ 1736              	.LASF6:
+ 1737 0098 6C6F6E67 		.ascii	"long long int\000"
+ 1737      206C6F6E 
+ 1737      6720696E 
+ 1737      7400
+ 1738              	.LASF0:
+ 1739 00a6 7369676E 		.ascii	"signed char\000"
+ 1739      65642063 
+ 1739      68617200 
+ 1740              	.LASF32:
+ 1741 00b2 62757474 		.ascii	"button0\000"
+ 1741      6F6E3000 
+ 1742              	.LASF48:
+ 1743 00ba 736E7353 		.ascii	"snsStatus\000"
+ 1743      74617475 
+ 1743      7300
+ 1744              	.LASF4:
+ 1745 00c4 6C6F6E67 		.ascii	"long int\000"
+ 1745      20696E74 
+ 1745      00
+ 1746              	.LASF100:
+ 1747 00cd 433A5C47 		.ascii	"C:\\Git\\WA101\\projects\\PSoC\\WW101_AnalogCoProce"
+ 1747      69745C57 
+ 1747      41313031 
+ 1747      5C70726F 
+ 1747      6A656374 
+ 1748 00fb 73736F72 		.ascii	"ssor\\WW101_AnalogCoProcessor.cydsn\000"
+ 1748      5C575731 
+ 1748      30315F41 
+ 1748      6E616C6F 
+ 1748      67436F50 
+ 1749              	.LASF70:
+ 1750 011e 70747232 		.ascii	"ptr2SnsRam\000"
+ 1750      536E7352 
+ 1750      616D00
+ 1751              	.LASF61:
+ 1752 0129 70735074 		.ascii	"psPtr\000"
+ 1752      7200
+ 1753              	.LASF9:
+ 1754 012f 75696E74 		.ascii	"uint8\000"
+ 1754      3800
+ 1755              	.LASF39:
+ 1756 0135 4353445F 		.ascii	"CSD_RAM_SNS_STRUCT\000"
+ 1756      52414D5F 
+ 1756      534E535F 
+ 1756      53545255 
+ 1756      435400
+ 1757              	.LASF13:
+ 1758 0148 646F7562 		.ascii	"double\000"
+ 1758      6C6500
+ 1759              	.LASF56:
+ 1760 014f 736E7254 		.ascii	"snrTestRawCount\000"
+ 1760      65737452 
+ 1760      6177436F 
+ 1760      756E7400 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 49
+
+
+ 1761              	.LASF66:
+ 1762 015f 73686966 		.ascii	"shift\000"
+ 1762      7400
+ 1763              	.LASF65:
+ 1764 0165 64725368 		.ascii	"drShift\000"
+ 1764      69667400 
+ 1765              	.LASF11:
+ 1766 016d 75696E74 		.ascii	"uint32\000"
+ 1766      333200
+ 1767              	.LASF16:
+ 1768 0174 4353445F 		.ascii	"CSD_THRESHOLD_TYPE\000"
+ 1768      54485245 
+ 1768      53484F4C 
+ 1768      445F5459 
+ 1768      504500
+ 1769              	.LASF63:
+ 1770 0187 6D61736B 		.ascii	"mask\000"
+ 1770      00
+ 1771              	.LASF35:
+ 1772 018c 62736C6E 		.ascii	"bslnExt\000"
+ 1772      45787400 
+ 1773              	.LASF47:
+ 1774 0194 77646774 		.ascii	"wdgtStatus\000"
+ 1774      53746174 
+ 1774      757300
+ 1775              	.LASF34:
+ 1776 019f 62736C6E 		.ascii	"bsln\000"
+ 1776      00
+ 1777              	.LASF8:
+ 1778 01a4 756E7369 		.ascii	"unsigned int\000"
+ 1778      676E6564 
+ 1778      20696E74 
+ 1778      00
+ 1779              	.LASF53:
+ 1780 01b1 736E7254 		.ascii	"snrTestWidgetId\000"
+ 1780      65737457 
+ 1780      69646765 
+ 1780      74496400 
+ 1781              	.LASF5:
+ 1782 01c1 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1782      20756E73 
+ 1782      69676E65 
+ 1782      6420696E 
+ 1782      7400
+ 1783              	.LASF17:
+ 1784 01d3 4353445F 		.ascii	"CSD_LOW_BSLN_RST_TYPE\000"
+ 1784      4C4F575F 
+ 1784      42534C4E 
+ 1784      5F525354 
+ 1784      5F545950 
+ 1785              	.LASF46:
+ 1786 01e9 77646774 		.ascii	"wdgtEnable\000"
+ 1786      456E6162 
+ 1786      6C6500
+ 1787              	.LASF80:
+ 1788 01f4 746D7052 		.ascii	"tmpRawData\000"
+ 1788      61774461 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 50
+
+
+ 1788      746100
+ 1789              	.LASF25:
+ 1790 01ff 6C6F7742 		.ascii	"lowBslnRst\000"
+ 1790      736C6E52 
+ 1790      737400
+ 1791              	.LASF82:
+ 1792 020a 70747257 		.ascii	"ptrWdgt\000"
+ 1792      64677400 
+ 1793              	.LASF3:
+ 1794 0212 73686F72 		.ascii	"short unsigned int\000"
+ 1794      7420756E 
+ 1794      7369676E 
+ 1794      65642069 
+ 1794      6E7400
+ 1795              	.LASF84:
+ 1796 0225 4353445F 		.ascii	"CSD_SsCSDInitNextScan\000"
+ 1796      53734353 
+ 1796      44496E69 
+ 1796      744E6578 
+ 1796      74536361 
+ 1797              	.LASF102:
+ 1798 023b 4353445F 		.ascii	"CSD_CSDDisconnectSns\000"
+ 1798      43534444 
+ 1798      6973636F 
+ 1798      6E6E6563 
+ 1798      74536E73 
+ 1799              	.LASF52:
+ 1800 0250 736E734C 		.ascii	"snsList\000"
+ 1800      69737400 
+ 1801              	.LASF41:
+ 1802 0258 636F6E66 		.ascii	"configId\000"
+ 1802      69674964 
+ 1802      00
+ 1803              	.LASF49:
+ 1804 0261 63736430 		.ascii	"csd0Config\000"
+ 1804      436F6E66 
+ 1804      696700
+ 1805              	.LASF69:
+ 1806 026c 70747232 		.ascii	"ptr2WdgtRam\000"
+ 1806      57646774 
+ 1806      52616D00 
+ 1807              	.LASF42:
+ 1808 0278 64657669 		.ascii	"deviceId\000"
+ 1808      63654964 
+ 1808      00
+ 1809              	.LASF50:
+ 1810 0281 6D6F6443 		.ascii	"modCsdClk\000"
+ 1810      7364436C 
+ 1810      6B00
+ 1811              	.LASF30:
+ 1812 028b 4353445F 		.ascii	"CSD_RAM_WD_BASE_STRUCT\000"
+ 1812      52414D5F 
+ 1812      57445F42 
+ 1812      4153455F 
+ 1812      53545255 
+ 1813              	.LASF15:
+ 1814 02a2 72656733 		.ascii	"reg32\000"
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 51
+
+
+ 1814      3200
+ 1815              	.LASF93:
+ 1816 02a8 4353445F 		.ascii	"CSD_curRamSnsPtr\000"
+ 1816      63757252 
+ 1816      616D536E 
+ 1816      73507472 
+ 1816      00
+ 1817              	.LASF97:
+ 1818 02b9 4353445F 		.ascii	"CSD_SsPostAllWidgetsScan\000"
+ 1818      5373506F 
+ 1818      7374416C 
+ 1818      6C576964 
+ 1818      67657473 
+ 1819              	.LASF27:
+ 1820 02d2 69646163 		.ascii	"idacMod\000"
+ 1820      4D6F6400 
+ 1821              	.LASF76:
+ 1822 02da 6E756D43 		.ascii	"numCols\000"
+ 1822      6F6C7300 
+ 1823              	.LASF18:
+ 1824 02e2 73697A65 		.ascii	"sizetype\000"
+ 1824      74797065 
+ 1824      00
+ 1825              	.LASF73:
+ 1826 02eb 73746174 		.ascii	"staticConfig\000"
+ 1826      6963436F 
+ 1826      6E666967 
+ 1826      00
+ 1827              	.LASF22:
+ 1828 02f8 6E4E6F69 		.ascii	"nNoiseTh\000"
+ 1828      73655468 
+ 1828      00
+ 1829              	.LASF75:
+ 1830 0301 77646774 		.ascii	"wdgtType\000"
+ 1830      54797065 
+ 1830      00
+ 1831              	.LASF44:
+ 1832 030a 7363616E 		.ascii	"scanCounter\000"
+ 1832      436F756E 
+ 1832      74657200 
+ 1833              	.LASF90:
+ 1834 0316 4353445F 		.ascii	"CSD_widgetIndex\000"
+ 1834      77696467 
+ 1834      6574496E 
+ 1834      64657800 
+ 1835              	.LASF43:
+ 1836 0326 74756E65 		.ascii	"tunerCmd\000"
+ 1836      72436D64 
+ 1836      00
+ 1837              	.LASF12:
+ 1838 032f 666C6F61 		.ascii	"float\000"
+ 1838      7400
+ 1839              	.LASF57:
+ 1840 0335 4353445F 		.ascii	"CSD_RAM_STRUCT\000"
+ 1840      52414D5F 
+ 1840      53545255 
+ 1840      435400
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 52
+
+
+ 1841              	.LASF67:
+ 1842 0344 4353445F 		.ascii	"CSD_FLASH_IO_STRUCT\000"
+ 1842      464C4153 
+ 1842      485F494F 
+ 1842      5F535452 
+ 1842      55435400 
+ 1843              	.LASF91:
+ 1844 0358 4353445F 		.ascii	"CSD_sensorIndex\000"
+ 1844      73656E73 
+ 1844      6F72496E 
+ 1844      64657800 
+ 1845              	.LASF26:
+ 1846 0368 62736C6E 		.ascii	"bslnCoeff\000"
+ 1846      436F6566 
+ 1846      6600
+ 1847              	.LASF92:
+ 1848 0372 4353445F 		.ascii	"CSD_requestScanAllWidget\000"
+ 1848      72657175 
+ 1848      65737453 
+ 1848      63616E41 
+ 1848      6C6C5769 
+ 1849              	.LASF23:
+ 1850 038b 68797374 		.ascii	"hysteresis\000"
+ 1850      65726573 
+ 1850      697300
+ 1851              	.LASF1:
+ 1852 0396 756E7369 		.ascii	"unsigned char\000"
+ 1852      676E6564 
+ 1852      20636861 
+ 1852      7200
+ 1853              	.LASF96:
+ 1854 03a4 4353445F 		.ascii	"CSD_SsCSDStartSample\000"
+ 1854      53734353 
+ 1854      44537461 
+ 1854      72745361 
+ 1854      6D706C65 
+ 1855              	.LASF33:
+ 1856 03b9 4353445F 		.ascii	"CSD_RAM_WD_LIST_STRUCT\000"
+ 1856      52414D5F 
+ 1856      57445F4C 
+ 1856      4953545F 
+ 1856      53545255 
+ 1857              	.LASF94:
+ 1858 03d0 4353445F 		.ascii	"CSD_SsCSDSetUpIdacs\000"
+ 1858      53734353 
+ 1858      44536574 
+ 1858      55704964 
+ 1858      61637300 
+ 1859              	.LASF2:
+ 1860 03e4 73686F72 		.ascii	"short int\000"
+ 1860      7420696E 
+ 1860      7400
+ 1861              	.LASF88:
+ 1862 03ee 4353445F 		.ascii	"CSD_dsFlash\000"
+ 1862      6473466C 
+ 1862      61736800 
+ 1863              	.LASF71:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 53
+
+
+ 1864 03fa 70747232 		.ascii	"ptr2FltrHistory\000"
+ 1864      466C7472 
+ 1864      48697374 
+ 1864      6F727900 
+ 1865              	.LASF64:
+ 1866 040a 6873696F 		.ascii	"hsiomShift\000"
+ 1866      6D536869 
+ 1866      667400
+ 1867              	.LASF77:
+ 1868 0415 4353445F 		.ascii	"CSD_FLASH_WD_STRUCT\000"
+ 1868      464C4153 
+ 1868      485F5744 
+ 1868      5F535452 
+ 1868      55435400 
+ 1869              	.LASF19:
+ 1870 0429 7265736F 		.ascii	"resolution\000"
+ 1870      6C757469 
+ 1870      6F6E00
+ 1871              	.LASF51:
+ 1872 0434 77646774 		.ascii	"wdgtList\000"
+ 1872      4C697374 
+ 1872      00
+ 1873              	.LASF40:
+ 1874 043d 4353445F 		.ascii	"CSD_RAM_SNS_LIST_STRUCT\000"
+ 1874      52414D5F 
+ 1874      534E535F 
+ 1874      4C495354 
+ 1874      5F535452 
+ 1875              	.LASF14:
+ 1876 0455 63686172 		.ascii	"char\000"
+ 1876      00
+ 1877              	.LASF83:
+ 1878 045a 4353445F 		.ascii	"CSD_SsCSDPostScan\000"
+ 1878      53734353 
+ 1878      44506F73 
+ 1878      74536361 
+ 1878      6E00
+ 1879              	.LASF60:
+ 1880 046c 64725074 		.ascii	"drPtr\000"
+ 1880      7200
+ 1881              	.LASF28:
+ 1882 0472 736E7343 		.ascii	"snsClk\000"
+ 1882      6C6B00
+ 1883              	.LASF24:
+ 1884 0479 6F6E4465 		.ascii	"onDebounce\000"
+ 1884      626F756E 
+ 1884      636500
+ 1885              	.LASF31:
+ 1886 0484 4353445F 		.ascii	"CSD_RAM_WD_BUTTON_STRUCT\000"
+ 1886      52414D5F 
+ 1886      57445F42 
+ 1886      5554544F 
+ 1886      4E5F5354 
+ 1887              	.LASF38:
+ 1888 049d 69646163 		.ascii	"idacComp\000"
+ 1888      436F6D70 
+ 1888      00
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 54
+
+
+ 1889              	.LASF37:
+ 1890 04a6 6E656742 		.ascii	"negBslnRstCnt\000"
+ 1890      736C6E52 
+ 1890      7374436E 
+ 1890      7400
+ 1891              	.LASF74:
+ 1892 04b4 746F7461 		.ascii	"totalNumSns\000"
+ 1892      6C4E756D 
+ 1892      536E7300 
+ 1893              	.LASF72:
+ 1894 04c0 70747232 		.ascii	"ptr2DebounceArr\000"
+ 1894      4465626F 
+ 1894      756E6365 
+ 1894      41727200 
+ 1895              	.LASF45:
+ 1896 04d0 73746174 		.ascii	"status\000"
+ 1896      757300
+ 1897              	.LASF79:
+ 1898 04d7 4353445F 		.ascii	"CSD_FLASH_STRUCT\000"
+ 1898      464C4153 
+ 1898      485F5354 
+ 1898      52554354 
+ 1898      00
+ 1899              	.LASF78:
+ 1900 04e8 77646774 		.ascii	"wdgtArray\000"
+ 1900      41727261 
+ 1900      7900
+ 1901              	.LASF101:
+ 1902 04f2 63757253 		.ascii	"curSnsIOPtr\000"
+ 1902      6E73494F 
+ 1902      50747200 
+ 1903              	.LASF29:
+ 1904 04fe 736E7343 		.ascii	"snsClkSource\000"
+ 1904      6C6B536F 
+ 1904      75726365 
+ 1904      00
+ 1905              	.LASF89:
+ 1906 050b 4353445F 		.ascii	"CSD_scanFreqIndex\000"
+ 1906      7363616E 
+ 1906      46726571 
+ 1906      496E6465 
+ 1906      7800
+ 1907              	.LASF20:
+ 1908 051d 66696E67 		.ascii	"fingerTh\000"
+ 1908      65725468 
+ 1908      00
+ 1909              	.LASF99:
+ 1910 0526 47656E65 		.ascii	"Generated_Source\\PSoC4\\CSD_INT.c\000"
+ 1910      72617465 
+ 1910      645F536F 
+ 1910      75726365 
+ 1910      5C50536F 
+ 1911              	.LASF59:
+ 1912 0547 70635074 		.ascii	"pcPtr\000"
+ 1912      7200
+ 1913              	.LASF55:
+ 1914 054d 736E7254 		.ascii	"snrTestScanCounter\000"
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccIFjaSU.s 			page 55
+
+
+ 1914      65737453 
+ 1914      63616E43 
+ 1914      6F756E74 
+ 1914      657200
+ 1915              	.LASF62:
+ 1916 0560 6873696F 		.ascii	"hsiomMask\000"
+ 1916      6D4D6173 
+ 1916      6B00
+ 1917              	.LASF81:
+ 1918 056a 746D704D 		.ascii	"tmpMaxCount\000"
+ 1918      6178436F 
+ 1918      756E7400 
+ 1919              	.LASF98:
+ 1920 0576 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 1920      4320342E 
+ 1920      392E3320 
+ 1920      32303135 
+ 1920      30333033 
+ 1921 05a9 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m0plus -mthumb -"
+ 1921      20726576 
+ 1921      6973696F 
+ 1921      6E203232 
+ 1921      31323230 
+ 1922 05dc 67202D4F 		.ascii	"g -Og -ffunction-sections -ffat-lto-objects\000"
+ 1922      67202D66 
+ 1922      66756E63 
+ 1922      74696F6E 
+ 1922      2D736563 
+ 1923              	.LASF21:
+ 1924 0608 6E6F6973 		.ascii	"noiseTh\000"
+ 1924      65546800 
+ 1925              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br
