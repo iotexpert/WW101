@@ -1,0 +1,1070 @@
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"VrefBuffer.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.VrefBuffer_Init,"ax",%progbits
+  18              		.align	2
+  19              		.global	VrefBuffer_Init
+  20              		.code	16
+  21              		.thumb_func
+  22              		.type	VrefBuffer_Init, %function
+  23              	VrefBuffer_Init:
+  24              	.LFB0:
+  25              		.file 1 "Generated_Source\\PSoC4\\VrefBuffer.c"
+   1:Generated_Source\PSoC4/VrefBuffer.c **** /*******************************************************************************
+   2:Generated_Source\PSoC4/VrefBuffer.c **** * File Name: VrefBuffer.c
+   3:Generated_Source\PSoC4/VrefBuffer.c **** * Version 1.20
+   4:Generated_Source\PSoC4/VrefBuffer.c **** *
+   5:Generated_Source\PSoC4/VrefBuffer.c **** * Description:
+   6:Generated_Source\PSoC4/VrefBuffer.c **** *  This file provides the source code to the API for the Opamp (Analog Buffer)
+   7:Generated_Source\PSoC4/VrefBuffer.c **** *  Component.
+   8:Generated_Source\PSoC4/VrefBuffer.c **** *
+   9:Generated_Source\PSoC4/VrefBuffer.c **** *
+  10:Generated_Source\PSoC4/VrefBuffer.c **** ********************************************************************************
+  11:Generated_Source\PSoC4/VrefBuffer.c **** * Copyright 2013-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  12:Generated_Source\PSoC4/VrefBuffer.c **** * You may use this file only in accordance with the license, terms, conditions,
+  13:Generated_Source\PSoC4/VrefBuffer.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  14:Generated_Source\PSoC4/VrefBuffer.c **** * the software package with which this file was provided.
+  15:Generated_Source\PSoC4/VrefBuffer.c **** *******************************************************************************/
+  16:Generated_Source\PSoC4/VrefBuffer.c **** 
+  17:Generated_Source\PSoC4/VrefBuffer.c **** #include "VrefBuffer.h"
+  18:Generated_Source\PSoC4/VrefBuffer.c **** 
+  19:Generated_Source\PSoC4/VrefBuffer.c **** uint8 VrefBuffer_initVar = 0u; /* Defines if component was initialized */
+  20:Generated_Source\PSoC4/VrefBuffer.c **** static uint32 VrefBuffer_internalPower = 0u; /* Defines component Power value */
+  21:Generated_Source\PSoC4/VrefBuffer.c **** 
+  22:Generated_Source\PSoC4/VrefBuffer.c **** 
+  23:Generated_Source\PSoC4/VrefBuffer.c **** /*******************************************************************************
+  24:Generated_Source\PSoC4/VrefBuffer.c **** * Function Name: VrefBuffer_Init
+  25:Generated_Source\PSoC4/VrefBuffer.c **** ********************************************************************************
+  26:Generated_Source\PSoC4/VrefBuffer.c **** *
+  27:Generated_Source\PSoC4/VrefBuffer.c **** * Summary:
+  28:Generated_Source\PSoC4/VrefBuffer.c **** *  Initializes or restores the component according to the customizer Configure 
+  29:Generated_Source\PSoC4/VrefBuffer.c **** *  dialog settings. It is not necessary to call Init() because the Start() API 
+  30:Generated_Source\PSoC4/VrefBuffer.c **** *  calls this function and is the preferred method to begin the component operation.
+  31:Generated_Source\PSoC4/VrefBuffer.c **** *
+  32:Generated_Source\PSoC4/VrefBuffer.c **** * Parameters:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 2
+
+
+  33:Generated_Source\PSoC4/VrefBuffer.c **** *  None
+  34:Generated_Source\PSoC4/VrefBuffer.c **** *
+  35:Generated_Source\PSoC4/VrefBuffer.c **** * Return:
+  36:Generated_Source\PSoC4/VrefBuffer.c **** *  None
+  37:Generated_Source\PSoC4/VrefBuffer.c **** *
+  38:Generated_Source\PSoC4/VrefBuffer.c **** *******************************************************************************/
+  39:Generated_Source\PSoC4/VrefBuffer.c **** void VrefBuffer_Init(void)
+  40:Generated_Source\PSoC4/VrefBuffer.c **** {
+  26              		.loc 1 40 0
+  27              		.cfi_startproc
+  41:Generated_Source\PSoC4/VrefBuffer.c ****     VrefBuffer_internalPower = VrefBuffer_POWER;
+  28              		.loc 1 41 0
+  29 0000 0323     		mov	r3, #3
+  30 0002 064A     		ldr	r2, .L2
+  31 0004 1360     		str	r3, [r2]
+  42:Generated_Source\PSoC4/VrefBuffer.c ****     VrefBuffer_CTB_CTRL_REG = VrefBuffer_DEFAULT_CTB_CTRL;
+  32              		.loc 1 42 0
+  33 0006 8021     		mov	r1, #128
+  34 0008 0906     		lsl	r1, r1, #24
+  35 000a 054A     		ldr	r2, .L2+4
+  36 000c 1160     		str	r1, [r2]
+  43:Generated_Source\PSoC4/VrefBuffer.c ****     VrefBuffer_OA_RES_CTRL_REG = VrefBuffer_DEFAULT_OA_RES_CTRL;
+  37              		.loc 1 43 0
+  38 000e 0421     		mov	r1, #4
+  39 0010 044A     		ldr	r2, .L2+8
+  40 0012 1160     		str	r1, [r2]
+  44:Generated_Source\PSoC4/VrefBuffer.c ****     VrefBuffer_OA_COMP_TRIM_REG = VrefBuffer_DEFAULT_OA_COMP_TRIM_REG;
+  41              		.loc 1 44 0
+  42 0014 044A     		ldr	r2, .L2+12
+  43 0016 1360     		str	r3, [r2]
+  45:Generated_Source\PSoC4/VrefBuffer.c **** }
+  44              		.loc 1 45 0
+  45              		@ sp needed
+  46 0018 7047     		bx	lr
+  47              	.L3:
+  48 001a C046     		.align	2
+  49              	.L2:
+  50 001c 00000000 		.word	.LANCHOR0
+  51 0020 00003140 		.word	1076953088
+  52 0024 08003140 		.word	1076953096
+  53 0028 140F3140 		.word	1076956948
+  54              		.cfi_endproc
+  55              	.LFE0:
+  56              		.size	VrefBuffer_Init, .-VrefBuffer_Init
+  57              		.section	.text.VrefBuffer_Enable,"ax",%progbits
+  58              		.align	2
+  59              		.global	VrefBuffer_Enable
+  60              		.code	16
+  61              		.thumb_func
+  62              		.type	VrefBuffer_Enable, %function
+  63              	VrefBuffer_Enable:
+  64              	.LFB1:
+  46:Generated_Source\PSoC4/VrefBuffer.c **** 
+  47:Generated_Source\PSoC4/VrefBuffer.c **** 
+  48:Generated_Source\PSoC4/VrefBuffer.c **** /*******************************************************************************
+  49:Generated_Source\PSoC4/VrefBuffer.c **** * Function Name: VrefBuffer_Enable
+  50:Generated_Source\PSoC4/VrefBuffer.c **** ********************************************************************************
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 3
+
+
+  51:Generated_Source\PSoC4/VrefBuffer.c **** *
+  52:Generated_Source\PSoC4/VrefBuffer.c **** * Summary:
+  53:Generated_Source\PSoC4/VrefBuffer.c **** *  Activates the hardware and begins the component operation. It is not necessary to 
+  54:Generated_Source\PSoC4/VrefBuffer.c **** *  call Enable() because the Start() API calls this function, which is the 
+  55:Generated_Source\PSoC4/VrefBuffer.c **** *  preferred method to begin the component operation.
+  56:Generated_Source\PSoC4/VrefBuffer.c **** *
+  57:Generated_Source\PSoC4/VrefBuffer.c **** * Parameters:
+  58:Generated_Source\PSoC4/VrefBuffer.c **** *  None
+  59:Generated_Source\PSoC4/VrefBuffer.c **** *
+  60:Generated_Source\PSoC4/VrefBuffer.c **** * Return:
+  61:Generated_Source\PSoC4/VrefBuffer.c **** *  None
+  62:Generated_Source\PSoC4/VrefBuffer.c **** *
+  63:Generated_Source\PSoC4/VrefBuffer.c **** *******************************************************************************/
+  64:Generated_Source\PSoC4/VrefBuffer.c **** void VrefBuffer_Enable(void)
+  65:Generated_Source\PSoC4/VrefBuffer.c **** {
+  65              		.loc 1 65 0
+  66              		.cfi_startproc
+  66:Generated_Source\PSoC4/VrefBuffer.c ****     VrefBuffer_OA_RES_CTRL_REG |= VrefBuffer_internalPower | \
+  67              		.loc 1 66 0
+  68 0000 044A     		ldr	r2, .L5
+  69 0002 1168     		ldr	r1, [r2]
+  70 0004 044B     		ldr	r3, .L5+4
+  71 0006 1B68     		ldr	r3, [r3]
+  72 0008 0B43     		orr	r3, r1
+  73 000a 8021     		mov	r1, #128
+  74 000c 0901     		lsl	r1, r1, #4
+  75 000e 0B43     		orr	r3, r1
+  76 0010 1360     		str	r3, [r2]
+  67:Generated_Source\PSoC4/VrefBuffer.c ****                                         VrefBuffer_OA_PUMP_EN;
+  68:Generated_Source\PSoC4/VrefBuffer.c **** }
+  77              		.loc 1 68 0
+  78              		@ sp needed
+  79 0012 7047     		bx	lr
+  80              	.L6:
+  81              		.align	2
+  82              	.L5:
+  83 0014 08003140 		.word	1076953096
+  84 0018 00000000 		.word	.LANCHOR0
+  85              		.cfi_endproc
+  86              	.LFE1:
+  87              		.size	VrefBuffer_Enable, .-VrefBuffer_Enable
+  88              		.section	.text.VrefBuffer_Start,"ax",%progbits
+  89              		.align	2
+  90              		.global	VrefBuffer_Start
+  91              		.code	16
+  92              		.thumb_func
+  93              		.type	VrefBuffer_Start, %function
+  94              	VrefBuffer_Start:
+  95              	.LFB2:
+  69:Generated_Source\PSoC4/VrefBuffer.c **** 
+  70:Generated_Source\PSoC4/VrefBuffer.c **** 
+  71:Generated_Source\PSoC4/VrefBuffer.c **** /*******************************************************************************
+  72:Generated_Source\PSoC4/VrefBuffer.c **** * Function Name: VrefBuffer_Start
+  73:Generated_Source\PSoC4/VrefBuffer.c **** ********************************************************************************
+  74:Generated_Source\PSoC4/VrefBuffer.c **** *
+  75:Generated_Source\PSoC4/VrefBuffer.c **** * Summary:
+  76:Generated_Source\PSoC4/VrefBuffer.c **** *  Performs all of the required initialization for the component and enables power 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 4
+
+
+  77:Generated_Source\PSoC4/VrefBuffer.c **** *  to the block. The first time the routine is executed, the Power level, Mode, 
+  78:Generated_Source\PSoC4/VrefBuffer.c **** *  and Output mode are set. When called to restart the Opamp following a Stop() call, 
+  79:Generated_Source\PSoC4/VrefBuffer.c **** *  the current component parameter settings are retained.
+  80:Generated_Source\PSoC4/VrefBuffer.c **** *
+  81:Generated_Source\PSoC4/VrefBuffer.c **** * Parameters:
+  82:Generated_Source\PSoC4/VrefBuffer.c **** *  None
+  83:Generated_Source\PSoC4/VrefBuffer.c **** *
+  84:Generated_Source\PSoC4/VrefBuffer.c **** * Return:
+  85:Generated_Source\PSoC4/VrefBuffer.c **** *  None
+  86:Generated_Source\PSoC4/VrefBuffer.c **** *
+  87:Generated_Source\PSoC4/VrefBuffer.c **** * Global variables:
+  88:Generated_Source\PSoC4/VrefBuffer.c **** *  VrefBuffer_initVar: Used to check the initial configuration, modified
+  89:Generated_Source\PSoC4/VrefBuffer.c **** *  when this function is called for the first time.
+  90:Generated_Source\PSoC4/VrefBuffer.c **** *
+  91:Generated_Source\PSoC4/VrefBuffer.c **** *******************************************************************************/
+  92:Generated_Source\PSoC4/VrefBuffer.c **** void VrefBuffer_Start(void)
+  93:Generated_Source\PSoC4/VrefBuffer.c **** {
+  96              		.loc 1 93 0
+  97              		.cfi_startproc
+  98 0000 08B5     		push	{r3, lr}
+  99              		.cfi_def_cfa_offset 8
+ 100              		.cfi_offset 3, -8
+ 101              		.cfi_offset 14, -4
+  94:Generated_Source\PSoC4/VrefBuffer.c ****     if( 0u == VrefBuffer_initVar)
+ 102              		.loc 1 94 0
+ 103 0002 064B     		ldr	r3, .L9
+ 104 0004 1B79     		ldrb	r3, [r3, #4]
+ 105 0006 002B     		cmp	r3, #0
+ 106 0008 04D1     		bne	.L8
+  95:Generated_Source\PSoC4/VrefBuffer.c ****     {
+  96:Generated_Source\PSoC4/VrefBuffer.c ****         VrefBuffer_Init();
+ 107              		.loc 1 96 0
+ 108 000a FFF7FEFF 		bl	VrefBuffer_Init
+ 109              	.LVL0:
+  97:Generated_Source\PSoC4/VrefBuffer.c ****         VrefBuffer_initVar = 1u;
+ 110              		.loc 1 97 0
+ 111 000e 0122     		mov	r2, #1
+ 112 0010 024B     		ldr	r3, .L9
+ 113 0012 1A71     		strb	r2, [r3, #4]
+ 114              	.L8:
+  98:Generated_Source\PSoC4/VrefBuffer.c ****     }
+  99:Generated_Source\PSoC4/VrefBuffer.c ****     VrefBuffer_Enable();
+ 115              		.loc 1 99 0
+ 116 0014 FFF7FEFF 		bl	VrefBuffer_Enable
+ 117              	.LVL1:
+ 100:Generated_Source\PSoC4/VrefBuffer.c **** }
+ 118              		.loc 1 100 0
+ 119              		@ sp needed
+ 120 0018 08BD     		pop	{r3, pc}
+ 121              	.L10:
+ 122 001a C046     		.align	2
+ 123              	.L9:
+ 124 001c 00000000 		.word	.LANCHOR0
+ 125              		.cfi_endproc
+ 126              	.LFE2:
+ 127              		.size	VrefBuffer_Start, .-VrefBuffer_Start
+ 128              		.section	.text.VrefBuffer_Stop,"ax",%progbits
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 5
+
+
+ 129              		.align	2
+ 130              		.global	VrefBuffer_Stop
+ 131              		.code	16
+ 132              		.thumb_func
+ 133              		.type	VrefBuffer_Stop, %function
+ 134              	VrefBuffer_Stop:
+ 135              	.LFB3:
+ 101:Generated_Source\PSoC4/VrefBuffer.c **** 
+ 102:Generated_Source\PSoC4/VrefBuffer.c **** 
+ 103:Generated_Source\PSoC4/VrefBuffer.c **** /*******************************************************************************
+ 104:Generated_Source\PSoC4/VrefBuffer.c **** * Function Name: VrefBuffer_Stop
+ 105:Generated_Source\PSoC4/VrefBuffer.c **** ********************************************************************************
+ 106:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 107:Generated_Source\PSoC4/VrefBuffer.c **** * Summary:
+ 108:Generated_Source\PSoC4/VrefBuffer.c **** *  Turn off the Opamp block.
+ 109:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 110:Generated_Source\PSoC4/VrefBuffer.c **** * Parameters:
+ 111:Generated_Source\PSoC4/VrefBuffer.c **** *  None
+ 112:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 113:Generated_Source\PSoC4/VrefBuffer.c **** * Return:
+ 114:Generated_Source\PSoC4/VrefBuffer.c **** *  None
+ 115:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 116:Generated_Source\PSoC4/VrefBuffer.c **** *******************************************************************************/
+ 117:Generated_Source\PSoC4/VrefBuffer.c **** void VrefBuffer_Stop(void)
+ 118:Generated_Source\PSoC4/VrefBuffer.c **** {
+ 136              		.loc 1 118 0
+ 137              		.cfi_startproc
+ 119:Generated_Source\PSoC4/VrefBuffer.c ****     VrefBuffer_OA_RES_CTRL_REG &= ((uint32)~(VrefBuffer_OA_PWR_MODE_MASK | \
+ 138              		.loc 1 119 0
+ 139 0000 024A     		ldr	r2, .L12
+ 140 0002 1168     		ldr	r1, [r2]
+ 141 0004 024B     		ldr	r3, .L12+4
+ 142 0006 0B40     		and	r3, r1
+ 143 0008 1360     		str	r3, [r2]
+ 120:Generated_Source\PSoC4/VrefBuffer.c ****                                                    VrefBuffer_OA_PUMP_EN));
+ 121:Generated_Source\PSoC4/VrefBuffer.c **** }
+ 144              		.loc 1 121 0
+ 145              		@ sp needed
+ 146 000a 7047     		bx	lr
+ 147              	.L13:
+ 148              		.align	2
+ 149              	.L12:
+ 150 000c 08003140 		.word	1076953096
+ 151 0010 FCF7FFFF 		.word	-2052
+ 152              		.cfi_endproc
+ 153              	.LFE3:
+ 154              		.size	VrefBuffer_Stop, .-VrefBuffer_Stop
+ 155              		.section	.text.VrefBuffer_SetPower,"ax",%progbits
+ 156              		.align	2
+ 157              		.global	VrefBuffer_SetPower
+ 158              		.code	16
+ 159              		.thumb_func
+ 160              		.type	VrefBuffer_SetPower, %function
+ 161              	VrefBuffer_SetPower:
+ 162              	.LFB4:
+ 122:Generated_Source\PSoC4/VrefBuffer.c **** 
+ 123:Generated_Source\PSoC4/VrefBuffer.c **** 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 6
+
+
+ 124:Generated_Source\PSoC4/VrefBuffer.c **** /*******************************************************************************
+ 125:Generated_Source\PSoC4/VrefBuffer.c **** * Function Name: VrefBuffer_SetPower
+ 126:Generated_Source\PSoC4/VrefBuffer.c **** ********************************************************************************
+ 127:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 128:Generated_Source\PSoC4/VrefBuffer.c **** * Summary:
+ 129:Generated_Source\PSoC4/VrefBuffer.c **** *  Sets the Opamp to one of the three power levels.
+ 130:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 131:Generated_Source\PSoC4/VrefBuffer.c **** * Parameters:
+ 132:Generated_Source\PSoC4/VrefBuffer.c **** *  power: power levels.
+ 133:Generated_Source\PSoC4/VrefBuffer.c **** *   VrefBuffer_LOW_POWER - Lowest active power
+ 134:Generated_Source\PSoC4/VrefBuffer.c **** *   VrefBuffer_MED_POWER - Medium power
+ 135:Generated_Source\PSoC4/VrefBuffer.c **** *   VrefBuffer_HIGH_POWER - Highest active power
+ 136:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 137:Generated_Source\PSoC4/VrefBuffer.c **** * Return:
+ 138:Generated_Source\PSoC4/VrefBuffer.c **** *  None
+ 139:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 140:Generated_Source\PSoC4/VrefBuffer.c **** **********************************************************************************/
+ 141:Generated_Source\PSoC4/VrefBuffer.c **** void VrefBuffer_SetPower(uint32 power)
+ 142:Generated_Source\PSoC4/VrefBuffer.c **** {
+ 163              		.loc 1 142 0
+ 164              		.cfi_startproc
+ 165              	.LVL2:
+ 143:Generated_Source\PSoC4/VrefBuffer.c ****     uint32 tmp;
+ 144:Generated_Source\PSoC4/VrefBuffer.c ****     
+ 145:Generated_Source\PSoC4/VrefBuffer.c ****     VrefBuffer_internalPower = VrefBuffer_GET_OA_PWR_MODE(power);
+ 166              		.loc 1 145 0
+ 167 0000 0321     		mov	r1, #3
+ 168 0002 0840     		and	r0, r1
+ 169              	.LVL3:
+ 170 0004 034B     		ldr	r3, .L15
+ 171 0006 1860     		str	r0, [r3]
+ 146:Generated_Source\PSoC4/VrefBuffer.c ****     tmp = VrefBuffer_OA_RES_CTRL_REG & \
+ 172              		.loc 1 146 0
+ 173 0008 034A     		ldr	r2, .L15+4
+ 174 000a 1368     		ldr	r3, [r2]
+ 175 000c 8B43     		bic	r3, r1
+ 176              	.LVL4:
+ 147:Generated_Source\PSoC4/VrefBuffer.c ****            (uint32)~VrefBuffer_OA_PWR_MODE_MASK;
+ 148:Generated_Source\PSoC4/VrefBuffer.c ****     VrefBuffer_OA_RES_CTRL_REG = tmp | VrefBuffer_internalPower;
+ 177              		.loc 1 148 0
+ 178 000e 1843     		orr	r0, r3
+ 179 0010 1060     		str	r0, [r2]
+ 149:Generated_Source\PSoC4/VrefBuffer.c **** }
+ 180              		.loc 1 149 0
+ 181              		@ sp needed
+ 182 0012 7047     		bx	lr
+ 183              	.L16:
+ 184              		.align	2
+ 185              	.L15:
+ 186 0014 00000000 		.word	.LANCHOR0
+ 187 0018 08003140 		.word	1076953096
+ 188              		.cfi_endproc
+ 189              	.LFE4:
+ 190              		.size	VrefBuffer_SetPower, .-VrefBuffer_SetPower
+ 191              		.section	.text.VrefBuffer_PumpControl,"ax",%progbits
+ 192              		.align	2
+ 193              		.global	VrefBuffer_PumpControl
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 7
+
+
+ 194              		.code	16
+ 195              		.thumb_func
+ 196              		.type	VrefBuffer_PumpControl, %function
+ 197              	VrefBuffer_PumpControl:
+ 198              	.LFB5:
+ 150:Generated_Source\PSoC4/VrefBuffer.c **** 
+ 151:Generated_Source\PSoC4/VrefBuffer.c **** 
+ 152:Generated_Source\PSoC4/VrefBuffer.c **** /*******************************************************************************
+ 153:Generated_Source\PSoC4/VrefBuffer.c **** * Function Name: VrefBuffer_PumpControl
+ 154:Generated_Source\PSoC4/VrefBuffer.c **** ********************************************************************************
+ 155:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 156:Generated_Source\PSoC4/VrefBuffer.c **** * Summary:
+ 157:Generated_Source\PSoC4/VrefBuffer.c **** *  Allows the user to turn the Opamp's boost pump on or off. By Default the Start() 
+ 158:Generated_Source\PSoC4/VrefBuffer.c **** *  function turns on the pump. Use this API to turn it off. The boost must be 
+ 159:Generated_Source\PSoC4/VrefBuffer.c **** *  turned on when the supply is less than 2.7 volts and off if the supply is more 
+ 160:Generated_Source\PSoC4/VrefBuffer.c **** *  than 4 volts.
+ 161:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 162:Generated_Source\PSoC4/VrefBuffer.c **** * Parameters:
+ 163:Generated_Source\PSoC4/VrefBuffer.c **** *  onOff: Control the pump.
+ 164:Generated_Source\PSoC4/VrefBuffer.c **** *   VrefBuffer_PUMP_OFF - Turn off the pump
+ 165:Generated_Source\PSoC4/VrefBuffer.c **** *   VrefBuffer_PUMP_ON - Turn on the pump
+ 166:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 167:Generated_Source\PSoC4/VrefBuffer.c **** * Return:
+ 168:Generated_Source\PSoC4/VrefBuffer.c **** *  None
+ 169:Generated_Source\PSoC4/VrefBuffer.c **** *
+ 170:Generated_Source\PSoC4/VrefBuffer.c **** **********************************************************************************/
+ 171:Generated_Source\PSoC4/VrefBuffer.c **** void VrefBuffer_PumpControl(uint32 onOff)
+ 172:Generated_Source\PSoC4/VrefBuffer.c **** {
+ 199              		.loc 1 172 0
+ 200              		.cfi_startproc
+ 201              	.LVL5:
+ 173:Generated_Source\PSoC4/VrefBuffer.c ****     
+ 174:Generated_Source\PSoC4/VrefBuffer.c ****     if(0u != onOff)
+ 202              		.loc 1 174 0
+ 203 0000 0028     		cmp	r0, #0
+ 204 0002 06D0     		beq	.L18
+ 175:Generated_Source\PSoC4/VrefBuffer.c ****     {
+ 176:Generated_Source\PSoC4/VrefBuffer.c ****         VrefBuffer_OA_RES_CTRL |= VrefBuffer_OA_PUMP_EN;    
+ 205              		.loc 1 176 0
+ 206 0004 064A     		ldr	r2, .L20
+ 207 0006 1368     		ldr	r3, [r2]
+ 208 0008 8021     		mov	r1, #128
+ 209 000a 0901     		lsl	r1, r1, #4
+ 210 000c 0B43     		orr	r3, r1
+ 211 000e 1360     		str	r3, [r2]
+ 212 0010 04E0     		b	.L17
+ 213              	.L18:
+ 177:Generated_Source\PSoC4/VrefBuffer.c ****     }
+ 178:Generated_Source\PSoC4/VrefBuffer.c ****     else
+ 179:Generated_Source\PSoC4/VrefBuffer.c ****     {
+ 180:Generated_Source\PSoC4/VrefBuffer.c ****         VrefBuffer_OA_RES_CTRL &= (uint32)~VrefBuffer_OA_PUMP_EN;
+ 214              		.loc 1 180 0
+ 215 0012 034A     		ldr	r2, .L20
+ 216 0014 1168     		ldr	r1, [r2]
+ 217 0016 034B     		ldr	r3, .L20+4
+ 218 0018 0B40     		and	r3, r1
+ 219 001a 1360     		str	r3, [r2]
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 8
+
+
+ 220              	.L17:
+ 181:Generated_Source\PSoC4/VrefBuffer.c ****     }
+ 182:Generated_Source\PSoC4/VrefBuffer.c **** }
+ 221              		.loc 1 182 0
+ 222              		@ sp needed
+ 223 001c 7047     		bx	lr
+ 224              	.L21:
+ 225 001e C046     		.align	2
+ 226              	.L20:
+ 227 0020 08003140 		.word	1076953096
+ 228 0024 FFF7FFFF 		.word	-2049
+ 229              		.cfi_endproc
+ 230              	.LFE5:
+ 231              		.size	VrefBuffer_PumpControl, .-VrefBuffer_PumpControl
+ 232              		.global	VrefBuffer_initVar
+ 233              		.bss
+ 234              		.align	2
+ 235              		.set	.LANCHOR0,. + 0
+ 236              		.type	VrefBuffer_internalPower, %object
+ 237              		.size	VrefBuffer_internalPower, 4
+ 238              	VrefBuffer_internalPower:
+ 239 0000 00000000 		.space	4
+ 240              		.type	VrefBuffer_initVar, %object
+ 241              		.size	VrefBuffer_initVar, 1
+ 242              	VrefBuffer_initVar:
+ 243 0004 00       		.space	1
+ 244 0005 000000   		.text
+ 245              	.Letext0:
+ 246              		.file 2 "Generated_Source\\PSoC4\\cytypes.h"
+ 247              		.section	.debug_info,"",%progbits
+ 248              	.Ldebug_info0:
+ 249 0000 78010000 		.4byte	0x178
+ 250 0004 0400     		.2byte	0x4
+ 251 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 252 000a 04       		.byte	0x4
+ 253 000b 01       		.uleb128 0x1
+ 254 000c 82010000 		.4byte	.LASF24
+ 255 0010 01       		.byte	0x1
+ 256 0011 32020000 		.4byte	.LASF25
+ 257 0015 20000000 		.4byte	.LASF26
+ 258 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 259 001d 00000000 		.4byte	0
+ 260 0021 00000000 		.4byte	.Ldebug_line0
+ 261 0025 02       		.uleb128 0x2
+ 262 0026 01       		.byte	0x1
+ 263 0027 06       		.byte	0x6
+ 264 0028 26020000 		.4byte	.LASF0
+ 265 002c 02       		.uleb128 0x2
+ 266 002d 01       		.byte	0x1
+ 267 002e 08       		.byte	0x8
+ 268 002f 7D000000 		.4byte	.LASF1
+ 269 0033 02       		.uleb128 0x2
+ 270 0034 02       		.byte	0x2
+ 271 0035 05       		.byte	0x5
+ 272 0036 72010000 		.4byte	.LASF2
+ 273 003a 02       		.uleb128 0x2
+ 274 003b 02       		.byte	0x2
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 9
+
+
+ 275 003c 07       		.byte	0x7
+ 276 003d A3000000 		.4byte	.LASF3
+ 277 0041 02       		.uleb128 0x2
+ 278 0042 04       		.byte	0x4
+ 279 0043 05       		.byte	0x5
+ 280 0044 17000000 		.4byte	.LASF4
+ 281 0048 02       		.uleb128 0x2
+ 282 0049 04       		.byte	0x4
+ 283 004a 07       		.byte	0x7
+ 284 004b 91000000 		.4byte	.LASF5
+ 285 004f 02       		.uleb128 0x2
+ 286 0050 08       		.byte	0x8
+ 287 0051 05       		.byte	0x5
+ 288 0052 5F010000 		.4byte	.LASF6
+ 289 0056 02       		.uleb128 0x2
+ 290 0057 08       		.byte	0x8
+ 291 0058 07       		.byte	0x7
+ 292 0059 FA000000 		.4byte	.LASF7
+ 293 005d 03       		.uleb128 0x3
+ 294 005e 04       		.byte	0x4
+ 295 005f 05       		.byte	0x5
+ 296 0060 696E7400 		.ascii	"int\000"
+ 297 0064 02       		.uleb128 0x2
+ 298 0065 04       		.byte	0x4
+ 299 0066 07       		.byte	0x7
+ 300 0067 ED000000 		.4byte	.LASF8
+ 301 006b 04       		.uleb128 0x4
+ 302 006c 7C010000 		.4byte	.LASF9
+ 303 0070 02       		.byte	0x2
+ 304 0071 B901     		.2byte	0x1b9
+ 305 0073 2C000000 		.4byte	0x2c
+ 306 0077 04       		.uleb128 0x4
+ 307 0078 E6000000 		.4byte	.LASF10
+ 308 007c 02       		.byte	0x2
+ 309 007d BB01     		.2byte	0x1bb
+ 310 007f 48000000 		.4byte	0x48
+ 311 0083 02       		.uleb128 0x2
+ 312 0084 04       		.byte	0x4
+ 313 0085 04       		.byte	0x4
+ 314 0086 77000000 		.4byte	.LASF11
+ 315 008a 02       		.uleb128 0x2
+ 316 008b 08       		.byte	0x8
+ 317 008c 04       		.byte	0x4
+ 318 008d C6000000 		.4byte	.LASF12
+ 319 0091 02       		.uleb128 0x2
+ 320 0092 01       		.byte	0x1
+ 321 0093 08       		.byte	0x8
+ 322 0094 6D010000 		.4byte	.LASF13
+ 323 0098 04       		.uleb128 0x4
+ 324 0099 00000000 		.4byte	.LASF14
+ 325 009d 02       		.byte	0x2
+ 326 009e 6502     		.2byte	0x265
+ 327 00a0 A4000000 		.4byte	0xa4
+ 328 00a4 05       		.uleb128 0x5
+ 329 00a5 77000000 		.4byte	0x77
+ 330 00a9 06       		.uleb128 0x6
+ 331 00aa B6000000 		.4byte	.LASF15
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 10
+
+
+ 332 00ae 01       		.byte	0x1
+ 333 00af 27       		.byte	0x27
+ 334 00b0 00000000 		.4byte	.LFB0
+ 335 00b4 2C000000 		.4byte	.LFE0-.LFB0
+ 336 00b8 01       		.uleb128 0x1
+ 337 00b9 9C       		.byte	0x9c
+ 338 00ba 06       		.uleb128 0x6
+ 339 00bb 14020000 		.4byte	.LASF16
+ 340 00bf 01       		.byte	0x1
+ 341 00c0 40       		.byte	0x40
+ 342 00c1 00000000 		.4byte	.LFB1
+ 343 00c5 1C000000 		.4byte	.LFE1-.LFB1
+ 344 00c9 01       		.uleb128 0x1
+ 345 00ca 9C       		.byte	0x9c
+ 346 00cb 07       		.uleb128 0x7
+ 347 00cc 06000000 		.4byte	.LASF18
+ 348 00d0 01       		.byte	0x1
+ 349 00d1 5C       		.byte	0x5c
+ 350 00d2 00000000 		.4byte	.LFB2
+ 351 00d6 20000000 		.4byte	.LFE2-.LFB2
+ 352 00da 01       		.uleb128 0x1
+ 353 00db 9C       		.byte	0x9c
+ 354 00dc F3000000 		.4byte	0xf3
+ 355 00e0 08       		.uleb128 0x8
+ 356 00e1 0E000000 		.4byte	.LVL0
+ 357 00e5 A9000000 		.4byte	0xa9
+ 358 00e9 08       		.uleb128 0x8
+ 359 00ea 18000000 		.4byte	.LVL1
+ 360 00ee BA000000 		.4byte	0xba
+ 361 00f2 00       		.byte	0
+ 362 00f3 06       		.uleb128 0x6
+ 363 00f4 11010000 		.4byte	.LASF17
+ 364 00f8 01       		.byte	0x1
+ 365 00f9 75       		.byte	0x75
+ 366 00fa 00000000 		.4byte	.LFB3
+ 367 00fe 14000000 		.4byte	.LFE3-.LFB3
+ 368 0102 01       		.uleb128 0x1
+ 369 0103 9C       		.byte	0x9c
+ 370 0104 07       		.uleb128 0x7
+ 371 0105 4B010000 		.4byte	.LASF19
+ 372 0109 01       		.byte	0x1
+ 373 010a 8D       		.byte	0x8d
+ 374 010b 00000000 		.4byte	.LFB4
+ 375 010f 1C000000 		.4byte	.LFE4-.LFB4
+ 376 0113 01       		.uleb128 0x1
+ 377 0114 9C       		.byte	0x9c
+ 378 0115 36010000 		.4byte	0x136
+ 379 0119 09       		.uleb128 0x9
+ 380 011a 71000000 		.4byte	.LASF21
+ 381 011e 01       		.byte	0x1
+ 382 011f 8D       		.byte	0x8d
+ 383 0120 77000000 		.4byte	0x77
+ 384 0124 00000000 		.4byte	.LLST0
+ 385 0128 0A       		.uleb128 0xa
+ 386 0129 746D7000 		.ascii	"tmp\000"
+ 387 012d 01       		.byte	0x1
+ 388 012e 8F       		.byte	0x8f
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 11
+
+
+ 389 012f 77000000 		.4byte	0x77
+ 390 0133 01       		.uleb128 0x1
+ 391 0134 53       		.byte	0x53
+ 392 0135 00       		.byte	0
+ 393 0136 07       		.uleb128 0x7
+ 394 0137 21010000 		.4byte	.LASF20
+ 395 013b 01       		.byte	0x1
+ 396 013c AB       		.byte	0xab
+ 397 013d 00000000 		.4byte	.LFB5
+ 398 0141 28000000 		.4byte	.LFE5-.LFB5
+ 399 0145 01       		.uleb128 0x1
+ 400 0146 9C       		.byte	0x9c
+ 401 0147 59010000 		.4byte	0x159
+ 402 014b 0B       		.uleb128 0xb
+ 403 014c 8B000000 		.4byte	.LASF22
+ 404 0150 01       		.byte	0x1
+ 405 0151 AB       		.byte	0xab
+ 406 0152 77000000 		.4byte	0x77
+ 407 0156 01       		.uleb128 0x1
+ 408 0157 50       		.byte	0x50
+ 409 0158 00       		.byte	0
+ 410 0159 0C       		.uleb128 0xc
+ 411 015a CD000000 		.4byte	.LASF23
+ 412 015e 01       		.byte	0x1
+ 413 015f 14       		.byte	0x14
+ 414 0160 77000000 		.4byte	0x77
+ 415 0164 05       		.uleb128 0x5
+ 416 0165 03       		.byte	0x3
+ 417 0166 00000000 		.4byte	VrefBuffer_internalPower
+ 418 016a 0D       		.uleb128 0xd
+ 419 016b 38010000 		.4byte	.LASF27
+ 420 016f 01       		.byte	0x1
+ 421 0170 13       		.byte	0x13
+ 422 0171 6B000000 		.4byte	0x6b
+ 423 0175 05       		.uleb128 0x5
+ 424 0176 03       		.byte	0x3
+ 425 0177 00000000 		.4byte	VrefBuffer_initVar
+ 426 017b 00       		.byte	0
+ 427              		.section	.debug_abbrev,"",%progbits
+ 428              	.Ldebug_abbrev0:
+ 429 0000 01       		.uleb128 0x1
+ 430 0001 11       		.uleb128 0x11
+ 431 0002 01       		.byte	0x1
+ 432 0003 25       		.uleb128 0x25
+ 433 0004 0E       		.uleb128 0xe
+ 434 0005 13       		.uleb128 0x13
+ 435 0006 0B       		.uleb128 0xb
+ 436 0007 03       		.uleb128 0x3
+ 437 0008 0E       		.uleb128 0xe
+ 438 0009 1B       		.uleb128 0x1b
+ 439 000a 0E       		.uleb128 0xe
+ 440 000b 55       		.uleb128 0x55
+ 441 000c 17       		.uleb128 0x17
+ 442 000d 11       		.uleb128 0x11
+ 443 000e 01       		.uleb128 0x1
+ 444 000f 10       		.uleb128 0x10
+ 445 0010 17       		.uleb128 0x17
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 12
+
+
+ 446 0011 00       		.byte	0
+ 447 0012 00       		.byte	0
+ 448 0013 02       		.uleb128 0x2
+ 449 0014 24       		.uleb128 0x24
+ 450 0015 00       		.byte	0
+ 451 0016 0B       		.uleb128 0xb
+ 452 0017 0B       		.uleb128 0xb
+ 453 0018 3E       		.uleb128 0x3e
+ 454 0019 0B       		.uleb128 0xb
+ 455 001a 03       		.uleb128 0x3
+ 456 001b 0E       		.uleb128 0xe
+ 457 001c 00       		.byte	0
+ 458 001d 00       		.byte	0
+ 459 001e 03       		.uleb128 0x3
+ 460 001f 24       		.uleb128 0x24
+ 461 0020 00       		.byte	0
+ 462 0021 0B       		.uleb128 0xb
+ 463 0022 0B       		.uleb128 0xb
+ 464 0023 3E       		.uleb128 0x3e
+ 465 0024 0B       		.uleb128 0xb
+ 466 0025 03       		.uleb128 0x3
+ 467 0026 08       		.uleb128 0x8
+ 468 0027 00       		.byte	0
+ 469 0028 00       		.byte	0
+ 470 0029 04       		.uleb128 0x4
+ 471 002a 16       		.uleb128 0x16
+ 472 002b 00       		.byte	0
+ 473 002c 03       		.uleb128 0x3
+ 474 002d 0E       		.uleb128 0xe
+ 475 002e 3A       		.uleb128 0x3a
+ 476 002f 0B       		.uleb128 0xb
+ 477 0030 3B       		.uleb128 0x3b
+ 478 0031 05       		.uleb128 0x5
+ 479 0032 49       		.uleb128 0x49
+ 480 0033 13       		.uleb128 0x13
+ 481 0034 00       		.byte	0
+ 482 0035 00       		.byte	0
+ 483 0036 05       		.uleb128 0x5
+ 484 0037 35       		.uleb128 0x35
+ 485 0038 00       		.byte	0
+ 486 0039 49       		.uleb128 0x49
+ 487 003a 13       		.uleb128 0x13
+ 488 003b 00       		.byte	0
+ 489 003c 00       		.byte	0
+ 490 003d 06       		.uleb128 0x6
+ 491 003e 2E       		.uleb128 0x2e
+ 492 003f 00       		.byte	0
+ 493 0040 3F       		.uleb128 0x3f
+ 494 0041 19       		.uleb128 0x19
+ 495 0042 03       		.uleb128 0x3
+ 496 0043 0E       		.uleb128 0xe
+ 497 0044 3A       		.uleb128 0x3a
+ 498 0045 0B       		.uleb128 0xb
+ 499 0046 3B       		.uleb128 0x3b
+ 500 0047 0B       		.uleb128 0xb
+ 501 0048 27       		.uleb128 0x27
+ 502 0049 19       		.uleb128 0x19
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 13
+
+
+ 503 004a 11       		.uleb128 0x11
+ 504 004b 01       		.uleb128 0x1
+ 505 004c 12       		.uleb128 0x12
+ 506 004d 06       		.uleb128 0x6
+ 507 004e 40       		.uleb128 0x40
+ 508 004f 18       		.uleb128 0x18
+ 509 0050 9742     		.uleb128 0x2117
+ 510 0052 19       		.uleb128 0x19
+ 511 0053 00       		.byte	0
+ 512 0054 00       		.byte	0
+ 513 0055 07       		.uleb128 0x7
+ 514 0056 2E       		.uleb128 0x2e
+ 515 0057 01       		.byte	0x1
+ 516 0058 3F       		.uleb128 0x3f
+ 517 0059 19       		.uleb128 0x19
+ 518 005a 03       		.uleb128 0x3
+ 519 005b 0E       		.uleb128 0xe
+ 520 005c 3A       		.uleb128 0x3a
+ 521 005d 0B       		.uleb128 0xb
+ 522 005e 3B       		.uleb128 0x3b
+ 523 005f 0B       		.uleb128 0xb
+ 524 0060 27       		.uleb128 0x27
+ 525 0061 19       		.uleb128 0x19
+ 526 0062 11       		.uleb128 0x11
+ 527 0063 01       		.uleb128 0x1
+ 528 0064 12       		.uleb128 0x12
+ 529 0065 06       		.uleb128 0x6
+ 530 0066 40       		.uleb128 0x40
+ 531 0067 18       		.uleb128 0x18
+ 532 0068 9742     		.uleb128 0x2117
+ 533 006a 19       		.uleb128 0x19
+ 534 006b 01       		.uleb128 0x1
+ 535 006c 13       		.uleb128 0x13
+ 536 006d 00       		.byte	0
+ 537 006e 00       		.byte	0
+ 538 006f 08       		.uleb128 0x8
+ 539 0070 898201   		.uleb128 0x4109
+ 540 0073 00       		.byte	0
+ 541 0074 11       		.uleb128 0x11
+ 542 0075 01       		.uleb128 0x1
+ 543 0076 31       		.uleb128 0x31
+ 544 0077 13       		.uleb128 0x13
+ 545 0078 00       		.byte	0
+ 546 0079 00       		.byte	0
+ 547 007a 09       		.uleb128 0x9
+ 548 007b 05       		.uleb128 0x5
+ 549 007c 00       		.byte	0
+ 550 007d 03       		.uleb128 0x3
+ 551 007e 0E       		.uleb128 0xe
+ 552 007f 3A       		.uleb128 0x3a
+ 553 0080 0B       		.uleb128 0xb
+ 554 0081 3B       		.uleb128 0x3b
+ 555 0082 0B       		.uleb128 0xb
+ 556 0083 49       		.uleb128 0x49
+ 557 0084 13       		.uleb128 0x13
+ 558 0085 02       		.uleb128 0x2
+ 559 0086 17       		.uleb128 0x17
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 14
+
+
+ 560 0087 00       		.byte	0
+ 561 0088 00       		.byte	0
+ 562 0089 0A       		.uleb128 0xa
+ 563 008a 34       		.uleb128 0x34
+ 564 008b 00       		.byte	0
+ 565 008c 03       		.uleb128 0x3
+ 566 008d 08       		.uleb128 0x8
+ 567 008e 3A       		.uleb128 0x3a
+ 568 008f 0B       		.uleb128 0xb
+ 569 0090 3B       		.uleb128 0x3b
+ 570 0091 0B       		.uleb128 0xb
+ 571 0092 49       		.uleb128 0x49
+ 572 0093 13       		.uleb128 0x13
+ 573 0094 02       		.uleb128 0x2
+ 574 0095 18       		.uleb128 0x18
+ 575 0096 00       		.byte	0
+ 576 0097 00       		.byte	0
+ 577 0098 0B       		.uleb128 0xb
+ 578 0099 05       		.uleb128 0x5
+ 579 009a 00       		.byte	0
+ 580 009b 03       		.uleb128 0x3
+ 581 009c 0E       		.uleb128 0xe
+ 582 009d 3A       		.uleb128 0x3a
+ 583 009e 0B       		.uleb128 0xb
+ 584 009f 3B       		.uleb128 0x3b
+ 585 00a0 0B       		.uleb128 0xb
+ 586 00a1 49       		.uleb128 0x49
+ 587 00a2 13       		.uleb128 0x13
+ 588 00a3 02       		.uleb128 0x2
+ 589 00a4 18       		.uleb128 0x18
+ 590 00a5 00       		.byte	0
+ 591 00a6 00       		.byte	0
+ 592 00a7 0C       		.uleb128 0xc
+ 593 00a8 34       		.uleb128 0x34
+ 594 00a9 00       		.byte	0
+ 595 00aa 03       		.uleb128 0x3
+ 596 00ab 0E       		.uleb128 0xe
+ 597 00ac 3A       		.uleb128 0x3a
+ 598 00ad 0B       		.uleb128 0xb
+ 599 00ae 3B       		.uleb128 0x3b
+ 600 00af 0B       		.uleb128 0xb
+ 601 00b0 49       		.uleb128 0x49
+ 602 00b1 13       		.uleb128 0x13
+ 603 00b2 02       		.uleb128 0x2
+ 604 00b3 18       		.uleb128 0x18
+ 605 00b4 00       		.byte	0
+ 606 00b5 00       		.byte	0
+ 607 00b6 0D       		.uleb128 0xd
+ 608 00b7 34       		.uleb128 0x34
+ 609 00b8 00       		.byte	0
+ 610 00b9 03       		.uleb128 0x3
+ 611 00ba 0E       		.uleb128 0xe
+ 612 00bb 3A       		.uleb128 0x3a
+ 613 00bc 0B       		.uleb128 0xb
+ 614 00bd 3B       		.uleb128 0x3b
+ 615 00be 0B       		.uleb128 0xb
+ 616 00bf 49       		.uleb128 0x49
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 15
+
+
+ 617 00c0 13       		.uleb128 0x13
+ 618 00c1 3F       		.uleb128 0x3f
+ 619 00c2 19       		.uleb128 0x19
+ 620 00c3 02       		.uleb128 0x2
+ 621 00c4 18       		.uleb128 0x18
+ 622 00c5 00       		.byte	0
+ 623 00c6 00       		.byte	0
+ 624 00c7 00       		.byte	0
+ 625              		.section	.debug_loc,"",%progbits
+ 626              	.Ldebug_loc0:
+ 627              	.LLST0:
+ 628 0000 00000000 		.4byte	.LVL2
+ 629 0004 04000000 		.4byte	.LVL3
+ 630 0008 0100     		.2byte	0x1
+ 631 000a 50       		.byte	0x50
+ 632 000b 04000000 		.4byte	.LVL3
+ 633 000f 1C000000 		.4byte	.LFE4
+ 634 0013 0400     		.2byte	0x4
+ 635 0015 F3       		.byte	0xf3
+ 636 0016 01       		.uleb128 0x1
+ 637 0017 50       		.byte	0x50
+ 638 0018 9F       		.byte	0x9f
+ 639 0019 00000000 		.4byte	0
+ 640 001d 00000000 		.4byte	0
+ 641              		.section	.debug_aranges,"",%progbits
+ 642 0000 44000000 		.4byte	0x44
+ 643 0004 0200     		.2byte	0x2
+ 644 0006 00000000 		.4byte	.Ldebug_info0
+ 645 000a 04       		.byte	0x4
+ 646 000b 00       		.byte	0
+ 647 000c 0000     		.2byte	0
+ 648 000e 0000     		.2byte	0
+ 649 0010 00000000 		.4byte	.LFB0
+ 650 0014 2C000000 		.4byte	.LFE0-.LFB0
+ 651 0018 00000000 		.4byte	.LFB1
+ 652 001c 1C000000 		.4byte	.LFE1-.LFB1
+ 653 0020 00000000 		.4byte	.LFB2
+ 654 0024 20000000 		.4byte	.LFE2-.LFB2
+ 655 0028 00000000 		.4byte	.LFB3
+ 656 002c 14000000 		.4byte	.LFE3-.LFB3
+ 657 0030 00000000 		.4byte	.LFB4
+ 658 0034 1C000000 		.4byte	.LFE4-.LFB4
+ 659 0038 00000000 		.4byte	.LFB5
+ 660 003c 28000000 		.4byte	.LFE5-.LFB5
+ 661 0040 00000000 		.4byte	0
+ 662 0044 00000000 		.4byte	0
+ 663              		.section	.debug_ranges,"",%progbits
+ 664              	.Ldebug_ranges0:
+ 665 0000 00000000 		.4byte	.LFB0
+ 666 0004 2C000000 		.4byte	.LFE0
+ 667 0008 00000000 		.4byte	.LFB1
+ 668 000c 1C000000 		.4byte	.LFE1
+ 669 0010 00000000 		.4byte	.LFB2
+ 670 0014 20000000 		.4byte	.LFE2
+ 671 0018 00000000 		.4byte	.LFB3
+ 672 001c 14000000 		.4byte	.LFE3
+ 673 0020 00000000 		.4byte	.LFB4
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 16
+
+
+ 674 0024 1C000000 		.4byte	.LFE4
+ 675 0028 00000000 		.4byte	.LFB5
+ 676 002c 28000000 		.4byte	.LFE5
+ 677 0030 00000000 		.4byte	0
+ 678 0034 00000000 		.4byte	0
+ 679              		.section	.debug_line,"",%progbits
+ 680              	.Ldebug_line0:
+ 681 0000 C2000000 		.section	.debug_str,"MS",%progbits,1
+ 681      02004700 
+ 681      00000201 
+ 681      FB0E0D00 
+ 681      01010101 
+ 682              	.LASF14:
+ 683 0000 72656733 		.ascii	"reg32\000"
+ 683      3200
+ 684              	.LASF18:
+ 685 0006 56726566 		.ascii	"VrefBuffer_Start\000"
+ 685      42756666 
+ 685      65725F53 
+ 685      74617274 
+ 685      00
+ 686              	.LASF4:
+ 687 0017 6C6F6E67 		.ascii	"long int\000"
+ 687      20696E74 
+ 687      00
+ 688              	.LASF26:
+ 689 0020 433A5C47 		.ascii	"C:\\Git\\WA101\\projects\\PSoC\\WW101_AnalogCoProce"
+ 689      69745C57 
+ 689      41313031 
+ 689      5C70726F 
+ 689      6A656374 
+ 690 004e 73736F72 		.ascii	"ssor\\WW101_AnalogCoProcessor.cydsn\000"
+ 690      5C575731 
+ 690      30315F41 
+ 690      6E616C6F 
+ 690      67436F50 
+ 691              	.LASF21:
+ 692 0071 706F7765 		.ascii	"power\000"
+ 692      7200
+ 693              	.LASF11:
+ 694 0077 666C6F61 		.ascii	"float\000"
+ 694      7400
+ 695              	.LASF1:
+ 696 007d 756E7369 		.ascii	"unsigned char\000"
+ 696      676E6564 
+ 696      20636861 
+ 696      7200
+ 697              	.LASF22:
+ 698 008b 6F6E4F66 		.ascii	"onOff\000"
+ 698      6600
+ 699              	.LASF5:
+ 700 0091 6C6F6E67 		.ascii	"long unsigned int\000"
+ 700      20756E73 
+ 700      69676E65 
+ 700      6420696E 
+ 700      7400
+ 701              	.LASF3:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 17
+
+
+ 702 00a3 73686F72 		.ascii	"short unsigned int\000"
+ 702      7420756E 
+ 702      7369676E 
+ 702      65642069 
+ 702      6E7400
+ 703              	.LASF15:
+ 704 00b6 56726566 		.ascii	"VrefBuffer_Init\000"
+ 704      42756666 
+ 704      65725F49 
+ 704      6E697400 
+ 705              	.LASF12:
+ 706 00c6 646F7562 		.ascii	"double\000"
+ 706      6C6500
+ 707              	.LASF23:
+ 708 00cd 56726566 		.ascii	"VrefBuffer_internalPower\000"
+ 708      42756666 
+ 708      65725F69 
+ 708      6E746572 
+ 708      6E616C50 
+ 709              	.LASF10:
+ 710 00e6 75696E74 		.ascii	"uint32\000"
+ 710      333200
+ 711              	.LASF8:
+ 712 00ed 756E7369 		.ascii	"unsigned int\000"
+ 712      676E6564 
+ 712      20696E74 
+ 712      00
+ 713              	.LASF7:
+ 714 00fa 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 714      206C6F6E 
+ 714      6720756E 
+ 714      7369676E 
+ 714      65642069 
+ 715              	.LASF17:
+ 716 0111 56726566 		.ascii	"VrefBuffer_Stop\000"
+ 716      42756666 
+ 716      65725F53 
+ 716      746F7000 
+ 717              	.LASF20:
+ 718 0121 56726566 		.ascii	"VrefBuffer_PumpControl\000"
+ 718      42756666 
+ 718      65725F50 
+ 718      756D7043 
+ 718      6F6E7472 
+ 719              	.LASF27:
+ 720 0138 56726566 		.ascii	"VrefBuffer_initVar\000"
+ 720      42756666 
+ 720      65725F69 
+ 720      6E697456 
+ 720      617200
+ 721              	.LASF19:
+ 722 014b 56726566 		.ascii	"VrefBuffer_SetPower\000"
+ 722      42756666 
+ 722      65725F53 
+ 722      6574506F 
+ 722      77657200 
+ 723              	.LASF6:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\cce7yDee.s 			page 18
+
+
+ 724 015f 6C6F6E67 		.ascii	"long long int\000"
+ 724      206C6F6E 
+ 724      6720696E 
+ 724      7400
+ 725              	.LASF13:
+ 726 016d 63686172 		.ascii	"char\000"
+ 726      00
+ 727              	.LASF2:
+ 728 0172 73686F72 		.ascii	"short int\000"
+ 728      7420696E 
+ 728      7400
+ 729              	.LASF9:
+ 730 017c 75696E74 		.ascii	"uint8\000"
+ 730      3800
+ 731              	.LASF24:
+ 732 0182 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 732      4320342E 
+ 732      392E3320 
+ 732      32303135 
+ 732      30333033 
+ 733 01b5 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m0plus -mthumb -"
+ 733      20726576 
+ 733      6973696F 
+ 733      6E203232 
+ 733      31323230 
+ 734 01e8 67202D4F 		.ascii	"g -Og -ffunction-sections -ffat-lto-objects\000"
+ 734      67202D66 
+ 734      66756E63 
+ 734      74696F6E 
+ 734      2D736563 
+ 735              	.LASF16:
+ 736 0214 56726566 		.ascii	"VrefBuffer_Enable\000"
+ 736      42756666 
+ 736      65725F45 
+ 736      6E61626C 
+ 736      6500
+ 737              	.LASF0:
+ 738 0226 7369676E 		.ascii	"signed char\000"
+ 738      65642063 
+ 738      68617200 
+ 739              	.LASF25:
+ 740 0232 47656E65 		.ascii	"Generated_Source\\PSoC4\\VrefBuffer.c\000"
+ 740      72617465 
+ 740      645F536F 
+ 740      75726365 
+ 740      5C50536F 
+ 741              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br
