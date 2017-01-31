@@ -1,7 +1,9 @@
 // Client to send information to a server using a custom protocol (WWEP).
 // See the WW101 lab manual for more information on WWEP.
 //
-// The message sent is echoed to a UART terminal. The response from the server is ignored.
+// The message sent and the response from the server are echoed to a UART terminal.
+//
+// This version uses TCP Stream APIs instead of TCP Socket APIs which simplifies the firmware.
 #include "wiced.h"
 
 #define TCP_CLIENT_STACK_SIZE 	(6200)
@@ -24,16 +26,12 @@ void button_isr(void *arg)
 // This function opens a socket connection to the WWEP server
 // then sends the state of the LED and gets the response
 // The input data is 0=Off, 1=On
-//
-// The socket is opened/closed each time this function is called so that we don't have
-// to worry about the return data from the server filling up the packet pool.
 void sendData(int data)
 {
+	wiced_tcp_socket_t socket;						// The TCP socket
+	wiced_tcp_stream_t stream;						// The TCP stream
 	char sendMessage[12];
-	wiced_tcp_socket_t socket;
-	wiced_packet_t* tx_packet;
-    uint8_t *tx_data;
-    uint16_t available_data_length;
+    wiced_result_t result;
 
     // format the data per the specification in section 6
 	sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
@@ -44,16 +42,16 @@ void sendData(int data)
 	wiced_tcp_bind(&socket,WICED_ANY_PORT);
 	wiced_tcp_connect(&socket,&serverAddress,SERVER_PORT,2000); // 2 second timeout
 
-	// Create the packet and send the data
-	wiced_packet_create_tcp(&socket, strlen(sendMessage), &tx_packet, (uint8_t**)&tx_data, &available_data_length); // get a packet
-    memcpy(tx_data, sendMessage, strlen(sendMessage)); // put our data in the packet
-    wiced_packet_set_data_end(tx_packet, (uint8_t*)&tx_data[strlen(sendMessage)]); // set the end of the packet
-    wiced_tcp_send_packet(&socket, tx_packet);
-    wiced_packet_delete(tx_packet);
+	// Initialize the TCP stream
+	wiced_tcp_stream_init(&stream, &socket);
 
-	// Delay so that the server has time to query the client for its IP address
-	wiced_rtos_delay_microseconds(100000);
+	// Send the data via the stream
+	wiced_tcp_stream_write(&stream, sendMessage, strlen(sendMessage));
+	// Force the data to be sent right away even if the packet isn't full yet
+	wiced_tcp_stream_flush(&stream);
 
+	// Delete the stream and socket
+	wiced_tcp_stream_deinit(&stream);
     wiced_tcp_delete_socket(&socket);
 }
 
@@ -104,7 +102,6 @@ void buttonThreadMain()
 		wiced_gpio_output_high( WICED_LED1 );
 	}
 }
-
 
 void application_start(void)
 {
