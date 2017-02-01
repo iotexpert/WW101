@@ -249,9 +249,6 @@ static wiced_result_t client_disconnected_callback( wiced_tcp_socket_t* socket, 
 
 	wiced_tcp_disconnect(socket);
 
-	// Remove the socket / peer address information from the structure
-	//TODO
-
 	return WICED_SUCCESS;
 }
 
