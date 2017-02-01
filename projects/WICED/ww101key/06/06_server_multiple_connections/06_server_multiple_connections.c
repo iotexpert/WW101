@@ -156,7 +156,7 @@ void printStatus()
 
 		switch(ss)
 		{
-		case WICED_SOCKET_CLOSED: WPRINT_APP_INFO(("Status:closed\n")); break;
+		case   WICED_SOCKET_CLOSED: WPRINT_APP_INFO(("Status:closed\n")); break;
 		case   WICED_SOCKET_CLOSING: WPRINT_APP_INFO(("Status:closing\n")); break;
 		case   WICED_SOCKET_CONNECTING: WPRINT_APP_INFO(("Status:connecting\n")); break;
 		case   WICED_SOCKET_CONNECTED: WPRINT_APP_INFO(("Status:connected\n")); break;
@@ -200,7 +200,6 @@ static void tcp_server_thread_main(uint32_t arg)
 }
 
 
-
 static wiced_result_t client_connected_callback( wiced_tcp_socket_t* socket, void* arg )
 {
 
@@ -227,11 +226,11 @@ static wiced_result_t client_disconnected_callback( wiced_tcp_socket_t* socket, 
 	wiced_socket_state_t ss;
 	wiced_tcp_get_socket_state( socket, &ss);
 
-	/*
+ /*
  // Debug prints
     switch(ss)
     {
-    case WICED_SOCKET_CLOSED: WPRINT_APP_INFO(("closed\n")); break;
+    case   WICED_SOCKET_CLOSED: WPRINT_APP_INFO(("closed\n")); break;
     case   WICED_SOCKET_CLOSING: WPRINT_APP_INFO(("closing\n")); break;
     case   WICED_SOCKET_CONNECTING: WPRINT_APP_INFO(("connecting\n")); break;
     case   WICED_SOCKET_CONNECTED: WPRINT_APP_INFO(("connected\n")); break;
@@ -239,7 +238,7 @@ static wiced_result_t client_disconnected_callback( wiced_tcp_socket_t* socket, 
     case   WICED_SOCKET_LISTEN: WPRINT_APP_INFO(("listen\n")); break;
     case   WICED_SOCKET_ERROR: WPRINT_APP_INFO(("error\n")); break;
     }
-	 */
+ */
 
 
 	if(ss == WICED_SOCKET_CLOSED)
@@ -302,18 +301,21 @@ static wiced_result_t received_data_callback( wiced_tcp_socket_t* socket, void* 
 			}
 		}
 
-		// Get IP address of the client (peer) that sent the data and print to terminal
-		wiced_ip_address_t peerAddress;
-		uint16_t	peerPort;
-		wiced_tcp_server_peer(socket,&peerAddress,&peerPort);
+		// Print IP address of the client (peer) that sent the data and print to terminal
+		uint32_t 		peerAddressV4;
+		peerAddressV4 = (*socket).socket.nx_tcp_socket_connect_ip.nxd_ip_address.v4;
 		WPRINT_APP_INFO(("%u.%u.%u.%u\t",
-				(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 24),
-				(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 16),
-				(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 8),
-				(uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 0)));
+				(uint8_t)(peerAddressV4 >> 24),
+				(uint8_t)(peerAddressV4 >> 16),
+				(uint8_t)(peerAddressV4 >> 8),
+				(uint8_t)(peerAddressV4 >> 0)));
+
+		// Print the port that the peer connected from
+		uint16_t	    peerPort;
+		peerPort = (*socket).socket.nx_tcp_socket_connect_port;
+		WPRINT_APP_INFO(("%d\t",peerPort));
 
 		// Print the data that was sent by the client (peer)
-		WPRINT_APP_INFO(("%d\t",peerPort));
 		if(err)
 		{
 			strcpy(returnMessage,"X");
