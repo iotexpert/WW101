@@ -3,17 +3,6 @@
 
 volatile wiced_bool_t newPress = WICED_FALSE;
 
-// This section is not needed because STDIO_UART is already initialized in platform.c.
-// It would only be needed if a different UART interface was being used.
-//wiced_uart_config_t uart_config =
-//{
-//    .baud_rate    = 115200,
-//    .data_width   = DATA_WIDTH_8BIT,
-//    .parity       = NO_PARITY,
-//    .stop_bits    = STOP_BITS_1,
-//    .flow_control = FLOW_CONTROL_DISABLED,
-//};
-
 /* Interrupt service routine for the button */
 void button_isr(void* arg)
 {
@@ -44,8 +33,17 @@ void application_start( )
 
     wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL); /* Setup interrupt */
 
-    // This is not needed because STDIO_UART is already initialized in platform.c
-    //wiced_uart_init( STDIO_UART, &uart_config, NULL); /* Setup UART */
+    /* Configure and start the UART. */
+    /* Note that WICED_DISABLE_STDIO must be defined in the make file for this to work */
+    wiced_uart_config_t uart_config =
+    {
+        .baud_rate    = 9600,
+        .data_width   = DATA_WIDTH_8BIT,
+        .parity       = NO_PARITY,
+        .stop_bits    = STOP_BITS_1,
+        .flow_control = FLOW_CONTROL_DISABLED,
+    };
+    wiced_uart_init( STDIO_UART, &uart_config, NULL); /* Setup UART */
 
     while ( 1 )
     {
@@ -57,7 +55,7 @@ void application_start( )
     			pressCount = 0;
     		}
     		printChar = pressCount + '0';
-    		wiced_uart_transmit_bytes(STDIO_UART, &printChar , 1);
+    		wiced_uart_transmit_bytes(WICED_UART_1, &printChar , 1);
     		newPress = WICED_FALSE;	/* Reset for next press */
     	}
     }

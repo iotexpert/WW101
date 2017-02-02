@@ -1,6 +1,6 @@
 // Use a semaphore to communicate between a button interrupt and an LED blink thread.
 // The LED state will toggle when the user button is pressed.
-#include "wiced.h"Pmga 11
+#include "wiced.h"
 
 /* Thread parameters */
 #define THREAD_PRIORITY 	(10)
@@ -44,14 +44,14 @@ void application_start( )
 
 	wiced_init();	/* Initialize the WICED device */
 
-	/* Setup button interrupt */
-	wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL);
-
 	/* Setup the semaphore which will be set by the button interrupt */
     wiced_rtos_init_semaphore(&semaphoreHandle);
 
 	/* Initialize and start LED thread */
     wiced_rtos_create_thread(&ledThreadHandle, THREAD_PRIORITY, "ledThread", ledThread, THREAD_STACK_SIZE, NULL);
+
+	/* Setup button interrupt */
+	wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL);
 
     while ( 1 )
     {

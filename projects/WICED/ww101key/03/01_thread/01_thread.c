@@ -38,6 +38,6 @@ void application_start( )
 
     while ( 1 )
     {
-		wiced_rtos_delay_milliseconds( 1 ); /* The main application loop has to have something in it for the Thread to work */
+		wiced_rtos_delay_milliseconds( 1 ); /* The main application loop has to give LED Thread a turn */
     }
 }
