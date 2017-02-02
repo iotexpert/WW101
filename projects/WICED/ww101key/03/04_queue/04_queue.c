@@ -38,8 +38,6 @@ void ledThread(wiced_thread_arg_t arg)
 	while(1)
 	{
 		uint32_t i; /* Loop Counter */
-		/* Check to see if the queue is empty. If it is, suspend the thread */
-
 
 		/* If not empty, pull the value off the queue. If empty, this will
 		 * suspend the thread until a value is available. */
