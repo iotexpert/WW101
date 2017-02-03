@@ -216,7 +216,9 @@ typedef enum
 #define PLATFORM_FACTORY_RESET_BUTTON_GPIO      ( WICED_BUTTON1 )
 #define PLATFORM_FACTORY_RESET_PRESSED_STATE    (    0 )
 #define PLATFORM_FACTORY_RESET_CHECK_PERIOD     (  100 )
+#ifndef PLATFORM_FACTORY_RESET_TIMEOUT
 #define PLATFORM_FACTORY_RESET_TIMEOUT          ( 5000 )
+#endif
 
 #ifdef __cplusplus
 } /*extern "C" */
