@@ -16430,12 +16430,22 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <wire x1="71.12" y1="58.42" x2="83.82" y2="58.42" width="0.1524" layer="91"/>
 <label x="76.2" y="58.42" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="JP1" gate="G$1" pin="1"/>
+<wire x1="-25.4" y1="106.68" x2="-10.16" y2="106.68" width="0.1524" layer="91"/>
+<label x="-22.86" y="106.68" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="MB1" class="0">
 <segment>
 <pinref part="U$7" gate="G$1" pin="P0[1]"/>
 <wire x1="71.12" y1="60.96" x2="83.82" y2="60.96" width="0.1524" layer="91"/>
 <label x="76.2" y="60.96" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="JP1" gate="G$1" pin="2"/>
+<wire x1="-25.4" y1="109.22" x2="-10.16" y2="109.22" width="0.1524" layer="91"/>
+<label x="-22.86" y="109.22" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="MBLED0" class="0">
@@ -16700,20 +16710,6 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <pinref part="U$7" gate="G$1" pin="VCCD"/>
 <wire x1="33.02" y1="88.9" x2="33.02" y2="101.6" width="0.1524" layer="91"/>
 <pinref part="C7" gate="G$1" pin="2"/>
-</segment>
-</net>
-<net name="SDAT" class="0">
-<segment>
-<pinref part="JP1" gate="G$1" pin="1"/>
-<wire x1="-25.4" y1="106.68" x2="-10.16" y2="106.68" width="0.1524" layer="91"/>
-<label x="-22.86" y="106.68" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="SCLK" class="0">
-<segment>
-<pinref part="JP1" gate="G$1" pin="2"/>
-<wire x1="-25.4" y1="109.22" x2="-10.16" y2="109.22" width="0.1524" layer="91"/>
-<label x="-22.86" y="109.22" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="VPWR" class="0">
