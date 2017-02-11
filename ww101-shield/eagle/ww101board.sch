@@ -986,7 +986,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pad name="VDD" x="12.34" y="25.6" drill="0.8"/>
 <hole x="3.3" y="2.05" drill="2.88"/>
 <wire x1="0" y1="27.3" x2="27.3" y2="27.3" width="0.127" layer="21"/>
-<wire x1="27.3" y1="27.3" x2="27.3" y2="0" width="0.127" layer="27"/>
+<wire x1="27.3" y1="27.3" x2="27.3" y2="0" width="0.127" layer="21"/>
 <wire x1="27.3" y1="0" x2="0" y2="0" width="0.127" layer="21"/>
 <wire x1="0" y1="0" x2="0" y2="27.3" width="0.127" layer="21"/>
 <hole x="24" y="2.05" drill="2.88"/>
@@ -15927,46 +15927,50 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <part name="C7" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="0.1uF"/>
 <part name="C8" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="1uF"/>
 <part name="C9" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="0.1uF"/>
-<part name="R2" library="pot" deviceset="TRIM_US-" device="3386P"/>
-<part name="MBLED0" library="adafruit" deviceset="LED" device="CHIP-LED0603"/>
-<part name="MBLED1" library="adafruit" deviceset="LED" device="CHIP-LED0603"/>
-<part name="ULED0" library="adafruit" deviceset="LED" device="CHIP-LED0603"/>
-<part name="ULED1" library="adafruit" deviceset="LED" device="CHIP-LED0603"/>
-<part name="ULED2" library="adafruit" deviceset="LED" device="CHIP-LED0603"/>
-<part name="ULED3" library="adafruit" deviceset="LED" device="CHIP-LED0603"/>
+<part name="R2" library="pot" deviceset="TRIM_US-" device="3386P" value="10K"/>
+<part name="MBLED0" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="MBLED1" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="ULED0" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="ULED1" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="ULED2" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="ULED3" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
 <part name="R3" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="330"/>
 <part name="R4" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="330"/>
 <part name="R5" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="330"/>
 <part name="R6" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="330"/>
 <part name="R7" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="330"/>
 <part name="R8" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="330"/>
-<part name="JMP1" library="PatternAgents-ProtoPads" deviceset="JMP-3-NO" device="-PTH"/>
-<part name="JMP2" library="PatternAgents-ProtoPads" deviceset="JMP-3-NO" device="-0603"/>
-<part name="JP1" library="SparkFun-Connectors" deviceset="M05" device="LOCK"/>
+<part name="JMP1" library="PatternAgents-ProtoPads" deviceset="JMP-3-NO" device="-PTH" value="0"/>
+<part name="JPWR" library="PatternAgents-ProtoPads" deviceset="JMP-3-NO" device="-0603" value="0"/>
+<part name="JP1" library="SparkFun-Connectors" deviceset="M05" device="LOCK" value="0"/>
 <part name="R9" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="10K"/>
 <part name="R10" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="10K"/>
-<part name="ALS" library="IOTExpert" deviceset="ALS" device=""/>
+<part name="D1" library="IOTExpert" deviceset="ALS" device=""/>
 <part name="R11" library="varistor" deviceset="THERMISTOR" device="-5"/>
-<part name="R1" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603"/>
+<part name="R1" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="10K"/>
 <part name="R12" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="220K"/>
 <part name="C10" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="0.1uF"/>
-<part name="U$3" library="IOTExpert" deviceset="HPP801A031" device=""/>
+<part name="HUMIDITY" library="IOTExpert" deviceset="HPP801A031" device=""/>
 <part name="C11" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="180pF"/>
-<part name="U$4" library="PatternAgents-ProtoPads" deviceset="JMP-3-1_2" device=""/>
-<part name="U$5" library="PatternAgents-ProtoPads" deviceset="JMP-3-2_3" device=""/>
+<part name="R30" library="PatternAgents-ProtoPads" deviceset="JMP-3-1_2" device=""/>
+<part name="R31" library="PatternAgents-ProtoPads" deviceset="JMP-3-2_3" device=""/>
 <part name="R13" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="560"/>
 <part name="R14" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="560"/>
 <part name="R15" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="560"/>
 <part name="R16" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="560"/>
 <part name="R17" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="0"/>
-<part name="C12" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP"/>
-<part name="C13" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP"/>
+<part name="C12" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="2.2nF"/>
+<part name="C13" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="1uF"/>
 <part name="U1" library="SparkFun-Boards" deviceset="ARDUINO_SHIELD" device="NOHOLESORLABELS"/>
-<part name="B0" library="PatternAgents-TouchWidgets" deviceset="BUTTON_PASSIVE" device="10MM"/>
-<part name="B1" library="PatternAgents-TouchWidgets" deviceset="BUTTON_PASSIVE" device="10MM"/>
-<part name="B2" library="PatternAgents-TouchWidgets" deviceset="BUTTON_PASSIVE" device="10MM"/>
-<part name="B3" library="PatternAgents-TouchWidgets" deviceset="BUTTON_PASSIVE" device="10MM"/>
-<part name="C14" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP"/>
+<part name="B0" library="PatternAgents-TouchWidgets" deviceset="BUTTON_PASSIVE" device="10MM" value="B"/>
+<part name="B1" library="PatternAgents-TouchWidgets" deviceset="BUTTON_PASSIVE" device="10MM" value="B"/>
+<part name="B2" library="PatternAgents-TouchWidgets" deviceset="BUTTON_PASSIVE" device="10MM" value="B"/>
+<part name="B3" library="PatternAgents-TouchWidgets" deviceset="BUTTON_PASSIVE" device="10MM" value="B"/>
+<part name="C14" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="10nF"/>
+<part name="R18" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="10K"/>
+<part name="R19" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="10K"/>
+<part name="R20" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="10K"/>
+<part name="R21" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="10K"/>
 </parts>
 <sheets>
 <sheet>
@@ -15993,8 +15997,8 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <instance part="R8" gate="R" x="198.12" y="76.2" rot="R180"/>
 <instance part="R9" gate="R" x="152.4" y="88.9" rot="R180"/>
 <instance part="R10" gate="R" x="152.4" y="76.2" rot="R180"/>
-<instance part="U$4" gate="G$1" x="55.88" y="76.2" rot="R270"/>
-<instance part="U$5" gate="JMP" x="66.04" y="76.2" rot="MR270"/>
+<instance part="R30" gate="G$1" x="55.88" y="76.2" rot="MR270"/>
+<instance part="R31" gate="JMP" x="66.04" y="76.2" rot="MR270"/>
 <instance part="R13" gate="R" x="137.16" y="198.12" rot="R180"/>
 <instance part="R14" gate="R" x="137.16" y="172.72" rot="R180"/>
 <instance part="R15" gate="R" x="137.16" y="147.32" rot="R180"/>
@@ -16004,6 +16008,10 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <instance part="B1" gate="B1" x="116.84" y="172.72"/>
 <instance part="B2" gate="B1" x="116.84" y="147.32"/>
 <instance part="B3" gate="B1" x="116.84" y="121.92"/>
+<instance part="R18" gate="R" x="58.42" y="124.46" rot="R180"/>
+<instance part="R19" gate="R" x="58.42" y="116.84" rot="R180"/>
+<instance part="R20" gate="R" x="58.42" y="109.22" rot="R180"/>
+<instance part="R21" gate="R" x="58.42" y="101.6" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -16046,6 +16054,8 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <pinref part="ULED2" gate="G$1" pin="A"/>
 <wire x1="187.96" y1="144.78" x2="182.88" y2="144.78" width="0.1524" layer="91"/>
 <label x="182.88" y="152.4" size="1.778" layer="95" rot="R90"/>
+<junction x="182.88" y="172.72"/>
+<junction x="182.88" y="144.78"/>
 </segment>
 <segment>
 <wire x1="185.42" y1="76.2" x2="185.42" y2="83.82" width="0.1524" layer="91"/>
@@ -16054,6 +16064,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <wire x1="185.42" y1="83.82" x2="185.42" y2="88.9" width="0.1524" layer="91"/>
 <wire x1="185.42" y1="83.82" x2="175.26" y2="83.82" width="0.1524" layer="91"/>
 <label x="175.26" y="83.82" size="1.778" layer="95"/>
+<junction x="185.42" y="83.82"/>
 </segment>
 <segment>
 <pinref part="R2" gate="1" pin="3"/>
@@ -16062,14 +16073,14 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <label x="152.4" y="63.5" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U$4" gate="G$1" pin="3"/>
-<wire x1="53.34" y1="76.2" x2="48.26" y2="76.2" width="0.1524" layer="91"/>
 <wire x1="48.26" y1="76.2" x2="48.26" y2="81.28" width="0.1524" layer="91"/>
 <wire x1="48.26" y1="81.28" x2="73.66" y2="81.28" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="81.28" x2="73.66" y2="76.2" width="0.1524" layer="91"/>
 <label x="55.88" y="81.28" size="1.778" layer="95"/>
-<pinref part="U$5" gate="JMP" pin="3"/>
+<pinref part="R31" gate="JMP" pin="3"/>
 <wire x1="68.58" y1="76.2" x2="73.66" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="R30" gate="G$1" pin="1"/>
+<wire x1="53.34" y1="76.2" x2="48.26" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="R10" gate="R" pin="1"/>
@@ -16078,6 +16089,20 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <pinref part="R9" gate="R" pin="1"/>
 <wire x1="165.1" y1="88.9" x2="157.48" y2="88.9" width="0.1524" layer="91"/>
 <label x="160.02" y="88.9" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="R21" gate="R" pin="2"/>
+<pinref part="R18" gate="R" pin="2"/>
+<wire x1="53.34" y1="101.6" x2="53.34" y2="109.22" width="0.1524" layer="91"/>
+<label x="53.34" y="111.76" size="1.778" layer="95" rot="R90"/>
+<pinref part="R19" gate="R" pin="2"/>
+<junction x="53.34" y="116.84"/>
+<wire x1="53.34" y1="109.22" x2="53.34" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="116.84" x2="53.34" y2="124.46" width="0.1524" layer="91"/>
+<pinref part="R20" gate="R" pin="2"/>
+<junction x="53.34" y="109.22"/>
+<junction x="53.34" y="101.6"/>
+<junction x="53.34" y="124.46"/>
 </segment>
 </net>
 <net name="CBLED3" class="0">
@@ -16141,11 +16166,17 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <wire x1="43.18" y1="154.94" x2="33.02" y2="154.94" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="154.94" x2="33.02" y2="157.48" width="0.1524" layer="91"/>
 <label x="33.02" y="160.02" size="1.778" layer="95"/>
+<junction x="43.18" y="154.94"/>
+<junction x="43.18" y="157.48"/>
+<junction x="43.18" y="160.02"/>
+<junction x="33.02" y="160.02"/>
+<junction x="33.02" y="157.48"/>
+<junction x="33.02" y="154.94"/>
 </segment>
 <segment>
-<pinref part="U$5" gate="JMP" pin="1"/>
-<pinref part="U$4" gate="G$1" pin="1"/>
-<wire x1="63.5" y1="76.2" x2="58.42" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="R30" gate="G$1" pin="3"/>
+<pinref part="R31" gate="JMP" pin="1"/>
+<wire x1="58.42" y1="76.2" x2="63.5" y2="76.2" width="0.1524" layer="91"/>
 <label x="58.42" y="76.2" size="1.778" layer="95"/>
 </segment>
 </net>
@@ -16201,19 +16232,27 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <wire x1="81.28" y1="55.88" x2="66.04" y2="55.88" width="0.1524" layer="91"/>
 <label x="66.04" y="55.88" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="R21" gate="R" pin="1"/>
+<wire x1="63.5" y1="101.6" x2="73.66" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="73.66" y1="101.6" x2="73.66" y2="109.22" width="0.1524" layer="91"/>
+<pinref part="R20" gate="R" pin="1"/>
+<wire x1="73.66" y1="109.22" x2="63.5" y2="109.22" width="0.1524" layer="91"/>
+<label x="66.04" y="109.22" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="N$17" class="0">
 <segment>
 <pinref part="U$2" gate="G$1" pin="GND"/>
 <wire x1="81.28" y1="71.12" x2="66.04" y2="71.12" width="0.1524" layer="91"/>
-<pinref part="U$5" gate="JMP" pin="2"/>
+<pinref part="R31" gate="JMP" pin="2"/>
 <wire x1="66.04" y1="71.12" x2="66.04" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$14" class="0">
 <segment>
 <pinref part="U$2" gate="G$1" pin="VDD"/>
-<pinref part="U$4" gate="G$1" pin="2"/>
+<pinref part="R30" gate="G$1" pin="2"/>
 <wire x1="81.28" y1="66.04" x2="55.88" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="55.88" y1="66.04" x2="55.88" y2="73.66" width="0.1524" layer="91"/>
 </segment>
@@ -16223,6 +16262,14 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <pinref part="U$2" gate="G$1" pin="SCL"/>
 <wire x1="81.28" y1="60.96" x2="66.04" y2="60.96" width="0.1524" layer="91"/>
 <label x="66.04" y="60.96" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="R19" gate="R" pin="1"/>
+<wire x1="63.5" y1="116.84" x2="71.12" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="116.84" x2="71.12" y2="124.46" width="0.1524" layer="91"/>
+<pinref part="R18" gate="R" pin="1"/>
+<wire x1="71.12" y1="124.46" x2="63.5" y2="124.46" width="0.1524" layer="91"/>
+<label x="66.04" y="124.46" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="UARTRX" class="0">
@@ -16279,13 +16326,6 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <wire x1="68.58" y1="175.26" x2="83.82" y2="175.26" width="0.1524" layer="91"/>
 <label x="71.12" y="175.26" size="1.778" layer="95"/>
 <pinref part="U1" gate="G$1" pin="*D5"/>
-</segment>
-</net>
-<net name="D6" class="0">
-<segment>
-<wire x1="68.58" y1="172.72" x2="83.82" y2="172.72" width="0.1524" layer="91"/>
-<label x="71.12" y="172.72" size="1.778" layer="95"/>
-<pinref part="U1" gate="G$1" pin="*D6"/>
 </segment>
 </net>
 <net name="D9" class="0">
@@ -16546,27 +16586,6 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <label x="33.02" y="30.48" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
-<net name="P30" class="0">
-<segment>
-<pinref part="U$7" gate="G$1" pin="P3[0]"/>
-<wire x1="43.18" y1="40.64" x2="43.18" y2="30.48" width="0.1524" layer="91"/>
-<label x="43.18" y="30.48" size="1.778" layer="95" rot="R90"/>
-</segment>
-</net>
-<net name="P31" class="0">
-<segment>
-<pinref part="U$7" gate="G$1" pin="P3[1]"/>
-<wire x1="45.72" y1="40.64" x2="45.72" y2="30.48" width="0.1524" layer="91"/>
-<label x="45.72" y="30.48" size="1.778" layer="95" rot="R90"/>
-</segment>
-</net>
-<net name="P32" class="0">
-<segment>
-<pinref part="U$7" gate="G$1" pin="P3[2]"/>
-<wire x1="48.26" y1="40.64" x2="48.26" y2="30.48" width="0.1524" layer="91"/>
-<label x="48.26" y="30.48" size="1.778" layer="95" rot="R90"/>
-</segment>
-</net>
 <net name="CSHIELD" class="0">
 <segment>
 <pinref part="U$7" gate="G$1" pin="P3[3]"/>
@@ -16652,6 +16671,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <pinref part="C14" gate="G$1" pin="2"/>
 <wire x1="-33.02" y1="81.28" x2="-40.64" y2="81.28" width="0.1524" layer="91"/>
 <wire x1="-40.64" y1="81.28" x2="-40.64" y2="86.36" width="0.1524" layer="91"/>
+<junction x="-33.02" y="81.28"/>
 </segment>
 <segment>
 <pinref part="C3" gate="G$1" pin="1"/>
@@ -16663,6 +16683,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <pinref part="C7" gate="G$1" pin="1"/>
 <wire x1="33.02" y1="109.22" x2="33.02" y2="119.38" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="119.38" x2="27.94" y2="119.38" width="0.1524" layer="91"/>
+<junction x="27.94" y="119.38"/>
 </segment>
 <segment>
 <pinref part="C8" gate="G$1" pin="1"/>
@@ -16681,6 +16702,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <wire x1="-27.94" y1="58.42" x2="-22.86" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="60.96" x2="-35.56" y2="60.96" width="0.1524" layer="91"/>
 <label x="-35.56" y="60.96" size="1.778" layer="95"/>
+<junction x="-27.94" y="60.96"/>
 </segment>
 <segment>
 <pinref part="C5" gate="G$1" pin="2"/>
@@ -16725,6 +16747,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <pinref part="U$7" gate="G$1" pin="VDDD"/>
 <wire x1="27.94" y1="88.9" x2="27.94" y2="106.68" width="0.1524" layer="91"/>
 <label x="27.94" y="96.52" size="1.778" layer="95" rot="R90"/>
+<junction x="27.94" y="106.68"/>
 </segment>
 <segment>
 <pinref part="C8" gate="G$1" pin="2"/>
@@ -16733,6 +16756,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <wire x1="38.1" y1="88.9" x2="38.1" y2="121.92" width="0.1524" layer="91"/>
 <pinref part="U$7" gate="G$1" pin="VDDA3"/>
 <label x="38.1" y="91.44" size="1.778" layer="95" rot="R90"/>
+<junction x="38.1" y="121.92"/>
 </segment>
 <segment>
 <pinref part="C2" gate="G$1" pin="2"/>
@@ -16742,6 +16766,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <wire x1="-15.24" y1="60.96" x2="-15.24" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="7.62" y1="60.96" x2="-15.24" y2="60.96" width="0.1524" layer="91"/>
 <label x="-12.7" y="60.96" size="1.778" layer="95"/>
+<junction x="-15.24" y="60.96"/>
 </segment>
 <segment>
 <pinref part="C5" gate="G$1" pin="1"/>
@@ -16750,6 +16775,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <pinref part="U$7" gate="G$1" pin="VDDA2"/>
 <wire x1="40.64" y1="40.64" x2="40.64" y2="27.94" width="0.1524" layer="91"/>
 <label x="40.64" y="30.48" size="1.778" layer="95" rot="R90"/>
+<junction x="40.64" y="27.94"/>
 </segment>
 </net>
 <net name="CMOD" class="0">
@@ -16820,37 +16846,41 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 </plain>
 <instances>
 <instance part="JMP1" gate="JMP" x="15.24" y="81.28"/>
-<instance part="JMP2" gate="JMP" x="43.18" y="81.28" rot="R180"/>
+<instance part="JPWR" gate="JMP" x="0" y="81.28"/>
 </instances>
 <busses>
 </busses>
 <nets>
+<net name="VPWR" class="0">
+<segment>
+<pinref part="JMP1" gate="JMP" pin="2"/>
+<wire x1="17.78" y1="81.28" x2="33.02" y2="81.28" width="0.1524" layer="91"/>
+<label x="25.4" y="81.28" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="JPWR" gate="JMP" pin="2"/>
+<wire x1="2.54" y1="81.28" x2="10.16" y2="81.28" width="0.1524" layer="91"/>
+<label x="5.08" y="81.28" size="1.778" layer="95"/>
+</segment>
+</net>
 <net name="V50" class="0">
 <segment>
+<pinref part="JPWR" gate="JMP" pin="1"/>
+<wire x1="0" y1="83.82" x2="0" y2="93.98" width="0.1524" layer="91"/>
 <pinref part="JMP1" gate="JMP" pin="1"/>
-<wire x1="15.24" y1="83.82" x2="15.24" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="15.24" y1="88.9" x2="43.18" y2="88.9" width="0.1524" layer="91"/>
-<pinref part="JMP2" gate="JMP" pin="3"/>
-<wire x1="43.18" y1="83.82" x2="43.18" y2="88.9" width="0.1524" layer="91"/>
-<label x="25.4" y="88.9" size="1.778" layer="95"/>
+<wire x1="0" y1="93.98" x2="15.24" y2="93.98" width="0.1524" layer="91"/>
+<wire x1="15.24" y1="93.98" x2="15.24" y2="83.82" width="0.1524" layer="91"/>
+<label x="2.54" y="93.98" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="V33" class="0">
 <segment>
+<pinref part="JPWR" gate="JMP" pin="3"/>
+<wire x1="0" y1="78.74" x2="0" y2="73.66" width="0.1524" layer="91"/>
 <pinref part="JMP1" gate="JMP" pin="3"/>
-<wire x1="15.24" y1="78.74" x2="15.24" y2="73.66" width="0.1524" layer="91"/>
-<wire x1="15.24" y1="73.66" x2="43.18" y2="73.66" width="0.1524" layer="91"/>
-<pinref part="JMP2" gate="JMP" pin="1"/>
-<wire x1="43.18" y1="73.66" x2="43.18" y2="78.74" width="0.1524" layer="91"/>
-<label x="22.86" y="73.66" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="VPWR" class="0">
-<segment>
-<pinref part="JMP1" gate="JMP" pin="2"/>
-<pinref part="JMP2" gate="JMP" pin="2"/>
-<wire x1="17.78" y1="81.28" x2="40.64" y2="81.28" width="0.1524" layer="91"/>
-<label x="27.94" y="81.28" size="1.778" layer="95"/>
+<wire x1="0" y1="73.66" x2="15.24" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="15.24" y1="73.66" x2="15.24" y2="78.74" width="0.1524" layer="91"/>
+<label x="2.54" y="73.66" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
@@ -16860,12 +16890,12 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <plain>
 </plain>
 <instances>
-<instance part="ALS" gate="G$1" x="45.72" y="63.5" rot="R180"/>
+<instance part="D1" gate="G$1" x="45.72" y="63.5" rot="R180"/>
 <instance part="R11" gate="G$1" x="99.06" y="96.52" rot="R90"/>
 <instance part="R1" gate="R" x="99.06" y="111.76" rot="R90"/>
 <instance part="R12" gate="R" x="68.58" y="55.88"/>
 <instance part="C10" gate="G$1" x="68.58" y="43.18" rot="R90"/>
-<instance part="U$3" gate="G$1" x="38.1" y="116.84"/>
+<instance part="HUMIDITY" gate="G$1" x="38.1" y="116.84"/>
 <instance part="C11" gate="G$1" x="38.1" y="144.78" rot="R90"/>
 <instance part="R17" gate="R" x="86.36" y="48.26" rot="R180"/>
 </instances>
@@ -16880,6 +16910,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <wire x1="99.06" y1="104.14" x2="99.06" y2="106.68" width="0.1524" layer="91"/>
 <wire x1="99.06" y1="104.14" x2="88.9" y2="104.14" width="0.1524" layer="91"/>
 <label x="88.9" y="104.14" size="1.778" layer="95"/>
+<junction x="99.06" y="104.14"/>
 </segment>
 </net>
 <net name="THERM-REF-HIGH" class="0">
@@ -16906,10 +16937,11 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <pinref part="C10" gate="G$1" pin="1"/>
 <wire x1="55.88" y1="48.26" x2="55.88" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="55.88" y1="43.18" x2="63.5" y2="43.18" width="0.1524" layer="91"/>
-<pinref part="ALS" gate="G$1" pin="C1"/>
+<pinref part="D1" gate="G$1" pin="C1"/>
 <wire x1="45.72" y1="53.34" x2="45.72" y2="48.26" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="48.26" x2="55.88" y2="48.26" width="0.1524" layer="91"/>
 <label x="45.72" y="48.26" size="1.778" layer="95"/>
+<junction x="55.88" y="48.26"/>
 </segment>
 </net>
 <net name="TIA_OUT" class="0">
@@ -16927,7 +16959,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 </net>
 <net name="VPWR" class="0">
 <segment>
-<pinref part="ALS" gate="G$1" pin="E1"/>
+<pinref part="D1" gate="G$1" pin="E1"/>
 <wire x1="45.72" y1="63.5" x2="45.72" y2="76.2" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="76.2" x2="35.56" y2="76.2" width="0.1524" layer="91"/>
 <label x="35.56" y="76.2" size="1.778" layer="95"/>
@@ -16938,14 +16970,14 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <pinref part="C11" gate="G$1" pin="1"/>
 <wire x1="33.02" y1="144.78" x2="2.54" y2="144.78" width="0.1524" layer="91"/>
 <wire x1="2.54" y1="144.78" x2="2.54" y2="116.84" width="0.1524" layer="91"/>
-<pinref part="U$3" gate="G$1" pin="VSS"/>
+<pinref part="HUMIDITY" gate="G$1" pin="VSS"/>
 <wire x1="2.54" y1="116.84" x2="20.32" y2="116.84" width="0.1524" layer="91"/>
 <label x="5.08" y="144.78" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="HUMIDITY" class="0">
 <segment>
-<pinref part="U$3" gate="G$1" pin="FOUT"/>
+<pinref part="HUMIDITY" gate="G$1" pin="FOUT"/>
 <wire x1="55.88" y1="116.84" x2="71.12" y2="116.84" width="0.1524" layer="91"/>
 <label x="58.42" y="116.84" size="1.778" layer="95"/>
 </segment>
