@@ -193,7 +193,7 @@
 <package name="ALS">
 <smd name="ANNODE" x="0.5" y="0" dx="1" dy="1.45" layer="1"/>
 <smd name="CATHODE" x="2.1" y="0" dx="1" dy="1.45" layer="1"/>
-<circle x="-0.73" y="-0.03" radius="0.270184375" width="0.6096" layer="21"/>
+<rectangle x1="-0.52578125" y1="-0.7239" x2="-0.13208125" y2="0.73151875" layer="21"/>
 </package>
 </packages>
 <symbols>
