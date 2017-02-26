@@ -79,8 +79,7 @@ typedef enum {
     B2 = 2,
     B3 = 3,
     PROX = 4,
-    HUMREF = 5,
-    HUM = 6
+    HUM = 5
 } CapSenseWidget;
 
 /* ADC Channels */
@@ -322,7 +321,7 @@ void processCapSense(void)
                 CapSense_Scan();
                 state++;
                 break;      
-            case PROX: /* Process Proximity, Scan Humidity Ref Cap */
+            case PROX: /* Process Proximity, Scan Humidity */
                 CapSense_ProcessWidget(CapSense_PROXIMITY0_WDGT_ID);
                 if(CapSense_IsWidgetActive(CapSense_PROXIMITY0_WDGT_ID))
                 {
@@ -332,18 +331,13 @@ void processCapSense(void)
                 {
                     LocData.buttonVal &= (~PROXMASK);
                 }
-                CapSense_SetupWidget(CapSense_HUMIDITYREFCAP_WDGT_ID);
-                CapSense_Scan();
-                state++;
-                break;
-            case HUMREF: /* Process Humidity Ref Cap, Scan Humidity */
-                humidityRefRawCounts = CapSense_HUMIDITYREFCAP_SNS0_RAW0_VALUE;
                 CapSense_SetupWidget(CapSense_HUMIDITY_WDGT_ID);
                 CapSense_Scan();
                 state++;
                 break;
-            case HUM: /* Process Humidity, Scan Button 0  and go back to start of loop */
-                humidityRawCounts = CapSense_HUMIDITY_SNS0_RAW0_VALUE; 
+            case HUM: /* Process Humidity, Scan Button 0  and go back to start of loop */                
+                humidityRawCounts =    CapSense_HUMIDITY_SNS0_RAW0_VALUE; 
+                humidityRefRawCounts = CapSense_HUMIDITY_SNS1_RAW0_VALUE;
                 /* Convert raw counts to capacitance */
                 capacitance = CalculateCapacitance(humidityRawCounts, humidityRefRawCounts);
                 /* Calculate humidity */
