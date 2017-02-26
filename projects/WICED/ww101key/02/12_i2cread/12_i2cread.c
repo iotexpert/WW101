@@ -5,7 +5,7 @@
 
 #define I2C_ADDRESS (0x08)
 #define RETRIES (1)
-#define DISABLE_DMA (0)
+#define DISABLE_DMA (WICED_TRUE)
 #define NUM_MESSAGES (1)
 
 volatile wiced_bool_t buttonPress = WICED_FALSE;

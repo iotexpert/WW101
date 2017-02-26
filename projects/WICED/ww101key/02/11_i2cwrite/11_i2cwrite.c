@@ -5,7 +5,7 @@
 
 #define I2C_ADDRESS (0x08)
 #define RETRIES (1)
-#define DISABLE_DMA (0)
+#define DISABLE_DMA (WICED_TRUE)
 #define NUM_MESSAGES (1)
 
 volatile wiced_bool_t buttonPress = WICED_FALSE;
@@ -53,7 +53,6 @@ void application_start( )
     		tx_buffer[1] = redLed;
     		tx_buffer[2] = blueLed;
     		wiced_i2c_transfer(&i2cDevice, &msg, NUM_MESSAGES);
-
     		buttonPress = WICED_FALSE; /* Reset flag for next button press */
     	}
     }
