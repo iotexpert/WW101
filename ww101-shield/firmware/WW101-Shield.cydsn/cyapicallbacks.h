@@ -15,7 +15,8 @@
 
     /*Define your macro callbacks here */
     /*For more information, refer to the Writing Code topic in the PSoC Creator Help.*/
-
+    #define ADC_ISR_CALLBACK
+    void ADC_ISR_Callback( void );
     
 #endif /* CYAPICALLBACKS_H */   
 /* [] */

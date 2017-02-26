@@ -26,7 +26,7 @@
 *   Initial Parameter Constants
 ****************************************/
 
-#define EZI2C_EZI2C_CLOCK_STRETCHING         (1u)
+#define EZI2C_EZI2C_CLOCK_STRETCHING         (0u)
 #define EZI2C_EZI2C_MEDIAN_FILTER_ENABLE     (1u)
 #define EZI2C_EZI2C_NUMBER_OF_ADDRESSES      (0u)
 #define EZI2C_EZI2C_PRIMARY_SLAVE_ADDRESS    (8u)
