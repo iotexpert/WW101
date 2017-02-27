@@ -375,6 +375,8 @@ int main(void)
     CapSense_SetupWidget(CapSense_BUTTON0_WDGT_ID);
     CapSense_Scan();            
     
+    SmartIO_Start();
+    
     VDAC_Start();
     PVref_ALS_Start();
     Opamp_ALS1_Start();
@@ -505,43 +507,6 @@ int main(void)
             I2Cbuf.potVal = LocData.potVal;
         }
         CyExitCriticalSection(interruptState); 
-                
-        /* SmartIO work-around */
-//        if(MB0_Read() == 0)
-//        {
-//            D3_Write(0);
-//        }
-//        else
-//        {
-//            D3_Write(1);
-//        }
-//        
-//        if(MB1_Read() == 0)
-//        {
-//            D5_Write(0);
-//        }
-//        else
-//        {
-//            D5_Write(1);
-//        }
-//        
-//        if(D9_Read() == 0)
-//        {
-//            LED0_Write(LEDOFF);
-//        }
-//        else
-//        {
-//            LED0_Write(LEDON);
-//        }
-//        
-//        if(D10_Read() == 0)
-//        {
-//            LED1_Write(LEDOFF);
-//        }
-//        else
-//        {
-//            LED1_Write(LEDON);
-//        }
     }  
 }
 
