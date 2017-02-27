@@ -108,8 +108,8 @@ CY_PACKED typedef struct {
     float32  potVal;
 } CY_PACKED_ATTR dataSet_t;
 
-dataSet_t I2Cbuf;   /* I2C buffer containing the data set */
-dataSet_t LocData;  /* Local working copy of the data set */
+volatile dataSet_t I2Cbuf;   /* I2C buffer containing the data set */
+volatile dataSet_t LocData;  /* Local working copy of the data set */
 
 uint16 capacitance;			    /* Capacitance of the humidity sensor */
 uint16 humidity;			    /* Measured humidity */
@@ -208,7 +208,7 @@ __inline uint16 CalculateHumidity(uint16 capacitance)
     
     /* If humidity is less than zero, limit it to 0; If humidity is greater than 1000 (100%), limit to 1000 */
     humidity = (humidity < HUMIDITY_0_PERCENT) ? HUMIDITY_0_PERCENT : (humidity > HUMIDITY_100_PERCENT) ? HUMIDITY_100_PERCENT : humidity;
-
+    
     /* Return Humidity value */
     return humidity;
 }
@@ -341,7 +341,7 @@ void processCapSense(void)
                 /* Convert raw counts to capacitance */
                 capacitance = CalculateCapacitance(humidityRawCounts, humidityRefRawCounts);
                 /* Calculate humidity */
-                humidity = CalculateHumidity(capacitance);                
+                humidity = CalculateHumidity(capacitance);                             
                 LocData.humidity = ((float32)(humidity))/10.0;
                 CapSense_SetupWidget(CapSense_BUTTON0_WDGT_ID);
                 CapSense_Scan();
@@ -370,7 +370,7 @@ int main(void)
 
     EZI2C_Start();
     EZI2C_EzI2CSetBuffer1(sizeof(I2Cbuf), RW, (void *) &I2Cbuf);
-
+    
     CapSense_Start();   
     CapSense_SetupWidget(CapSense_BUTTON0_WDGT_ID);
     CapSense_Scan();            
@@ -442,10 +442,11 @@ int main(void)
             CBLED3_Write(!(LocData.ledVal & B3MASK));
         }
         
-        /* Set VDAC value*/
+        /* Set VDAC value if it has changed */
         dacVal = LocData.dacVal;
         if(dacValPrev != dacVal)
         {
+            dacValPrev = dacVal;
             // DAC range is 2.4V, Valid inputs are -4096 to 4094
             dacCode = (int32)(((dacVal * 8192.0)/2.4) - 4096.0);
             if (dacCode < -4096)
@@ -506,41 +507,41 @@ int main(void)
         CyExitCriticalSection(interruptState); 
                 
         /* SmartIO work-around */
-        if(MB0_Read() == 0)
-        {
-            D3_Write(0);
-        }
-        else
-        {
-            D3_Write(1);
-        }
-        
-        if(MB1_Read() == 0)
-        {
-            D5_Write(0);
-        }
-        else
-        {
-            D5_Write(1);
-        }
-        
-        if(D9_Read() == 0)
-        {
-            LED0_Write(LEDOFF);
-        }
-        else
-        {
-            LED0_Write(LEDON);
-        }
-        
-        if(D10_Read() == 0)
-        {
-            LED1_Write(LEDOFF);
-        }
-        else
-        {
-            LED1_Write(LEDON);
-        }
+//        if(MB0_Read() == 0)
+//        {
+//            D3_Write(0);
+//        }
+//        else
+//        {
+//            D3_Write(1);
+//        }
+//        
+//        if(MB1_Read() == 0)
+//        {
+//            D5_Write(0);
+//        }
+//        else
+//        {
+//            D5_Write(1);
+//        }
+//        
+//        if(D9_Read() == 0)
+//        {
+//            LED0_Write(LEDOFF);
+//        }
+//        else
+//        {
+//            LED0_Write(LEDON);
+//        }
+//        
+//        if(D10_Read() == 0)
+//        {
+//            LED1_Write(LEDOFF);
+//        }
+//        else
+//        {
+//            LED1_Write(LEDON);
+//        }
     }  
 }
 
