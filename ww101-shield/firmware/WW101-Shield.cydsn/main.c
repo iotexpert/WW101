@@ -10,6 +10,7 @@
  * ========================================
 */
 #include "project.h"
+#include "regmap.h"
 #include <stdbool.h>
 
 /* Button State */
@@ -97,16 +98,7 @@ typedef enum {
     DONE = 2,
 } ADC_States;
 
-CY_PACKED typedef struct {
-    float32  dacVal;
-    uint8    ledVal;
-    uint8    ledControl;
-    uint8    buttonVal;
-    float32  temperature;
-    float32  humidity;
-    float32  illuminance;
-    float32  potVal;
-} CY_PACKED_ATTR dataSet_t;
+
 
 volatile dataSet_t I2Cbuf;   /* I2C buffer containing the data set */
 volatile dataSet_t LocData;  /* Local working copy of the data set */
@@ -273,9 +265,11 @@ void processCapSense(void)
                     }
                     LocData.buttonVal &= (~B1MASK);
                 }
+                
                 CapSense_SetupWidget(CapSense_BUTTON2_WDGT_ID);
                 CapSense_Scan();
                 state++;
+                
                 break;
             case B2: /* Process Button 2, Scan Button 3 */
                 CapSense_ProcessWidget(CapSense_BUTTON2_WDGT_ID);

@@ -1,0 +1,2788 @@
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"u8x8_message.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.u8x8_draw_button_line,"ax",%progbits
+  20              		.align	2
+  21              		.global	u8x8_draw_button_line
+  22              		.code	16
+  23              		.thumb_func
+  24              		.type	u8x8_draw_button_line, %function
+  25              	u8x8_draw_button_line:
+  26              	.LFB0:
+  27              		.file 1 "..\\..\\u8g2\\csrc\\u8x8_message.c"
+   1:..\..\u8g2\csrc/u8x8_message.c **** /*
+   2:..\..\u8g2\csrc/u8x8_message.c **** 
+   3:..\..\u8g2\csrc/u8x8_message.c ****   u8x8_message.c
+   4:..\..\u8g2\csrc/u8x8_message.c ****   
+   5:..\..\u8g2\csrc/u8x8_message.c ****   Universal 8bit Graphics Library (https://github.com/olikraus/u8g2/)
+   6:..\..\u8g2\csrc/u8x8_message.c **** 
+   7:..\..\u8g2\csrc/u8x8_message.c ****   Copyright (c) 2016, olikraus@gmail.com
+   8:..\..\u8g2\csrc/u8x8_message.c ****   All rights reserved.
+   9:..\..\u8g2\csrc/u8x8_message.c **** 
+  10:..\..\u8g2\csrc/u8x8_message.c ****   Redistribution and use in source and binary forms, with or without modification, 
+  11:..\..\u8g2\csrc/u8x8_message.c ****   are permitted provided that the following conditions are met:
+  12:..\..\u8g2\csrc/u8x8_message.c **** 
+  13:..\..\u8g2\csrc/u8x8_message.c ****   * Redistributions of source code must retain the above copyright notice, this list 
+  14:..\..\u8g2\csrc/u8x8_message.c ****     of conditions and the following disclaimer.
+  15:..\..\u8g2\csrc/u8x8_message.c ****     
+  16:..\..\u8g2\csrc/u8x8_message.c ****   * Redistributions in binary form must reproduce the above copyright notice, this 
+  17:..\..\u8g2\csrc/u8x8_message.c ****     list of conditions and the following disclaimer in the documentation and/or other 
+  18:..\..\u8g2\csrc/u8x8_message.c ****     materials provided with the distribution.
+  19:..\..\u8g2\csrc/u8x8_message.c **** 
+  20:..\..\u8g2\csrc/u8x8_message.c ****   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+  21:..\..\u8g2\csrc/u8x8_message.c ****   CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+  22:..\..\u8g2\csrc/u8x8_message.c ****   INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+  23:..\..\u8g2\csrc/u8x8_message.c ****   MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+  24:..\..\u8g2\csrc/u8x8_message.c ****   DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR 
+  25:..\..\u8g2\csrc/u8x8_message.c ****   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+  26:..\..\u8g2\csrc/u8x8_message.c ****   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+  27:..\..\u8g2\csrc/u8x8_message.c ****   NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+  28:..\..\u8g2\csrc/u8x8_message.c ****   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+  29:..\..\u8g2\csrc/u8x8_message.c ****   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+  30:..\..\u8g2\csrc/u8x8_message.c ****   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 2
+
+
+  31:..\..\u8g2\csrc/u8x8_message.c ****   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+  32:..\..\u8g2\csrc/u8x8_message.c ****   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
+  33:..\..\u8g2\csrc/u8x8_message.c ****   
+  34:..\..\u8g2\csrc/u8x8_message.c **** */
+  35:..\..\u8g2\csrc/u8x8_message.c **** 
+  36:..\..\u8g2\csrc/u8x8_message.c **** #include "u8x8.h"
+  37:..\..\u8g2\csrc/u8x8_message.c **** 
+  38:..\..\u8g2\csrc/u8x8_message.c **** uint8_t u8x8_draw_button_line(u8x8_t *u8x8, uint8_t y, uint8_t w, uint8_t cursor, const char *s)
+  39:..\..\u8g2\csrc/u8x8_message.c **** {
+  28              		.loc 1 39 0
+  29              		.cfi_startproc
+  30              		@ args = 4, pretend = 0, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  34              		.cfi_def_cfa_offset 20
+  35              		.cfi_offset 4, -20
+  36              		.cfi_offset 5, -16
+  37              		.cfi_offset 6, -12
+  38              		.cfi_offset 7, -8
+  39              		.cfi_offset 14, -4
+  40 0002 5F46     		mov	r7, fp
+  41 0004 4646     		mov	r6, r8
+  42 0006 C0B4     		push	{r6, r7}
+  43              		.cfi_def_cfa_offset 28
+  44              		.cfi_offset 8, -28
+  45              		.cfi_offset 11, -24
+  46 0008 83B0     		sub	sp, sp, #12
+  47              		.cfi_def_cfa_offset 40
+  48 000a 0500     		movs	r5, r0
+  49 000c 0091     		str	r1, [sp]
+  50 000e 9046     		mov	r8, r2
+  51 0010 9B46     		mov	fp, r3
+  40:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t i;
+  41:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t cnt;
+  42:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t total;
+  43:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t d;
+  44:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t x;
+  45:..\..\u8g2\csrc/u8x8_message.c ****   cnt = u8x8_GetStringLineCnt(s);
+  52              		.loc 1 45 0
+  53 0012 0A98     		ldr	r0, [sp, #40]
+  54              	.LVL1:
+  55 0014 FFF7FEFF 		bl	u8x8_GetStringLineCnt
+  56              	.LVL2:
+  57 0018 0190     		str	r0, [sp, #4]
+  58 001a 0600     		movs	r6, r0
+  59              	.LVL3:
+  46:..\..\u8g2\csrc/u8x8_message.c ****   
+  47:..\..\u8g2\csrc/u8x8_message.c ****   /* calculate the width of the button */
+  48:..\..\u8g2\csrc/u8x8_message.c ****   total = 0;
+  60              		.loc 1 48 0
+  61 001c 0027     		movs	r7, #0
+  49:..\..\u8g2\csrc/u8x8_message.c ****   for( i = 0; i < cnt; i++ )
+  62              		.loc 1 49 0
+  63 001e 0024     		movs	r4, #0
+  64 0020 0BE0     		b	.L2
+  65              	.LVL4:
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 3
+
+
+  66              	.L3:
+  50:..\..\u8g2\csrc/u8x8_message.c ****   {
+  51:..\..\u8g2\csrc/u8x8_message.c ****     total += u8x8_GetUTF8Len(u8x8, u8x8_GetStringLineStart(i, s));
+  67              		.loc 1 51 0 discriminator 3
+  68 0022 0A99     		ldr	r1, [sp, #40]
+  69 0024 2000     		movs	r0, r4
+  70 0026 FFF7FEFF 		bl	u8x8_GetStringLineStart
+  71              	.LVL5:
+  72 002a 0100     		movs	r1, r0
+  73 002c 2800     		movs	r0, r5
+  74 002e FFF7FEFF 		bl	u8x8_GetUTF8Len
+  75              	.LVL6:
+  76 0032 3818     		adds	r0, r7, r0
+  77 0034 C7B2     		uxtb	r7, r0
+  78              	.LVL7:
+  49:..\..\u8g2\csrc/u8x8_message.c ****   for( i = 0; i < cnt; i++ )
+  79              		.loc 1 49 0 discriminator 3
+  80 0036 631C     		adds	r3, r4, #1
+  81 0038 DCB2     		uxtb	r4, r3
+  82              	.LVL8:
+  83              	.L2:
+  49:..\..\u8g2\csrc/u8x8_message.c ****   for( i = 0; i < cnt; i++ )
+  84              		.loc 1 49 0 is_stmt 0 discriminator 1
+  85 003a B442     		cmp	r4, r6
+  86 003c F1D3     		bcc	.L3
+  52:..\..\u8g2\csrc/u8x8_message.c ****   }
+  53:..\..\u8g2\csrc/u8x8_message.c ****   total += (cnt-1);	/* had one space between the buttons */
+  87              		.loc 1 53 0 is_stmt 1
+  88 003e 019B     		ldr	r3, [sp, #4]
+  89 0040 FB18     		adds	r3, r7, r3
+  90 0042 DBB2     		uxtb	r3, r3
+  91 0044 013B     		subs	r3, r3, #1
+  92 0046 DBB2     		uxtb	r3, r3
+  93              	.LVL9:
+  54:..\..\u8g2\csrc/u8x8_message.c ****   
+  55:..\..\u8g2\csrc/u8x8_message.c ****   /* calculate the left offset */
+  56:..\..\u8g2\csrc/u8x8_message.c ****   d = 0;
+  57:..\..\u8g2\csrc/u8x8_message.c ****   if ( total < w )
+  94              		.loc 1 57 0
+  95 0048 4345     		cmp	r3, r8
+  96 004a 04D2     		bcs	.L8
+  97              	.LVL10:
+  58:..\..\u8g2\csrc/u8x8_message.c ****   {
+  59:..\..\u8g2\csrc/u8x8_message.c ****     d = w;
+  60:..\..\u8g2\csrc/u8x8_message.c ****     d -= total;
+  98              		.loc 1 60 0
+  99 004c 4246     		mov	r2, r8
+ 100 004e D41A     		subs	r4, r2, r3
+ 101              	.LVL11:
+ 102 0050 E4B2     		uxtb	r4, r4
+ 103              	.LVL12:
+  61:..\..\u8g2\csrc/u8x8_message.c ****     d /= 2;
+ 104              		.loc 1 61 0
+ 105 0052 6408     		lsrs	r4, r4, #1
+ 106              	.LVL13:
+ 107 0054 00E0     		b	.L4
+ 108              	.LVL14:
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 4
+
+
+ 109              	.L8:
+  56:..\..\u8g2\csrc/u8x8_message.c ****   if ( total < w )
+ 110              		.loc 1 56 0
+ 111 0056 0024     		movs	r4, #0
+ 112              	.LVL15:
+ 113              	.L4:
+  62:..\..\u8g2\csrc/u8x8_message.c ****   }
+  63:..\..\u8g2\csrc/u8x8_message.c ****   
+  64:..\..\u8g2\csrc/u8x8_message.c ****   /* draw the buttons */
+  65:..\..\u8g2\csrc/u8x8_message.c ****   x = d;
+  66:..\..\u8g2\csrc/u8x8_message.c ****   u8x8_SetInverseFont(u8x8, 0);
+ 114              		.loc 1 66 0
+ 115 0058 0023     		movs	r3, #0
+ 116              	.LVL16:
+ 117 005a EB77     		strb	r3, [r5, #31]
+ 118              	.LVL17:
+  67:..\..\u8g2\csrc/u8x8_message.c ****   for( i = 0; i < cnt; i++ )
+ 119              		.loc 1 67 0
+ 120 005c 0027     		movs	r7, #0
+ 121              	.LVL18:
+ 122 005e 1BE0     		b	.L5
+ 123              	.LVL19:
+ 124              	.L7:
+  68:..\..\u8g2\csrc/u8x8_message.c ****   {
+  69:..\..\u8g2\csrc/u8x8_message.c ****     if ( i == cursor )
+ 125              		.loc 1 69 0
+ 126 0060 5F45     		cmp	r7, fp
+ 127 0062 01D1     		bne	.L6
+  70:..\..\u8g2\csrc/u8x8_message.c ****       u8x8_SetInverseFont(u8x8, 1);
+ 128              		.loc 1 70 0
+ 129 0064 0123     		movs	r3, #1
+ 130 0066 EB77     		strb	r3, [r5, #31]
+ 131              	.L6:
+  71:..\..\u8g2\csrc/u8x8_message.c ****       
+  72:..\..\u8g2\csrc/u8x8_message.c ****     x+=u8x8_DrawUTF8(u8x8, x, y, u8x8_GetStringLineStart(i, s));
+ 132              		.loc 1 72 0 discriminator 2
+ 133 0068 0A99     		ldr	r1, [sp, #40]
+ 134 006a 3800     		movs	r0, r7
+ 135 006c FFF7FEFF 		bl	u8x8_GetStringLineStart
+ 136              	.LVL20:
+ 137 0070 0300     		movs	r3, r0
+ 138 0072 009A     		ldr	r2, [sp]
+ 139 0074 2100     		movs	r1, r4
+ 140 0076 2800     		movs	r0, r5
+ 141 0078 FFF7FEFF 		bl	u8x8_DrawUTF8
+ 142              	.LVL21:
+ 143 007c 2418     		adds	r4, r4, r0
+ 144              	.LVL22:
+ 145 007e E4B2     		uxtb	r4, r4
+ 146              	.LVL23:
+  73:..\..\u8g2\csrc/u8x8_message.c ****     u8x8_SetInverseFont(u8x8, 0);
+ 147              		.loc 1 73 0 discriminator 2
+ 148 0080 0023     		movs	r3, #0
+ 149 0082 EB77     		strb	r3, [r5, #31]
+  74:..\..\u8g2\csrc/u8x8_message.c ****     x+=u8x8_DrawUTF8(u8x8, x, y, " ");
+ 150              		.loc 1 74 0 discriminator 2
+ 151 0084 084B     		ldr	r3, .L9
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 5
+
+
+ 152 0086 009A     		ldr	r2, [sp]
+ 153 0088 2100     		movs	r1, r4
+ 154 008a 2800     		movs	r0, r5
+ 155 008c FFF7FEFF 		bl	u8x8_DrawUTF8
+ 156              	.LVL24:
+ 157 0090 2018     		adds	r0, r4, r0
+ 158 0092 C4B2     		uxtb	r4, r0
+ 159              	.LVL25:
+  67:..\..\u8g2\csrc/u8x8_message.c ****   {
+ 160              		.loc 1 67 0 discriminator 2
+ 161 0094 7B1C     		adds	r3, r7, #1
+ 162 0096 DFB2     		uxtb	r7, r3
+ 163              	.LVL26:
+ 164              	.L5:
+  67:..\..\u8g2\csrc/u8x8_message.c ****   {
+ 165              		.loc 1 67 0 is_stmt 0 discriminator 1
+ 166 0098 B742     		cmp	r7, r6
+ 167 009a E1D3     		bcc	.L7
+  75:..\..\u8g2\csrc/u8x8_message.c ****   }
+  76:..\..\u8g2\csrc/u8x8_message.c ****   
+  77:..\..\u8g2\csrc/u8x8_message.c ****   /* return the number of buttons */
+  78:..\..\u8g2\csrc/u8x8_message.c ****   return cnt;
+  79:..\..\u8g2\csrc/u8x8_message.c **** }
+ 168              		.loc 1 79 0 is_stmt 1
+ 169 009c 0198     		ldr	r0, [sp, #4]
+ 170 009e 03B0     		add	sp, sp, #12
+ 171              		@ sp needed
+ 172              	.LVL27:
+ 173              	.LVL28:
+ 174              	.LVL29:
+ 175 00a0 0CBC     		pop	{r2, r3}
+ 176 00a2 9046     		mov	r8, r2
+ 177 00a4 9B46     		mov	fp, r3
+ 178 00a6 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 179              	.L10:
+ 180              		.align	2
+ 181              	.L9:
+ 182 00a8 00000000 		.word	.LC0
+ 183              		.cfi_endproc
+ 184              	.LFE0:
+ 185              		.size	u8x8_draw_button_line, .-u8x8_draw_button_line
+ 186              		.section	.text.u8x8_UserInterfaceMessage,"ax",%progbits
+ 187              		.align	2
+ 188              		.global	u8x8_UserInterfaceMessage
+ 189              		.code	16
+ 190              		.thumb_func
+ 191              		.type	u8x8_UserInterfaceMessage, %function
+ 192              	u8x8_UserInterfaceMessage:
+ 193              	.LFB1:
+  80:..\..\u8g2\csrc/u8x8_message.c **** 
+  81:..\..\u8g2\csrc/u8x8_message.c **** /*
+  82:..\..\u8g2\csrc/u8x8_message.c ****   title1:	Multiple lines,separated by '\n'
+  83:..\..\u8g2\csrc/u8x8_message.c ****   title2:	A single line/string which is terminated by '\0' or '\n' . "title2" accepts the return va
+  84:..\..\u8g2\csrc/u8x8_message.c ****   title3:	Multiple lines,separated by '\n'
+  85:..\..\u8g2\csrc/u8x8_message.c ****   buttons:	one more more buttons separated by '\n' and terminated with '\0'
+  86:..\..\u8g2\csrc/u8x8_message.c **** */
+  87:..\..\u8g2\csrc/u8x8_message.c **** 
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 6
+
+
+  88:..\..\u8g2\csrc/u8x8_message.c **** uint8_t u8x8_UserInterfaceMessage(u8x8_t *u8x8, const char *title1, const char *title2, const char 
+  89:..\..\u8g2\csrc/u8x8_message.c **** {
+ 194              		.loc 1 89 0
+ 195              		.cfi_startproc
+ 196              		@ args = 4, pretend = 0, frame = 8
+ 197              		@ frame_needed = 0, uses_anonymous_args = 0
+ 198              	.LVL30:
+ 199 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 200              		.cfi_def_cfa_offset 20
+ 201              		.cfi_offset 4, -20
+ 202              		.cfi_offset 5, -16
+ 203              		.cfi_offset 6, -12
+ 204              		.cfi_offset 7, -8
+ 205              		.cfi_offset 14, -4
+ 206 0002 85B0     		sub	sp, sp, #20
+ 207              		.cfi_def_cfa_offset 40
+ 208 0004 0600     		movs	r6, r0
+ 209 0006 0391     		str	r1, [sp, #12]
+ 210 0008 1400     		movs	r4, r2
+ 211 000a 0293     		str	r3, [sp, #8]
+ 212 000c 0A9F     		ldr	r7, [sp, #40]
+ 213              	.LVL31:
+  90:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t height;
+  91:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t y;
+  92:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t cursor = 0;
+  93:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t button_cnt;
+  94:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t event;
+  95:..\..\u8g2\csrc/u8x8_message.c **** 
+  96:..\..\u8g2\csrc/u8x8_message.c ****   u8x8_SetInverseFont(u8x8, 0);
+ 214              		.loc 1 96 0
+ 215 000e 0023     		movs	r3, #0
+ 216              	.LVL32:
+ 217 0010 C377     		strb	r3, [r0, #31]
+ 218              	.LVL33:
+  97:..\..\u8g2\csrc/u8x8_message.c ****   
+  98:..\..\u8g2\csrc/u8x8_message.c ****   /* calculate overall height of the message box */
+  99:..\..\u8g2\csrc/u8x8_message.c ****   height = 1;	/* button line */
+ 100:..\..\u8g2\csrc/u8x8_message.c ****   height += u8x8_GetStringLineCnt(title1);
+ 219              		.loc 1 100 0
+ 220 0012 0800     		movs	r0, r1
+ 221              	.LVL34:
+ 222 0014 FFF7FEFF 		bl	u8x8_GetStringLineCnt
+ 223              	.LVL35:
+ 224 0018 431C     		adds	r3, r0, #1
+ 225 001a DDB2     		uxtb	r5, r3
+ 226              	.LVL36:
+ 101:..\..\u8g2\csrc/u8x8_message.c ****   if ( title2 != NULL )
+ 227              		.loc 1 101 0
+ 228 001c 002C     		cmp	r4, #0
+ 229 001e 01D0     		beq	.L12
+ 102:..\..\u8g2\csrc/u8x8_message.c ****     height ++;
+ 230              		.loc 1 102 0
+ 231 0020 0230     		adds	r0, r0, #2
+ 232 0022 C5B2     		uxtb	r5, r0
+ 233              	.LVL37:
+ 234              	.L12:
+ 103:..\..\u8g2\csrc/u8x8_message.c ****   height += u8x8_GetStringLineCnt(title3);
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 7
+
+
+ 235              		.loc 1 103 0
+ 236 0024 0298     		ldr	r0, [sp, #8]
+ 237 0026 FFF7FEFF 		bl	u8x8_GetStringLineCnt
+ 238              	.LVL38:
+ 239 002a 2818     		adds	r0, r5, r0
+ 240 002c C0B2     		uxtb	r0, r0
+ 241              	.LVL39:
+ 104:..\..\u8g2\csrc/u8x8_message.c ****   
+ 105:..\..\u8g2\csrc/u8x8_message.c ****   /* calculate offset from top */
+ 106:..\..\u8g2\csrc/u8x8_message.c ****   y = 0;
+ 107:..\..\u8g2\csrc/u8x8_message.c ****   if ( height < u8x8_GetRows(u8x8)  )
+ 242              		.loc 1 107 0
+ 243 002e 3368     		ldr	r3, [r6]
+ 244 0030 5B7C     		ldrb	r3, [r3, #17]
+ 245 0032 9842     		cmp	r0, r3
+ 246 0034 03D2     		bcs	.L24
+ 247              	.LVL40:
+ 108:..\..\u8g2\csrc/u8x8_message.c ****   {
+ 109:..\..\u8g2\csrc/u8x8_message.c ****     y = u8x8_GetRows(u8x8);
+ 110:..\..\u8g2\csrc/u8x8_message.c ****     y -= height;
+ 248              		.loc 1 110 0
+ 249 0036 181A     		subs	r0, r3, r0
+ 250              	.LVL41:
+ 251 0038 C0B2     		uxtb	r0, r0
+ 252              	.LVL42:
+ 111:..\..\u8g2\csrc/u8x8_message.c ****     y /= 2;
+ 253              		.loc 1 111 0
+ 254 003a 4508     		lsrs	r5, r0, #1
+ 255              	.LVL43:
+ 256 003c 00E0     		b	.L13
+ 257              	.LVL44:
+ 258              	.L24:
+ 106:..\..\u8g2\csrc/u8x8_message.c ****   if ( height < u8x8_GetRows(u8x8)  )
+ 259              		.loc 1 106 0
+ 260 003e 0025     		movs	r5, #0
+ 261              	.LVL45:
+ 262              	.L13:
+ 112:..\..\u8g2\csrc/u8x8_message.c ****   }
+ 113:..\..\u8g2\csrc/u8x8_message.c **** 
+ 114:..\..\u8g2\csrc/u8x8_message.c ****   /* draw message box */
+ 115:..\..\u8g2\csrc/u8x8_message.c ****   
+ 116:..\..\u8g2\csrc/u8x8_message.c ****   u8x8_ClearDisplay(u8x8);   /* required, because not everything is filled */
+ 263              		.loc 1 116 0
+ 264 0040 3000     		movs	r0, r6
+ 265 0042 FFF7FEFF 		bl	u8x8_ClearDisplay
+ 266              	.LVL46:
+ 117:..\..\u8g2\csrc/u8x8_message.c ****   
+ 118:..\..\u8g2\csrc/u8x8_message.c ****   y += u8x8_DrawUTF8Lines(u8x8, 0, y, u8x8_GetCols(u8x8), title1);
+ 267              		.loc 1 118 0
+ 268 0046 3368     		ldr	r3, [r6]
+ 269 0048 1B7C     		ldrb	r3, [r3, #16]
+ 270 004a 039A     		ldr	r2, [sp, #12]
+ 271 004c 0092     		str	r2, [sp]
+ 272 004e 2A00     		movs	r2, r5
+ 273 0050 0021     		movs	r1, #0
+ 274 0052 3000     		movs	r0, r6
+ 275 0054 FFF7FEFF 		bl	u8x8_DrawUTF8Lines
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 8
+
+
+ 276              	.LVL47:
+ 277 0058 2818     		adds	r0, r5, r0
+ 278 005a C5B2     		uxtb	r5, r0
+ 279              	.LVL48:
+ 119:..\..\u8g2\csrc/u8x8_message.c ****   if ( title2 != NULL )
+ 280              		.loc 1 119 0
+ 281 005c 002C     		cmp	r4, #0
+ 282 005e 09D0     		beq	.L14
+ 120:..\..\u8g2\csrc/u8x8_message.c ****   {
+ 121:..\..\u8g2\csrc/u8x8_message.c ****     u8x8_DrawUTF8Line(u8x8, 0, y, u8x8_GetCols(u8x8), title2);
+ 283              		.loc 1 121 0
+ 284 0060 3368     		ldr	r3, [r6]
+ 285 0062 1B7C     		ldrb	r3, [r3, #16]
+ 286 0064 0094     		str	r4, [sp]
+ 287 0066 2A00     		movs	r2, r5
+ 288 0068 0021     		movs	r1, #0
+ 289 006a 3000     		movs	r0, r6
+ 290 006c FFF7FEFF 		bl	u8x8_DrawUTF8Line
+ 291              	.LVL49:
+ 122:..\..\u8g2\csrc/u8x8_message.c ****     y++;
+ 292              		.loc 1 122 0
+ 293 0070 0135     		adds	r5, r5, #1
+ 294              	.LVL50:
+ 295 0072 EDB2     		uxtb	r5, r5
+ 296              	.LVL51:
+ 297              	.L14:
+ 123:..\..\u8g2\csrc/u8x8_message.c ****   }
+ 124:..\..\u8g2\csrc/u8x8_message.c ****   y += u8x8_DrawUTF8Lines(u8x8, 0, y, u8x8_GetCols(u8x8), title3);
+ 298              		.loc 1 124 0
+ 299 0074 3368     		ldr	r3, [r6]
+ 300 0076 1B7C     		ldrb	r3, [r3, #16]
+ 301 0078 029A     		ldr	r2, [sp, #8]
+ 302 007a 0092     		str	r2, [sp]
+ 303 007c 2A00     		movs	r2, r5
+ 304 007e 0021     		movs	r1, #0
+ 305 0080 3000     		movs	r0, r6
+ 306 0082 FFF7FEFF 		bl	u8x8_DrawUTF8Lines
+ 307              	.LVL52:
+ 308 0086 2D18     		adds	r5, r5, r0
+ 309              	.LVL53:
+ 310 0088 EBB2     		uxtb	r3, r5
+ 311 008a 1900     		movs	r1, r3
+ 312 008c 0293     		str	r3, [sp, #8]
+ 313              	.LVL54:
+ 125:..\..\u8g2\csrc/u8x8_message.c **** 
+ 126:..\..\u8g2\csrc/u8x8_message.c ****   button_cnt = u8x8_draw_button_line(u8x8, y, u8x8_GetCols(u8x8), cursor, buttons);
+ 314              		.loc 1 126 0
+ 315 008e 3368     		ldr	r3, [r6]
+ 316 0090 1A7C     		ldrb	r2, [r3, #16]
+ 317 0092 0097     		str	r7, [sp]
+ 318 0094 0023     		movs	r3, #0
+ 319 0096 3000     		movs	r0, r6
+ 320 0098 FFF7FEFF 		bl	u8x8_draw_button_line
+ 321              	.LVL55:
+ 322 009c 0500     		movs	r5, r0
+ 323              	.LVL56:
+  92:..\..\u8g2\csrc/u8x8_message.c ****   uint8_t button_cnt;
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 9
+
+
+ 324              		.loc 1 92 0
+ 325 009e 0024     		movs	r4, #0
+ 326              	.LVL57:
+ 327              	.L15:
+ 127:..\..\u8g2\csrc/u8x8_message.c ****   
+ 128:..\..\u8g2\csrc/u8x8_message.c ****   for(;;)
+ 129:..\..\u8g2\csrc/u8x8_message.c ****   {
+ 130:..\..\u8g2\csrc/u8x8_message.c ****     event = u8x8_GetMenuEvent(u8x8);
+ 328              		.loc 1 130 0
+ 329 00a0 3000     		movs	r0, r6
+ 330 00a2 FFF7FEFF 		bl	u8x8_GetMenuEvent
+ 331              	.LVL58:
+ 131:..\..\u8g2\csrc/u8x8_message.c ****     if ( event == U8X8_MSG_GPIO_MENU_SELECT )
+ 332              		.loc 1 131 0
+ 333 00a6 5028     		cmp	r0, #80
+ 334 00a8 02D1     		bne	.L16
+ 132:..\..\u8g2\csrc/u8x8_message.c ****       return cursor+1;
+ 335              		.loc 1 132 0
+ 336 00aa 0134     		adds	r4, r4, #1
+ 337              	.LVL59:
+ 338 00ac E0B2     		uxtb	r0, r4
+ 339              	.LVL60:
+ 340 00ae 26E0     		b	.L17
+ 341              	.LVL61:
+ 342              	.L16:
+ 133:..\..\u8g2\csrc/u8x8_message.c ****     else if ( event == U8X8_MSG_GPIO_MENU_HOME )
+ 343              		.loc 1 133 0
+ 344 00b0 5328     		cmp	r0, #83
+ 345 00b2 23D0     		beq	.L25
+ 134:..\..\u8g2\csrc/u8x8_message.c ****       break;
+ 135:..\..\u8g2\csrc/u8x8_message.c ****     else if ( event == U8X8_MSG_GPIO_MENU_NEXT || event == U8X8_MSG_GPIO_MENU_UP )
+ 346              		.loc 1 135 0
+ 347 00b4 5128     		cmp	r0, #81
+ 348 00b6 01D0     		beq	.L18
+ 349              		.loc 1 135 0 is_stmt 0 discriminator 1
+ 350 00b8 5428     		cmp	r0, #84
+ 351 00ba 0DD1     		bne	.L19
+ 352              	.L18:
+ 136:..\..\u8g2\csrc/u8x8_message.c ****     {
+ 137:..\..\u8g2\csrc/u8x8_message.c ****       cursor++;
+ 353              		.loc 1 137 0 is_stmt 1
+ 354 00bc 0134     		adds	r4, r4, #1
+ 355              	.LVL62:
+ 356 00be E4B2     		uxtb	r4, r4
+ 357              	.LVL63:
+ 138:..\..\u8g2\csrc/u8x8_message.c ****       if ( cursor >= button_cnt )
+ 358              		.loc 1 138 0
+ 359 00c0 A542     		cmp	r5, r4
+ 360 00c2 00D8     		bhi	.L20
+ 139:..\..\u8g2\csrc/u8x8_message.c **** 	cursor = 0;
+ 361              		.loc 1 139 0
+ 362 00c4 0024     		movs	r4, #0
+ 363              	.LVL64:
+ 364              	.L20:
+ 140:..\..\u8g2\csrc/u8x8_message.c ****       u8x8_draw_button_line(u8x8, y, u8x8_GetCols(u8x8), cursor, buttons);
+ 365              		.loc 1 140 0
+ 366 00c6 3368     		ldr	r3, [r6]
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 10
+
+
+ 367 00c8 1A7C     		ldrb	r2, [r3, #16]
+ 368 00ca 0097     		str	r7, [sp]
+ 369 00cc 2300     		movs	r3, r4
+ 370 00ce 0299     		ldr	r1, [sp, #8]
+ 371 00d0 3000     		movs	r0, r6
+ 372              	.LVL65:
+ 373 00d2 FFF7FEFF 		bl	u8x8_draw_button_line
+ 374              	.LVL66:
+ 375 00d6 E3E7     		b	.L15
+ 376              	.LVL67:
+ 377              	.L19:
+ 141:..\..\u8g2\csrc/u8x8_message.c ****     }
+ 142:..\..\u8g2\csrc/u8x8_message.c ****     else if ( event == U8X8_MSG_GPIO_MENU_PREV || event == U8X8_MSG_GPIO_MENU_DOWN  )
+ 378              		.loc 1 142 0
+ 379 00d8 5228     		cmp	r0, #82
+ 380 00da 01D0     		beq	.L22
+ 381              		.loc 1 142 0 is_stmt 0 discriminator 1
+ 382 00dc 5528     		cmp	r0, #85
+ 383 00de DFD1     		bne	.L15
+ 384              	.L22:
+ 143:..\..\u8g2\csrc/u8x8_message.c ****     {
+ 144:..\..\u8g2\csrc/u8x8_message.c ****       if ( cursor == 0 )
+ 385              		.loc 1 144 0 is_stmt 1
+ 386 00e0 002C     		cmp	r4, #0
+ 387 00e2 00D1     		bne	.L23
+ 145:..\..\u8g2\csrc/u8x8_message.c **** 	cursor = button_cnt;
+ 388              		.loc 1 145 0
+ 389 00e4 2C00     		movs	r4, r5
+ 390              	.LVL68:
+ 391              	.L23:
+ 146:..\..\u8g2\csrc/u8x8_message.c ****       cursor--;
+ 392              		.loc 1 146 0
+ 393 00e6 013C     		subs	r4, r4, #1
+ 394              	.LVL69:
+ 395 00e8 E4B2     		uxtb	r4, r4
+ 396              	.LVL70:
+ 147:..\..\u8g2\csrc/u8x8_message.c ****       u8x8_draw_button_line(u8x8, y, u8x8_GetCols(u8x8), cursor, buttons);
+ 397              		.loc 1 147 0
+ 398 00ea 3368     		ldr	r3, [r6]
+ 399 00ec 1A7C     		ldrb	r2, [r3, #16]
+ 400 00ee 0097     		str	r7, [sp]
+ 401 00f0 2300     		movs	r3, r4
+ 402 00f2 0299     		ldr	r1, [sp, #8]
+ 403 00f4 3000     		movs	r0, r6
+ 404              	.LVL71:
+ 405 00f6 FFF7FEFF 		bl	u8x8_draw_button_line
+ 406              	.LVL72:
+ 407 00fa D1E7     		b	.L15
+ 408              	.LVL73:
+ 409              	.L25:
+ 148:..\..\u8g2\csrc/u8x8_message.c ****     }    
+ 149:..\..\u8g2\csrc/u8x8_message.c ****   }  
+ 150:..\..\u8g2\csrc/u8x8_message.c ****   return 0;
+ 410              		.loc 1 150 0
+ 411 00fc 0020     		movs	r0, #0
+ 412              	.LVL74:
+ 413              	.L17:
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 11
+
+
+ 151:..\..\u8g2\csrc/u8x8_message.c **** }
+ 414              		.loc 1 151 0
+ 415 00fe 05B0     		add	sp, sp, #20
+ 416              		@ sp needed
+ 417              	.LVL75:
+ 418              	.LVL76:
+ 419 0100 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 420              		.cfi_endproc
+ 421              	.LFE1:
+ 422              		.size	u8x8_UserInterfaceMessage, .-u8x8_UserInterfaceMessage
+ 423 0102 C046     		.section	.rodata.str1.4,"aMS",%progbits,1
+ 424              		.align	2
+ 425              	.LC0:
+ 426 0000 2000     		.ascii	" \000"
+ 427              		.text
+ 428              	.Letext0:
+ 429              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.
+ 430              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.
+ 431              		.file 4 "..\\..\\u8g2\\csrc\\u8x8.h"
+ 432              		.section	.debug_info,"",%progbits
+ 433              	.Ldebug_info0:
+ 434 0000 D9060000 		.4byte	0x6d9
+ 435 0004 0400     		.2byte	0x4
+ 436 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 437 000a 04       		.byte	0x4
+ 438 000b 01       		.uleb128 0x1
+ 439 000c F6000000 		.4byte	.LASF81
+ 440 0010 0C       		.byte	0xc
+ 441 0011 3C020000 		.4byte	.LASF82
+ 442 0015 AD040000 		.4byte	.LASF83
+ 443 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 444 001d 00000000 		.4byte	0
+ 445 0021 00000000 		.4byte	.Ldebug_line0
+ 446 0025 02       		.uleb128 0x2
+ 447 0026 01       		.byte	0x1
+ 448 0027 06       		.byte	0x6
+ 449 0028 FF020000 		.4byte	.LASF0
+ 450 002c 03       		.uleb128 0x3
+ 451 002d 64020000 		.4byte	.LASF3
+ 452 0031 02       		.byte	0x2
+ 453 0032 1D       		.byte	0x1d
+ 454 0033 37000000 		.4byte	0x37
+ 455 0037 02       		.uleb128 0x2
+ 456 0038 01       		.byte	0x1
+ 457 0039 08       		.byte	0x8
+ 458 003a EA020000 		.4byte	.LASF1
+ 459 003e 02       		.uleb128 0x2
+ 460 003f 02       		.byte	0x2
+ 461 0040 05       		.byte	0x5
+ 462 0041 64000000 		.4byte	.LASF2
+ 463 0045 03       		.uleb128 0x3
+ 464 0046 D3000000 		.4byte	.LASF4
+ 465 004a 02       		.byte	0x2
+ 466 004b 2B       		.byte	0x2b
+ 467 004c 50000000 		.4byte	0x50
+ 468 0050 02       		.uleb128 0x2
+ 469 0051 02       		.byte	0x2
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 12
+
+
+ 470 0052 07       		.byte	0x7
+ 471 0053 B4030000 		.4byte	.LASF5
+ 472 0057 02       		.uleb128 0x2
+ 473 0058 04       		.byte	0x4
+ 474 0059 05       		.byte	0x5
+ 475 005a 5B020000 		.4byte	.LASF6
+ 476 005e 03       		.uleb128 0x3
+ 477 005f C2000000 		.4byte	.LASF7
+ 478 0063 02       		.byte	0x2
+ 479 0064 41       		.byte	0x41
+ 480 0065 69000000 		.4byte	0x69
+ 481 0069 02       		.uleb128 0x2
+ 482 006a 04       		.byte	0x4
+ 483 006b 07       		.byte	0x7
+ 484 006c 46040000 		.4byte	.LASF8
+ 485 0070 02       		.uleb128 0x2
+ 486 0071 08       		.byte	0x8
+ 487 0072 05       		.byte	0x5
+ 488 0073 0F020000 		.4byte	.LASF9
+ 489 0077 02       		.uleb128 0x2
+ 490 0078 08       		.byte	0x8
+ 491 0079 07       		.byte	0x7
+ 492 007a 0B030000 		.4byte	.LASF10
+ 493 007e 04       		.uleb128 0x4
+ 494 007f 04       		.byte	0x4
+ 495 0080 05       		.byte	0x5
+ 496 0081 696E7400 		.ascii	"int\000"
+ 497 0085 02       		.uleb128 0x2
+ 498 0086 04       		.byte	0x4
+ 499 0087 07       		.byte	0x7
+ 500 0088 32030000 		.4byte	.LASF11
+ 501 008c 03       		.uleb128 0x3
+ 502 008d 84010000 		.4byte	.LASF12
+ 503 0091 03       		.byte	0x3
+ 504 0092 18       		.byte	0x18
+ 505 0093 2C000000 		.4byte	0x2c
+ 506 0097 03       		.uleb128 0x3
+ 507 0098 3F030000 		.4byte	.LASF13
+ 508 009c 03       		.byte	0x3
+ 509 009d 24       		.byte	0x24
+ 510 009e 45000000 		.4byte	0x45
+ 511 00a2 03       		.uleb128 0x3
+ 512 00a3 22030000 		.4byte	.LASF14
+ 513 00a7 03       		.byte	0x3
+ 514 00a8 30       		.byte	0x30
+ 515 00a9 5E000000 		.4byte	0x5e
+ 516 00ad 02       		.uleb128 0x2
+ 517 00ae 08       		.byte	0x8
+ 518 00af 04       		.byte	0x4
+ 519 00b0 BC020000 		.4byte	.LASF15
+ 520 00b4 03       		.uleb128 0x3
+ 521 00b5 84030000 		.4byte	.LASF16
+ 522 00b9 04       		.byte	0x4
+ 523 00ba B5       		.byte	0xb5
+ 524 00bb BF000000 		.4byte	0xbf
+ 525 00bf 05       		.uleb128 0x5
+ 526 00c0 3A040000 		.4byte	.LASF37
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 13
+
+
+ 527 00c4 2C       		.byte	0x2c
+ 528 00c5 04       		.byte	0x4
+ 529 00c6 3801     		.2byte	0x138
+ 530 00c8 C4010000 		.4byte	0x1c4
+ 531 00cc 06       		.uleb128 0x6
+ 532 00cd EE030000 		.4byte	.LASF17
+ 533 00d1 04       		.byte	0x4
+ 534 00d2 3A01     		.2byte	0x13a
+ 535 00d4 21030000 		.4byte	0x321
+ 536 00d8 00       		.byte	0
+ 537 00d9 06       		.uleb128 0x6
+ 538 00da 65050000 		.4byte	.LASF18
+ 539 00de 04       		.byte	0x4
+ 540 00df 3B01     		.2byte	0x13b
+ 541 00e1 FC020000 		.4byte	0x2fc
+ 542 00e5 04       		.byte	0x4
+ 543 00e6 06       		.uleb128 0x6
+ 544 00e7 79020000 		.4byte	.LASF19
+ 545 00eb 04       		.byte	0x4
+ 546 00ec 3C01     		.2byte	0x13c
+ 547 00ee C5020000 		.4byte	0x2c5
+ 548 00f2 08       		.byte	0x8
+ 549 00f3 06       		.uleb128 0x6
+ 550 00f4 A6040000 		.4byte	.LASF20
+ 551 00f8 04       		.byte	0x4
+ 552 00f9 3D01     		.2byte	0x13d
+ 553 00fb C5020000 		.4byte	0x2c5
+ 554 00ff 0C       		.byte	0xc
+ 555 0100 06       		.uleb128 0x6
+ 556 0101 58040000 		.4byte	.LASF21
+ 557 0105 04       		.byte	0x4
+ 558 0106 3E01     		.2byte	0x13e
+ 559 0108 C5020000 		.4byte	0x2c5
+ 560 010c 10       		.byte	0x10
+ 561 010d 06       		.uleb128 0x6
+ 562 010e 6E000000 		.4byte	.LASF22
+ 563 0112 04       		.byte	0x4
+ 564 0113 3F01     		.2byte	0x13f
+ 565 0115 C5020000 		.4byte	0x2c5
+ 566 0119 14       		.byte	0x14
+ 567 011a 06       		.uleb128 0x6
+ 568 011b 4B000000 		.4byte	.LASF23
+ 569 011f 04       		.byte	0x4
+ 570 0120 4001     		.2byte	0x140
+ 571 0122 2C030000 		.4byte	0x32c
+ 572 0126 18       		.byte	0x18
+ 573 0127 06       		.uleb128 0x6
+ 574 0128 91040000 		.4byte	.LASF24
+ 575 012c 04       		.byte	0x4
+ 576 012d 4101     		.2byte	0x141
+ 577 012f 97000000 		.4byte	0x97
+ 578 0133 1C       		.byte	0x1c
+ 579 0134 06       		.uleb128 0x6
+ 580 0135 12000000 		.4byte	.LASF25
+ 581 0139 04       		.byte	0x4
+ 582 013a 4201     		.2byte	0x142
+ 583 013c 8C000000 		.4byte	0x8c
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 14
+
+
+ 584 0140 1E       		.byte	0x1e
+ 585 0141 06       		.uleb128 0x6
+ 586 0142 1B000000 		.4byte	.LASF26
+ 587 0146 04       		.byte	0x4
+ 588 0147 4301     		.2byte	0x143
+ 589 0149 8C000000 		.4byte	0x8c
+ 590 014d 1F       		.byte	0x1f
+ 591 014e 06       		.uleb128 0x6
+ 592 014f 73040000 		.4byte	.LASF27
+ 593 0153 04       		.byte	0x4
+ 594 0154 4401     		.2byte	0x144
+ 595 0156 8C000000 		.4byte	0x8c
+ 596 015a 20       		.byte	0x20
+ 597 015b 06       		.uleb128 0x6
+ 598 015c 9A040000 		.4byte	.LASF28
+ 599 0160 04       		.byte	0x4
+ 600 0161 4701     		.2byte	0x147
+ 601 0163 8C000000 		.4byte	0x8c
+ 602 0167 21       		.byte	0x21
+ 603 0168 06       		.uleb128 0x6
+ 604 0169 15050000 		.4byte	.LASF29
+ 605 016d 04       		.byte	0x4
+ 606 016e 4801     		.2byte	0x148
+ 607 0170 8C000000 		.4byte	0x8c
+ 608 0174 22       		.byte	0x22
+ 609 0175 06       		.uleb128 0x6
+ 610 0176 2F040000 		.4byte	.LASF30
+ 611 017a 04       		.byte	0x4
+ 612 017b 4901     		.2byte	0x149
+ 613 017d 8C000000 		.4byte	0x8c
+ 614 0181 23       		.byte	0x23
+ 615 0182 06       		.uleb128 0x6
+ 616 0183 1D020000 		.4byte	.LASF31
+ 617 0187 04       		.byte	0x4
+ 618 0188 4A01     		.2byte	0x14a
+ 619 018a 8C000000 		.4byte	0x8c
+ 620 018e 24       		.byte	0x24
+ 621 018f 06       		.uleb128 0x6
+ 622 0190 3E050000 		.4byte	.LASF32
+ 623 0194 04       		.byte	0x4
+ 624 0195 4B01     		.2byte	0x14b
+ 625 0197 8C000000 		.4byte	0x8c
+ 626 019b 25       		.byte	0x25
+ 627 019c 06       		.uleb128 0x6
+ 628 019d F7010000 		.4byte	.LASF33
+ 629 01a1 04       		.byte	0x4
+ 630 01a2 4C01     		.2byte	0x14c
+ 631 01a4 8C000000 		.4byte	0x8c
+ 632 01a8 26       		.byte	0x26
+ 633 01a9 06       		.uleb128 0x6
+ 634 01aa DF030000 		.4byte	.LASF34
+ 635 01ae 04       		.byte	0x4
+ 636 01af 4D01     		.2byte	0x14d
+ 637 01b1 8C000000 		.4byte	0x8c
+ 638 01b5 27       		.byte	0x27
+ 639 01b6 06       		.uleb128 0x6
+ 640 01b7 50000000 		.4byte	.LASF35
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 15
+
+
+ 641 01bb 04       		.byte	0x4
+ 642 01bc 4E01     		.2byte	0x14e
+ 643 01be 8C000000 		.4byte	0x8c
+ 644 01c2 28       		.byte	0x28
+ 645 01c3 00       		.byte	0
+ 646 01c4 03       		.uleb128 0x3
+ 647 01c5 E3010000 		.4byte	.LASF36
+ 648 01c9 04       		.byte	0x4
+ 649 01ca B6       		.byte	0xb6
+ 650 01cb CF010000 		.4byte	0x1cf
+ 651 01cf 07       		.uleb128 0x7
+ 652 01d0 48030000 		.4byte	.LASF38
+ 653 01d4 18       		.byte	0x18
+ 654 01d5 04       		.byte	0x4
+ 655 01d6 CF       		.byte	0xcf
+ 656 01d7 C5020000 		.4byte	0x2c5
+ 657 01db 08       		.uleb128 0x8
+ 658 01dc 39000000 		.4byte	.LASF39
+ 659 01e0 04       		.byte	0x4
+ 660 01e1 D3       		.byte	0xd3
+ 661 01e2 8C000000 		.4byte	0x8c
+ 662 01e6 00       		.byte	0
+ 663 01e7 08       		.uleb128 0x8
+ 664 01e8 60040000 		.4byte	.LASF40
+ 665 01ec 04       		.byte	0x4
+ 666 01ed D4       		.byte	0xd4
+ 667 01ee 8C000000 		.4byte	0x8c
+ 668 01f2 01       		.byte	0x1
+ 669 01f3 08       		.uleb128 0x8
+ 670 01f4 8C010000 		.4byte	.LASF41
+ 671 01f8 04       		.byte	0x4
+ 672 01f9 D6       		.byte	0xd6
+ 673 01fa 8C000000 		.4byte	0x8c
+ 674 01fe 02       		.byte	0x2
+ 675 01ff 08       		.uleb128 0x8
+ 676 0200 7B050000 		.4byte	.LASF42
+ 677 0204 04       		.byte	0x4
+ 678 0205 D7       		.byte	0xd7
+ 679 0206 8C000000 		.4byte	0x8c
+ 680 020a 03       		.byte	0x3
+ 681 020b 08       		.uleb128 0x8
+ 682 020c 6F030000 		.4byte	.LASF43
+ 683 0210 04       		.byte	0x4
+ 684 0211 D8       		.byte	0xd8
+ 685 0212 8C000000 		.4byte	0x8c
+ 686 0216 04       		.byte	0x4
+ 687 0217 08       		.uleb128 0x8
+ 688 0218 AF000000 		.4byte	.LASF44
+ 689 021c 04       		.byte	0x4
+ 690 021d D9       		.byte	0xd9
+ 691 021e 8C000000 		.4byte	0x8c
+ 692 0222 05       		.byte	0x5
+ 693 0223 08       		.uleb128 0x8
+ 694 0224 9D000000 		.4byte	.LASF45
+ 695 0228 04       		.byte	0x4
+ 696 0229 E0       		.byte	0xe0
+ 697 022a 8C000000 		.4byte	0x8c
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 16
+
+
+ 698 022e 06       		.byte	0x6
+ 699 022f 08       		.uleb128 0x8
+ 700 0230 29020000 		.4byte	.LASF46
+ 701 0234 04       		.byte	0x4
+ 702 0235 E4       		.byte	0xe4
+ 703 0236 8C000000 		.4byte	0x8c
+ 704 023a 07       		.byte	0x7
+ 705 023b 08       		.uleb128 0x8
+ 706 023c A7030000 		.4byte	.LASF47
+ 707 0240 04       		.byte	0x4
+ 708 0241 E7       		.byte	0xe7
+ 709 0242 A2000000 		.4byte	0xa2
+ 710 0246 08       		.byte	0x8
+ 711 0247 08       		.uleb128 0x8
+ 712 0248 30000000 		.4byte	.LASF48
+ 713 024c 04       		.byte	0x4
+ 714 024d F1       		.byte	0xf1
+ 715 024e 8C000000 		.4byte	0x8c
+ 716 0252 0C       		.byte	0xc
+ 717 0253 08       		.uleb128 0x8
+ 718 0254 92030000 		.4byte	.LASF49
+ 719 0258 04       		.byte	0x4
+ 720 0259 F4       		.byte	0xf4
+ 721 025a 8C000000 		.4byte	0x8c
+ 722 025e 0D       		.byte	0xd
+ 723 025f 08       		.uleb128 0x8
+ 724 0260 99020000 		.4byte	.LASF50
+ 725 0264 04       		.byte	0x4
+ 726 0265 FA       		.byte	0xfa
+ 727 0266 8C000000 		.4byte	0x8c
+ 728 026a 0E       		.byte	0xe
+ 729 026b 08       		.uleb128 0x8
+ 730 026c 84020000 		.4byte	.LASF51
+ 731 0270 04       		.byte	0x4
+ 732 0271 FC       		.byte	0xfc
+ 733 0272 8C000000 		.4byte	0x8c
+ 734 0276 0F       		.byte	0xf
+ 735 0277 08       		.uleb128 0x8
+ 736 0278 80000000 		.4byte	.LASF52
+ 737 027c 04       		.byte	0x4
+ 738 027d FF       		.byte	0xff
+ 739 027e 8C000000 		.4byte	0x8c
+ 740 0282 10       		.byte	0x10
+ 741 0283 06       		.uleb128 0x6
+ 742 0284 C8020000 		.4byte	.LASF53
+ 743 0288 04       		.byte	0x4
+ 744 0289 0001     		.2byte	0x100
+ 745 028b 8C000000 		.4byte	0x8c
+ 746 028f 11       		.byte	0x11
+ 747 0290 06       		.uleb128 0x6
+ 748 0291 D2010000 		.4byte	.LASF54
+ 749 0295 04       		.byte	0x4
+ 750 0296 0201     		.2byte	0x102
+ 751 0298 8C000000 		.4byte	0x8c
+ 752 029c 12       		.byte	0x12
+ 753 029d 06       		.uleb128 0x6
+ 754 029e 7F040000 		.4byte	.LASF55
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 17
+
+
+ 755 02a2 04       		.byte	0x4
+ 756 02a3 0301     		.2byte	0x103
+ 757 02a5 8C000000 		.4byte	0x8c
+ 758 02a9 13       		.byte	0x13
+ 759 02aa 06       		.uleb128 0x6
+ 760 02ab 23040000 		.4byte	.LASF56
+ 761 02af 04       		.byte	0x4
+ 762 02b0 0B01     		.2byte	0x10b
+ 763 02b2 97000000 		.4byte	0x97
+ 764 02b6 14       		.byte	0x14
+ 765 02b7 06       		.uleb128 0x6
+ 766 02b8 FB030000 		.4byte	.LASF57
+ 767 02bc 04       		.byte	0x4
+ 768 02bd 0C01     		.2byte	0x10c
+ 769 02bf 97000000 		.4byte	0x97
+ 770 02c3 16       		.byte	0x16
+ 771 02c4 00       		.byte	0
+ 772 02c5 03       		.uleb128 0x3
+ 773 02c6 59050000 		.4byte	.LASF58
+ 774 02ca 04       		.byte	0x4
+ 775 02cb B9       		.byte	0xb9
+ 776 02cc D0020000 		.4byte	0x2d0
+ 777 02d0 09       		.uleb128 0x9
+ 778 02d1 04       		.byte	0x4
+ 779 02d2 D6020000 		.4byte	0x2d6
+ 780 02d6 0A       		.uleb128 0xa
+ 781 02d7 8C000000 		.4byte	0x8c
+ 782 02db F4020000 		.4byte	0x2f4
+ 783 02df 0B       		.uleb128 0xb
+ 784 02e0 F4020000 		.4byte	0x2f4
+ 785 02e4 0B       		.uleb128 0xb
+ 786 02e5 8C000000 		.4byte	0x8c
+ 787 02e9 0B       		.uleb128 0xb
+ 788 02ea 8C000000 		.4byte	0x8c
+ 789 02ee 0B       		.uleb128 0xb
+ 790 02ef FA020000 		.4byte	0x2fa
+ 791 02f3 00       		.byte	0
+ 792 02f4 09       		.uleb128 0x9
+ 793 02f5 04       		.byte	0x4
+ 794 02f6 B4000000 		.4byte	0xb4
+ 795 02fa 0C       		.uleb128 0xc
+ 796 02fb 04       		.byte	0x4
+ 797 02fc 03       		.uleb128 0x3
+ 798 02fd C7030000 		.4byte	.LASF59
+ 799 0301 04       		.byte	0x4
+ 800 0302 BA       		.byte	0xba
+ 801 0303 07030000 		.4byte	0x307
+ 802 0307 09       		.uleb128 0x9
+ 803 0308 04       		.byte	0x4
+ 804 0309 0D030000 		.4byte	0x30d
+ 805 030d 0A       		.uleb128 0xa
+ 806 030e 97000000 		.4byte	0x97
+ 807 0312 21030000 		.4byte	0x321
+ 808 0316 0B       		.uleb128 0xb
+ 809 0317 F4020000 		.4byte	0x2f4
+ 810 031b 0B       		.uleb128 0xb
+ 811 031c 8C000000 		.4byte	0x8c
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 18
+
+
+ 812 0320 00       		.byte	0
+ 813 0321 09       		.uleb128 0x9
+ 814 0322 04       		.byte	0x4
+ 815 0323 27030000 		.4byte	0x327
+ 816 0327 0D       		.uleb128 0xd
+ 817 0328 C4010000 		.4byte	0x1c4
+ 818 032c 09       		.uleb128 0x9
+ 819 032d 04       		.byte	0x4
+ 820 032e 32030000 		.4byte	0x332
+ 821 0332 0D       		.uleb128 0xd
+ 822 0333 8C000000 		.4byte	0x8c
+ 823 0337 0E       		.uleb128 0xe
+ 824 0338 D4020000 		.4byte	.LASF64
+ 825 033c 01       		.byte	0x1
+ 826 033d 26       		.byte	0x26
+ 827 033e 8C000000 		.4byte	0x8c
+ 828 0342 00000000 		.4byte	.LFB0
+ 829 0346 AC000000 		.4byte	.LFE0-.LFB0
+ 830 034a 01       		.uleb128 0x1
+ 831 034b 9C       		.byte	0x9c
+ 832 034c 81040000 		.4byte	0x481
+ 833 0350 0F       		.uleb128 0xf
+ 834 0351 A5010000 		.4byte	.LASF60
+ 835 0355 01       		.byte	0x1
+ 836 0356 26       		.byte	0x26
+ 837 0357 F4020000 		.4byte	0x2f4
+ 838 035b 00000000 		.4byte	.LLST0
+ 839 035f 10       		.uleb128 0x10
+ 840 0360 7900     		.ascii	"y\000"
+ 841 0362 01       		.byte	0x1
+ 842 0363 26       		.byte	0x26
+ 843 0364 8C000000 		.4byte	0x8c
+ 844 0368 2C000000 		.4byte	.LLST1
+ 845 036c 10       		.uleb128 0x10
+ 846 036d 7700     		.ascii	"w\000"
+ 847 036f 01       		.byte	0x1
+ 848 0370 26       		.byte	0x26
+ 849 0371 8C000000 		.4byte	0x8c
+ 850 0375 4D000000 		.4byte	.LLST2
+ 851 0379 0F       		.uleb128 0xf
+ 852 037a F8020000 		.4byte	.LASF61
+ 853 037e 01       		.byte	0x1
+ 854 037f 26       		.byte	0x26
+ 855 0380 8C000000 		.4byte	0x8c
+ 856 0384 6E000000 		.4byte	.LLST3
+ 857 0388 11       		.uleb128 0x11
+ 858 0389 7300     		.ascii	"s\000"
+ 859 038b 01       		.byte	0x1
+ 860 038c 26       		.byte	0x26
+ 861 038d 81040000 		.4byte	0x481
+ 862 0391 02       		.uleb128 0x2
+ 863 0392 91       		.byte	0x91
+ 864 0393 00       		.sleb128 0
+ 865 0394 12       		.uleb128 0x12
+ 866 0395 6900     		.ascii	"i\000"
+ 867 0397 01       		.byte	0x1
+ 868 0398 28       		.byte	0x28
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 19
+
+
+ 869 0399 8C000000 		.4byte	0x8c
+ 870 039d 8F000000 		.4byte	.LLST4
+ 871 03a1 13       		.uleb128 0x13
+ 872 03a2 636E7400 		.ascii	"cnt\000"
+ 873 03a6 01       		.byte	0x1
+ 874 03a7 29       		.byte	0x29
+ 875 03a8 8C000000 		.4byte	0x8c
+ 876 03ac 02       		.uleb128 0x2
+ 877 03ad 91       		.byte	0x91
+ 878 03ae 5C       		.sleb128 -36
+ 879 03af 14       		.uleb128 0x14
+ 880 03b0 D9030000 		.4byte	.LASF62
+ 881 03b4 01       		.byte	0x1
+ 882 03b5 2A       		.byte	0x2a
+ 883 03b6 8C000000 		.4byte	0x8c
+ 884 03ba D0000000 		.4byte	.LLST5
+ 885 03be 12       		.uleb128 0x12
+ 886 03bf 6400     		.ascii	"d\000"
+ 887 03c1 01       		.byte	0x1
+ 888 03c2 2B       		.byte	0x2b
+ 889 03c3 8C000000 		.4byte	0x8c
+ 890 03c7 10010000 		.4byte	.LLST6
+ 891 03cb 12       		.uleb128 0x12
+ 892 03cc 7800     		.ascii	"x\000"
+ 893 03ce 01       		.byte	0x1
+ 894 03cf 2C       		.byte	0x2c
+ 895 03d0 8C000000 		.4byte	0x8c
+ 896 03d4 51010000 		.4byte	.LLST7
+ 897 03d8 15       		.uleb128 0x15
+ 898 03d9 18000000 		.4byte	.LVL2
+ 899 03dd 7C060000 		.4byte	0x67c
+ 900 03e1 ED030000 		.4byte	0x3ed
+ 901 03e5 16       		.uleb128 0x16
+ 902 03e6 01       		.uleb128 0x1
+ 903 03e7 50       		.byte	0x50
+ 904 03e8 03       		.uleb128 0x3
+ 905 03e9 91       		.byte	0x91
+ 906 03ea 00       		.sleb128 0
+ 907 03eb 06       		.byte	0x6
+ 908 03ec 00       		.byte	0
+ 909 03ed 15       		.uleb128 0x15
+ 910 03ee 2A000000 		.4byte	.LVL5
+ 911 03f2 88060000 		.4byte	0x688
+ 912 03f6 08040000 		.4byte	0x408
+ 913 03fa 16       		.uleb128 0x16
+ 914 03fb 01       		.uleb128 0x1
+ 915 03fc 50       		.byte	0x50
+ 916 03fd 02       		.uleb128 0x2
+ 917 03fe 74       		.byte	0x74
+ 918 03ff 00       		.sleb128 0
+ 919 0400 16       		.uleb128 0x16
+ 920 0401 01       		.uleb128 0x1
+ 921 0402 51       		.byte	0x51
+ 922 0403 03       		.uleb128 0x3
+ 923 0404 91       		.byte	0x91
+ 924 0405 00       		.sleb128 0
+ 925 0406 06       		.byte	0x6
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 20
+
+
+ 926 0407 00       		.byte	0
+ 927 0408 15       		.uleb128 0x15
+ 928 0409 32000000 		.4byte	.LVL6
+ 929 040d 94060000 		.4byte	0x694
+ 930 0411 1C040000 		.4byte	0x41c
+ 931 0415 16       		.uleb128 0x16
+ 932 0416 01       		.uleb128 0x1
+ 933 0417 50       		.byte	0x50
+ 934 0418 02       		.uleb128 0x2
+ 935 0419 75       		.byte	0x75
+ 936 041a 00       		.sleb128 0
+ 937 041b 00       		.byte	0
+ 938 041c 15       		.uleb128 0x15
+ 939 041d 70000000 		.4byte	.LVL20
+ 940 0421 88060000 		.4byte	0x688
+ 941 0425 37040000 		.4byte	0x437
+ 942 0429 16       		.uleb128 0x16
+ 943 042a 01       		.uleb128 0x1
+ 944 042b 50       		.byte	0x50
+ 945 042c 02       		.uleb128 0x2
+ 946 042d 77       		.byte	0x77
+ 947 042e 00       		.sleb128 0
+ 948 042f 16       		.uleb128 0x16
+ 949 0430 01       		.uleb128 0x1
+ 950 0431 51       		.byte	0x51
+ 951 0432 03       		.uleb128 0x3
+ 952 0433 91       		.byte	0x91
+ 953 0434 00       		.sleb128 0
+ 954 0435 06       		.byte	0x6
+ 955 0436 00       		.byte	0
+ 956 0437 15       		.uleb128 0x15
+ 957 0438 7C000000 		.4byte	.LVL21
+ 958 043c A0060000 		.4byte	0x6a0
+ 959 0440 59040000 		.4byte	0x459
+ 960 0444 16       		.uleb128 0x16
+ 961 0445 01       		.uleb128 0x1
+ 962 0446 50       		.byte	0x50
+ 963 0447 02       		.uleb128 0x2
+ 964 0448 75       		.byte	0x75
+ 965 0449 00       		.sleb128 0
+ 966 044a 16       		.uleb128 0x16
+ 967 044b 01       		.uleb128 0x1
+ 968 044c 51       		.byte	0x51
+ 969 044d 02       		.uleb128 0x2
+ 970 044e 74       		.byte	0x74
+ 971 044f 00       		.sleb128 0
+ 972 0450 16       		.uleb128 0x16
+ 973 0451 01       		.uleb128 0x1
+ 974 0452 52       		.byte	0x52
+ 975 0453 04       		.uleb128 0x4
+ 976 0454 7D       		.byte	0x7d
+ 977 0455 00       		.sleb128 0
+ 978 0456 94       		.byte	0x94
+ 979 0457 01       		.byte	0x1
+ 980 0458 00       		.byte	0
+ 981 0459 17       		.uleb128 0x17
+ 982 045a 90000000 		.4byte	.LVL24
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 21
+
+
+ 983 045e A0060000 		.4byte	0x6a0
+ 984 0462 16       		.uleb128 0x16
+ 985 0463 01       		.uleb128 0x1
+ 986 0464 50       		.byte	0x50
+ 987 0465 02       		.uleb128 0x2
+ 988 0466 75       		.byte	0x75
+ 989 0467 00       		.sleb128 0
+ 990 0468 16       		.uleb128 0x16
+ 991 0469 01       		.uleb128 0x1
+ 992 046a 51       		.byte	0x51
+ 993 046b 02       		.uleb128 0x2
+ 994 046c 74       		.byte	0x74
+ 995 046d 00       		.sleb128 0
+ 996 046e 16       		.uleb128 0x16
+ 997 046f 01       		.uleb128 0x1
+ 998 0470 52       		.byte	0x52
+ 999 0471 04       		.uleb128 0x4
+ 1000 0472 7D       		.byte	0x7d
+ 1001 0473 00       		.sleb128 0
+ 1002 0474 94       		.byte	0x94
+ 1003 0475 01       		.byte	0x1
+ 1004 0476 16       		.uleb128 0x16
+ 1005 0477 01       		.uleb128 0x1
+ 1006 0478 53       		.byte	0x53
+ 1007 0479 05       		.uleb128 0x5
+ 1008 047a 03       		.byte	0x3
+ 1009 047b 00000000 		.4byte	.LC0
+ 1010 047f 00       		.byte	0
+ 1011 0480 00       		.byte	0
+ 1012 0481 09       		.uleb128 0x9
+ 1013 0482 04       		.byte	0x4
+ 1014 0483 8E040000 		.4byte	0x48e
+ 1015 0487 02       		.uleb128 0x2
+ 1016 0488 01       		.byte	0x1
+ 1017 0489 08       		.byte	0x8
+ 1018 048a D4030000 		.4byte	.LASF63
+ 1019 048e 0D       		.uleb128 0xd
+ 1020 048f 87040000 		.4byte	0x487
+ 1021 0493 0E       		.uleb128 0xe
+ 1022 0494 24050000 		.4byte	.LASF65
+ 1023 0498 01       		.byte	0x1
+ 1024 0499 58       		.byte	0x58
+ 1025 049a 8C000000 		.4byte	0x8c
+ 1026 049e 00000000 		.4byte	.LFB1
+ 1027 04a2 02010000 		.4byte	.LFE1-.LFB1
+ 1028 04a6 01       		.uleb128 0x1
+ 1029 04a7 9C       		.byte	0x9c
+ 1030 04a8 7C060000 		.4byte	0x67c
+ 1031 04ac 0F       		.uleb128 0xf
+ 1032 04ad A5010000 		.4byte	.LASF60
+ 1033 04b1 01       		.byte	0x1
+ 1034 04b2 58       		.byte	0x58
+ 1035 04b3 F4020000 		.4byte	0x2f4
+ 1036 04b7 6F010000 		.4byte	.LLST8
+ 1037 04bb 0F       		.uleb128 0xf
+ 1038 04bc 68030000 		.4byte	.LASF66
+ 1039 04c0 01       		.byte	0x1
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 22
+
+
+ 1040 04c1 58       		.byte	0x58
+ 1041 04c2 81040000 		.4byte	0x481
+ 1042 04c6 9B010000 		.4byte	.LLST9
+ 1043 04ca 0F       		.uleb128 0xf
+ 1044 04cb 61030000 		.4byte	.LASF67
+ 1045 04cf 01       		.byte	0x1
+ 1046 04d0 58       		.byte	0x58
+ 1047 04d1 81040000 		.4byte	0x481
+ 1048 04d5 BA010000 		.4byte	.LLST10
+ 1049 04d9 0F       		.uleb128 0xf
+ 1050 04da 8B030000 		.4byte	.LASF68
+ 1051 04de 01       		.byte	0x1
+ 1052 04df 58       		.byte	0x58
+ 1053 04e0 81040000 		.4byte	0x481
+ 1054 04e4 E6010000 		.4byte	.LLST11
+ 1055 04e8 18       		.uleb128 0x18
+ 1056 04e9 1B040000 		.4byte	.LASF69
+ 1057 04ed 01       		.byte	0x1
+ 1058 04ee 58       		.byte	0x58
+ 1059 04ef 81040000 		.4byte	0x481
+ 1060 04f3 02       		.uleb128 0x2
+ 1061 04f4 91       		.byte	0x91
+ 1062 04f5 00       		.sleb128 0
+ 1063 04f6 14       		.uleb128 0x14
+ 1064 04f7 2B030000 		.4byte	.LASF70
+ 1065 04fb 01       		.byte	0x1
+ 1066 04fc 5A       		.byte	0x5a
+ 1067 04fd 8C000000 		.4byte	0x8c
+ 1068 0501 13020000 		.4byte	.LLST12
+ 1069 0505 12       		.uleb128 0x12
+ 1070 0506 7900     		.ascii	"y\000"
+ 1071 0508 01       		.byte	0x1
+ 1072 0509 5B       		.byte	0x5b
+ 1073 050a 8C000000 		.4byte	0x8c
+ 1074 050e 48020000 		.4byte	.LLST13
+ 1075 0512 14       		.uleb128 0x14
+ 1076 0513 F8020000 		.4byte	.LASF61
+ 1077 0517 01       		.byte	0x1
+ 1078 0518 5C       		.byte	0x5c
+ 1079 0519 8C000000 		.4byte	0x8c
+ 1080 051d C3020000 		.4byte	.LLST14
+ 1081 0521 14       		.uleb128 0x14
+ 1082 0522 6E020000 		.4byte	.LASF71
+ 1083 0526 01       		.byte	0x1
+ 1084 0527 5D       		.byte	0x5d
+ 1085 0528 8C000000 		.4byte	0x8c
+ 1086 052c 03030000 		.4byte	.LLST15
+ 1087 0530 14       		.uleb128 0x14
+ 1088 0531 CD000000 		.4byte	.LASF72
+ 1089 0535 01       		.byte	0x1
+ 1090 0536 5E       		.byte	0x5e
+ 1091 0537 8C000000 		.4byte	0x8c
+ 1092 053b 21030000 		.4byte	.LLST16
+ 1093 053f 15       		.uleb128 0x15
+ 1094 0540 18000000 		.4byte	.LVL35
+ 1095 0544 7C060000 		.4byte	0x67c
+ 1096 0548 54050000 		.4byte	0x554
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 23
+
+
+ 1097 054c 16       		.uleb128 0x16
+ 1098 054d 01       		.uleb128 0x1
+ 1099 054e 50       		.byte	0x50
+ 1100 054f 03       		.uleb128 0x3
+ 1101 0550 91       		.byte	0x91
+ 1102 0551 64       		.sleb128 -28
+ 1103 0552 06       		.byte	0x6
+ 1104 0553 00       		.byte	0
+ 1105 0554 15       		.uleb128 0x15
+ 1106 0555 2A000000 		.4byte	.LVL38
+ 1107 0559 7C060000 		.4byte	0x67c
+ 1108 055d 69050000 		.4byte	0x569
+ 1109 0561 16       		.uleb128 0x16
+ 1110 0562 01       		.uleb128 0x1
+ 1111 0563 50       		.byte	0x50
+ 1112 0564 03       		.uleb128 0x3
+ 1113 0565 91       		.byte	0x91
+ 1114 0566 60       		.sleb128 -32
+ 1115 0567 06       		.byte	0x6
+ 1116 0568 00       		.byte	0
+ 1117 0569 15       		.uleb128 0x15
+ 1118 056a 46000000 		.4byte	.LVL46
+ 1119 056e AC060000 		.4byte	0x6ac
+ 1120 0572 7D050000 		.4byte	0x57d
+ 1121 0576 16       		.uleb128 0x16
+ 1122 0577 01       		.uleb128 0x1
+ 1123 0578 50       		.byte	0x50
+ 1124 0579 02       		.uleb128 0x2
+ 1125 057a 76       		.byte	0x76
+ 1126 057b 00       		.sleb128 0
+ 1127 057c 00       		.byte	0
+ 1128 057d 15       		.uleb128 0x15
+ 1129 057e 58000000 		.4byte	.LVL47
+ 1130 0582 B8060000 		.4byte	0x6b8
+ 1131 0586 A4050000 		.4byte	0x5a4
+ 1132 058a 16       		.uleb128 0x16
+ 1133 058b 01       		.uleb128 0x1
+ 1134 058c 50       		.byte	0x50
+ 1135 058d 02       		.uleb128 0x2
+ 1136 058e 76       		.byte	0x76
+ 1137 058f 00       		.sleb128 0
+ 1138 0590 16       		.uleb128 0x16
+ 1139 0591 01       		.uleb128 0x1
+ 1140 0592 51       		.byte	0x51
+ 1141 0593 01       		.uleb128 0x1
+ 1142 0594 30       		.byte	0x30
+ 1143 0595 16       		.uleb128 0x16
+ 1144 0596 01       		.uleb128 0x1
+ 1145 0597 52       		.byte	0x52
+ 1146 0598 02       		.uleb128 0x2
+ 1147 0599 75       		.byte	0x75
+ 1148 059a 00       		.sleb128 0
+ 1149 059b 16       		.uleb128 0x16
+ 1150 059c 02       		.uleb128 0x2
+ 1151 059d 7D       		.byte	0x7d
+ 1152 059e 00       		.sleb128 0
+ 1153 059f 03       		.uleb128 0x3
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 24
+
+
+ 1154 05a0 91       		.byte	0x91
+ 1155 05a1 64       		.sleb128 -28
+ 1156 05a2 06       		.byte	0x6
+ 1157 05a3 00       		.byte	0
+ 1158 05a4 15       		.uleb128 0x15
+ 1159 05a5 70000000 		.4byte	.LVL49
+ 1160 05a9 C4060000 		.4byte	0x6c4
+ 1161 05ad CA050000 		.4byte	0x5ca
+ 1162 05b1 16       		.uleb128 0x16
+ 1163 05b2 01       		.uleb128 0x1
+ 1164 05b3 50       		.byte	0x50
+ 1165 05b4 02       		.uleb128 0x2
+ 1166 05b5 76       		.byte	0x76
+ 1167 05b6 00       		.sleb128 0
+ 1168 05b7 16       		.uleb128 0x16
+ 1169 05b8 01       		.uleb128 0x1
+ 1170 05b9 51       		.byte	0x51
+ 1171 05ba 01       		.uleb128 0x1
+ 1172 05bb 30       		.byte	0x30
+ 1173 05bc 16       		.uleb128 0x16
+ 1174 05bd 01       		.uleb128 0x1
+ 1175 05be 52       		.byte	0x52
+ 1176 05bf 02       		.uleb128 0x2
+ 1177 05c0 75       		.byte	0x75
+ 1178 05c1 00       		.sleb128 0
+ 1179 05c2 16       		.uleb128 0x16
+ 1180 05c3 02       		.uleb128 0x2
+ 1181 05c4 7D       		.byte	0x7d
+ 1182 05c5 00       		.sleb128 0
+ 1183 05c6 02       		.uleb128 0x2
+ 1184 05c7 74       		.byte	0x74
+ 1185 05c8 00       		.sleb128 0
+ 1186 05c9 00       		.byte	0
+ 1187 05ca 15       		.uleb128 0x15
+ 1188 05cb 86000000 		.4byte	.LVL52
+ 1189 05cf B8060000 		.4byte	0x6b8
+ 1190 05d3 F1050000 		.4byte	0x5f1
+ 1191 05d7 16       		.uleb128 0x16
+ 1192 05d8 01       		.uleb128 0x1
+ 1193 05d9 50       		.byte	0x50
+ 1194 05da 02       		.uleb128 0x2
+ 1195 05db 76       		.byte	0x76
+ 1196 05dc 00       		.sleb128 0
+ 1197 05dd 16       		.uleb128 0x16
+ 1198 05de 01       		.uleb128 0x1
+ 1199 05df 51       		.byte	0x51
+ 1200 05e0 01       		.uleb128 0x1
+ 1201 05e1 30       		.byte	0x30
+ 1202 05e2 16       		.uleb128 0x16
+ 1203 05e3 01       		.uleb128 0x1
+ 1204 05e4 52       		.byte	0x52
+ 1205 05e5 02       		.uleb128 0x2
+ 1206 05e6 75       		.byte	0x75
+ 1207 05e7 00       		.sleb128 0
+ 1208 05e8 16       		.uleb128 0x16
+ 1209 05e9 02       		.uleb128 0x2
+ 1210 05ea 7D       		.byte	0x7d
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 25
+
+
+ 1211 05eb 00       		.sleb128 0
+ 1212 05ec 03       		.uleb128 0x3
+ 1213 05ed 91       		.byte	0x91
+ 1214 05ee 60       		.sleb128 -32
+ 1215 05ef 06       		.byte	0x6
+ 1216 05f0 00       		.byte	0
+ 1217 05f1 15       		.uleb128 0x15
+ 1218 05f2 9C000000 		.4byte	.LVL55
+ 1219 05f6 37030000 		.4byte	0x337
+ 1220 05fa 19060000 		.4byte	0x619
+ 1221 05fe 16       		.uleb128 0x16
+ 1222 05ff 01       		.uleb128 0x1
+ 1223 0600 50       		.byte	0x50
+ 1224 0601 02       		.uleb128 0x2
+ 1225 0602 76       		.byte	0x76
+ 1226 0603 00       		.sleb128 0
+ 1227 0604 16       		.uleb128 0x16
+ 1228 0605 01       		.uleb128 0x1
+ 1229 0606 51       		.byte	0x51
+ 1230 0607 04       		.uleb128 0x4
+ 1231 0608 91       		.byte	0x91
+ 1232 0609 60       		.sleb128 -32
+ 1233 060a 94       		.byte	0x94
+ 1234 060b 01       		.byte	0x1
+ 1235 060c 16       		.uleb128 0x16
+ 1236 060d 01       		.uleb128 0x1
+ 1237 060e 53       		.byte	0x53
+ 1238 060f 01       		.uleb128 0x1
+ 1239 0610 30       		.byte	0x30
+ 1240 0611 16       		.uleb128 0x16
+ 1241 0612 02       		.uleb128 0x2
+ 1242 0613 7D       		.byte	0x7d
+ 1243 0614 00       		.sleb128 0
+ 1244 0615 02       		.uleb128 0x2
+ 1245 0616 77       		.byte	0x77
+ 1246 0617 00       		.sleb128 0
+ 1247 0618 00       		.byte	0
+ 1248 0619 15       		.uleb128 0x15
+ 1249 061a A6000000 		.4byte	.LVL58
+ 1250 061e D0060000 		.4byte	0x6d0
+ 1251 0622 2D060000 		.4byte	0x62d
+ 1252 0626 16       		.uleb128 0x16
+ 1253 0627 01       		.uleb128 0x1
+ 1254 0628 50       		.byte	0x50
+ 1255 0629 02       		.uleb128 0x2
+ 1256 062a 76       		.byte	0x76
+ 1257 062b 00       		.sleb128 0
+ 1258 062c 00       		.byte	0
+ 1259 062d 15       		.uleb128 0x15
+ 1260 062e D6000000 		.4byte	.LVL66
+ 1261 0632 37030000 		.4byte	0x337
+ 1262 0636 56060000 		.4byte	0x656
+ 1263 063a 16       		.uleb128 0x16
+ 1264 063b 01       		.uleb128 0x1
+ 1265 063c 50       		.byte	0x50
+ 1266 063d 02       		.uleb128 0x2
+ 1267 063e 76       		.byte	0x76
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 26
+
+
+ 1268 063f 00       		.sleb128 0
+ 1269 0640 16       		.uleb128 0x16
+ 1270 0641 01       		.uleb128 0x1
+ 1271 0642 51       		.byte	0x51
+ 1272 0643 04       		.uleb128 0x4
+ 1273 0644 91       		.byte	0x91
+ 1274 0645 60       		.sleb128 -32
+ 1275 0646 94       		.byte	0x94
+ 1276 0647 01       		.byte	0x1
+ 1277 0648 16       		.uleb128 0x16
+ 1278 0649 01       		.uleb128 0x1
+ 1279 064a 53       		.byte	0x53
+ 1280 064b 02       		.uleb128 0x2
+ 1281 064c 74       		.byte	0x74
+ 1282 064d 00       		.sleb128 0
+ 1283 064e 16       		.uleb128 0x16
+ 1284 064f 02       		.uleb128 0x2
+ 1285 0650 7D       		.byte	0x7d
+ 1286 0651 00       		.sleb128 0
+ 1287 0652 02       		.uleb128 0x2
+ 1288 0653 77       		.byte	0x77
+ 1289 0654 00       		.sleb128 0
+ 1290 0655 00       		.byte	0
+ 1291 0656 17       		.uleb128 0x17
+ 1292 0657 FA000000 		.4byte	.LVL72
+ 1293 065b 37030000 		.4byte	0x337
+ 1294 065f 16       		.uleb128 0x16
+ 1295 0660 01       		.uleb128 0x1
+ 1296 0661 50       		.byte	0x50
+ 1297 0662 02       		.uleb128 0x2
+ 1298 0663 76       		.byte	0x76
+ 1299 0664 00       		.sleb128 0
+ 1300 0665 16       		.uleb128 0x16
+ 1301 0666 01       		.uleb128 0x1
+ 1302 0667 51       		.byte	0x51
+ 1303 0668 04       		.uleb128 0x4
+ 1304 0669 91       		.byte	0x91
+ 1305 066a 60       		.sleb128 -32
+ 1306 066b 94       		.byte	0x94
+ 1307 066c 01       		.byte	0x1
+ 1308 066d 16       		.uleb128 0x16
+ 1309 066e 01       		.uleb128 0x1
+ 1310 066f 53       		.byte	0x53
+ 1311 0670 02       		.uleb128 0x2
+ 1312 0671 74       		.byte	0x74
+ 1313 0672 00       		.sleb128 0
+ 1314 0673 16       		.uleb128 0x16
+ 1315 0674 02       		.uleb128 0x2
+ 1316 0675 7D       		.byte	0x7d
+ 1317 0676 00       		.sleb128 0
+ 1318 0677 02       		.uleb128 0x2
+ 1319 0678 77       		.byte	0x77
+ 1320 0679 00       		.sleb128 0
+ 1321 067a 00       		.byte	0
+ 1322 067b 00       		.byte	0
+ 1323 067c 19       		.uleb128 0x19
+ 1324 067d BC010000 		.4byte	.LASF73
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 27
+
+
+ 1325 0681 BC010000 		.4byte	.LASF73
+ 1326 0685 04       		.byte	0x4
+ 1327 0686 2A03     		.2byte	0x32a
+ 1328 0688 19       		.uleb128 0x19
+ 1329 0689 DE000000 		.4byte	.LASF74
+ 1330 068d DE000000 		.4byte	.LASF74
+ 1331 0691 04       		.byte	0x4
+ 1332 0692 2B03     		.2byte	0x32b
+ 1333 0694 19       		.uleb128 0x19
+ 1334 0695 AC020000 		.4byte	.LASF75
+ 1335 0699 AC020000 		.4byte	.LASF75
+ 1336 069d 04       		.byte	0x4
+ 1337 069e 1E03     		.2byte	0x31e
+ 1338 06a0 19       		.uleb128 0x19
+ 1339 06a1 6D050000 		.4byte	.LASF76
+ 1340 06a5 6D050000 		.4byte	.LASF76
+ 1341 06a9 04       		.byte	0x4
+ 1342 06aa 1B03     		.2byte	0x31b
+ 1343 06ac 19       		.uleb128 0x19
+ 1344 06ad 8B000000 		.4byte	.LASF77
+ 1345 06b1 8B000000 		.4byte	.LASF77
+ 1346 06b5 04       		.byte	0x4
+ 1347 06b6 F601     		.2byte	0x1f6
+ 1348 06b8 19       		.uleb128 0x19
+ 1349 06b9 08040000 		.4byte	.LASF78
+ 1350 06bd 08040000 		.4byte	.LASF78
+ 1351 06c1 04       		.byte	0x4
+ 1352 06c2 3003     		.2byte	0x330
+ 1353 06c4 19       		.uleb128 0x19
+ 1354 06c5 00000000 		.4byte	.LASF79
+ 1355 06c9 00000000 		.4byte	.LASF79
+ 1356 06cd 04       		.byte	0x4
+ 1357 06ce 2E03     		.2byte	0x32e
+ 1358 06d0 19       		.uleb128 0x19
+ 1359 06d1 AA010000 		.4byte	.LASF80
+ 1360 06d5 AA010000 		.4byte	.LASF80
+ 1361 06d9 04       		.byte	0x4
+ 1362 06da BC02     		.2byte	0x2bc
+ 1363 06dc 00       		.byte	0
+ 1364              		.section	.debug_abbrev,"",%progbits
+ 1365              	.Ldebug_abbrev0:
+ 1366 0000 01       		.uleb128 0x1
+ 1367 0001 11       		.uleb128 0x11
+ 1368 0002 01       		.byte	0x1
+ 1369 0003 25       		.uleb128 0x25
+ 1370 0004 0E       		.uleb128 0xe
+ 1371 0005 13       		.uleb128 0x13
+ 1372 0006 0B       		.uleb128 0xb
+ 1373 0007 03       		.uleb128 0x3
+ 1374 0008 0E       		.uleb128 0xe
+ 1375 0009 1B       		.uleb128 0x1b
+ 1376 000a 0E       		.uleb128 0xe
+ 1377 000b 55       		.uleb128 0x55
+ 1378 000c 17       		.uleb128 0x17
+ 1379 000d 11       		.uleb128 0x11
+ 1380 000e 01       		.uleb128 0x1
+ 1381 000f 10       		.uleb128 0x10
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 28
+
+
+ 1382 0010 17       		.uleb128 0x17
+ 1383 0011 00       		.byte	0
+ 1384 0012 00       		.byte	0
+ 1385 0013 02       		.uleb128 0x2
+ 1386 0014 24       		.uleb128 0x24
+ 1387 0015 00       		.byte	0
+ 1388 0016 0B       		.uleb128 0xb
+ 1389 0017 0B       		.uleb128 0xb
+ 1390 0018 3E       		.uleb128 0x3e
+ 1391 0019 0B       		.uleb128 0xb
+ 1392 001a 03       		.uleb128 0x3
+ 1393 001b 0E       		.uleb128 0xe
+ 1394 001c 00       		.byte	0
+ 1395 001d 00       		.byte	0
+ 1396 001e 03       		.uleb128 0x3
+ 1397 001f 16       		.uleb128 0x16
+ 1398 0020 00       		.byte	0
+ 1399 0021 03       		.uleb128 0x3
+ 1400 0022 0E       		.uleb128 0xe
+ 1401 0023 3A       		.uleb128 0x3a
+ 1402 0024 0B       		.uleb128 0xb
+ 1403 0025 3B       		.uleb128 0x3b
+ 1404 0026 0B       		.uleb128 0xb
+ 1405 0027 49       		.uleb128 0x49
+ 1406 0028 13       		.uleb128 0x13
+ 1407 0029 00       		.byte	0
+ 1408 002a 00       		.byte	0
+ 1409 002b 04       		.uleb128 0x4
+ 1410 002c 24       		.uleb128 0x24
+ 1411 002d 00       		.byte	0
+ 1412 002e 0B       		.uleb128 0xb
+ 1413 002f 0B       		.uleb128 0xb
+ 1414 0030 3E       		.uleb128 0x3e
+ 1415 0031 0B       		.uleb128 0xb
+ 1416 0032 03       		.uleb128 0x3
+ 1417 0033 08       		.uleb128 0x8
+ 1418 0034 00       		.byte	0
+ 1419 0035 00       		.byte	0
+ 1420 0036 05       		.uleb128 0x5
+ 1421 0037 13       		.uleb128 0x13
+ 1422 0038 01       		.byte	0x1
+ 1423 0039 03       		.uleb128 0x3
+ 1424 003a 0E       		.uleb128 0xe
+ 1425 003b 0B       		.uleb128 0xb
+ 1426 003c 0B       		.uleb128 0xb
+ 1427 003d 3A       		.uleb128 0x3a
+ 1428 003e 0B       		.uleb128 0xb
+ 1429 003f 3B       		.uleb128 0x3b
+ 1430 0040 05       		.uleb128 0x5
+ 1431 0041 01       		.uleb128 0x1
+ 1432 0042 13       		.uleb128 0x13
+ 1433 0043 00       		.byte	0
+ 1434 0044 00       		.byte	0
+ 1435 0045 06       		.uleb128 0x6
+ 1436 0046 0D       		.uleb128 0xd
+ 1437 0047 00       		.byte	0
+ 1438 0048 03       		.uleb128 0x3
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 29
+
+
+ 1439 0049 0E       		.uleb128 0xe
+ 1440 004a 3A       		.uleb128 0x3a
+ 1441 004b 0B       		.uleb128 0xb
+ 1442 004c 3B       		.uleb128 0x3b
+ 1443 004d 05       		.uleb128 0x5
+ 1444 004e 49       		.uleb128 0x49
+ 1445 004f 13       		.uleb128 0x13
+ 1446 0050 38       		.uleb128 0x38
+ 1447 0051 0B       		.uleb128 0xb
+ 1448 0052 00       		.byte	0
+ 1449 0053 00       		.byte	0
+ 1450 0054 07       		.uleb128 0x7
+ 1451 0055 13       		.uleb128 0x13
+ 1452 0056 01       		.byte	0x1
+ 1453 0057 03       		.uleb128 0x3
+ 1454 0058 0E       		.uleb128 0xe
+ 1455 0059 0B       		.uleb128 0xb
+ 1456 005a 0B       		.uleb128 0xb
+ 1457 005b 3A       		.uleb128 0x3a
+ 1458 005c 0B       		.uleb128 0xb
+ 1459 005d 3B       		.uleb128 0x3b
+ 1460 005e 0B       		.uleb128 0xb
+ 1461 005f 01       		.uleb128 0x1
+ 1462 0060 13       		.uleb128 0x13
+ 1463 0061 00       		.byte	0
+ 1464 0062 00       		.byte	0
+ 1465 0063 08       		.uleb128 0x8
+ 1466 0064 0D       		.uleb128 0xd
+ 1467 0065 00       		.byte	0
+ 1468 0066 03       		.uleb128 0x3
+ 1469 0067 0E       		.uleb128 0xe
+ 1470 0068 3A       		.uleb128 0x3a
+ 1471 0069 0B       		.uleb128 0xb
+ 1472 006a 3B       		.uleb128 0x3b
+ 1473 006b 0B       		.uleb128 0xb
+ 1474 006c 49       		.uleb128 0x49
+ 1475 006d 13       		.uleb128 0x13
+ 1476 006e 38       		.uleb128 0x38
+ 1477 006f 0B       		.uleb128 0xb
+ 1478 0070 00       		.byte	0
+ 1479 0071 00       		.byte	0
+ 1480 0072 09       		.uleb128 0x9
+ 1481 0073 0F       		.uleb128 0xf
+ 1482 0074 00       		.byte	0
+ 1483 0075 0B       		.uleb128 0xb
+ 1484 0076 0B       		.uleb128 0xb
+ 1485 0077 49       		.uleb128 0x49
+ 1486 0078 13       		.uleb128 0x13
+ 1487 0079 00       		.byte	0
+ 1488 007a 00       		.byte	0
+ 1489 007b 0A       		.uleb128 0xa
+ 1490 007c 15       		.uleb128 0x15
+ 1491 007d 01       		.byte	0x1
+ 1492 007e 27       		.uleb128 0x27
+ 1493 007f 19       		.uleb128 0x19
+ 1494 0080 49       		.uleb128 0x49
+ 1495 0081 13       		.uleb128 0x13
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 30
+
+
+ 1496 0082 01       		.uleb128 0x1
+ 1497 0083 13       		.uleb128 0x13
+ 1498 0084 00       		.byte	0
+ 1499 0085 00       		.byte	0
+ 1500 0086 0B       		.uleb128 0xb
+ 1501 0087 05       		.uleb128 0x5
+ 1502 0088 00       		.byte	0
+ 1503 0089 49       		.uleb128 0x49
+ 1504 008a 13       		.uleb128 0x13
+ 1505 008b 00       		.byte	0
+ 1506 008c 00       		.byte	0
+ 1507 008d 0C       		.uleb128 0xc
+ 1508 008e 0F       		.uleb128 0xf
+ 1509 008f 00       		.byte	0
+ 1510 0090 0B       		.uleb128 0xb
+ 1511 0091 0B       		.uleb128 0xb
+ 1512 0092 00       		.byte	0
+ 1513 0093 00       		.byte	0
+ 1514 0094 0D       		.uleb128 0xd
+ 1515 0095 26       		.uleb128 0x26
+ 1516 0096 00       		.byte	0
+ 1517 0097 49       		.uleb128 0x49
+ 1518 0098 13       		.uleb128 0x13
+ 1519 0099 00       		.byte	0
+ 1520 009a 00       		.byte	0
+ 1521 009b 0E       		.uleb128 0xe
+ 1522 009c 2E       		.uleb128 0x2e
+ 1523 009d 01       		.byte	0x1
+ 1524 009e 3F       		.uleb128 0x3f
+ 1525 009f 19       		.uleb128 0x19
+ 1526 00a0 03       		.uleb128 0x3
+ 1527 00a1 0E       		.uleb128 0xe
+ 1528 00a2 3A       		.uleb128 0x3a
+ 1529 00a3 0B       		.uleb128 0xb
+ 1530 00a4 3B       		.uleb128 0x3b
+ 1531 00a5 0B       		.uleb128 0xb
+ 1532 00a6 27       		.uleb128 0x27
+ 1533 00a7 19       		.uleb128 0x19
+ 1534 00a8 49       		.uleb128 0x49
+ 1535 00a9 13       		.uleb128 0x13
+ 1536 00aa 11       		.uleb128 0x11
+ 1537 00ab 01       		.uleb128 0x1
+ 1538 00ac 12       		.uleb128 0x12
+ 1539 00ad 06       		.uleb128 0x6
+ 1540 00ae 40       		.uleb128 0x40
+ 1541 00af 18       		.uleb128 0x18
+ 1542 00b0 9742     		.uleb128 0x2117
+ 1543 00b2 19       		.uleb128 0x19
+ 1544 00b3 01       		.uleb128 0x1
+ 1545 00b4 13       		.uleb128 0x13
+ 1546 00b5 00       		.byte	0
+ 1547 00b6 00       		.byte	0
+ 1548 00b7 0F       		.uleb128 0xf
+ 1549 00b8 05       		.uleb128 0x5
+ 1550 00b9 00       		.byte	0
+ 1551 00ba 03       		.uleb128 0x3
+ 1552 00bb 0E       		.uleb128 0xe
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 31
+
+
+ 1553 00bc 3A       		.uleb128 0x3a
+ 1554 00bd 0B       		.uleb128 0xb
+ 1555 00be 3B       		.uleb128 0x3b
+ 1556 00bf 0B       		.uleb128 0xb
+ 1557 00c0 49       		.uleb128 0x49
+ 1558 00c1 13       		.uleb128 0x13
+ 1559 00c2 02       		.uleb128 0x2
+ 1560 00c3 17       		.uleb128 0x17
+ 1561 00c4 00       		.byte	0
+ 1562 00c5 00       		.byte	0
+ 1563 00c6 10       		.uleb128 0x10
+ 1564 00c7 05       		.uleb128 0x5
+ 1565 00c8 00       		.byte	0
+ 1566 00c9 03       		.uleb128 0x3
+ 1567 00ca 08       		.uleb128 0x8
+ 1568 00cb 3A       		.uleb128 0x3a
+ 1569 00cc 0B       		.uleb128 0xb
+ 1570 00cd 3B       		.uleb128 0x3b
+ 1571 00ce 0B       		.uleb128 0xb
+ 1572 00cf 49       		.uleb128 0x49
+ 1573 00d0 13       		.uleb128 0x13
+ 1574 00d1 02       		.uleb128 0x2
+ 1575 00d2 17       		.uleb128 0x17
+ 1576 00d3 00       		.byte	0
+ 1577 00d4 00       		.byte	0
+ 1578 00d5 11       		.uleb128 0x11
+ 1579 00d6 05       		.uleb128 0x5
+ 1580 00d7 00       		.byte	0
+ 1581 00d8 03       		.uleb128 0x3
+ 1582 00d9 08       		.uleb128 0x8
+ 1583 00da 3A       		.uleb128 0x3a
+ 1584 00db 0B       		.uleb128 0xb
+ 1585 00dc 3B       		.uleb128 0x3b
+ 1586 00dd 0B       		.uleb128 0xb
+ 1587 00de 49       		.uleb128 0x49
+ 1588 00df 13       		.uleb128 0x13
+ 1589 00e0 02       		.uleb128 0x2
+ 1590 00e1 18       		.uleb128 0x18
+ 1591 00e2 00       		.byte	0
+ 1592 00e3 00       		.byte	0
+ 1593 00e4 12       		.uleb128 0x12
+ 1594 00e5 34       		.uleb128 0x34
+ 1595 00e6 00       		.byte	0
+ 1596 00e7 03       		.uleb128 0x3
+ 1597 00e8 08       		.uleb128 0x8
+ 1598 00e9 3A       		.uleb128 0x3a
+ 1599 00ea 0B       		.uleb128 0xb
+ 1600 00eb 3B       		.uleb128 0x3b
+ 1601 00ec 0B       		.uleb128 0xb
+ 1602 00ed 49       		.uleb128 0x49
+ 1603 00ee 13       		.uleb128 0x13
+ 1604 00ef 02       		.uleb128 0x2
+ 1605 00f0 17       		.uleb128 0x17
+ 1606 00f1 00       		.byte	0
+ 1607 00f2 00       		.byte	0
+ 1608 00f3 13       		.uleb128 0x13
+ 1609 00f4 34       		.uleb128 0x34
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 32
+
+
+ 1610 00f5 00       		.byte	0
+ 1611 00f6 03       		.uleb128 0x3
+ 1612 00f7 08       		.uleb128 0x8
+ 1613 00f8 3A       		.uleb128 0x3a
+ 1614 00f9 0B       		.uleb128 0xb
+ 1615 00fa 3B       		.uleb128 0x3b
+ 1616 00fb 0B       		.uleb128 0xb
+ 1617 00fc 49       		.uleb128 0x49
+ 1618 00fd 13       		.uleb128 0x13
+ 1619 00fe 02       		.uleb128 0x2
+ 1620 00ff 18       		.uleb128 0x18
+ 1621 0100 00       		.byte	0
+ 1622 0101 00       		.byte	0
+ 1623 0102 14       		.uleb128 0x14
+ 1624 0103 34       		.uleb128 0x34
+ 1625 0104 00       		.byte	0
+ 1626 0105 03       		.uleb128 0x3
+ 1627 0106 0E       		.uleb128 0xe
+ 1628 0107 3A       		.uleb128 0x3a
+ 1629 0108 0B       		.uleb128 0xb
+ 1630 0109 3B       		.uleb128 0x3b
+ 1631 010a 0B       		.uleb128 0xb
+ 1632 010b 49       		.uleb128 0x49
+ 1633 010c 13       		.uleb128 0x13
+ 1634 010d 02       		.uleb128 0x2
+ 1635 010e 17       		.uleb128 0x17
+ 1636 010f 00       		.byte	0
+ 1637 0110 00       		.byte	0
+ 1638 0111 15       		.uleb128 0x15
+ 1639 0112 898201   		.uleb128 0x4109
+ 1640 0115 01       		.byte	0x1
+ 1641 0116 11       		.uleb128 0x11
+ 1642 0117 01       		.uleb128 0x1
+ 1643 0118 31       		.uleb128 0x31
+ 1644 0119 13       		.uleb128 0x13
+ 1645 011a 01       		.uleb128 0x1
+ 1646 011b 13       		.uleb128 0x13
+ 1647 011c 00       		.byte	0
+ 1648 011d 00       		.byte	0
+ 1649 011e 16       		.uleb128 0x16
+ 1650 011f 8A8201   		.uleb128 0x410a
+ 1651 0122 00       		.byte	0
+ 1652 0123 02       		.uleb128 0x2
+ 1653 0124 18       		.uleb128 0x18
+ 1654 0125 9142     		.uleb128 0x2111
+ 1655 0127 18       		.uleb128 0x18
+ 1656 0128 00       		.byte	0
+ 1657 0129 00       		.byte	0
+ 1658 012a 17       		.uleb128 0x17
+ 1659 012b 898201   		.uleb128 0x4109
+ 1660 012e 01       		.byte	0x1
+ 1661 012f 11       		.uleb128 0x11
+ 1662 0130 01       		.uleb128 0x1
+ 1663 0131 31       		.uleb128 0x31
+ 1664 0132 13       		.uleb128 0x13
+ 1665 0133 00       		.byte	0
+ 1666 0134 00       		.byte	0
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 33
+
+
+ 1667 0135 18       		.uleb128 0x18
+ 1668 0136 05       		.uleb128 0x5
+ 1669 0137 00       		.byte	0
+ 1670 0138 03       		.uleb128 0x3
+ 1671 0139 0E       		.uleb128 0xe
+ 1672 013a 3A       		.uleb128 0x3a
+ 1673 013b 0B       		.uleb128 0xb
+ 1674 013c 3B       		.uleb128 0x3b
+ 1675 013d 0B       		.uleb128 0xb
+ 1676 013e 49       		.uleb128 0x49
+ 1677 013f 13       		.uleb128 0x13
+ 1678 0140 02       		.uleb128 0x2
+ 1679 0141 18       		.uleb128 0x18
+ 1680 0142 00       		.byte	0
+ 1681 0143 00       		.byte	0
+ 1682 0144 19       		.uleb128 0x19
+ 1683 0145 2E       		.uleb128 0x2e
+ 1684 0146 00       		.byte	0
+ 1685 0147 3F       		.uleb128 0x3f
+ 1686 0148 19       		.uleb128 0x19
+ 1687 0149 3C       		.uleb128 0x3c
+ 1688 014a 19       		.uleb128 0x19
+ 1689 014b 6E       		.uleb128 0x6e
+ 1690 014c 0E       		.uleb128 0xe
+ 1691 014d 03       		.uleb128 0x3
+ 1692 014e 0E       		.uleb128 0xe
+ 1693 014f 3A       		.uleb128 0x3a
+ 1694 0150 0B       		.uleb128 0xb
+ 1695 0151 3B       		.uleb128 0x3b
+ 1696 0152 05       		.uleb128 0x5
+ 1697 0153 00       		.byte	0
+ 1698 0154 00       		.byte	0
+ 1699 0155 00       		.byte	0
+ 1700              		.section	.debug_loc,"",%progbits
+ 1701              	.Ldebug_loc0:
+ 1702              	.LLST0:
+ 1703 0000 00000000 		.4byte	.LVL0
+ 1704 0004 14000000 		.4byte	.LVL1
+ 1705 0008 0100     		.2byte	0x1
+ 1706 000a 50       		.byte	0x50
+ 1707 000b 14000000 		.4byte	.LVL1
+ 1708 000f A0000000 		.4byte	.LVL28
+ 1709 0013 0100     		.2byte	0x1
+ 1710 0015 55       		.byte	0x55
+ 1711 0016 A0000000 		.4byte	.LVL28
+ 1712 001a AC000000 		.4byte	.LFE0
+ 1713 001e 0400     		.2byte	0x4
+ 1714 0020 F3       		.byte	0xf3
+ 1715 0021 01       		.uleb128 0x1
+ 1716 0022 50       		.byte	0x50
+ 1717 0023 9F       		.byte	0x9f
+ 1718 0024 00000000 		.4byte	0
+ 1719 0028 00000000 		.4byte	0
+ 1720              	.LLST1:
+ 1721 002c 00000000 		.4byte	.LVL0
+ 1722 0030 17000000 		.4byte	.LVL2-1
+ 1723 0034 0100     		.2byte	0x1
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 34
+
+
+ 1724 0036 51       		.byte	0x51
+ 1725 0037 17000000 		.4byte	.LVL2-1
+ 1726 003b AC000000 		.4byte	.LFE0
+ 1727 003f 0400     		.2byte	0x4
+ 1728 0041 F3       		.byte	0xf3
+ 1729 0042 01       		.uleb128 0x1
+ 1730 0043 51       		.byte	0x51
+ 1731 0044 9F       		.byte	0x9f
+ 1732 0045 00000000 		.4byte	0
+ 1733 0049 00000000 		.4byte	0
+ 1734              	.LLST2:
+ 1735 004d 00000000 		.4byte	.LVL0
+ 1736 0051 17000000 		.4byte	.LVL2-1
+ 1737 0055 0100     		.2byte	0x1
+ 1738 0057 52       		.byte	0x52
+ 1739 0058 17000000 		.4byte	.LVL2-1
+ 1740 005c AC000000 		.4byte	.LFE0
+ 1741 0060 0400     		.2byte	0x4
+ 1742 0062 F3       		.byte	0xf3
+ 1743 0063 01       		.uleb128 0x1
+ 1744 0064 52       		.byte	0x52
+ 1745 0065 9F       		.byte	0x9f
+ 1746 0066 00000000 		.4byte	0
+ 1747 006a 00000000 		.4byte	0
+ 1748              	.LLST3:
+ 1749 006e 00000000 		.4byte	.LVL0
+ 1750 0072 17000000 		.4byte	.LVL2-1
+ 1751 0076 0100     		.2byte	0x1
+ 1752 0078 53       		.byte	0x53
+ 1753 0079 17000000 		.4byte	.LVL2-1
+ 1754 007d AC000000 		.4byte	.LFE0
+ 1755 0081 0400     		.2byte	0x4
+ 1756 0083 F3       		.byte	0xf3
+ 1757 0084 01       		.uleb128 0x1
+ 1758 0085 53       		.byte	0x53
+ 1759 0086 9F       		.byte	0x9f
+ 1760 0087 00000000 		.4byte	0
+ 1761 008b 00000000 		.4byte	0
+ 1762              	.LLST4:
+ 1763 008f 1C000000 		.4byte	.LVL3
+ 1764 0093 22000000 		.4byte	.LVL4
+ 1765 0097 0200     		.2byte	0x2
+ 1766 0099 30       		.byte	0x30
+ 1767 009a 9F       		.byte	0x9f
+ 1768 009b 22000000 		.4byte	.LVL4
+ 1769 009f 50000000 		.4byte	.LVL11
+ 1770 00a3 0100     		.2byte	0x1
+ 1771 00a5 54       		.byte	0x54
+ 1772 00a6 56000000 		.4byte	.LVL14
+ 1773 00aa 58000000 		.4byte	.LVL15
+ 1774 00ae 0100     		.2byte	0x1
+ 1775 00b0 54       		.byte	0x54
+ 1776 00b1 5C000000 		.4byte	.LVL17
+ 1777 00b5 60000000 		.4byte	.LVL19
+ 1778 00b9 0200     		.2byte	0x2
+ 1779 00bb 30       		.byte	0x30
+ 1780 00bc 9F       		.byte	0x9f
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 35
+
+
+ 1781 00bd 60000000 		.4byte	.LVL19
+ 1782 00c1 A0000000 		.4byte	.LVL29
+ 1783 00c5 0100     		.2byte	0x1
+ 1784 00c7 57       		.byte	0x57
+ 1785 00c8 00000000 		.4byte	0
+ 1786 00cc 00000000 		.4byte	0
+ 1787              	.LLST5:
+ 1788 00d0 1C000000 		.4byte	.LVL3
+ 1789 00d4 22000000 		.4byte	.LVL4
+ 1790 00d8 0200     		.2byte	0x2
+ 1791 00da 30       		.byte	0x30
+ 1792 00db 9F       		.byte	0x9f
+ 1793 00dc 22000000 		.4byte	.LVL4
+ 1794 00e0 48000000 		.4byte	.LVL9
+ 1795 00e4 0100     		.2byte	0x1
+ 1796 00e6 57       		.byte	0x57
+ 1797 00e7 48000000 		.4byte	.LVL9
+ 1798 00eb 5A000000 		.4byte	.LVL16
+ 1799 00ef 0100     		.2byte	0x1
+ 1800 00f1 53       		.byte	0x53
+ 1801 00f2 5A000000 		.4byte	.LVL16
+ 1802 00f6 5E000000 		.4byte	.LVL18
+ 1803 00fa 0C00     		.2byte	0xc
+ 1804 00fc 77       		.byte	0x77
+ 1805 00fd 00       		.sleb128 0
+ 1806 00fe 91       		.byte	0x91
+ 1807 00ff 5C       		.sleb128 -36
+ 1808 0100 06       		.byte	0x6
+ 1809 0101 22       		.byte	0x22
+ 1810 0102 08       		.byte	0x8
+ 1811 0103 FF       		.byte	0xff
+ 1812 0104 1A       		.byte	0x1a
+ 1813 0105 31       		.byte	0x31
+ 1814 0106 1C       		.byte	0x1c
+ 1815 0107 9F       		.byte	0x9f
+ 1816 0108 00000000 		.4byte	0
+ 1817 010c 00000000 		.4byte	0
+ 1818              	.LLST6:
+ 1819 0110 48000000 		.4byte	.LVL9
+ 1820 0114 4C000000 		.4byte	.LVL10
+ 1821 0118 0200     		.2byte	0x2
+ 1822 011a 30       		.byte	0x30
+ 1823 011b 9F       		.byte	0x9f
+ 1824 011c 4C000000 		.4byte	.LVL10
+ 1825 0120 52000000 		.4byte	.LVL12
+ 1826 0124 0100     		.2byte	0x1
+ 1827 0126 58       		.byte	0x58
+ 1828 0127 52000000 		.4byte	.LVL12
+ 1829 012b 56000000 		.4byte	.LVL14
+ 1830 012f 0100     		.2byte	0x1
+ 1831 0131 54       		.byte	0x54
+ 1832 0132 56000000 		.4byte	.LVL14
+ 1833 0136 58000000 		.4byte	.LVL15
+ 1834 013a 0200     		.2byte	0x2
+ 1835 013c 30       		.byte	0x30
+ 1836 013d 9F       		.byte	0x9f
+ 1837 013e 58000000 		.4byte	.LVL15
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 36
+
+
+ 1838 0142 60000000 		.4byte	.LVL19
+ 1839 0146 0100     		.2byte	0x1
+ 1840 0148 54       		.byte	0x54
+ 1841 0149 00000000 		.4byte	0
+ 1842 014d 00000000 		.4byte	0
+ 1843              	.LLST7:
+ 1844 0151 58000000 		.4byte	.LVL15
+ 1845 0155 7E000000 		.4byte	.LVL22
+ 1846 0159 0100     		.2byte	0x1
+ 1847 015b 54       		.byte	0x54
+ 1848 015c 80000000 		.4byte	.LVL23
+ 1849 0160 A0000000 		.4byte	.LVL27
+ 1850 0164 0100     		.2byte	0x1
+ 1851 0166 54       		.byte	0x54
+ 1852 0167 00000000 		.4byte	0
+ 1853 016b 00000000 		.4byte	0
+ 1854              	.LLST8:
+ 1855 016f 00000000 		.4byte	.LVL30
+ 1856 0173 14000000 		.4byte	.LVL34
+ 1857 0177 0100     		.2byte	0x1
+ 1858 0179 50       		.byte	0x50
+ 1859 017a 14000000 		.4byte	.LVL34
+ 1860 017e 00010000 		.4byte	.LVL76
+ 1861 0182 0100     		.2byte	0x1
+ 1862 0184 56       		.byte	0x56
+ 1863 0185 00010000 		.4byte	.LVL76
+ 1864 0189 02010000 		.4byte	.LFE1
+ 1865 018d 0400     		.2byte	0x4
+ 1866 018f F3       		.byte	0xf3
+ 1867 0190 01       		.uleb128 0x1
+ 1868 0191 50       		.byte	0x50
+ 1869 0192 9F       		.byte	0x9f
+ 1870 0193 00000000 		.4byte	0
+ 1871 0197 00000000 		.4byte	0
+ 1872              	.LLST9:
+ 1873 019b 00000000 		.4byte	.LVL30
+ 1874 019f 17000000 		.4byte	.LVL35-1
+ 1875 01a3 0100     		.2byte	0x1
+ 1876 01a5 51       		.byte	0x51
+ 1877 01a6 17000000 		.4byte	.LVL35-1
+ 1878 01aa 02010000 		.4byte	.LFE1
+ 1879 01ae 0200     		.2byte	0x2
+ 1880 01b0 91       		.byte	0x91
+ 1881 01b1 64       		.sleb128 -28
+ 1882 01b2 00000000 		.4byte	0
+ 1883 01b6 00000000 		.4byte	0
+ 1884              	.LLST10:
+ 1885 01ba 00000000 		.4byte	.LVL30
+ 1886 01be 17000000 		.4byte	.LVL35-1
+ 1887 01c2 0100     		.2byte	0x1
+ 1888 01c4 52       		.byte	0x52
+ 1889 01c5 17000000 		.4byte	.LVL35-1
+ 1890 01c9 A0000000 		.4byte	.LVL57
+ 1891 01cd 0100     		.2byte	0x1
+ 1892 01cf 54       		.byte	0x54
+ 1893 01d0 A0000000 		.4byte	.LVL57
+ 1894 01d4 02010000 		.4byte	.LFE1
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 37
+
+
+ 1895 01d8 0400     		.2byte	0x4
+ 1896 01da F3       		.byte	0xf3
+ 1897 01db 01       		.uleb128 0x1
+ 1898 01dc 52       		.byte	0x52
+ 1899 01dd 9F       		.byte	0x9f
+ 1900 01de 00000000 		.4byte	0
+ 1901 01e2 00000000 		.4byte	0
+ 1902              	.LLST11:
+ 1903 01e6 00000000 		.4byte	.LVL30
+ 1904 01ea 10000000 		.4byte	.LVL32
+ 1905 01ee 0100     		.2byte	0x1
+ 1906 01f0 53       		.byte	0x53
+ 1907 01f1 10000000 		.4byte	.LVL32
+ 1908 01f5 8E000000 		.4byte	.LVL54
+ 1909 01f9 0200     		.2byte	0x2
+ 1910 01fb 91       		.byte	0x91
+ 1911 01fc 60       		.sleb128 -32
+ 1912 01fd 8E000000 		.4byte	.LVL54
+ 1913 0201 02010000 		.4byte	.LFE1
+ 1914 0205 0400     		.2byte	0x4
+ 1915 0207 F3       		.byte	0xf3
+ 1916 0208 01       		.uleb128 0x1
+ 1917 0209 53       		.byte	0x53
+ 1918 020a 9F       		.byte	0x9f
+ 1919 020b 00000000 		.4byte	0
+ 1920 020f 00000000 		.4byte	0
+ 1921              	.LLST12:
+ 1922 0213 12000000 		.4byte	.LVL33
+ 1923 0217 1C000000 		.4byte	.LVL36
+ 1924 021b 0200     		.2byte	0x2
+ 1925 021d 31       		.byte	0x31
+ 1926 021e 9F       		.byte	0x9f
+ 1927 021f 1C000000 		.4byte	.LVL36
+ 1928 0223 2E000000 		.4byte	.LVL39
+ 1929 0227 0100     		.2byte	0x1
+ 1930 0229 55       		.byte	0x55
+ 1931 022a 2E000000 		.4byte	.LVL39
+ 1932 022e 38000000 		.4byte	.LVL41
+ 1933 0232 0100     		.2byte	0x1
+ 1934 0234 50       		.byte	0x50
+ 1935 0235 3E000000 		.4byte	.LVL44
+ 1936 0239 40000000 		.4byte	.LVL45
+ 1937 023d 0100     		.2byte	0x1
+ 1938 023f 50       		.byte	0x50
+ 1939 0240 00000000 		.4byte	0
+ 1940 0244 00000000 		.4byte	0
+ 1941              	.LLST13:
+ 1942 0248 2E000000 		.4byte	.LVL39
+ 1943 024c 36000000 		.4byte	.LVL40
+ 1944 0250 0200     		.2byte	0x2
+ 1945 0252 30       		.byte	0x30
+ 1946 0253 9F       		.byte	0x9f
+ 1947 0254 36000000 		.4byte	.LVL40
+ 1948 0258 3A000000 		.4byte	.LVL42
+ 1949 025c 0100     		.2byte	0x1
+ 1950 025e 53       		.byte	0x53
+ 1951 025f 3A000000 		.4byte	.LVL42
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 38
+
+
+ 1952 0263 3C000000 		.4byte	.LVL43
+ 1953 0267 0100     		.2byte	0x1
+ 1954 0269 50       		.byte	0x50
+ 1955 026a 3C000000 		.4byte	.LVL43
+ 1956 026e 3E000000 		.4byte	.LVL44
+ 1957 0272 0100     		.2byte	0x1
+ 1958 0274 55       		.byte	0x55
+ 1959 0275 3E000000 		.4byte	.LVL44
+ 1960 0279 40000000 		.4byte	.LVL45
+ 1961 027d 0200     		.2byte	0x2
+ 1962 027f 30       		.byte	0x30
+ 1963 0280 9F       		.byte	0x9f
+ 1964 0281 40000000 		.4byte	.LVL45
+ 1965 0285 72000000 		.4byte	.LVL50
+ 1966 0289 0100     		.2byte	0x1
+ 1967 028b 55       		.byte	0x55
+ 1968 028c 72000000 		.4byte	.LVL50
+ 1969 0290 74000000 		.4byte	.LVL51
+ 1970 0294 0300     		.2byte	0x3
+ 1971 0296 75       		.byte	0x75
+ 1972 0297 7F       		.sleb128 -1
+ 1973 0298 9F       		.byte	0x9f
+ 1974 0299 74000000 		.4byte	.LVL51
+ 1975 029d 88000000 		.4byte	.LVL53
+ 1976 02a1 0100     		.2byte	0x1
+ 1977 02a3 55       		.byte	0x55
+ 1978 02a4 8E000000 		.4byte	.LVL54
+ 1979 02a8 9B000000 		.4byte	.LVL55-1
+ 1980 02ac 0100     		.2byte	0x1
+ 1981 02ae 51       		.byte	0x51
+ 1982 02af 9B000000 		.4byte	.LVL55-1
+ 1983 02b3 02010000 		.4byte	.LFE1
+ 1984 02b7 0200     		.2byte	0x2
+ 1985 02b9 91       		.byte	0x91
+ 1986 02ba 60       		.sleb128 -32
+ 1987 02bb 00000000 		.4byte	0
+ 1988 02bf 00000000 		.4byte	0
+ 1989              	.LLST14:
+ 1990 02c3 0E000000 		.4byte	.LVL31
+ 1991 02c7 A0000000 		.4byte	.LVL57
+ 1992 02cb 0200     		.2byte	0x2
+ 1993 02cd 30       		.byte	0x30
+ 1994 02ce 9F       		.byte	0x9f
+ 1995 02cf A0000000 		.4byte	.LVL57
+ 1996 02d3 AC000000 		.4byte	.LVL59
+ 1997 02d7 0100     		.2byte	0x1
+ 1998 02d9 54       		.byte	0x54
+ 1999 02da B0000000 		.4byte	.LVL61
+ 2000 02de BE000000 		.4byte	.LVL62
+ 2001 02e2 0100     		.2byte	0x1
+ 2002 02e4 54       		.byte	0x54
+ 2003 02e5 C0000000 		.4byte	.LVL63
+ 2004 02e9 E8000000 		.4byte	.LVL69
+ 2005 02ed 0100     		.2byte	0x1
+ 2006 02ef 54       		.byte	0x54
+ 2007 02f0 EA000000 		.4byte	.LVL70
+ 2008 02f4 FE000000 		.4byte	.LVL74
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 39
+
+
+ 2009 02f8 0100     		.2byte	0x1
+ 2010 02fa 54       		.byte	0x54
+ 2011 02fb 00000000 		.4byte	0
+ 2012 02ff 00000000 		.4byte	0
+ 2013              	.LLST15:
+ 2014 0303 9E000000 		.4byte	.LVL56
+ 2015 0307 A0000000 		.4byte	.LVL57
+ 2016 030b 0100     		.2byte	0x1
+ 2017 030d 50       		.byte	0x50
+ 2018 030e A0000000 		.4byte	.LVL57
+ 2019 0312 00010000 		.4byte	.LVL75
+ 2020 0316 0100     		.2byte	0x1
+ 2021 0318 55       		.byte	0x55
+ 2022 0319 00000000 		.4byte	0
+ 2023 031d 00000000 		.4byte	0
+ 2024              	.LLST16:
+ 2025 0321 A6000000 		.4byte	.LVL58
+ 2026 0325 AE000000 		.4byte	.LVL60
+ 2027 0329 0100     		.2byte	0x1
+ 2028 032b 50       		.byte	0x50
+ 2029 032c B0000000 		.4byte	.LVL61
+ 2030 0330 D2000000 		.4byte	.LVL65
+ 2031 0334 0100     		.2byte	0x1
+ 2032 0336 50       		.byte	0x50
+ 2033 0337 D8000000 		.4byte	.LVL67
+ 2034 033b F6000000 		.4byte	.LVL71
+ 2035 033f 0100     		.2byte	0x1
+ 2036 0341 50       		.byte	0x50
+ 2037 0342 FC000000 		.4byte	.LVL73
+ 2038 0346 FE000000 		.4byte	.LVL74
+ 2039 034a 0100     		.2byte	0x1
+ 2040 034c 50       		.byte	0x50
+ 2041 034d 00000000 		.4byte	0
+ 2042 0351 00000000 		.4byte	0
+ 2043              		.section	.debug_aranges,"",%progbits
+ 2044 0000 24000000 		.4byte	0x24
+ 2045 0004 0200     		.2byte	0x2
+ 2046 0006 00000000 		.4byte	.Ldebug_info0
+ 2047 000a 04       		.byte	0x4
+ 2048 000b 00       		.byte	0
+ 2049 000c 0000     		.2byte	0
+ 2050 000e 0000     		.2byte	0
+ 2051 0010 00000000 		.4byte	.LFB0
+ 2052 0014 AC000000 		.4byte	.LFE0-.LFB0
+ 2053 0018 00000000 		.4byte	.LFB1
+ 2054 001c 02010000 		.4byte	.LFE1-.LFB1
+ 2055 0020 00000000 		.4byte	0
+ 2056 0024 00000000 		.4byte	0
+ 2057              		.section	.debug_ranges,"",%progbits
+ 2058              	.Ldebug_ranges0:
+ 2059 0000 00000000 		.4byte	.LFB0
+ 2060 0004 AC000000 		.4byte	.LFE0
+ 2061 0008 00000000 		.4byte	.LFB1
+ 2062 000c 02010000 		.4byte	.LFE1
+ 2063 0010 00000000 		.4byte	0
+ 2064 0014 00000000 		.4byte	0
+ 2065              		.section	.debug_line,"",%progbits
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 40
+
+
+ 2066              	.Ldebug_line0:
+ 2067 0000 D5010000 		.section	.debug_str,"MS",%progbits,1
+ 2067      02003C01 
+ 2067      00000201 
+ 2067      FB0E0D00 
+ 2067      01010101 
+ 2068              	.LASF79:
+ 2069 0000 75387838 		.ascii	"u8x8_DrawUTF8Line\000"
+ 2069      5F447261 
+ 2069      77555446 
+ 2069      384C696E 
+ 2069      6500
+ 2070              	.LASF25:
+ 2071 0012 785F6F66 		.ascii	"x_offset\000"
+ 2071      66736574 
+ 2071      00
+ 2072              	.LASF26:
+ 2073 001b 69735F66 		.ascii	"is_font_inverse_mode\000"
+ 2073      6F6E745F 
+ 2073      696E7665 
+ 2073      7273655F 
+ 2073      6D6F6465 
+ 2074              	.LASF48:
+ 2075 0030 7370695F 		.ascii	"spi_mode\000"
+ 2075      6D6F6465 
+ 2075      00
+ 2076              	.LASF39:
+ 2077 0039 63686970 		.ascii	"chip_enable_level\000"
+ 2077      5F656E61 
+ 2077      626C655F 
+ 2077      6C657665 
+ 2077      6C00
+ 2078              	.LASF23:
+ 2079 004b 666F6E74 		.ascii	"font\000"
+ 2079      00
+ 2080              	.LASF35:
+ 2081 0050 6465626F 		.ascii	"debounce_result_msg\000"
+ 2081      756E6365 
+ 2081      5F726573 
+ 2081      756C745F 
+ 2081      6D736700 
+ 2082              	.LASF2:
+ 2083 0064 73686F72 		.ascii	"short int\000"
+ 2083      7420696E 
+ 2083      7400
+ 2084              	.LASF22:
+ 2085 006e 6770696F 		.ascii	"gpio_and_delay_cb\000"
+ 2085      5F616E64 
+ 2085      5F64656C 
+ 2085      61795F63 
+ 2085      6200
+ 2086              	.LASF52:
+ 2087 0080 74696C65 		.ascii	"tile_width\000"
+ 2087      5F776964 
+ 2087      746800
+ 2088              	.LASF77:
+ 2089 008b 75387838 		.ascii	"u8x8_ClearDisplay\000"
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 41
+
+
+ 2089      5F436C65 
+ 2089      61724469 
+ 2089      73706C61 
+ 2089      7900
+ 2090              	.LASF45:
+ 2091 009d 7364615F 		.ascii	"sda_setup_time_ns\000"
+ 2091      73657475 
+ 2091      705F7469 
+ 2091      6D655F6E 
+ 2091      7300
+ 2092              	.LASF44:
+ 2093 00af 706F7374 		.ascii	"post_reset_wait_ms\000"
+ 2093      5F726573 
+ 2093      65745F77 
+ 2093      6169745F 
+ 2093      6D7300
+ 2094              	.LASF7:
+ 2095 00c2 5F5F7569 		.ascii	"__uint32_t\000"
+ 2095      6E743332 
+ 2095      5F7400
+ 2096              	.LASF72:
+ 2097 00cd 6576656E 		.ascii	"event\000"
+ 2097      7400
+ 2098              	.LASF4:
+ 2099 00d3 5F5F7569 		.ascii	"__uint16_t\000"
+ 2099      6E743136 
+ 2099      5F7400
+ 2100              	.LASF74:
+ 2101 00de 75387838 		.ascii	"u8x8_GetStringLineStart\000"
+ 2101      5F476574 
+ 2101      53747269 
+ 2101      6E674C69 
+ 2101      6E655374 
+ 2102              	.LASF81:
+ 2103 00f6 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2103      43313120 
+ 2103      352E342E 
+ 2103      31203230 
+ 2103      31363036 
+ 2104 0129 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 2104      20726576 
+ 2104      6973696F 
+ 2104      6E203233 
+ 2104      37373135 
+ 2105 015c 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2105      66756E63 
+ 2105      74696F6E 
+ 2105      2D736563 
+ 2105      74696F6E 
+ 2106              	.LASF12:
+ 2107 0184 75696E74 		.ascii	"uint8_t\000"
+ 2107      385F7400 
+ 2108              	.LASF41:
+ 2109 018c 706F7374 		.ascii	"post_chip_enable_wait_ns\000"
+ 2109      5F636869 
+ 2109      705F656E 
+ 2109      61626C65 
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 42
+
+
+ 2109      5F776169 
+ 2110              	.LASF60:
+ 2111 01a5 75387838 		.ascii	"u8x8\000"
+ 2111      00
+ 2112              	.LASF80:
+ 2113 01aa 75387838 		.ascii	"u8x8_GetMenuEvent\000"
+ 2113      5F476574 
+ 2113      4D656E75 
+ 2113      4576656E 
+ 2113      7400
+ 2114              	.LASF73:
+ 2115 01bc 75387838 		.ascii	"u8x8_GetStringLineCnt\000"
+ 2115      5F476574 
+ 2115      53747269 
+ 2115      6E674C69 
+ 2115      6E65436E 
+ 2116              	.LASF54:
+ 2117 01d2 64656661 		.ascii	"default_x_offset\000"
+ 2117      756C745F 
+ 2117      785F6F66 
+ 2117      66736574 
+ 2117      00
+ 2118              	.LASF36:
+ 2119 01e3 75387838 		.ascii	"u8x8_display_info_t\000"
+ 2119      5F646973 
+ 2119      706C6179 
+ 2119      5F696E66 
+ 2119      6F5F7400 
+ 2120              	.LASF33:
+ 2121 01f7 6465626F 		.ascii	"debounce_last_pin_state\000"
+ 2121      756E6365 
+ 2121      5F6C6173 
+ 2121      745F7069 
+ 2121      6E5F7374 
+ 2122              	.LASF9:
+ 2123 020f 6C6F6E67 		.ascii	"long long int\000"
+ 2123      206C6F6E 
+ 2123      6720696E 
+ 2123      7400
+ 2124              	.LASF31:
+ 2125 021d 6770696F 		.ascii	"gpio_result\000"
+ 2125      5F726573 
+ 2125      756C7400 
+ 2126              	.LASF46:
+ 2127 0229 73636B5F 		.ascii	"sck_pulse_width_ns\000"
+ 2127      70756C73 
+ 2127      655F7769 
+ 2127      6474685F 
+ 2127      6E7300
+ 2128              	.LASF82:
+ 2129 023c 2E2E5C2E 		.ascii	"..\\..\\u8g2\\csrc\\u8x8_message.c\000"
+ 2129      2E5C7538 
+ 2129      67325C63 
+ 2129      7372635C 
+ 2129      75387838 
+ 2130              	.LASF6:
+ 2131 025b 6C6F6E67 		.ascii	"long int\000"
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 43
+
+
+ 2131      20696E74 
+ 2131      00
+ 2132              	.LASF3:
+ 2133 0264 5F5F7569 		.ascii	"__uint8_t\000"
+ 2133      6E74385F 
+ 2133      7400
+ 2134              	.LASF71:
+ 2135 026e 62757474 		.ascii	"button_cnt\000"
+ 2135      6F6E5F63 
+ 2135      6E7400
+ 2136              	.LASF19:
+ 2137 0279 64697370 		.ascii	"display_cb\000"
+ 2137      6C61795F 
+ 2137      636200
+ 2138              	.LASF51:
+ 2139 0284 77726974 		.ascii	"write_pulse_width_ns\000"
+ 2139      655F7075 
+ 2139      6C73655F 
+ 2139      77696474 
+ 2139      685F6E73 
+ 2140              	.LASF50:
+ 2141 0299 64617461 		.ascii	"data_setup_time_ns\000"
+ 2141      5F736574 
+ 2141      75705F74 
+ 2141      696D655F 
+ 2141      6E7300
+ 2142              	.LASF75:
+ 2143 02ac 75387838 		.ascii	"u8x8_GetUTF8Len\000"
+ 2143      5F476574 
+ 2143      55544638 
+ 2143      4C656E00 
+ 2144              	.LASF15:
+ 2145 02bc 6C6F6E67 		.ascii	"long double\000"
+ 2145      20646F75 
+ 2145      626C6500 
+ 2146              	.LASF53:
+ 2147 02c8 74696C65 		.ascii	"tile_height\000"
+ 2147      5F686569 
+ 2147      67687400 
+ 2148              	.LASF64:
+ 2149 02d4 75387838 		.ascii	"u8x8_draw_button_line\000"
+ 2149      5F647261 
+ 2149      775F6275 
+ 2149      74746F6E 
+ 2149      5F6C696E 
+ 2150              	.LASF1:
+ 2151 02ea 756E7369 		.ascii	"unsigned char\000"
+ 2151      676E6564 
+ 2151      20636861 
+ 2151      7200
+ 2152              	.LASF61:
+ 2153 02f8 63757273 		.ascii	"cursor\000"
+ 2153      6F7200
+ 2154              	.LASF0:
+ 2155 02ff 7369676E 		.ascii	"signed char\000"
+ 2155      65642063 
+ 2155      68617200 
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 44
+
+
+ 2156              	.LASF10:
+ 2157 030b 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2157      206C6F6E 
+ 2157      6720756E 
+ 2157      7369676E 
+ 2157      65642069 
+ 2158              	.LASF14:
+ 2159 0322 75696E74 		.ascii	"uint32_t\000"
+ 2159      33325F74 
+ 2159      00
+ 2160              	.LASF70:
+ 2161 032b 68656967 		.ascii	"height\000"
+ 2161      687400
+ 2162              	.LASF11:
+ 2163 0332 756E7369 		.ascii	"unsigned int\000"
+ 2163      676E6564 
+ 2163      20696E74 
+ 2163      00
+ 2164              	.LASF13:
+ 2165 033f 75696E74 		.ascii	"uint16_t\000"
+ 2165      31365F74 
+ 2165      00
+ 2166              	.LASF38:
+ 2167 0348 75387838 		.ascii	"u8x8_display_info_struct\000"
+ 2167      5F646973 
+ 2167      706C6179 
+ 2167      5F696E66 
+ 2167      6F5F7374 
+ 2168              	.LASF67:
+ 2169 0361 7469746C 		.ascii	"title2\000"
+ 2169      653200
+ 2170              	.LASF66:
+ 2171 0368 7469746C 		.ascii	"title1\000"
+ 2171      653100
+ 2172              	.LASF43:
+ 2173 036f 72657365 		.ascii	"reset_pulse_width_ms\000"
+ 2173      745F7075 
+ 2173      6C73655F 
+ 2173      77696474 
+ 2173      685F6D73 
+ 2174              	.LASF16:
+ 2175 0384 75387838 		.ascii	"u8x8_t\000"
+ 2175      5F7400
+ 2176              	.LASF68:
+ 2177 038b 7469746C 		.ascii	"title3\000"
+ 2177      653300
+ 2178              	.LASF49:
+ 2179 0392 6932635F 		.ascii	"i2c_bus_clock_100kHz\000"
+ 2179      6275735F 
+ 2179      636C6F63 
+ 2179      6B5F3130 
+ 2179      306B487A 
+ 2180              	.LASF47:
+ 2181 03a7 73636B5F 		.ascii	"sck_clock_hz\000"
+ 2181      636C6F63 
+ 2181      6B5F687A 
+ 2181      00
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 45
+
+
+ 2182              	.LASF5:
+ 2183 03b4 73686F72 		.ascii	"short unsigned int\000"
+ 2183      7420756E 
+ 2183      7369676E 
+ 2183      65642069 
+ 2183      6E7400
+ 2184              	.LASF59:
+ 2185 03c7 75387838 		.ascii	"u8x8_char_cb\000"
+ 2185      5F636861 
+ 2185      725F6362 
+ 2185      00
+ 2186              	.LASF63:
+ 2187 03d4 63686172 		.ascii	"char\000"
+ 2187      00
+ 2188              	.LASF62:
+ 2189 03d9 746F7461 		.ascii	"total\000"
+ 2189      6C00
+ 2190              	.LASF34:
+ 2191 03df 6465626F 		.ascii	"debounce_state\000"
+ 2191      756E6365 
+ 2191      5F737461 
+ 2191      746500
+ 2192              	.LASF17:
+ 2193 03ee 64697370 		.ascii	"display_info\000"
+ 2193      6C61795F 
+ 2193      696E666F 
+ 2193      00
+ 2194              	.LASF57:
+ 2195 03fb 70697865 		.ascii	"pixel_height\000"
+ 2195      6C5F6865 
+ 2195      69676874 
+ 2195      00
+ 2196              	.LASF78:
+ 2197 0408 75387838 		.ascii	"u8x8_DrawUTF8Lines\000"
+ 2197      5F447261 
+ 2197      77555446 
+ 2197      384C696E 
+ 2197      657300
+ 2198              	.LASF69:
+ 2199 041b 62757474 		.ascii	"buttons\000"
+ 2199      6F6E7300 
+ 2200              	.LASF56:
+ 2201 0423 70697865 		.ascii	"pixel_width\000"
+ 2201      6C5F7769 
+ 2201      64746800 
+ 2202              	.LASF30:
+ 2203 042f 75746638 		.ascii	"utf8_state\000"
+ 2203      5F737461 
+ 2203      746500
+ 2204              	.LASF37:
+ 2205 043a 75387838 		.ascii	"u8x8_struct\000"
+ 2205      5F737472 
+ 2205      75637400 
+ 2206              	.LASF8:
+ 2207 0446 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2207      20756E73 
+ 2207      69676E65 
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 46
+
+
+ 2207      6420696E 
+ 2207      7400
+ 2208              	.LASF21:
+ 2209 0458 62797465 		.ascii	"byte_cb\000"
+ 2209      5F636200 
+ 2210              	.LASF40:
+ 2211 0460 63686970 		.ascii	"chip_disable_level\000"
+ 2211      5F646973 
+ 2211      61626C65 
+ 2211      5F6C6576 
+ 2211      656C00
+ 2212              	.LASF27:
+ 2213 0473 6932635F 		.ascii	"i2c_address\000"
+ 2213      61646472 
+ 2213      65737300 
+ 2214              	.LASF55:
+ 2215 047f 666C6970 		.ascii	"flipmode_x_offset\000"
+ 2215      6D6F6465 
+ 2215      5F785F6F 
+ 2215      66667365 
+ 2215      7400
+ 2216              	.LASF24:
+ 2217 0491 656E636F 		.ascii	"encoding\000"
+ 2217      64696E67 
+ 2217      00
+ 2218              	.LASF28:
+ 2219 049a 6932635F 		.ascii	"i2c_started\000"
+ 2219      73746172 
+ 2219      74656400 
+ 2220              	.LASF20:
+ 2221 04a6 6361645F 		.ascii	"cad_cb\000"
+ 2221      636200
+ 2222              	.LASF83:
+ 2223 04ad 5C5C766D 		.ascii	"\\\\vmware-host\\Shared Folders\\Documents\\OneDriv"
+ 2223      77617265 
+ 2223      2D686F73 
+ 2223      745C5368 
+ 2223      61726564 
+ 2224 04db 655C6379 		.ascii	"e\\cypress\\WA101\\ww101-shield\\firmware\\TestProg"
+ 2224      70726573 
+ 2224      735C5741 
+ 2224      3130315C 
+ 2224      77773130 
+ 2225 0509 72616D34 		.ascii	"ram4M.cydsn\000"
+ 2225      4D2E6379 
+ 2225      64736E00 
+ 2226              	.LASF29:
+ 2227 0515 64657669 		.ascii	"device_address\000"
+ 2227      63655F61 
+ 2227      64647265 
+ 2227      737300
+ 2228              	.LASF65:
+ 2229 0524 75387838 		.ascii	"u8x8_UserInterfaceMessage\000"
+ 2229      5F557365 
+ 2229      72496E74 
+ 2229      65726661 
+ 2229      63654D65 
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccFrf2Op.s 			page 47
+
+
+ 2230              	.LASF32:
+ 2231 053e 6465626F 		.ascii	"debounce_default_pin_state\000"
+ 2231      756E6365 
+ 2231      5F646566 
+ 2231      61756C74 
+ 2231      5F70696E 
+ 2232              	.LASF58:
+ 2233 0559 75387838 		.ascii	"u8x8_msg_cb\000"
+ 2233      5F6D7367 
+ 2233      5F636200 
+ 2234              	.LASF18:
+ 2235 0565 6E657874 		.ascii	"next_cb\000"
+ 2235      5F636200 
+ 2236              	.LASF76:
+ 2237 056d 75387838 		.ascii	"u8x8_DrawUTF8\000"
+ 2237      5F447261 
+ 2237      77555446 
+ 2237      3800
+ 2238              	.LASF42:
+ 2239 057b 7072655F 		.ascii	"pre_chip_disable_wait_ns\000"
+ 2239      63686970 
+ 2239      5F646973 
+ 2239      61626C65 
+ 2239      5F776169 
+ 2240              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.7.0">
+<eagle version="7.6.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -15424,8 +15424,8 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </classes>
 <parts>
 <part name="U$2" library="IOTExpert" deviceset="U8G-096-OLED" device=""/>
-<part name="MB0" library="IOTExpert" deviceset="EVQPE1" device=""/>
 <part name="MB1" library="IOTExpert" deviceset="EVQPE1" device=""/>
+<part name="MB0" library="IOTExpert" deviceset="EVQPE1" device=""/>
 <part name="U$7" library="PatternAgents-Cypress" deviceset="CY8C4A45-48" device=""/>
 <part name="C1" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="1uF"/>
 <part name="C2" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="0.1uF"/>
@@ -15489,8 +15489,8 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </plain>
 <instances>
 <instance part="U$2" gate="G$1" x="114.3" y="53.34"/>
-<instance part="MB0" gate="G$1" x="121.92" y="88.9"/>
-<instance part="MB1" gate="G$1" x="121.92" y="76.2"/>
+<instance part="MB1" gate="G$1" x="124.46" y="78.74"/>
+<instance part="MB0" gate="G$1" x="124.46" y="88.9"/>
 <instance part="R2" gate="1" x="149.86" y="53.34"/>
 <instance part="MBLED0" gate="G$1" x="187.96" y="88.9" rot="R90"/>
 <instance part="MBLED1" gate="G$1" x="187.96" y="76.2" rot="R90"/>
@@ -15504,8 +15504,8 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="R6" gate="R" x="198.12" y="121.92" rot="R180"/>
 <instance part="R7" gate="R" x="198.12" y="88.9" rot="R180"/>
 <instance part="R8" gate="R" x="198.12" y="76.2" rot="R180"/>
-<instance part="R9" gate="R" x="152.4" y="88.9" rot="R180"/>
-<instance part="R10" gate="R" x="152.4" y="76.2" rot="R180"/>
+<instance part="R9" gate="R" x="154.94" y="78.74" rot="R180"/>
+<instance part="R10" gate="R" x="154.94" y="88.9" rot="R180"/>
 <instance part="R30" gate="G$1" x="55.88" y="76.2" rot="MR270"/>
 <instance part="R31" gate="JMP" x="66.04" y="76.2" rot="MR270"/>
 <instance part="R13" gate="R" x="137.16" y="198.12" rot="R180"/>
@@ -15593,11 +15593,11 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <pinref part="R10" gate="R" pin="1"/>
-<wire x1="157.48" y1="76.2" x2="165.1" y2="76.2" width="0.1524" layer="91"/>
-<wire x1="165.1" y1="76.2" x2="165.1" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="88.9" x2="167.64" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="167.64" y1="88.9" x2="167.64" y2="78.74" width="0.1524" layer="91"/>
 <pinref part="R9" gate="R" pin="1"/>
-<wire x1="165.1" y1="88.9" x2="157.48" y2="88.9" width="0.1524" layer="91"/>
-<label x="160.02" y="88.9" size="1.778" layer="95"/>
+<wire x1="167.64" y1="78.74" x2="160.02" y2="78.74" width="0.1524" layer="91"/>
+<label x="162.56" y="78.74" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="R21" gate="R" pin="2"/>
@@ -15642,22 +15642,22 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <label x="205.74" y="198.12" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="MB0" class="0">
+<net name="MB1" class="0">
 <segment>
-<pinref part="MB0" gate="G$1" pin="P$2"/>
+<pinref part="MB1" gate="G$1" pin="P$2"/>
 <pinref part="R9" gate="R" pin="2"/>
-<wire x1="147.32" y1="88.9" x2="132.08" y2="88.9" width="0.1524" layer="91"/>
-<label x="137.16" y="88.9" size="1.778" layer="95"/>
+<wire x1="149.86" y1="78.74" x2="134.62" y2="78.74" width="0.1524" layer="91"/>
+<label x="139.7" y="78.74" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="GND" class="0">
 <segment>
-<pinref part="MB0" gate="G$1" pin="P$1"/>
-<wire x1="121.92" y1="88.9" x2="116.84" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="88.9" x2="116.84" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="MB1" gate="G$1" pin="P$1"/>
-<wire x1="116.84" y1="76.2" x2="121.92" y2="76.2" width="0.1524" layer="91"/>
-<label x="116.84" y="78.74" size="1.778" layer="95" rot="R90"/>
+<wire x1="124.46" y1="78.74" x2="119.38" y2="78.74" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="78.74" x2="119.38" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="MB0" gate="G$1" pin="P$1"/>
+<wire x1="119.38" y1="88.9" x2="124.46" y2="88.9" width="0.1524" layer="91"/>
+<label x="119.38" y="91.44" size="1.778" layer="95" rot="R90"/>
 </segment>
 <segment>
 <pinref part="R2" gate="1" pin="1"/>
@@ -15686,12 +15686,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <label x="58.42" y="76.2" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="MB1" class="0">
+<net name="MB0" class="0">
 <segment>
-<pinref part="MB1" gate="G$1" pin="P$2"/>
+<pinref part="MB0" gate="G$1" pin="P$2"/>
 <pinref part="R10" gate="R" pin="2"/>
-<wire x1="132.08" y1="76.2" x2="147.32" y2="76.2" width="0.1524" layer="91"/>
-<label x="134.62" y="76.2" size="1.778" layer="95"/>
+<wire x1="134.62" y1="88.9" x2="149.86" y2="88.9" width="0.1524" layer="91"/>
+<label x="137.16" y="88.9" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$12" class="0">
@@ -15973,7 +15973,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <label x="76.2" y="53.34" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="MB0" class="0">
+<net name="MB1" class="0">
 <segment>
 <pinref part="U$7" gate="G$1" pin="P0[0]"/>
 <wire x1="71.12" y1="58.42" x2="83.82" y2="58.42" width="0.1524" layer="91"/>
@@ -15985,16 +15985,16 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <label x="-22.86" y="106.68" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="MB1" class="0">
-<segment>
-<pinref part="U$7" gate="G$1" pin="P0[1]"/>
-<wire x1="71.12" y1="60.96" x2="83.82" y2="60.96" width="0.1524" layer="91"/>
-<label x="76.2" y="60.96" size="1.778" layer="95"/>
-</segment>
+<net name="MB0" class="0">
 <segment>
 <pinref part="JP1" gate="G$1" pin="2"/>
 <wire x1="-25.4" y1="109.22" x2="-10.16" y2="109.22" width="0.1524" layer="91"/>
 <label x="-22.86" y="109.22" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U$7" gate="G$1" pin="P0[1]"/>
+<wire x1="71.12" y1="60.96" x2="83.82" y2="60.96" width="0.1524" layer="91"/>
+<label x="76.2" y="60.96" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="MBLED0" class="0">
