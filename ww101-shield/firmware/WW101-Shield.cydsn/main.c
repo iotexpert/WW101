@@ -1,14 +1,4 @@
-/* ========================================
- *
- * Copyright Cypress Semiconductor, 2017
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF Cypress Semiconductor.
- *
- * ========================================
-*/
+
 #include "project.h"
 #include "regmap.h"
 #include <stdbool.h>
@@ -27,14 +17,6 @@
 /* CapSense LED mode is defined by bit 1 in the led control register */
 #define CAPLEDMASK (0x01)
 
-/* Button register masks */
-#define B0MASK      (0x01)
-#define B1MASK      (0x02)
-#define B2MASK      (0x04)
-#define B3MASK      (0x08)
-#define PROXMASK    (0x10)
-#define MB0MASK     (0x20)
-#define MB1MASK     (0x40)
 
 /* Number of ADC channels */
 #define NUM_CHAN (4)
@@ -233,7 +215,7 @@ void processCapSense(void)
                         CBLED0_Write(LEDON);
                         
                     }      
-                    LocData.buttonVal |= (B0MASK);
+                    LocData.buttonVal |= (BVAL_B0_MASK);
                 }
                 else
                 {
@@ -241,7 +223,7 @@ void processCapSense(void)
                     {
                         CBLED0_Write(LEDOFF);
                     }
-                    LocData.buttonVal &= (~B0MASK);
+                    LocData.buttonVal &= (~BVAL_B0_MASK);
                 }
                 CapSense_SetupWidget(CapSense_BUTTON1_WDGT_ID);
                 CapSense_Scan();
@@ -255,7 +237,7 @@ void processCapSense(void)
                     {
                         CBLED1_Write(LEDON);
                     }
-                    LocData.buttonVal |= (B1MASK);
+                    LocData.buttonVal |= (BVAL_B1_MASK);
                 }
                 else
                 {
@@ -263,7 +245,7 @@ void processCapSense(void)
                     {
                         CBLED1_Write(LEDOFF);
                     }
-                    LocData.buttonVal &= (~B1MASK);
+                    LocData.buttonVal &= (~BVAL_B1_MASK);
                 }
                 
                 CapSense_SetupWidget(CapSense_BUTTON2_WDGT_ID);
@@ -279,7 +261,7 @@ void processCapSense(void)
                     {
                         CBLED2_Write(LEDON);
                     }
-                    LocData.buttonVal |= (B2MASK);
+                    LocData.buttonVal |= (BVAL_B2_MASK);
                 }
                 else
                 {
@@ -287,7 +269,7 @@ void processCapSense(void)
                     {
                         CBLED2_Write(LEDOFF);
                     }
-                    LocData.buttonVal &= (~B2MASK);
+                    LocData.buttonVal &= (~BVAL_B2_MASK);
                 }
                 CapSense_SetupWidget(CapSense_BUTTON3_WDGT_ID);
                 CapSense_Scan();
@@ -301,7 +283,7 @@ void processCapSense(void)
                     {
                         CBLED3_Write(LEDON);
                     }
-                    LocData.buttonVal |= (B3MASK);
+                    LocData.buttonVal |= (BVAL_B3_MASK);
                 }
                 else
                 {
@@ -309,7 +291,7 @@ void processCapSense(void)
                     {
                         CBLED3_Write(LEDOFF);
                     }
-                    LocData.buttonVal &= (~B3MASK);
+                    LocData.buttonVal &= (~BVAL_B3_MASK);
                 }
                 CapSense_SetupWidget(CapSense_PROXIMITY0_WDGT_ID);
                 CapSense_Scan();
@@ -319,11 +301,11 @@ void processCapSense(void)
                 CapSense_ProcessWidget(CapSense_PROXIMITY0_WDGT_ID);
                 if(CapSense_IsWidgetActive(CapSense_PROXIMITY0_WDGT_ID))
                 {
-                    LocData.buttonVal |= (PROXMASK);
+                    LocData.buttonVal |= (BVAL_PROX_MASK);
                 }
                 else
                 {
-                    LocData.buttonVal &= (~PROXMASK);
+                    LocData.buttonVal &= (~BVAL_PROX_MASK);
                 }
                 CapSense_SetupWidget(CapSense_HUMIDITY_WDGT_ID);
                 CapSense_Scan();
@@ -414,28 +396,28 @@ int main(void)
         /* Read and update mechanical button state */
         if(MB0_Read() == PRESSED)
         {
-            LocData.buttonVal |= (MB0MASK);
+            LocData.buttonVal |= (BVAL_MB0_MASK);
         }
         else
         {
-            LocData.buttonVal &= (~MB0MASK);
+            LocData.buttonVal &= (~BVAL_MB0_MASK);
         }
         if(MB1_Read() == PRESSED)
         {
-            LocData.buttonVal |= (MB1MASK);
+            LocData.buttonVal |= (BVAL_MB1_MASK);
         }
         else
         {
-            LocData.buttonVal &= (~MB1MASK);
+            LocData.buttonVal &= (~BVAL_MB1_MASK);
         }
         
         /* Update CapSense buttons if set to base board control */
         if(capLedBase == true)
         {
-            CBLED0_Write(!(LocData.ledVal & B0MASK));
-            CBLED1_Write(!(LocData.ledVal & B1MASK));
-            CBLED2_Write(!(LocData.ledVal & B2MASK));
-            CBLED3_Write(!(LocData.ledVal & B3MASK));
+            CBLED0_Write(!(LocData.ledVal & BVAL_B0_MASK));
+            CBLED1_Write(!(LocData.ledVal & BVAL_B1_MASK));
+            CBLED2_Write(!(LocData.ledVal & BVAL_B2_MASK));
+            CBLED3_Write(!(LocData.ledVal & BVAL_B3_MASK));
         }
         
         /* Set VDAC value if it has changed */
