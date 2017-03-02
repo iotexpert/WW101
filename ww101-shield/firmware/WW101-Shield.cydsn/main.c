@@ -1,14 +1,4 @@
-/* ========================================
- *
- * Copyright Cypress Semiconductor, 2017
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF Cypress Semiconductor.
- *
- * ========================================
-*/
+
 #include "project.h"
 #include "regmap.h"
 #include <stdbool.h>
