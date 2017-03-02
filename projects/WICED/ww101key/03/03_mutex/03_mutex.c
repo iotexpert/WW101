@@ -30,43 +30,43 @@ void led1Thread(wiced_thread_arg_t arg)
 		/* Toggle LED1 */
 		if ( led1 == WICED_TRUE )
 		{
-			wiced_gpio_output_low( WICED_LED1 );
+			wiced_gpio_output_low( WICED_SH_LED1 );
 			led1 = WICED_FALSE;
 		}
 		else
 		{
-			wiced_gpio_output_high( WICED_LED1 );
+			wiced_gpio_output_high( WICED_SH_LED1 );
 			led1 = WICED_TRUE;
 		}
 		wiced_rtos_delay_milliseconds( 250 );
 	}
 }
 
-/* Define the thread function that will blink LED2 on/off every 249ms */
-void led2Thread(wiced_thread_arg_t arg)
+/* Define the thread function that will blink LED0 on/off every 249ms */
+void led0Thread(wiced_thread_arg_t arg)
 {
-	wiced_bool_t led2 = WICED_FALSE;
+	wiced_bool_t led0 = WICED_FALSE;
 
 	while(1)
 	{
 		#ifdef USE_MUTEX
 			wiced_rtos_lock_mutex(&printMutexHandle);
 		#endif
-		WPRINT_APP_INFO(("TOGGLE LED2\n"));
+		WPRINT_APP_INFO(("TOGGLE LED0\n"));
 		#ifdef USE_MUTEX
 			wiced_rtos_unlock_mutex(&printMutexHandle);
 		#endif
 
 		/* Toggle LED2 */
-		if ( led2 == WICED_TRUE )
+		if ( led0 == WICED_TRUE )
 		{
-			wiced_gpio_output_low( WICED_LED2 );
-			led2 = WICED_FALSE;
+			wiced_gpio_output_low( WICED_SH_LED0 );
+			led0 = WICED_FALSE;
 		}
 		else
 		{
-			wiced_gpio_output_high( WICED_LED2 );
-			led2 = WICED_TRUE;
+			wiced_gpio_output_high( WICED_SH_LED0 );
+			led0 = WICED_TRUE;
 		}
 		wiced_rtos_delay_milliseconds( 249 );
 	}
@@ -75,7 +75,7 @@ void led2Thread(wiced_thread_arg_t arg)
 void application_start( )
 {
 	wiced_thread_t led1ThreadHandle;
-	wiced_thread_t led2ThreadHandle;
+	wiced_thread_t led0ThreadHandle;
 
 
 	wiced_init();	/* Initialize the WICED device */
@@ -85,7 +85,7 @@ void application_start( )
 
 	/* Initialize and start threads */
     wiced_rtos_create_thread(&led1ThreadHandle, 11, "led1Thread", led1Thread, THREAD_STACK_SIZE, NULL);
-    wiced_rtos_create_thread(&led2ThreadHandle, 12, "led2Thread", led2Thread, THREAD_STACK_SIZE, NULL);
+    wiced_rtos_create_thread(&led0ThreadHandle, 12, "led0Thread", led0Thread, THREAD_STACK_SIZE, NULL);
 
 
 
