@@ -15,12 +15,12 @@ void ledThread(wiced_thread_arg_t arg)
 		/* Toggle LED1 */
 		if ( led1 == WICED_TRUE )
 		{
-			wiced_gpio_output_low( WICED_LED1 );
+			wiced_gpio_output_low( WICED_SH_LED1 );
 			led1 = WICED_FALSE;
 		}
 		else
 		{
-			wiced_gpio_output_high( WICED_LED1 );
+			wiced_gpio_output_high( WICED_SH_LED1 );
 			led1 = WICED_TRUE;
 		}
 		wiced_rtos_delay_milliseconds( 250 );

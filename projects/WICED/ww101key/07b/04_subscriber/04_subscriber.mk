@@ -18,4 +18,5 @@ VALID_PLATFORMS := BCM943362WCD4 \
                    BCM943438WCD1 \
                    BCM94343WWCD2 \
                    BCM94343W_AVN \
-                   BCM943907AEVAL1F
+                   BCM943907AEVAL1F \
+                   CYW943907AEVAL1F
