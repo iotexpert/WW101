@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.6.0">
+<eagle version="7.7.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -15437,12 +15437,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="C8" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="1uF"/>
 <part name="C9" library="PatternAgents-ProtoPads" deviceset="CAP" device="0603-CAP" value="0.1uF"/>
 <part name="R2" library="pot" deviceset="TRIM_US-" device="3386P" value="10K"/>
-<part name="MBLED0" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
-<part name="MBLED1" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
-<part name="ULED0" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
-<part name="ULED1" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
-<part name="ULED2" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
-<part name="ULED3" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="LED0" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="LED1" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="CLED0" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="CLED1" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="CLED2" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
+<part name="CLED3" library="adafruit" deviceset="LED" device="CHIP-LED0603" value="red"/>
 <part name="R3" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="560"/>
 <part name="R4" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="560"/>
 <part name="R5" library="PatternAgents-ProtoPads" deviceset="RESISTOR" device="0603" value="560"/>
@@ -15492,12 +15492,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="MB1" gate="G$1" x="124.46" y="78.74"/>
 <instance part="MB0" gate="G$1" x="124.46" y="88.9"/>
 <instance part="R2" gate="1" x="149.86" y="53.34"/>
-<instance part="MBLED0" gate="G$1" x="187.96" y="88.9" rot="R90"/>
-<instance part="MBLED1" gate="G$1" x="187.96" y="76.2" rot="R90"/>
-<instance part="ULED0" gate="G$1" x="190.5" y="198.12" rot="R90"/>
-<instance part="ULED1" gate="G$1" x="190.5" y="172.72" rot="R90"/>
-<instance part="ULED2" gate="G$1" x="190.5" y="144.78" rot="R90"/>
-<instance part="ULED3" gate="G$1" x="187.96" y="121.92" rot="R90"/>
+<instance part="LED0" gate="G$1" x="187.96" y="88.9" rot="R90"/>
+<instance part="LED1" gate="G$1" x="187.96" y="76.2" rot="R90"/>
+<instance part="CLED0" gate="G$1" x="190.5" y="198.12" rot="R90"/>
+<instance part="CLED1" gate="G$1" x="190.5" y="172.72" rot="R90"/>
+<instance part="CLED2" gate="G$1" x="190.5" y="144.78" rot="R90"/>
+<instance part="CLED3" gate="G$1" x="187.96" y="121.92" rot="R90"/>
 <instance part="R3" gate="R" x="200.66" y="198.12" rot="R180"/>
 <instance part="R4" gate="R" x="200.66" y="172.72" rot="R180"/>
 <instance part="R5" gate="R" x="200.66" y="144.78" rot="R180"/>
@@ -15527,40 +15527,40 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <nets>
 <net name="N$8" class="0">
 <segment>
-<pinref part="ULED0" gate="G$1" pin="C"/>
+<pinref part="CLED0" gate="G$1" pin="C"/>
 <pinref part="R3" gate="R" pin="2"/>
 </segment>
 </net>
 <net name="N$9" class="0">
 <segment>
-<pinref part="ULED1" gate="G$1" pin="C"/>
+<pinref part="CLED1" gate="G$1" pin="C"/>
 <pinref part="R4" gate="R" pin="2"/>
 </segment>
 </net>
 <net name="N$10" class="0">
 <segment>
-<pinref part="ULED2" gate="G$1" pin="C"/>
+<pinref part="CLED2" gate="G$1" pin="C"/>
 <pinref part="R5" gate="R" pin="2"/>
 </segment>
 </net>
 <net name="N$11" class="0">
 <segment>
-<pinref part="ULED3" gate="G$1" pin="C"/>
+<pinref part="CLED3" gate="G$1" pin="C"/>
 <pinref part="R6" gate="R" pin="2"/>
 </segment>
 </net>
 <net name="VPWR" class="0">
 <segment>
-<pinref part="ULED3" gate="G$1" pin="A"/>
+<pinref part="CLED3" gate="G$1" pin="A"/>
 <wire x1="185.42" y1="121.92" x2="182.88" y2="121.92" width="0.1524" layer="91"/>
 <wire x1="182.88" y1="121.92" x2="182.88" y2="144.78" width="0.1524" layer="91"/>
-<pinref part="ULED0" gate="G$1" pin="A"/>
+<pinref part="CLED0" gate="G$1" pin="A"/>
 <wire x1="182.88" y1="144.78" x2="182.88" y2="172.72" width="0.1524" layer="91"/>
 <wire x1="182.88" y1="172.72" x2="182.88" y2="198.12" width="0.1524" layer="91"/>
 <wire x1="182.88" y1="198.12" x2="187.96" y2="198.12" width="0.1524" layer="91"/>
-<pinref part="ULED1" gate="G$1" pin="A"/>
+<pinref part="CLED1" gate="G$1" pin="A"/>
 <wire x1="187.96" y1="172.72" x2="182.88" y2="172.72" width="0.1524" layer="91"/>
-<pinref part="ULED2" gate="G$1" pin="A"/>
+<pinref part="CLED2" gate="G$1" pin="A"/>
 <wire x1="187.96" y1="144.78" x2="182.88" y2="144.78" width="0.1524" layer="91"/>
 <label x="182.88" y="152.4" size="1.778" layer="95" rot="R90"/>
 <junction x="182.88" y="172.72"/>
@@ -15568,8 +15568,8 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <wire x1="185.42" y1="76.2" x2="185.42" y2="83.82" width="0.1524" layer="91"/>
-<pinref part="MBLED0" gate="G$1" pin="A"/>
-<pinref part="MBLED1" gate="G$1" pin="A"/>
+<pinref part="LED0" gate="G$1" pin="A"/>
+<pinref part="LED1" gate="G$1" pin="A"/>
 <wire x1="185.42" y1="83.82" x2="185.42" y2="88.9" width="0.1524" layer="91"/>
 <wire x1="185.42" y1="83.82" x2="175.26" y2="83.82" width="0.1524" layer="91"/>
 <label x="175.26" y="83.82" size="1.778" layer="95"/>
@@ -15696,13 +15696,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </net>
 <net name="N$12" class="0">
 <segment>
-<pinref part="MBLED0" gate="G$1" pin="C"/>
+<pinref part="LED0" gate="G$1" pin="C"/>
 <pinref part="R7" gate="R" pin="2"/>
 </segment>
 </net>
 <net name="N$13" class="0">
 <segment>
-<pinref part="MBLED1" gate="G$1" pin="C"/>
+<pinref part="LED1" gate="G$1" pin="C"/>
 <pinref part="R8" gate="R" pin="2"/>
 </segment>
 </net>
