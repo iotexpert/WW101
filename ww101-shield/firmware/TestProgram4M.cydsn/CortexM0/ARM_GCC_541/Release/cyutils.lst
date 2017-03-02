@@ -1,0 +1,792 @@
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"cyutils.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.CySetReg24,"ax",%progbits
+  20              		.align	1
+  21              		.global	CySetReg24
+  22              		.code	16
+  23              		.thumb_func
+  24              		.type	CySetReg24, %function
+  25              	CySetReg24:
+  26              	.LFB0:
+  27              		.file 1 "Generated_Source\\PSoC4\\cyutils.c"
+   1:Generated_Source\PSoC4/cyutils.c **** /***************************************************************************//**
+   2:Generated_Source\PSoC4/cyutils.c **** * \file cyutils.c
+   3:Generated_Source\PSoC4/cyutils.c **** * \version 5.60
+   4:Generated_Source\PSoC4/cyutils.c **** *
+   5:Generated_Source\PSoC4/cyutils.c **** * \brief Provides a function to handle 24-bit value writes.
+   6:Generated_Source\PSoC4/cyutils.c **** *
+   7:Generated_Source\PSoC4/cyutils.c **** ********************************************************************************
+   8:Generated_Source\PSoC4/cyutils.c **** * \copyright
+   9:Generated_Source\PSoC4/cyutils.c **** * Copyright 2008-2016, Cypress Semiconductor Corporation.  All rights reserved.
+  10:Generated_Source\PSoC4/cyutils.c **** * You may use this file only in accordance with the license, terms, conditions,
+  11:Generated_Source\PSoC4/cyutils.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  12:Generated_Source\PSoC4/cyutils.c **** * the software package with which this file was provided.
+  13:Generated_Source\PSoC4/cyutils.c **** *******************************************************************************/
+  14:Generated_Source\PSoC4/cyutils.c **** 
+  15:Generated_Source\PSoC4/cyutils.c **** #include "cytypes.h"
+  16:Generated_Source\PSoC4/cyutils.c **** 
+  17:Generated_Source\PSoC4/cyutils.c **** #if (!CY_PSOC3)
+  18:Generated_Source\PSoC4/cyutils.c **** 
+  19:Generated_Source\PSoC4/cyutils.c ****     /***************************************************************************
+  20:Generated_Source\PSoC4/cyutils.c ****     * Function Name: CySetReg24
+  21:Generated_Source\PSoC4/cyutils.c ****     ************************************************************************//**
+  22:Generated_Source\PSoC4/cyutils.c ****     *
+  23:Generated_Source\PSoC4/cyutils.c ****     * Writes a 24-bit value to the specified register.
+  24:Generated_Source\PSoC4/cyutils.c ****     *
+  25:Generated_Source\PSoC4/cyutils.c ****     * \param addr The address where data must be written.
+  26:Generated_Source\PSoC4/cyutils.c ****     * \param value The data that must be written.
+  27:Generated_Source\PSoC4/cyutils.c ****     *
+  28:Generated_Source\PSoC4/cyutils.c ****     * \reentrant No
+  29:Generated_Source\PSoC4/cyutils.c ****     *
+  30:Generated_Source\PSoC4/cyutils.c ****     ***************************************************************************/
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 2
+
+
+  31:Generated_Source\PSoC4/cyutils.c ****     void CySetReg24(uint32 volatile * addr, uint32 value)
+  32:Generated_Source\PSoC4/cyutils.c ****     {
+  28              		.loc 1 32 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+  33:Generated_Source\PSoC4/cyutils.c ****         uint8 volatile *tmpAddr;
+  34:Generated_Source\PSoC4/cyutils.c **** 
+  35:Generated_Source\PSoC4/cyutils.c ****         tmpAddr = (uint8 volatile *) addr;
+  36:Generated_Source\PSoC4/cyutils.c **** 
+  37:Generated_Source\PSoC4/cyutils.c ****         tmpAddr[0u] = (uint8) value;
+  34              		.loc 1 37 0
+  35 0000 CBB2     		uxtb	r3, r1
+  36 0002 0370     		strb	r3, [r0]
+  38:Generated_Source\PSoC4/cyutils.c ****         tmpAddr[1u] = (uint8) (value >> 8u);
+  37              		.loc 1 38 0
+  38 0004 0B0A     		lsrs	r3, r1, #8
+  39:Generated_Source\PSoC4/cyutils.c ****         tmpAddr[2u] = (uint8) (value >> 16u);
+  39              		.loc 1 39 0
+  40 0006 090C     		lsrs	r1, r1, #16
+  41              	.LVL1:
+  38:Generated_Source\PSoC4/cyutils.c ****         tmpAddr[1u] = (uint8) (value >> 8u);
+  42              		.loc 1 38 0
+  43 0008 DBB2     		uxtb	r3, r3
+  44              		.loc 1 39 0
+  45 000a C9B2     		uxtb	r1, r1
+  38:Generated_Source\PSoC4/cyutils.c ****         tmpAddr[1u] = (uint8) (value >> 8u);
+  46              		.loc 1 38 0
+  47 000c 4370     		strb	r3, [r0, #1]
+  40:Generated_Source\PSoC4/cyutils.c ****     }
+  48              		.loc 1 40 0
+  49              		@ sp needed
+  39:Generated_Source\PSoC4/cyutils.c ****         tmpAddr[2u] = (uint8) (value >> 16u);
+  50              		.loc 1 39 0
+  51 000e 8170     		strb	r1, [r0, #2]
+  52              		.loc 1 40 0
+  53 0010 7047     		bx	lr
+  54              		.cfi_endproc
+  55              	.LFE0:
+  56              		.size	CySetReg24, .-CySetReg24
+  57              		.section	.text.CyGetReg24,"ax",%progbits
+  58              		.align	1
+  59              		.global	CyGetReg24
+  60              		.code	16
+  61              		.thumb_func
+  62              		.type	CyGetReg24, %function
+  63              	CyGetReg24:
+  64              	.LFB1:
+  41:Generated_Source\PSoC4/cyutils.c **** 
+  42:Generated_Source\PSoC4/cyutils.c **** 
+  43:Generated_Source\PSoC4/cyutils.c ****     #if(CY_PSOC4)
+  44:Generated_Source\PSoC4/cyutils.c **** 
+  45:Generated_Source\PSoC4/cyutils.c ****         /***************************************************************************
+  46:Generated_Source\PSoC4/cyutils.c ****         * Function Name: CyGetReg24
+  47:Generated_Source\PSoC4/cyutils.c ****         ************************************************************************//**
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 3
+
+
+  48:Generated_Source\PSoC4/cyutils.c ****         *
+  49:Generated_Source\PSoC4/cyutils.c ****         * Reads the 24-bit value from the specified register.
+  50:Generated_Source\PSoC4/cyutils.c ****         *
+  51:Generated_Source\PSoC4/cyutils.c ****         * \param addr The address where data must be read.
+  52:Generated_Source\PSoC4/cyutils.c ****         *
+  53:Generated_Source\PSoC4/cyutils.c ****         * \reentrant No
+  54:Generated_Source\PSoC4/cyutils.c ****         *
+  55:Generated_Source\PSoC4/cyutils.c ****         ***************************************************************************/
+  56:Generated_Source\PSoC4/cyutils.c ****         uint32 CyGetReg24(uint32 const volatile * addr)
+  57:Generated_Source\PSoC4/cyutils.c ****         {
+  65              		.loc 1 57 0
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 0, uses_anonymous_args = 0
+  69              		@ link register save eliminated.
+  70              	.LVL2:
+  71              		.loc 1 57 0
+  72 0000 0300     		movs	r3, r0
+  58:Generated_Source\PSoC4/cyutils.c ****             uint8 const volatile *tmpAddr;
+  59:Generated_Source\PSoC4/cyutils.c ****             uint32 value;
+  60:Generated_Source\PSoC4/cyutils.c **** 
+  61:Generated_Source\PSoC4/cyutils.c ****             tmpAddr = (uint8 const volatile *) addr;
+  62:Generated_Source\PSoC4/cyutils.c **** 
+  63:Generated_Source\PSoC4/cyutils.c ****             value  =  (uint32) tmpAddr[0u];
+  73              		.loc 1 63 0
+  74 0002 0278     		ldrb	r2, [r0]
+  75              	.LVL3:
+  64:Generated_Source\PSoC4/cyutils.c ****             value |= ((uint32) tmpAddr[1u] << 8u );
+  76              		.loc 1 64 0
+  77 0004 4078     		ldrb	r0, [r0, #1]
+  78              	.LVL4:
+  65:Generated_Source\PSoC4/cyutils.c ****             value |= ((uint32) tmpAddr[2u] << 16u);
+  79              		.loc 1 65 0
+  80 0006 9B78     		ldrb	r3, [r3, #2]
+  81              	.LVL5:
+  66:Generated_Source\PSoC4/cyutils.c **** 
+  67:Generated_Source\PSoC4/cyutils.c ****             return(value);
+  82              		.loc 1 67 0
+  83 0008 0002     		lsls	r0, r0, #8
+  84              	.LVL6:
+  85 000a 1B04     		lsls	r3, r3, #16
+  86 000c 1843     		orrs	r0, r3
+  87 000e 1043     		orrs	r0, r2
+  68:Generated_Source\PSoC4/cyutils.c ****         }
+  88              		.loc 1 68 0
+  89              		@ sp needed
+  90 0010 7047     		bx	lr
+  91              		.cfi_endproc
+  92              	.LFE1:
+  93              		.size	CyGetReg24, .-CyGetReg24
+  94              		.text
+  95              	.Letext0:
+  96              		.file 2 "Generated_Source\\PSoC4\\cytypes.h"
+  97              		.section	.debug_info,"",%progbits
+  98              	.Ldebug_info0:
+  99 0000 47010000 		.4byte	0x147
+ 100 0004 0400     		.2byte	0x4
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 4
+
+
+ 101 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 102 000a 04       		.byte	0x4
+ 103 000b 01       		.uleb128 0x1
+ 104 000c 55010000 		.4byte	.LASF17
+ 105 0010 0C       		.byte	0xc
+ 106 0011 FC000000 		.4byte	.LASF18
+ 107 0015 27000000 		.4byte	.LASF19
+ 108 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 109 001d 00000000 		.4byte	0
+ 110 0021 00000000 		.4byte	.Ldebug_line0
+ 111 0025 02       		.uleb128 0x2
+ 112 0026 01       		.byte	0x1
+ 113 0027 06       		.byte	0x6
+ 114 0028 49010000 		.4byte	.LASF0
+ 115 002c 02       		.uleb128 0x2
+ 116 002d 01       		.byte	0x1
+ 117 002e 08       		.byte	0x8
+ 118 002f 8F000000 		.4byte	.LASF1
+ 119 0033 02       		.uleb128 0x2
+ 120 0034 02       		.byte	0x2
+ 121 0035 05       		.byte	0x5
+ 122 0036 30010000 		.4byte	.LASF2
+ 123 003a 02       		.uleb128 0x2
+ 124 003b 02       		.byte	0x2
+ 125 003c 07       		.byte	0x7
+ 126 003d B7000000 		.4byte	.LASF3
+ 127 0041 02       		.uleb128 0x2
+ 128 0042 04       		.byte	0x4
+ 129 0043 05       		.byte	0x5
+ 130 0044 40010000 		.4byte	.LASF4
+ 131 0048 02       		.uleb128 0x2
+ 132 0049 04       		.byte	0x4
+ 133 004a 07       		.byte	0x7
+ 134 004b A5000000 		.4byte	.LASF5
+ 135 004f 02       		.uleb128 0x2
+ 136 0050 08       		.byte	0x8
+ 137 0051 05       		.byte	0x5
+ 138 0052 1D010000 		.4byte	.LASF6
+ 139 0056 02       		.uleb128 0x2
+ 140 0057 08       		.byte	0x8
+ 141 0058 07       		.byte	0x7
+ 142 0059 E5000000 		.4byte	.LASF7
+ 143 005d 03       		.uleb128 0x3
+ 144 005e 04       		.byte	0x4
+ 145 005f 05       		.byte	0x5
+ 146 0060 696E7400 		.ascii	"int\000"
+ 147 0064 02       		.uleb128 0x2
+ 148 0065 04       		.byte	0x4
+ 149 0066 07       		.byte	0x7
+ 150 0067 D8000000 		.4byte	.LASF8
+ 151 006b 04       		.uleb128 0x4
+ 152 006c 3A010000 		.4byte	.LASF9
+ 153 0070 02       		.byte	0x2
+ 154 0071 BF01     		.2byte	0x1bf
+ 155 0073 2C000000 		.4byte	0x2c
+ 156 0077 04       		.uleb128 0x4
+ 157 0078 D1000000 		.4byte	.LASF10
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 5
+
+
+ 158 007c 02       		.byte	0x2
+ 159 007d C101     		.2byte	0x1c1
+ 160 007f 48000000 		.4byte	0x48
+ 161 0083 02       		.uleb128 0x2
+ 162 0084 04       		.byte	0x4
+ 163 0085 04       		.byte	0x4
+ 164 0086 21000000 		.4byte	.LASF11
+ 165 008a 02       		.uleb128 0x2
+ 166 008b 08       		.byte	0x8
+ 167 008c 04       		.byte	0x4
+ 168 008d CA000000 		.4byte	.LASF12
+ 169 0091 02       		.uleb128 0x2
+ 170 0092 01       		.byte	0x1
+ 171 0093 08       		.byte	0x8
+ 172 0094 2B010000 		.4byte	.LASF13
+ 173 0098 05       		.uleb128 0x5
+ 174 0099 6B000000 		.4byte	0x6b
+ 175 009d 05       		.uleb128 0x5
+ 176 009e 77000000 		.4byte	0x77
+ 177 00a2 06       		.uleb128 0x6
+ 178 00a3 11000000 		.4byte	.LASF20
+ 179 00a7 01       		.byte	0x1
+ 180 00a8 1F       		.byte	0x1f
+ 181 00a9 00000000 		.4byte	.LFB0
+ 182 00ad 12000000 		.4byte	.LFE0-.LFB0
+ 183 00b1 01       		.uleb128 0x1
+ 184 00b2 9C       		.byte	0x9c
+ 185 00b3 E1000000 		.4byte	0xe1
+ 186 00b7 07       		.uleb128 0x7
+ 187 00b8 1C000000 		.4byte	.LASF14
+ 188 00bc 01       		.byte	0x1
+ 189 00bd 1F       		.byte	0x1f
+ 190 00be E1000000 		.4byte	0xe1
+ 191 00c2 01       		.uleb128 0x1
+ 192 00c3 50       		.byte	0x50
+ 193 00c4 08       		.uleb128 0x8
+ 194 00c5 00000000 		.4byte	.LASF15
+ 195 00c9 01       		.byte	0x1
+ 196 00ca 1F       		.byte	0x1f
+ 197 00cb 77000000 		.4byte	0x77
+ 198 00cf 00000000 		.4byte	.LLST0
+ 199 00d3 09       		.uleb128 0x9
+ 200 00d4 9D000000 		.4byte	.LASF16
+ 201 00d8 01       		.byte	0x1
+ 202 00d9 21       		.byte	0x21
+ 203 00da E7000000 		.4byte	0xe7
+ 204 00de 01       		.uleb128 0x1
+ 205 00df 50       		.byte	0x50
+ 206 00e0 00       		.byte	0
+ 207 00e1 0A       		.uleb128 0xa
+ 208 00e2 04       		.byte	0x4
+ 209 00e3 9D000000 		.4byte	0x9d
+ 210 00e7 0A       		.uleb128 0xa
+ 211 00e8 04       		.byte	0x4
+ 212 00e9 98000000 		.4byte	0x98
+ 213 00ed 0B       		.uleb128 0xb
+ 214 00ee 06000000 		.4byte	.LASF21
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 6
+
+
+ 215 00f2 01       		.byte	0x1
+ 216 00f3 38       		.byte	0x38
+ 217 00f4 77000000 		.4byte	0x77
+ 218 00f8 00000000 		.4byte	.LFB1
+ 219 00fc 12000000 		.4byte	.LFE1-.LFB1
+ 220 0100 01       		.uleb128 0x1
+ 221 0101 9C       		.byte	0x9c
+ 222 0102 34010000 		.4byte	0x134
+ 223 0106 08       		.uleb128 0x8
+ 224 0107 1C000000 		.4byte	.LASF14
+ 225 010b 01       		.byte	0x1
+ 226 010c 38       		.byte	0x38
+ 227 010d 34010000 		.4byte	0x134
+ 228 0111 21000000 		.4byte	.LLST1
+ 229 0115 0C       		.uleb128 0xc
+ 230 0116 9D000000 		.4byte	.LASF16
+ 231 011a 01       		.byte	0x1
+ 232 011b 3A       		.byte	0x3a
+ 233 011c 3F010000 		.4byte	0x13f
+ 234 0120 4D000000 		.4byte	.LLST2
+ 235 0124 0C       		.uleb128 0xc
+ 236 0125 00000000 		.4byte	.LASF15
+ 237 0129 01       		.byte	0x1
+ 238 012a 3B       		.byte	0x3b
+ 239 012b 77000000 		.4byte	0x77
+ 240 012f 79000000 		.4byte	.LLST3
+ 241 0133 00       		.byte	0
+ 242 0134 0A       		.uleb128 0xa
+ 243 0135 04       		.byte	0x4
+ 244 0136 3A010000 		.4byte	0x13a
+ 245 013a 0D       		.uleb128 0xd
+ 246 013b 9D000000 		.4byte	0x9d
+ 247 013f 0A       		.uleb128 0xa
+ 248 0140 04       		.byte	0x4
+ 249 0141 45010000 		.4byte	0x145
+ 250 0145 0D       		.uleb128 0xd
+ 251 0146 98000000 		.4byte	0x98
+ 252 014a 00       		.byte	0
+ 253              		.section	.debug_abbrev,"",%progbits
+ 254              	.Ldebug_abbrev0:
+ 255 0000 01       		.uleb128 0x1
+ 256 0001 11       		.uleb128 0x11
+ 257 0002 01       		.byte	0x1
+ 258 0003 25       		.uleb128 0x25
+ 259 0004 0E       		.uleb128 0xe
+ 260 0005 13       		.uleb128 0x13
+ 261 0006 0B       		.uleb128 0xb
+ 262 0007 03       		.uleb128 0x3
+ 263 0008 0E       		.uleb128 0xe
+ 264 0009 1B       		.uleb128 0x1b
+ 265 000a 0E       		.uleb128 0xe
+ 266 000b 55       		.uleb128 0x55
+ 267 000c 17       		.uleb128 0x17
+ 268 000d 11       		.uleb128 0x11
+ 269 000e 01       		.uleb128 0x1
+ 270 000f 10       		.uleb128 0x10
+ 271 0010 17       		.uleb128 0x17
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 7
+
+
+ 272 0011 00       		.byte	0
+ 273 0012 00       		.byte	0
+ 274 0013 02       		.uleb128 0x2
+ 275 0014 24       		.uleb128 0x24
+ 276 0015 00       		.byte	0
+ 277 0016 0B       		.uleb128 0xb
+ 278 0017 0B       		.uleb128 0xb
+ 279 0018 3E       		.uleb128 0x3e
+ 280 0019 0B       		.uleb128 0xb
+ 281 001a 03       		.uleb128 0x3
+ 282 001b 0E       		.uleb128 0xe
+ 283 001c 00       		.byte	0
+ 284 001d 00       		.byte	0
+ 285 001e 03       		.uleb128 0x3
+ 286 001f 24       		.uleb128 0x24
+ 287 0020 00       		.byte	0
+ 288 0021 0B       		.uleb128 0xb
+ 289 0022 0B       		.uleb128 0xb
+ 290 0023 3E       		.uleb128 0x3e
+ 291 0024 0B       		.uleb128 0xb
+ 292 0025 03       		.uleb128 0x3
+ 293 0026 08       		.uleb128 0x8
+ 294 0027 00       		.byte	0
+ 295 0028 00       		.byte	0
+ 296 0029 04       		.uleb128 0x4
+ 297 002a 16       		.uleb128 0x16
+ 298 002b 00       		.byte	0
+ 299 002c 03       		.uleb128 0x3
+ 300 002d 0E       		.uleb128 0xe
+ 301 002e 3A       		.uleb128 0x3a
+ 302 002f 0B       		.uleb128 0xb
+ 303 0030 3B       		.uleb128 0x3b
+ 304 0031 05       		.uleb128 0x5
+ 305 0032 49       		.uleb128 0x49
+ 306 0033 13       		.uleb128 0x13
+ 307 0034 00       		.byte	0
+ 308 0035 00       		.byte	0
+ 309 0036 05       		.uleb128 0x5
+ 310 0037 35       		.uleb128 0x35
+ 311 0038 00       		.byte	0
+ 312 0039 49       		.uleb128 0x49
+ 313 003a 13       		.uleb128 0x13
+ 314 003b 00       		.byte	0
+ 315 003c 00       		.byte	0
+ 316 003d 06       		.uleb128 0x6
+ 317 003e 2E       		.uleb128 0x2e
+ 318 003f 01       		.byte	0x1
+ 319 0040 3F       		.uleb128 0x3f
+ 320 0041 19       		.uleb128 0x19
+ 321 0042 03       		.uleb128 0x3
+ 322 0043 0E       		.uleb128 0xe
+ 323 0044 3A       		.uleb128 0x3a
+ 324 0045 0B       		.uleb128 0xb
+ 325 0046 3B       		.uleb128 0x3b
+ 326 0047 0B       		.uleb128 0xb
+ 327 0048 27       		.uleb128 0x27
+ 328 0049 19       		.uleb128 0x19
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 8
+
+
+ 329 004a 11       		.uleb128 0x11
+ 330 004b 01       		.uleb128 0x1
+ 331 004c 12       		.uleb128 0x12
+ 332 004d 06       		.uleb128 0x6
+ 333 004e 40       		.uleb128 0x40
+ 334 004f 18       		.uleb128 0x18
+ 335 0050 9742     		.uleb128 0x2117
+ 336 0052 19       		.uleb128 0x19
+ 337 0053 01       		.uleb128 0x1
+ 338 0054 13       		.uleb128 0x13
+ 339 0055 00       		.byte	0
+ 340 0056 00       		.byte	0
+ 341 0057 07       		.uleb128 0x7
+ 342 0058 05       		.uleb128 0x5
+ 343 0059 00       		.byte	0
+ 344 005a 03       		.uleb128 0x3
+ 345 005b 0E       		.uleb128 0xe
+ 346 005c 3A       		.uleb128 0x3a
+ 347 005d 0B       		.uleb128 0xb
+ 348 005e 3B       		.uleb128 0x3b
+ 349 005f 0B       		.uleb128 0xb
+ 350 0060 49       		.uleb128 0x49
+ 351 0061 13       		.uleb128 0x13
+ 352 0062 02       		.uleb128 0x2
+ 353 0063 18       		.uleb128 0x18
+ 354 0064 00       		.byte	0
+ 355 0065 00       		.byte	0
+ 356 0066 08       		.uleb128 0x8
+ 357 0067 05       		.uleb128 0x5
+ 358 0068 00       		.byte	0
+ 359 0069 03       		.uleb128 0x3
+ 360 006a 0E       		.uleb128 0xe
+ 361 006b 3A       		.uleb128 0x3a
+ 362 006c 0B       		.uleb128 0xb
+ 363 006d 3B       		.uleb128 0x3b
+ 364 006e 0B       		.uleb128 0xb
+ 365 006f 49       		.uleb128 0x49
+ 366 0070 13       		.uleb128 0x13
+ 367 0071 02       		.uleb128 0x2
+ 368 0072 17       		.uleb128 0x17
+ 369 0073 00       		.byte	0
+ 370 0074 00       		.byte	0
+ 371 0075 09       		.uleb128 0x9
+ 372 0076 34       		.uleb128 0x34
+ 373 0077 00       		.byte	0
+ 374 0078 03       		.uleb128 0x3
+ 375 0079 0E       		.uleb128 0xe
+ 376 007a 3A       		.uleb128 0x3a
+ 377 007b 0B       		.uleb128 0xb
+ 378 007c 3B       		.uleb128 0x3b
+ 379 007d 0B       		.uleb128 0xb
+ 380 007e 49       		.uleb128 0x49
+ 381 007f 13       		.uleb128 0x13
+ 382 0080 02       		.uleb128 0x2
+ 383 0081 18       		.uleb128 0x18
+ 384 0082 00       		.byte	0
+ 385 0083 00       		.byte	0
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 9
+
+
+ 386 0084 0A       		.uleb128 0xa
+ 387 0085 0F       		.uleb128 0xf
+ 388 0086 00       		.byte	0
+ 389 0087 0B       		.uleb128 0xb
+ 390 0088 0B       		.uleb128 0xb
+ 391 0089 49       		.uleb128 0x49
+ 392 008a 13       		.uleb128 0x13
+ 393 008b 00       		.byte	0
+ 394 008c 00       		.byte	0
+ 395 008d 0B       		.uleb128 0xb
+ 396 008e 2E       		.uleb128 0x2e
+ 397 008f 01       		.byte	0x1
+ 398 0090 3F       		.uleb128 0x3f
+ 399 0091 19       		.uleb128 0x19
+ 400 0092 03       		.uleb128 0x3
+ 401 0093 0E       		.uleb128 0xe
+ 402 0094 3A       		.uleb128 0x3a
+ 403 0095 0B       		.uleb128 0xb
+ 404 0096 3B       		.uleb128 0x3b
+ 405 0097 0B       		.uleb128 0xb
+ 406 0098 27       		.uleb128 0x27
+ 407 0099 19       		.uleb128 0x19
+ 408 009a 49       		.uleb128 0x49
+ 409 009b 13       		.uleb128 0x13
+ 410 009c 11       		.uleb128 0x11
+ 411 009d 01       		.uleb128 0x1
+ 412 009e 12       		.uleb128 0x12
+ 413 009f 06       		.uleb128 0x6
+ 414 00a0 40       		.uleb128 0x40
+ 415 00a1 18       		.uleb128 0x18
+ 416 00a2 9742     		.uleb128 0x2117
+ 417 00a4 19       		.uleb128 0x19
+ 418 00a5 01       		.uleb128 0x1
+ 419 00a6 13       		.uleb128 0x13
+ 420 00a7 00       		.byte	0
+ 421 00a8 00       		.byte	0
+ 422 00a9 0C       		.uleb128 0xc
+ 423 00aa 34       		.uleb128 0x34
+ 424 00ab 00       		.byte	0
+ 425 00ac 03       		.uleb128 0x3
+ 426 00ad 0E       		.uleb128 0xe
+ 427 00ae 3A       		.uleb128 0x3a
+ 428 00af 0B       		.uleb128 0xb
+ 429 00b0 3B       		.uleb128 0x3b
+ 430 00b1 0B       		.uleb128 0xb
+ 431 00b2 49       		.uleb128 0x49
+ 432 00b3 13       		.uleb128 0x13
+ 433 00b4 02       		.uleb128 0x2
+ 434 00b5 17       		.uleb128 0x17
+ 435 00b6 00       		.byte	0
+ 436 00b7 00       		.byte	0
+ 437 00b8 0D       		.uleb128 0xd
+ 438 00b9 26       		.uleb128 0x26
+ 439 00ba 00       		.byte	0
+ 440 00bb 49       		.uleb128 0x49
+ 441 00bc 13       		.uleb128 0x13
+ 442 00bd 00       		.byte	0
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 10
+
+
+ 443 00be 00       		.byte	0
+ 444 00bf 00       		.byte	0
+ 445              		.section	.debug_loc,"",%progbits
+ 446              	.Ldebug_loc0:
+ 447              	.LLST0:
+ 448 0000 00000000 		.4byte	.LVL0
+ 449 0004 08000000 		.4byte	.LVL1
+ 450 0008 0100     		.2byte	0x1
+ 451 000a 51       		.byte	0x51
+ 452 000b 08000000 		.4byte	.LVL1
+ 453 000f 12000000 		.4byte	.LFE0
+ 454 0013 0400     		.2byte	0x4
+ 455 0015 F3       		.byte	0xf3
+ 456 0016 01       		.uleb128 0x1
+ 457 0017 51       		.byte	0x51
+ 458 0018 9F       		.byte	0x9f
+ 459 0019 00000000 		.4byte	0
+ 460 001d 00000000 		.4byte	0
+ 461              	.LLST1:
+ 462 0021 00000000 		.4byte	.LVL2
+ 463 0025 06000000 		.4byte	.LVL4
+ 464 0029 0100     		.2byte	0x1
+ 465 002b 50       		.byte	0x50
+ 466 002c 06000000 		.4byte	.LVL4
+ 467 0030 08000000 		.4byte	.LVL5
+ 468 0034 0100     		.2byte	0x1
+ 469 0036 53       		.byte	0x53
+ 470 0037 08000000 		.4byte	.LVL5
+ 471 003b 12000000 		.4byte	.LFE1
+ 472 003f 0400     		.2byte	0x4
+ 473 0041 F3       		.byte	0xf3
+ 474 0042 01       		.uleb128 0x1
+ 475 0043 50       		.byte	0x50
+ 476 0044 9F       		.byte	0x9f
+ 477 0045 00000000 		.4byte	0
+ 478 0049 00000000 		.4byte	0
+ 479              	.LLST2:
+ 480 004d 00000000 		.4byte	.LVL2
+ 481 0051 06000000 		.4byte	.LVL4
+ 482 0055 0100     		.2byte	0x1
+ 483 0057 50       		.byte	0x50
+ 484 0058 06000000 		.4byte	.LVL4
+ 485 005c 08000000 		.4byte	.LVL5
+ 486 0060 0100     		.2byte	0x1
+ 487 0062 53       		.byte	0x53
+ 488 0063 08000000 		.4byte	.LVL5
+ 489 0067 12000000 		.4byte	.LFE1
+ 490 006b 0400     		.2byte	0x4
+ 491 006d F3       		.byte	0xf3
+ 492 006e 01       		.uleb128 0x1
+ 493 006f 50       		.byte	0x50
+ 494 0070 9F       		.byte	0x9f
+ 495 0071 00000000 		.4byte	0
+ 496 0075 00000000 		.4byte	0
+ 497              	.LLST3:
+ 498 0079 04000000 		.4byte	.LVL3
+ 499 007d 06000000 		.4byte	.LVL4
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 11
+
+
+ 500 0081 0100     		.2byte	0x1
+ 501 0083 52       		.byte	0x52
+ 502 0084 06000000 		.4byte	.LVL4
+ 503 0088 08000000 		.4byte	.LVL5
+ 504 008c 0800     		.2byte	0x8
+ 505 008e 70       		.byte	0x70
+ 506 008f 00       		.sleb128 0
+ 507 0090 38       		.byte	0x38
+ 508 0091 24       		.byte	0x24
+ 509 0092 72       		.byte	0x72
+ 510 0093 00       		.sleb128 0
+ 511 0094 21       		.byte	0x21
+ 512 0095 9F       		.byte	0x9f
+ 513 0096 08000000 		.4byte	.LVL5
+ 514 009a 0A000000 		.4byte	.LVL6
+ 515 009e 1300     		.2byte	0x13
+ 516 00a0 70       		.byte	0x70
+ 517 00a1 00       		.sleb128 0
+ 518 00a2 08       		.byte	0x8
+ 519 00a3 FF       		.byte	0xff
+ 520 00a4 1A       		.byte	0x1a
+ 521 00a5 38       		.byte	0x38
+ 522 00a6 24       		.byte	0x24
+ 523 00a7 73       		.byte	0x73
+ 524 00a8 00       		.sleb128 0
+ 525 00a9 08       		.byte	0x8
+ 526 00aa FF       		.byte	0xff
+ 527 00ab 1A       		.byte	0x1a
+ 528 00ac 40       		.byte	0x40
+ 529 00ad 24       		.byte	0x24
+ 530 00ae 21       		.byte	0x21
+ 531 00af 72       		.byte	0x72
+ 532 00b0 00       		.sleb128 0
+ 533 00b1 21       		.byte	0x21
+ 534 00b2 9F       		.byte	0x9f
+ 535 00b3 00000000 		.4byte	0
+ 536 00b7 00000000 		.4byte	0
+ 537              		.section	.debug_aranges,"",%progbits
+ 538 0000 24000000 		.4byte	0x24
+ 539 0004 0200     		.2byte	0x2
+ 540 0006 00000000 		.4byte	.Ldebug_info0
+ 541 000a 04       		.byte	0x4
+ 542 000b 00       		.byte	0
+ 543 000c 0000     		.2byte	0
+ 544 000e 0000     		.2byte	0
+ 545 0010 00000000 		.4byte	.LFB0
+ 546 0014 12000000 		.4byte	.LFE0-.LFB0
+ 547 0018 00000000 		.4byte	.LFB1
+ 548 001c 12000000 		.4byte	.LFE1-.LFB1
+ 549 0020 00000000 		.4byte	0
+ 550 0024 00000000 		.4byte	0
+ 551              		.section	.debug_ranges,"",%progbits
+ 552              	.Ldebug_ranges0:
+ 553 0000 00000000 		.4byte	.LFB0
+ 554 0004 12000000 		.4byte	.LFE0
+ 555 0008 00000000 		.4byte	.LFB1
+ 556 000c 12000000 		.4byte	.LFE1
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 12
+
+
+ 557 0010 00000000 		.4byte	0
+ 558 0014 00000000 		.4byte	0
+ 559              		.section	.debug_line,"",%progbits
+ 560              	.Ldebug_line0:
+ 561 0000 77000000 		.section	.debug_str,"MS",%progbits,1
+ 561      02004400 
+ 561      00000201 
+ 561      FB0E0D00 
+ 561      01010101 
+ 562              	.LASF15:
+ 563 0000 76616C75 		.ascii	"value\000"
+ 563      6500
+ 564              	.LASF21:
+ 565 0006 43794765 		.ascii	"CyGetReg24\000"
+ 565      74526567 
+ 565      323400
+ 566              	.LASF20:
+ 567 0011 43795365 		.ascii	"CySetReg24\000"
+ 567      74526567 
+ 567      323400
+ 568              	.LASF14:
+ 569 001c 61646472 		.ascii	"addr\000"
+ 569      00
+ 570              	.LASF11:
+ 571 0021 666C6F61 		.ascii	"float\000"
+ 571      7400
+ 572              	.LASF19:
+ 573 0027 5C5C766D 		.ascii	"\\\\vmware-host\\Shared Folders\\Documents\\OneDriv"
+ 573      77617265 
+ 573      2D686F73 
+ 573      745C5368 
+ 573      61726564 
+ 574 0055 655C6379 		.ascii	"e\\cypress\\WA101\\ww101-shield\\firmware\\TestProg"
+ 574      70726573 
+ 574      735C5741 
+ 574      3130315C 
+ 574      77773130 
+ 575 0083 72616D34 		.ascii	"ram4M.cydsn\000"
+ 575      4D2E6379 
+ 575      64736E00 
+ 576              	.LASF1:
+ 577 008f 756E7369 		.ascii	"unsigned char\000"
+ 577      676E6564 
+ 577      20636861 
+ 577      7200
+ 578              	.LASF16:
+ 579 009d 746D7041 		.ascii	"tmpAddr\000"
+ 579      64647200 
+ 580              	.LASF5:
+ 581 00a5 6C6F6E67 		.ascii	"long unsigned int\000"
+ 581      20756E73 
+ 581      69676E65 
+ 581      6420696E 
+ 581      7400
+ 582              	.LASF3:
+ 583 00b7 73686F72 		.ascii	"short unsigned int\000"
+ 583      7420756E 
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 13
+
+
+ 583      7369676E 
+ 583      65642069 
+ 583      6E7400
+ 584              	.LASF12:
+ 585 00ca 646F7562 		.ascii	"double\000"
+ 585      6C6500
+ 586              	.LASF10:
+ 587 00d1 75696E74 		.ascii	"uint32\000"
+ 587      333200
+ 588              	.LASF8:
+ 589 00d8 756E7369 		.ascii	"unsigned int\000"
+ 589      676E6564 
+ 589      20696E74 
+ 589      00
+ 590              	.LASF7:
+ 591 00e5 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 591      206C6F6E 
+ 591      6720756E 
+ 591      7369676E 
+ 591      65642069 
+ 592              	.LASF18:
+ 593 00fc 47656E65 		.ascii	"Generated_Source\\PSoC4\\cyutils.c\000"
+ 593      72617465 
+ 593      645F536F 
+ 593      75726365 
+ 593      5C50536F 
+ 594              	.LASF6:
+ 595 011d 6C6F6E67 		.ascii	"long long int\000"
+ 595      206C6F6E 
+ 595      6720696E 
+ 595      7400
+ 596              	.LASF13:
+ 597 012b 63686172 		.ascii	"char\000"
+ 597      00
+ 598              	.LASF2:
+ 599 0130 73686F72 		.ascii	"short int\000"
+ 599      7420696E 
+ 599      7400
+ 600              	.LASF9:
+ 601 013a 75696E74 		.ascii	"uint8\000"
+ 601      3800
+ 602              	.LASF4:
+ 603 0140 6C6F6E67 		.ascii	"long int\000"
+ 603      20696E74 
+ 603      00
+ 604              	.LASF0:
+ 605 0149 7369676E 		.ascii	"signed char\000"
+ 605      65642063 
+ 605      68617200 
+ 606              	.LASF17:
+ 607 0155 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 607      43313120 
+ 607      352E342E 
+ 607      31203230 
+ 607      31363036 
+ 608 0188 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 608      20726576 
+ARM GAS  C:\Users\Alan\AppData\Local\Temp\ccRKQA4K.s 			page 14
+
+
+ 608      6973696F 
+ 608      6E203233 
+ 608      37373135 
+ 609 01bb 73202D66 		.ascii	"s -ffunction-sections -ffat-lto-objects\000"
+ 609      66756E63 
+ 609      74696F6E 
+ 609      2D736563 
+ 609      74696F6E 
+ 610              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

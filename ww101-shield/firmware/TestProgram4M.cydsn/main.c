@@ -1,7 +1,9 @@
 #include "project.h"
 #include "regmap.h"
 #include "u8g2.h"
+#include "testlimits.h"
 #include <stdio.h>
+
 
 dataSet_t pafeDataSet;
 #define PSOC_AFE_I2C (0x42)
@@ -12,6 +14,17 @@ u8x8_t u8x8;
 int16 A0,A1,A2; // hold the ADC values for the 3 ADC channels
 char buff[64];  // a global scratch buffer to hold sprintfs
 int bootloaderMode = 0; // the baseboard button toggles this flag
+
+// success = all buttons + dacValue + potMin <0.2 && potMax > 2.0 + alsMin < x && alsMax > x && humidity && temp
+#define SUCCESS_BUTTON_FLAG (1<<0)
+#define SUCCESS_DAC_FLAG (1<<1)
+#define SUCCESS_POT_FLAG (1<<2)
+#define SUCCESS_ALS_FLAG (1<<3)
+#define SUCCESS_HUMIDITY_FLAG (1<<4)
+#define SUCCESS_TEMP_FLAG (1<<5)
+
+#define SUCCESS_ALL (SUCCESS_BUTTON_FLAG | SUCCESS_DAC_FLAG | SUCCESS_POT_FLAG | SUCCESS_ALS_FLAG | SUCCESS_HUMIDITY_FLAG | SUCCESS_TEMP_FLAG) 
+uint32 success = 0;
 
 // A HAL function for the u8x8 library
 uint8_t u8x8_byte_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
@@ -166,6 +179,30 @@ void displayDataScreen2()
     
 }
 
+// This function displays the I2C Register map variable from the LED and Buttons
+void displayTestScreen()
+{
+    sprintf(buff,"Buttons  =  %s",((success&SUCCESS_BUTTON_FLAG)?"Pass":"Fail"));
+    u8x8_DrawString(&u8x8,0,2,buff);
+
+    sprintf(buff,"DAC      =  %s",((success&SUCCESS_DAC_FLAG)?"Pass":"Fail"));
+    u8x8_DrawString(&u8x8,0,3,buff);
+
+    sprintf(buff,"POT      =  %s",((success&SUCCESS_POT_FLAG)?"Pass":"Fail"));
+    u8x8_DrawString(&u8x8,0,4,buff);
+
+    sprintf(buff,"ALS      =  %s",((success&SUCCESS_ALS_FLAG)?"Pass":"Fail"));
+    u8x8_DrawString(&u8x8,0,5,buff);
+
+    sprintf(buff,"HUMIDITY =  %s",((success&SUCCESS_HUMIDITY_FLAG)?"Pass":"Fail"));
+    u8x8_DrawString(&u8x8,0,6,buff);
+
+    sprintf(buff,"TEMP     =  %s",((success&SUCCESS_TEMP_FLAG)?"Pass":"Fail"));
+    u8x8_DrawString(&u8x8,0,7,buff);
+
+    
+}
+
 
 // This typedef is used to hold a function pointer for the display function
 // and a subtitle for the screen
@@ -176,7 +213,8 @@ typedef struct DisplayFunction {
 
 // One entry per screen
 DisplayFunction displayFunctions[] = { 
-    {displayDataScreen1,"Test"},
+    {displayTestScreen,"Test"},
+    {displayDataScreen1,"Values"},
     {displayDataScreen0,"Base ADC"},
     {displayDataScreen2,"Buttons"}
 };
@@ -188,6 +226,7 @@ int currentScreen=0; // a counter of the current displayed screen
 // the calls the current display function
 void switchScreen()
 {
+    // 16 character wide screen
     int offset = (16-strlen(displayFunctions[currentScreen].title))/2;
     u8x8_ClearDisplay(&u8x8);
     u8x8_DrawString(&u8x8,1,0,"PSoC AFE Shield");
@@ -201,11 +240,75 @@ void switchScreen()
 // enables the shield to bootload (by not writing to the screen)
 void handleBaseSwitch()
 {
+    Timer_ClearInterrupt(Timer_INTR_MASK_TC);
     bootloaderMode = !bootloaderMode;
     Red_Write(bootloaderMode);
     SW1_ClearInterrupt();
 }
 
+void testParameters()
+{
+    float scratchFloat;
+    static uint8 success_seen_buttons = 0;
+    static float success_max_pot = TEST_LIMIT_POT_MIN;
+    static float success_min_pot = TEST_LIMIT_POT_MAX;
+    static float success_max_als = TEST_LIMIT_ALS_MIN;
+    static float success_min_als = TEST_LIMIT_ALS_MAX;
+
+        
+    // dac
+    if(currentScreen == 0)
+    {
+        scratchFloat = TEST_LIMIT_DAC - (float)ADC_CountsTo_mVolts(1,A1) / 1000.0;
+          
+        if(scratchFloat > -TEST_LIMIT_DAC_MAX_DIFF && scratchFloat < TEST_LIMIT_DAC_MAX_DIFF)
+        {
+            success |= SUCCESS_DAC_FLAG;
+        }
+    }
+        
+        // als
+    if(pafeDataSet.illuminance > success_max_als)
+        success_max_als = pafeDataSet.illuminance;
+        
+    if(pafeDataSet.illuminance < success_min_als)
+        success_min_als = pafeDataSet.illuminance;
+        
+    if(success_max_als > TEST_LIMIT_ALS_MAX && success_min_als < TEST_LIMIT_ALS_MIN)
+        success |= SUCCESS_ALS_FLAG;
+        
+        
+    // buttons
+    success_seen_buttons = success_seen_buttons | pafeDataSet.buttonVal;
+    if(success_seen_buttons == BVAL_ALL_MASK)
+        success |= SUCCESS_BUTTON_FLAG;
+        
+    // humidity
+    if(pafeDataSet.humidity > TEST_LIMIT_HUMIDITY_MIN && pafeDataSet.humidity < TEST_LIMIT_HUMIDITY_MAX)
+        success |= SUCCESS_HUMIDITY_FLAG;
+        
+        
+    // temperature
+    if(pafeDataSet.temperature > TEST_LIMIT_TEMP_MIN && pafeDataSet.temperature < TEST_LIMIT_TEMP_MAX)
+        success |= SUCCESS_TEMP_FLAG;
+            
+    // pot
+    scratchFloat = (float)A2/1000.0;
+    if(scratchFloat > success_max_pot)
+        success_max_pot = scratchFloat;
+        
+    if(scratchFloat < success_min_pot)
+        success_min_pot = scratchFloat;
+        
+    if(success_min_pot < TEST_LIMIT_POT_MIN && success_max_pot > TEST_LIMIT_POT_MAX)
+        success |= SUCCESS_POT_FLAG;
+        
+     // See if all of the tests have passed
+     if(success == SUCCESS_ALL)
+     {
+        Green_Write(0);
+     }
+}
 
 
 int main(void)
@@ -213,13 +316,16 @@ int main(void)
   
     CyGlobalIntEnable; /* Enable global interrupts. */
   
-    
     ADC_Start();
     ADC_StartConvert();
     I2C_Start();
+    CySysTickStart();
+    CySysTickSetCallback(0,sysTickISR);
+   
     
     SWISR_StartEx(handleBaseSwitch);
 
+    Timer_Start();
     // Initialize the U8 Display
     u8x8_Setup(&u8x8, u8x8_d_ssd1306_128x64_noname, u8x8_cad_ssd13xx_i2c, u8x8_byte_hw_i2c, psoc_gpio_and_delay_cb);
     u8x8_InitDisplay(&u8x8);  
@@ -228,9 +334,7 @@ int main(void)
    
     switchScreen(); // Display the screen for the first time
         
-    CySysTickStart();
-    CySysTickSetCallback(0,sysTickISR);
-   
+    
     // This structure is used to send the ezi2c register address + the dac value
     typedef CY_PACKED struct SendBuff {
         uint8 address;
@@ -239,27 +343,20 @@ int main(void)
     
     SendBuff_t sendBuff;
     sendBuff.address = 0; // Start in the first byte of the I2C register map
-    sendBuff.dacValue = 0.0; // star the dac at 0.0v
+    sendBuff.dacValue = TEST_LIMIT_DAC_MIN; // Start the dac at the minimum of the range
    
-
-
     // set the PSoC AFE EZI2C Read Pointer to 0
-    uint32 rval = I2C_I2CMasterSendStart(PSOC_AFE_I2C,I2C_I2C_WRITE_XFER_MODE);
-    if(rval != I2C_I2C_MSTR_NO_ERROR) // if something bad happens hang the device and turn on the green LED
-    {
-        Green_Write(0);
-        while(1);
-    }
+    I2C_I2CMasterSendStart(PSOC_AFE_I2C,I2C_I2C_WRITE_XFER_MODE);
     I2C_I2CMasterWriteByte(0);
     I2C_I2CMasterSendStop();
         
     for(;;)
     {
-        int b1Prev;
+        static int b1Prev=1;
         int b1State;
         
         // Read the values of the Analog Arduino Pins
-        if(ADC_IsEndConversion(ADC_RETURN_STATUS))
+        if(ADC_IsEndConversion(ADC_RETURN_STATUS)) // The three Arduino A inputs are connected to the channel 0,1,2
         {
             A0 = ADC_GetResult16(0);
             A1 = ADC_GetResult16(1);
@@ -267,15 +364,13 @@ int main(void)
         }
         
         // Handle the user button which switches screens
-        b1State = D3_Read();
+        b1State = SW1_Read();
         if(b1State == 0 && b1Prev == 1)
         {
             currentScreen = (currentScreen + 1) % NUM_SCREENS;
             switchScreen();
         }
         b1Prev = b1State;
-      
-        
         
         // Read the PSoC AFE Shield I2C Register Map
         I2C_I2CMasterReadBuf(PSOC_AFE_I2C,(uint8 *)&pafeDataSet,sizeof(pafeDataSet),I2C_I2C_MODE_COMPLETE_XFER);
@@ -287,22 +382,27 @@ int main(void)
             updateData = 0;
             (*displayFunctions[currentScreen].fcn)(); // Update the display
             
-            
             // Update Dac Value
-            sendBuff.dacValue = sendBuff.dacValue + 0.1;
-            if(sendBuff.dacValue > 2.1)
-                sendBuff.dacValue = 0.0;
+            if(currentScreen == 0) // if you are on the test screen set the DAC to the test limit value
+                sendBuff.dacValue = TEST_LIMIT_DAC;
+            else
+                 sendBuff.dacValue = sendBuff.dacValue + 0.1;
+               
+           
+            if(sendBuff.dacValue > TEST_LIMIT_DAC_MAX)
+                sendBuff.dacValue = TEST_LIMIT_DAC_MIN;
         
             // Send the updated DAC value
             I2C_I2CMasterWriteBuf(PSOC_AFE_I2C,(uint8 *)&sendBuff,sizeof(sendBuff),I2C_I2C_MODE_COMPLETE_XFER);
             while (0u == (I2C_I2CMasterStatus() & I2C_I2C_MSTAT_WR_CMPLT));
-   
         }
+        
+        testParameters();
         
         while(bootloaderMode) // Disable all I2C traffic so PSoc AFE can bootload
         {
             CyDelay(100);
             Red_Write(~Red_Read());
-        }
+        }     
     }
 }
