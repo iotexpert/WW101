@@ -55,16 +55,16 @@ wiced_result_t aws_app_init( aws_app_info_t *app_info )
 
     for ( int i = 0; i < 25; i++ )
     {
-        wiced_gpio_output_high( WICED_LED2 );
+        wiced_gpio_output_high( WICED_SH_LED1 );
         wiced_rtos_delay_milliseconds( 100 );
-        wiced_gpio_output_low( WICED_LED2 );
+        wiced_gpio_output_low( WICED_SH_LED1 );
         wiced_rtos_delay_milliseconds( 100 );
 
-        if ( !wiced_gpio_input_get( WICED_BUTTON1 ) )
+        if ( !wiced_gpio_input_get( WICED_SH_MB1 ) )
         {
             wiced_rtos_delay_milliseconds( 5000 );
 
-            if ( !wiced_gpio_input_get( WICED_BUTTON1 ) )
+            if ( !wiced_gpio_input_get( WICED_SH_MB1 ) )
             {
                 aws_config_dct_t aws_dct =
                 {
@@ -72,11 +72,11 @@ wiced_result_t aws_app_init( aws_app_info_t *app_info )
                     .thing_name = AWS_DEFAULT_THING_NAME
                 };
 
-                wiced_gpio_output_high( WICED_LED1 );
+                wiced_gpio_output_high( WICED_SH_LED0 );
                 WPRINT_APP_INFO(( "DCT clearing start\n" ));
                 wiced_dct_write( &aws_dct, DCT_APP_SECTION, 0, sizeof( aws_config_dct_t ) );
                 wiced_rtos_delay_milliseconds( 1000 );
-                wiced_gpio_output_low( WICED_LED1 );
+                wiced_gpio_output_low( WICED_SH_LED0 );
                 WPRINT_APP_INFO(( "DCT clearing end\n" ));
 
                 break;

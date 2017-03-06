@@ -1,18 +1,40 @@
 /*
- * Broadcom Proprietary and Confidential. Copyright 2016 Broadcom
- * All Rights Reserved.
+ * Copyright 2017, Cypress Semiconductor Corporation or a subsidiary of
+ * Cypress Semiconductor Corporation. All Rights Reserved.
  *
- * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
- * the contents of this file may not be disclosed to third parties, copied
- * or duplicated in any form, in whole or in part, without the prior
- * written permission of Broadcom Corporation.
+ * This software, associated documentation and materials ("Software"),
+ * is owned by Cypress Semiconductor Corporation
+ * or one of its subsidiaries ("Cypress") and is protected by and subject to
+ * worldwide patent protection (United States and foreign),
+ * United States copyright laws and international treaty provisions.
+ * Therefore, you may use this Software only as provided in the license
+ * agreement accompanying the software package from which you
+ * obtained this Software ("EULA").
+ * If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
+ * non-transferable license to copy, modify, and compile the Software
+ * source code solely for use in connection with Cypress's
+ * integrated circuit products. Any reproduction, modification, translation,
+ * compilation, or representation of this Software except as specified
+ * above is prohibited without the express written permission of Cypress.
+ *
+ * Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
+ * reserves the right to make changes to the Software without notice. Cypress
+ * does not assume any liability arising out of the application or use of the
+ * Software or any product or circuit described in the Software. Cypress does
+ * not authorize its products for use in any products where a malfunction or
+ * failure of the Cypress product may reasonably be expected to result in
+ * significant property damage, injury or death ("High Risk Product"). By
+ * including Cypress's product in a High Risk Product, the manufacturer
+ * of such system or application assumes all risk of such use and in doing
+ * so agrees to indemnify Cypress against all liability.
  */
 
 /** @file
  *
  */
 
-#include "../06_shadow/aws_config.h"
 #include <stdlib.h>
 #include <string.h>
 #include "wiced.h"
@@ -24,6 +46,7 @@
 #include "wiced_network.h"
 #include "wiced_framework.h"
 #include "wiced_wps.h"
+#include "aws_config.h"
 
 #ifdef USE_HTTPS
 #include "wiced_tls.h"
@@ -53,7 +76,7 @@
 static const wiced_wps_device_detail_t wps_details =
 {
     .device_name               = PLATFORM,
-    .manufacturer              = "Broadcom",
+    .manufacturer              = "Cypress",
     .model_name                = PLATFORM,
     .model_number              = "2.0",
     .serial_number             = "1408248",
@@ -117,10 +140,10 @@ static wiced_result_t scan_handler              ( wiced_scan_handler_result_t* m
  */
 START_OF_HTTP_PAGE_DATABASE(config_http_page_database)
     ROOT_HTTP_PAGE_REDIRECT("/config/device_settings.html"),
-    { "/images/brcmlogo.png",            "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_brcmlogo_png,      },
-    { "/images/brcmlogo_line.png",       "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_brcmlogo_line_png, },
-    { "/wpad.dat",                       "application/x-ns-proxy-autoconfig", WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_scripts_DIR_wpad_dat,         },
-    { "/scan_results.txt",               "text/plain",                        WICED_DYNAMIC_URL_CONTENT,    .url_content.dynamic_data   = {process_scan,                  0 }          },
+    { "/images/cypresslogo.png",         "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_cypresslogo_png,        },
+    { "/images/cypresslogo_line.png",    "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_cypresslogo_line_png,   },
+    { "/wpad.dat",                       "application/x-ns-proxy-autoconfig", WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_scripts_DIR_wpad_dat,              },
+    { "/scan_results.txt",               "text/plain",                        WICED_DYNAMIC_URL_CONTENT,    .url_content.dynamic_data   = {process_scan,                  0 }           },
     { "/images/64_0bars.png",            "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_64_0bars_png,           },
     { "/images/64_1bars.png",            "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_64_1bars_png,           },
     { "/images/64_2bars.png",            "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_64_2bars_png,           },
@@ -137,8 +160,8 @@ START_OF_HTTP_PAGE_DATABASE(config_http_page_database)
     { "/images/wps_icon.png",            "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_wps_icon_png,           },
     { "/images/scan_icon.png",           "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_scan_icon_png,          },
     { "/images/favicon.ico",             "image/vnd.microsoft.icon",          WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_favicon_ico,            },
-    { "/images/brcmlogo.png",            "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_brcmlogo_png,           },
-    { "/images/brcmlogo_line.png",       "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_brcmlogo_line_png,      },
+    { "/images/cypresslogo.png",         "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_cypresslogo_png,        },
+    { "/images/cypresslogo_line.png",    "image/png",                         WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_images_DIR_cypresslogo_line_png,   },
     { "/styles/buttons.css",             "text/css",                          WICED_RESOURCE_URL_CONTENT,   .url_content.resource_data  = &resources_styles_DIR_buttons_css,            },
     { "/connect",                        "text/html",                         WICED_DYNAMIC_URL_CONTENT,    .url_content.dynamic_data   = {process_connect,               0 }           },
     { "/wps_go",                         "text/html",                         WICED_DYNAMIC_URL_CONTENT,    .url_content.dynamic_data   = {process_wps_go,                0 }           },

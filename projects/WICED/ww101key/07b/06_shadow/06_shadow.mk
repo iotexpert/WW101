@@ -22,8 +22,8 @@ $(NAME)_COMPONENTS := protocols/MQTT \
 
 $(NAME)_RESOURCES  := apps/aws_iot/rootca.cer
 
-$(NAME)_RESOURCES += images/brcmlogo.png \
-                     images/brcmlogo_line.png \
+$(NAME)_RESOURCES += images/cypresslogo.png \
+                     images/cypresslogo_line.png \
                      images/favicon.ico \
                      images/scan_icon.png \
                      images/wps_icon.png \
@@ -48,12 +48,3 @@ $(NAME)_COMPONENTS += daemons/HTTP_server \
                       daemons/DNS_redirect \
                       protocols/DNS
 
-VALID_PLATFORMS := BCM943362WCD4 \
-                   BCM943362WCD6 \
-                   BCM943362WCD8 \
-                   BCM943364WCD1 \
-                   BCM94343WWCD1 \
-                   BCM943438WCD1 \
-                   BCM94343WWCD2 \
-                   BCM94343W_AVN \
-                   BCM943907AEVAL1F
