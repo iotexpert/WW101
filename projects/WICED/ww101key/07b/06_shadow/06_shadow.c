@@ -42,7 +42,7 @@
  **/
 
 #include "../06_shadow/aws_common.h"
-#include "../07_shadow/aws_config.h"
+#include "../06_shadow/aws_config.h"
 #include "wiced.h"
 #include "mqtt_api.h"
 #include "resources.h"
@@ -155,7 +155,7 @@ void application_start( void )
 
     wiced_JSON_parser_register_callback(parse_json_shadow_status);
 
-    wiced_gpio_input_irq_enable( WICED_BUTTON1, IRQ_TRIGGER_RISING_EDGE, setpoint_control_keypad_handler, NULL );
+    wiced_gpio_input_irq_enable( WICED_SH_MB1, IRQ_TRIGGER_RISING_EDGE, setpoint_control_keypad_handler, NULL );
 
     do
     {
@@ -177,14 +177,14 @@ void application_start( void )
         /* Toggle the LED */
         if ( strcasecmp( led_status, "ON" ) == 0 )
         {
-            wiced_gpio_output_low( WICED_LED1 );
+            wiced_gpio_output_low( WICED_SH_LED1 );
             led_status = "OFF";
             strcpy(req_led_status, led_status);
             aws_mqtt_app_publish( app_info.mqtt_object, WICED_MQTT_QOS_DELIVER_AT_LEAST_ONCE, (uint8_t*)app_info.shadow_state_topic, (uint8_t*)SHADOW_PUBLISH_MESSAGE_STR_OFF_DESIRED_AND_REPORTED ,sizeof(SHADOW_PUBLISH_MESSAGE_STR_OFF_DESIRED_AND_REPORTED) );
         }
         else
         {
-            wiced_gpio_output_high( WICED_LED1 );
+            wiced_gpio_output_high( WICED_SH_LED1 );
             led_status = "ON";
             strcpy(req_led_status, led_status);
             aws_mqtt_app_publish( app_info.mqtt_object, WICED_MQTT_QOS_DELIVER_AT_LEAST_ONCE, (uint8_t*)app_info.shadow_state_topic, (uint8_t*)SHADOW_PUBLISH_MESSAGE_STR_ON_DESIRED_AND_REPORTED ,sizeof(SHADOW_PUBLISH_MESSAGE_STR_ON_DESIRED_AND_REPORTED) );

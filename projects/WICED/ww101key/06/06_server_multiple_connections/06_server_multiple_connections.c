@@ -105,18 +105,31 @@ static const wiced_ip_setting_t ip_settings =
 // file. If it is NOT setup as a station, then the server starts an access point using the soft AP
 // settings from the wifi_config_dct.h file.
 //
-// Therefore, if you have an existing access point that you want the server to connect to,
-// uncomment the next line. If you do NOT have an existing access point and want the
-// server to act as the access point, then comment out the next line.
-#define USE_STA
+#define USE_STA 		(0)
+#define USE_AP  		(1)
+#define USE_ETHERNET 	(2)
 
-#ifdef USE_STA
+// The options for the NETWORK_TYPE define are:
+//     USE_STA (connect to an existing Wi-Fi access point as specified in the DCT)
+//     USE_AP  (create an access point as specified in the DCT that the clients can connect to)
+//     USE_ETHERNET (connect via an ethernet cable)
+#define NETWORK_TYPE USE_ETHERNET
+
+#if (NETWORK_TYPE == USE_STA)
 #define INTERFACE WICED_STA_INTERFACE
 #define DHCP_MODE WICED_USE_STATIC_IP
-#else
+#endif
+
+#if (NETWORK_TYPE == USE_AP)
 #define INTERFACE WICED_AP_INTERFACE
 #define DHCP_MODE WICED_USE_INTERNAL_DHCP_SERVER
 #endif
+
+#if (NETWORK_TYPE == USE_ETHERNET)
+#define INTERFACE WICED_ETHERNET_INTERFACE
+#define DHCP_MODE WICED_USE_STATIC_IP
+#endif
+
 
 // Main application thread which is started by the RTOS after boot
 void application_start(void)

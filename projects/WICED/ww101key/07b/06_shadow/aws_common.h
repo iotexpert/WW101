@@ -12,7 +12,7 @@
  *
  */
 
-#include "../../../wa101/07b/06_shadow/aws_config.h"
+#include "../../../ww101key/07b/06_shadow/aws_config.h"
 #include "wiced.h"
 #include "mqtt_api.h"
 #include "resources.h"
@@ -29,7 +29,7 @@ extern "C" {
  *                      Macros
  ******************************************************/
 
-#define AWS_IOT_HOST_NAME                   "a3ug7eqhjj06qg.iot.us-east-1.amazonaws.com"
+#define AWS_IOT_HOST_NAME                   "amk6m51qrxr2u.iot.us-east-1.amazonaws.com"
 #define MQTT_REQUEST_TIMEOUT                (5000)
 #define MQTT_DELAY_IN_MILLISECONDS          (1000)
 #define MQTT_MAX_RESOURCE_SIZE              (0x7fffffff)
