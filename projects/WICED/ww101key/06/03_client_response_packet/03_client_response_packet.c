@@ -106,7 +106,7 @@ void buttonThreadMain()
 
     // Setup the Semaphore and Button Interrupt
 	wiced_rtos_init_semaphore(&button_semaphore); // the semaphore unlocks when the user presses the button
-    wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL); // call the ISR when the button is pressed
+    wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL); // call the ISR when the button is pressed
 
     WPRINT_APP_INFO(("Starting Main Loop\n"));
 
@@ -114,11 +114,11 @@ void buttonThreadMain()
 	while(1)
 	{
 		wiced_rtos_get_semaphore(&button_semaphore,WICED_WAIT_FOREVER);
-	    wiced_gpio_output_low( WICED_LED1 );
+	    wiced_gpio_output_low( WICED_SH_LED1 );
 	    sendData(0);
 		wiced_rtos_get_semaphore(&button_semaphore,WICED_WAIT_FOREVER);
 		sendData(1);
-		wiced_gpio_output_high( WICED_LED1 );
+		wiced_gpio_output_high( WICED_SH_LED1 );
 	}
 }
 

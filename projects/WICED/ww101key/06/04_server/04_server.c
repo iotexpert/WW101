@@ -105,25 +105,29 @@ static const wiced_ip_setting_t ip_settings =
 // file. If it is NOT setup as a station, then the server starts an access point using the soft AP
 // settings from the wifi_config_dct.h file.
 //
-// The options for this define are:
+#define USE_STA 		(0)
+#define USE_AP  		(1)
+#define USE_ETHERNET 	(2)
+
+// The options for the NETWORK_TYPE define are:
 //     USE_STA (connect to an existing Wi-Fi access point as specified in the DCT)
 //     USE_AP  (create an access point as specified in the DCT that the clients can connect to)
 //     USE_ETHERNET (connect via an ethernet cable)
-#define NETWORK_TYPE USE_ETHERNENT
+#define NETWORK_TYPE USE_STA
 
 #if (NETWORK_TYPE == USE_STA)
-#define INTERFACE WICED_STA_INTERFACE
-#define DHCP_MODE WICED_USE_STATIC_IP
+	#define INTERFACE WICED_STA_INTERFACE
+	#define DHCP_MODE WICED_USE_STATIC_IP
 #endif
 
 #if (NETWORK_TYPE == USE_AP)
-#define INTERFACE WICED_AP_INTERFACE
-#define DHCP_MODE WICED_USE_INTERNAL_DHCP_SERVER
+	#define INTERFACE WICED_AP_INTERFACE
+	#define DHCP_MODE WICED_USE_INTERNAL_DHCP_SERVER
 #endif
 
 #if (NETWORK_TYPE == USE_ETHERNET)
-#define INTERFACE WICED_ETHERNET_INTERFACE
-#define DHCP_MODE WICED_USE_STATIC_IP
+	#define INTERFACE WICED_ETHERNET_INTERFACE
+	#define DHCP_MODE WICED_USE_STATIC_IP
 #endif
 
 // Main application thread which is started by the RTOS after boot
@@ -144,9 +148,9 @@ void application_start(void)
 	// just blink the led while the whole thing is running
 	while(1)
 	{
-		wiced_gpio_output_low( WICED_LED1 );
+		wiced_gpio_output_low( WICED_SH_LED1 );
 		wiced_rtos_delay_milliseconds( 250 );
-		wiced_gpio_output_high( WICED_LED1 );
+		wiced_gpio_output_high( WICED_SH_LED1 );
 		wiced_rtos_delay_milliseconds( 250 );
 	}
 }

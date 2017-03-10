@@ -65,26 +65,12 @@ void application_start( )
         	/* Blink Green */
         	if ( led == WICED_TRUE )
         	{
-        		wiced_gpio_output_low( WICED_LED1 );
+        		wiced_gpio_output_low( WICED_SH_LED1 );
         		led = WICED_FALSE;
         	}
         	else
         	{
-        		wiced_gpio_output_high( WICED_LED1 );
-        		led = WICED_TRUE;
-        	}
-        }
-        else
-        {
-        	/* Blink Red */
-        	if ( led == WICED_TRUE )
-        	{
-        		wiced_gpio_output_low( WICED_LED2 );
-        		led = WICED_FALSE;
-        	}
-        	else
-        	{
-        		wiced_gpio_output_high( WICED_LED2 );
+        		wiced_gpio_output_high( WICED_SH_LED1 );
         		led = WICED_TRUE;
         	}
         }
