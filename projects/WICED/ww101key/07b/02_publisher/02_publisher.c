@@ -281,6 +281,7 @@ void application_start( void )
                 {
                     msg = MSG_OFF;
                 }
+                retries = 0; // reset retries to 0 before going into the loop so that the next publish after a failure will still work
                 do
                 {
                     ret = mqtt_app_publish( mqtt_object, WICED_MQTT_QOS_DELIVER_AT_LEAST_ONCE, (uint8_t*) WICED_TOPIC, (uint8_t*) msg, strlen( msg ) );
@@ -302,6 +303,8 @@ void application_start( void )
 
             wiced_rtos_delay_milliseconds( 100 );
         }
+
+        pub_in_progress = 0; // Reset flag if we got a failure so that another button push is needed after a failre
 
         WPRINT_APP_INFO(("[MQTT] Closing connection..."));
         mqtt_conn_close( mqtt_object );
