@@ -84,14 +84,14 @@ void application_start( )
     wiced_rtos_init_mutex(&printMutexHandle);
 
 	/* Initialize and start threads */
-    wiced_rtos_create_thread(&led1ThreadHandle, 11, "led1Thread", led1Thread, THREAD_STACK_SIZE, NULL);
-    wiced_rtos_create_thread(&led0ThreadHandle, 12, "led0Thread", led0Thread, THREAD_STACK_SIZE, NULL);
+    wiced_rtos_create_thread(&led1ThreadHandle, THREAD_PRIORITY, "led1Thread", led1Thread, THREAD_STACK_SIZE, NULL);
+    wiced_rtos_create_thread(&led0ThreadHandle, THREAD_PRIORITY, "led0Thread", led0Thread, THREAD_STACK_SIZE, NULL);
 
 
 
     while ( 1 )
     {
-		wiced_rtos_delay_milliseconds( 1 ); /* The main application loop has to have something in it for the Thread to work */
+		wiced_rtos_delay_milliseconds( 1 ); /* The main application loop has to have something in it for the Threads to get a turn */
 
     }
 }

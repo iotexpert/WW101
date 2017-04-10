@@ -1,7 +1,7 @@
 // Use a PWM to adjust the brightness of  LED1
 #include "wiced.h"
 
-#define PWM_PIN WICED_PWM_4
+#define PWM_PIN WICED_PWM_5
 
 void application_start( )
 {

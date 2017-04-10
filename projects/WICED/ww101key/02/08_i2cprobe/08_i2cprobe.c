@@ -25,7 +25,7 @@ void application_start( )
 
     /* Setup I2C master device structure */
     wiced_i2c_device_t i2cDevice = {
-    	.port = WICED_I2C_1,
+    	.port = WICED_I2C_2,
 		.address = i2cAddress,
 		.address_width = I2C_ADDRESS_WIDTH_7BIT,
 		.speed_mode = I2C_STANDARD_SPEED_MODE

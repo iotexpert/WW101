@@ -117,7 +117,7 @@ static const wiced_ip_setting_t ip_settings =
 //     USE_STA (connect to an existing Wi-Fi access point as specified in the DCT)
 //     USE_AP  (create an access point as specified in the DCT that the clients can connect to)
 //     USE_ETHERNET (connect via an ethernet cable)
-#define NETWORK_TYPE USE_STA
+#define NETWORK_TYPE USE_ETHERNET
 
 #if (NETWORK_TYPE == USE_STA)
 #define INTERFACE WICED_STA_INTERFACE
@@ -154,7 +154,6 @@ void application_start(void)
 
 static void tcp_server_thread_main(uint32_t arg)
 {
-
 	wiced_result_t result;
 
 	// setup the server by creating the socket and hooking it to the correct TCP Port

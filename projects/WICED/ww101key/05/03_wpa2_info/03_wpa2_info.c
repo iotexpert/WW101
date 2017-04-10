@@ -13,8 +13,8 @@
 void printIp(wiced_ip_address_t ipV4address)
 {
     WPRINT_APP_INFO(("%d.%d.%d.%d\r\n",
-               (int)((ipV4address.ip.v4 >> 24) & 0xFF), (int)((ipV4address.ip.v4 >> 16) & 0xFF),
-               (int)((ipV4address.ip.v4 >> 8) & 0xFF),  (int)(ipV4address.ip.v4 & 0xFF)));
+            (int)((ipV4address.ip.v4 >> 24) & 0xFF), (int)((ipV4address.ip.v4 >> 16) & 0xFF),
+            (int)((ipV4address.ip.v4 >> 8) & 0xFF),  (int)(ipV4address.ip.v4 & 0xFF)));
 }
 
 void application_start( )

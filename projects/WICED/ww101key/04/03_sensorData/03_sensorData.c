@@ -12,7 +12,7 @@ void application_start()
 	/* Initialize the OLED display */
 	wiced_i2c_device_t display_i2c =
     {
-        .port          = WICED_I2C_1,
+        .port          = WICED_I2C_2,
         .address       = 0x3C,
         .address_width = I2C_ADDRESS_WIDTH_7BIT,
         .flags         = 0,
@@ -29,7 +29,7 @@ void application_start()
 
     /* Initialize PSoC analog co-processor I2C interface and set the offset */
     const wiced_i2c_device_t psoc_i2c = {
-    	.port 			= WICED_I2C_1,
+    	.port 			= WICED_I2C_2,
 		.address 		= 0x42,
 		.address_width 	= I2C_ADDRESS_WIDTH_7BIT,
 		.speed_mode 	= I2C_STANDARD_SPEED_MODE

@@ -109,7 +109,7 @@ void application_start()
 {
     wiced_i2c_device_t oled_display =
     {
-        .port          = WICED_I2C_1,
+        .port          = WICED_I2C_2,
         .address       = 0x3C,
         .address_width = I2C_ADDRESS_WIDTH_7BIT,
         .flags         = 0,

@@ -35,7 +35,7 @@ void sendData(int data)
 	wiced_packet_t* tx_packet;
     uint8_t *tx_data;
     uint16_t available_data_length;
-    wiced_result_t result;
+	wiced_result_t result;
 
     // format the data per the specification in section 6
 	sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
