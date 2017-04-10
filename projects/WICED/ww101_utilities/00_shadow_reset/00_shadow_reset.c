@@ -38,15 +38,25 @@
 /******************************************************
  *                      Macros
  ******************************************************/
+// Broker address for the class server
 #define MQTT_BROKER_ADDRESS                 "amk6m51qrxr2u.iot.us-east-1.amazonaws.com"
-#define WICED_TOPIC                         "GJL_TestTopic"
-#define CLIENT_ID                           "wiced_publisher_aws_GJL"
+// Topic used to update the shadow
+#define WICED_TOPIC                         "$aws/things/ww101_30/shadow/update"
+#define TOPIC_HEAD							"$aws/things/ww101_"
+#define TOPIC_DELETE						"/shadow/delete"
+#define TOPIC_UPDATE						"/shadow/update"
+#define CLIENT_ID                           "wiced_publisher_aws"
 #define MQTT_REQUEST_TIMEOUT                (5000)
 #define MQTT_DELAY_IN_MILLISECONDS          (1000)
 #define MQTT_MAX_RESOURCE_SIZE              (0x7fffffff)
 #define MQTT_PUBLISH_RETRY_COUNT            (3)
-#define MSG_ON                              "LIGHT ON"
-#define MSG_OFF                             "LIGHT OFF"
+#define MSG_SHADOW                          "{\"state\" : {\"reported\" : {\"temperature\":0.0,\"humidity\":0.0,\"weatherAlert\":false,\"IPAddress\":\"0.0.0.0\"} } }"
+/* The queue messages will be 4 bytes each (a 32 bit integer) */
+#define MESSAGE_SIZE		(4)
+#define QUEUE_SIZE			(100)
+/* UART Thread parameters */
+#define THREAD_PRIORITY 	(10)
+#define THREAD_STACK_SIZE	(1024)
 
 /******************************************************
  *               Variable Definitions
@@ -54,19 +64,60 @@
 static wiced_ip_address_t                   broker_address;
 static wiced_mqtt_event_type_t              expected_event;
 static wiced_semaphore_t                    msg_semaphore;
-static wiced_semaphore_t                    wake_semaphore;
+static wiced_queue_t                    	wake_queue;
+static uint32_t 							queue_msg;
+static wiced_thread_t						uartThreadHandle;
 static wiced_mqtt_security_t                security;
-static uint8_t                              pub_in_progress = 0;
 
 /******************************************************
  *               Static Function Definitions
  ******************************************************/
-static void publish_callback( void* arg )
+static void uartThread( wiced_thread_arg_t arg )
 {
-    if(pub_in_progress == 0)
+	char     receiveChar;
+    uint32_t expected_data_size = 1;
+	char     bytesReceived[2];
+    uint8_t  counter = 0;
+
+	while (1)
     {
-        pub_in_progress = 1;
-        wiced_rtos_set_semaphore( &wake_semaphore );
+		// Get UART data and echo back to terminal
+		if ( wiced_uart_receive_bytes( STDIO_UART, &receiveChar, &expected_data_size, WICED_NEVER_TIMEOUT ) == WICED_SUCCESS )
+		{
+    		//Echo character back to terminal
+			wiced_uart_transmit_bytes(STDIO_UART, &receiveChar , 1);
+			bytesReceived[counter] = receiveChar;
+			counter++;
+			if(counter == 2) // If we have 2 characters from the UART, check to see if they are valid
+			{
+				WPRINT_APP_INFO(("\n")); // Carriage return after the number is printed
+				counter = 0;
+				// Look for reset all command
+				if(bytesReceived[0] == '*' && bytesReceived[1] == '*')
+				{
+					// Reset all - fill queue with all things
+					for(uint8_t i=0; i <= 4 ; i++)
+					{
+						for(uint8_t j=0; j <= 9 ; j++)
+						{
+							queue_msg = ((i+'0') << 8) + (j+'0');
+							wiced_rtos_push_to_queue(&wake_queue, &queue_msg, WICED_NEVER_TIMEOUT);
+						}
+					}
+				}
+				// Look for single valid command
+				else if(bytesReceived[0] <= '9' && bytesReceived[0] >= '0' && bytesReceived[1] <= '9' && bytesReceived[1] >= '0')
+				{
+					queue_msg = (bytesReceived[0] << 8) + bytesReceived[1];
+					wiced_rtos_push_to_queue(&wake_queue, &queue_msg, WICED_NEVER_TIMEOUT);
+				}
+				else
+				{
+					WPRINT_APP_INFO(("Invalid Thing Number\n"));
+				}
+			}
+		}
+		wiced_rtos_delay_milliseconds(10);
     }
 }
 
@@ -189,8 +240,8 @@ void application_start( void )
     uint32_t              size_out = 0;
     int                   connection_retries = 0;
     int                   retries = 0;
-    int                   count = 0;
-    char*                 msg = MSG_OFF;
+    char*                 msg = MSG_SHADOW;
+    char			  	  topic[50];
 
     wiced_init( );
 
@@ -245,9 +296,12 @@ void application_start( void )
         return;
     }
 
-    wiced_rtos_init_semaphore( &wake_semaphore );
+    wiced_rtos_init_queue( &wake_queue, "Wake_Queue", MESSAGE_SIZE, QUEUE_SIZE );
     wiced_mqtt_init( mqtt_object );
     wiced_rtos_init_semaphore( &msg_semaphore );
+
+    // UART thread
+    wiced_rtos_create_thread(&uartThreadHandle, THREAD_PRIORITY, "rtos_thread", uartThread, THREAD_STACK_SIZE, NULL);
 
     do
     {
@@ -264,47 +318,57 @@ void application_start( void )
             break;
         }
         WPRINT_APP_INFO(("Success\n"));
+
+        WPRINT_APP_INFO(("Enter 2-digit number of the thing shadow to reset or ** to reset all\n"));
         /* configure push button to publish a message */
-        wiced_gpio_input_irq_enable( WICED_SH_MB1, IRQ_TRIGGER_RISING_EDGE, publish_callback, NULL );
+        //GJL wiced_gpio_input_irq_enable( WICED_BUTTON1, IRQ_TRIGGER_RISING_EDGE, publish_callback, NULL );
 
         while ( 1 )
         {
-            wiced_rtos_get_semaphore( &wake_semaphore, WICED_NEVER_TIMEOUT );
-            if ( pub_in_progress == 1 )
-            {
-                WPRINT_APP_INFO(("[MQTT] Publishing..."));
-                if ( count % 2 )
-                {
-                    msg = MSG_ON;
-                }
-                else
-                {
-                    msg = MSG_OFF;
-                }
-                retries = 0; // reset retries to 0 before going into the loop so that the next publish after a failure will still work
-                do
-                {
-                    ret = mqtt_app_publish( mqtt_object, WICED_MQTT_QOS_DELIVER_AT_LEAST_ONCE, (uint8_t*) WICED_TOPIC, (uint8_t*) msg, strlen( msg ) );
-                    retries++ ;
-                } while ( ( ret != WICED_SUCCESS ) && ( retries < MQTT_PUBLISH_RETRY_COUNT ) );
-                if ( ret != WICED_SUCCESS )
-                {
-                    WPRINT_APP_INFO((" Failed\n"));
-                    break;
-                }
-                else
-                {
-                    WPRINT_APP_INFO((" Success\n"));
-                }
+            wiced_rtos_pop_from_queue(&wake_queue, &queue_msg, WICED_NEVER_TIMEOUT);
 
-                pub_in_progress = 0;
-                count++ ;
-            }
+			char char1 = (char) ((queue_msg & 0x0000FF00) >> 8);
+			char char2 = (char) (queue_msg & 0x000000FF);
+			WPRINT_APP_INFO(("[MQTT] Deleting Existing Shadow for  ww101_%c%c ...",char1,char2));
+
+			//Create the topic string to delete the existing shadow
+			sprintf(topic, "%s%c%c%s", TOPIC_HEAD,char1,char2,TOPIC_DELETE);
+			do
+			{
+				ret = mqtt_app_publish( mqtt_object, WICED_MQTT_QOS_DELIVER_AT_LEAST_ONCE, (uint8_t*) topic, (uint8_t*) msg, strlen( msg ) );
+				retries++ ;
+			} while ( ( ret != WICED_SUCCESS ) && ( retries < MQTT_PUBLISH_RETRY_COUNT ) );
+			if ( ret != WICED_SUCCESS )
+			{
+				WPRINT_APP_INFO((" Failed\n"));
+				break;
+			}
+			else
+			{
+				WPRINT_APP_INFO((" Success\n"));
+			}
+
+			WPRINT_APP_INFO(("[MQTT] Installing Default Shadow for ww101_%c%c ...",char1,char2));
+
+			//Create the topic string to update the shadow to the default
+			sprintf(topic, "%s%c%c%s", TOPIC_HEAD,char1,char2,TOPIC_UPDATE);
+			do
+			{
+				ret = mqtt_app_publish( mqtt_object, WICED_MQTT_QOS_DELIVER_AT_LEAST_ONCE, (uint8_t*) topic, (uint8_t*) msg, strlen( msg ) );
+				retries++ ;
+			} while ( ( ret != WICED_SUCCESS ) && ( retries < MQTT_PUBLISH_RETRY_COUNT ) );
+			if ( ret != WICED_SUCCESS )
+			{
+				WPRINT_APP_INFO((" Failed\n"));
+				break;
+			}
+			else
+			{
+				WPRINT_APP_INFO((" Success\n"));
+			}
 
             wiced_rtos_delay_milliseconds( 100 );
         }
-
-        pub_in_progress = 0; // Reset flag if we got a failure so that another button push is needed after a failre
 
         WPRINT_APP_INFO(("[MQTT] Closing connection..."));
         mqtt_conn_close( mqtt_object );
@@ -312,10 +376,11 @@ void application_start( void )
         wiced_rtos_delay_milliseconds( MQTT_DELAY_IN_MILLISECONDS * 2 );
     } while ( 1 );
 
+    // The code should never get here...
     wiced_rtos_deinit_semaphore( &msg_semaphore );
     WPRINT_APP_INFO(("[MQTT] Deinit connection...\n"));
     ret = wiced_mqtt_deinit( mqtt_object );
-    wiced_rtos_deinit_semaphore( &wake_semaphore );
+    wiced_rtos_deinit_queue( &wake_queue );
     free( mqtt_object );
     mqtt_object = NULL;
 

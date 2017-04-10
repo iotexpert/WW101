@@ -1,6 +1,6 @@
 // When the button on the base board is pressed, I2C is used to read
 // the temperature, humidity, light, and PWM values from the analog
-// co-processor on the shield board
+// co-processor on the shield board. The values are printed to the UART
 #include "wiced.h"
 
 #define I2C_ADDRESS (0x42)
@@ -27,7 +27,7 @@ void application_start( )
 
     /* Setup I2C master */
     const wiced_i2c_device_t i2cDevice = {
-    	.port = WICED_I2C_1,
+    	.port = WICED_I2C_2,
 		.address = I2C_ADDRESS,
 		.address_width = I2C_ADDRESS_WIDTH_7BIT,
 		.speed_mode = I2C_STANDARD_SPEED_MODE

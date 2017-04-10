@@ -6,7 +6,7 @@
 // This version uses TCP Stream APIs instead of TCP Socket APIs which simplifies the firmware.
 #include "wiced.h"
 
-#define TCP_CLIENT_STACK_SIZE 	(6200)
+#define TCP_CLIENT_STACK_SIZE 	(10000)
 #define SERVER_PORT 			(27708)
 
 
@@ -31,7 +31,6 @@ void sendData(int data)
 	wiced_tcp_socket_t socket;						// The TCP socket
 	wiced_tcp_stream_t stream;						// The TCP stream
 	char sendMessage[12];
-    wiced_result_t result;
 
     // format the data per the specification in section 6
 	sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
@@ -84,6 +83,7 @@ void buttonThreadMain()
 	                    (uint8_t)(GET_IPV4_ADDRESS(serverAddress) >> 8),
 	                    (uint8_t)(GET_IPV4_ADDRESS(serverAddress) >> 0)));
 	 }
+
 
     // Setup the Semaphore and Button Interrupt
 	wiced_rtos_init_semaphore(&button_semaphore); // the semaphore unlocks when the user presses the button

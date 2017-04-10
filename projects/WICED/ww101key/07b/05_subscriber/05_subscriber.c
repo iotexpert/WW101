@@ -35,8 +35,8 @@
  *                      Macros
  ******************************************************/
 #define MQTT_BROKER_ADDRESS                 "amk6m51qrxr2u.iot.us-east-1.amazonaws.com"
-#define WICED_TOPIC                         "testtopic"
-#define CLIENT_ID                           "wiced_subcriber_aws"
+#define WICED_TOPIC                         "GJL_TestTopic"
+#define CLIENT_ID                           "wiced_subcriber_aws_GJL"
 #define MQTT_REQUEST_TIMEOUT                (5000)
 #define MQTT_DELAY_IN_MILLISECONDS          (1000)
 #define MQTT_MAX_RESOURCE_SIZE              (0x7fffffff)

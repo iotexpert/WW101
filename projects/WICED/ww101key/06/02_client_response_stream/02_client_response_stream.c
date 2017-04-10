@@ -31,7 +31,7 @@ void sendData(int data)
 	wiced_tcp_socket_t socket;						// The TCP socket
 	wiced_tcp_stream_t stream;						// The TCP stream
 	char sendMessage[12];
-    wiced_result_t result;
+	wiced_result_t result;
 
     // format the data per the specification in section 6
 	sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual

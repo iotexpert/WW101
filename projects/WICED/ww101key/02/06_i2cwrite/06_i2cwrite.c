@@ -1,6 +1,6 @@
 // When the button on the base board is pressed, send a character over the I2C bus to
-// the shield board. This is used by the processor on the shield to cause the red/blue
-// LEDs to alternate on/off states.
+// the shield board. This is used by the processor on the shield to toggle through
+// the four LEDs on the shield.
 #include "wiced.h"
 
 #define I2C_ADDRESS  (0x42)
@@ -29,7 +29,7 @@ void application_start( )
 
     /* Setup I2C master */
     const wiced_i2c_device_t i2cDevice = {
-    	.port = WICED_I2C_1,
+    	.port = WICED_I2C_2,
 		.address = I2C_ADDRESS,
 		.address_width = I2C_ADDRESS_WIDTH_7BIT,
 		.speed_mode = I2C_STANDARD_SPEED_MODE
@@ -55,7 +55,7 @@ void application_start( )
     	if(buttonPress)
     	{
     		/* Send new I2C data */
-    		wiced_i2c_transfer(&i2cDevice, &msg, NUM_MESSAGES);
+    		ret = wiced_i2c_transfer(&i2cDevice, &msg, NUM_MESSAGES);
     		tx_buffer[1] = tx_buffer[1] << 1; /* Shift to the next LED */
     		if (tx_buffer[1] > 0x08) /* Reset after turning on LED3 */
     		{
