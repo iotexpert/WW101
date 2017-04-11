@@ -36,8 +36,5 @@ void application_start( )
 	/* Initialize and start a new thread */
     wiced_rtos_create_thread(&ledThreadHandle, THREAD_PRIORITY, "ledThread", ledThread, THREAD_STACK_SIZE, NULL);
 
-    while ( 1 )
-    {
-		wiced_rtos_delay_milliseconds( 1 ); /* The main application loop has to give LED Thread a turn */
-    }
+    /* No while(1) here since everything is done by the new thread. */
 }

@@ -87,11 +87,5 @@ void application_start( )
     wiced_rtos_create_thread(&led1ThreadHandle, THREAD_PRIORITY, "led1Thread", led1Thread, THREAD_STACK_SIZE, NULL);
     wiced_rtos_create_thread(&led0ThreadHandle, THREAD_PRIORITY, "led0Thread", led0Thread, THREAD_STACK_SIZE, NULL);
 
-
-
-    while ( 1 )
-    {
-		wiced_rtos_delay_milliseconds( 1 ); /* The main application loop has to have something in it for the Threads to get a turn */
-
-    }
+    /* No while(1) here since everything is done by the new threads. */
 }
