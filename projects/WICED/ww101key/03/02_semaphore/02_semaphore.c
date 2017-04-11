@@ -53,8 +53,6 @@ void application_start( )
 	/* Setup button interrupt */
 	wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL);
 
-    while ( 1 )
-    {
-		wiced_rtos_delay_milliseconds( 1 ); /* Allow other threads to have a turn */
-    }
+    /* No while(1) here since everything is done by the new thread. */
+
 }
