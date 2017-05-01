@@ -1,0 +1,5427 @@
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"u8g2_selection_list.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.u8g2_DrawUTF8Line,"ax",%progbits
+  20              		.align	1
+  21              		.global	u8g2_DrawUTF8Line
+  22              		.code	16
+  23              		.thumb_func
+  24              		.type	u8g2_DrawUTF8Line, %function
+  25              	u8g2_DrawUTF8Line:
+  26              	.LFB0:
+  27              		.file 1 "..\\..\\u8g2\\csrc\\u8g2_selection_list.c"
+   1:..\..\u8g2\csrc/u8g2_selection_list.c **** /*
+   2:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+   3:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_selection_list.c
+   4:..\..\u8g2\csrc/u8g2_selection_list.c ****   
+   5:..\..\u8g2\csrc/u8g2_selection_list.c ****   selection list with scroll option
+   6:..\..\u8g2\csrc/u8g2_selection_list.c ****   
+   7:..\..\u8g2\csrc/u8g2_selection_list.c ****   Universal 8bit Graphics Library (https://github.com/olikraus/u8g2/)
+   8:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+   9:..\..\u8g2\csrc/u8g2_selection_list.c ****   Copyright (c) 2016, olikraus@gmail.com
+  10:..\..\u8g2\csrc/u8g2_selection_list.c ****   All rights reserved.
+  11:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  12:..\..\u8g2\csrc/u8g2_selection_list.c ****   Redistribution and use in source and binary forms, with or without modification, 
+  13:..\..\u8g2\csrc/u8g2_selection_list.c ****   are permitted provided that the following conditions are met:
+  14:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  15:..\..\u8g2\csrc/u8g2_selection_list.c ****   * Redistributions of source code must retain the above copyright notice, this list 
+  16:..\..\u8g2\csrc/u8g2_selection_list.c ****     of conditions and the following disclaimer.
+  17:..\..\u8g2\csrc/u8g2_selection_list.c ****     
+  18:..\..\u8g2\csrc/u8g2_selection_list.c ****   * Redistributions in binary form must reproduce the above copyright notice, this 
+  19:..\..\u8g2\csrc/u8g2_selection_list.c ****     list of conditions and the following disclaimer in the documentation and/or other 
+  20:..\..\u8g2\csrc/u8g2_selection_list.c ****     materials provided with the distribution.
+  21:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  22:..\..\u8g2\csrc/u8g2_selection_list.c ****   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+  23:..\..\u8g2\csrc/u8g2_selection_list.c ****   CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+  24:..\..\u8g2\csrc/u8g2_selection_list.c ****   INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+  25:..\..\u8g2\csrc/u8g2_selection_list.c ****   MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+  26:..\..\u8g2\csrc/u8g2_selection_list.c ****   DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR 
+  27:..\..\u8g2\csrc/u8g2_selection_list.c ****   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+  28:..\..\u8g2\csrc/u8g2_selection_list.c ****   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+  29:..\..\u8g2\csrc/u8g2_selection_list.c ****   NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+  30:..\..\u8g2\csrc/u8g2_selection_list.c ****   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 2
+
+
+  31:..\..\u8g2\csrc/u8g2_selection_list.c ****   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+  32:..\..\u8g2\csrc/u8g2_selection_list.c ****   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+  33:..\..\u8g2\csrc/u8g2_selection_list.c ****   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+  34:..\..\u8g2\csrc/u8g2_selection_list.c ****   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
+  35:..\..\u8g2\csrc/u8g2_selection_list.c ****   
+  36:..\..\u8g2\csrc/u8g2_selection_list.c **** */
+  37:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  38:..\..\u8g2\csrc/u8g2_selection_list.c **** #include "u8g2.h"
+  39:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  40:..\..\u8g2\csrc/u8g2_selection_list.c **** #define MY_BORDER_SIZE 1
+  41:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  42:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  43:..\..\u8g2\csrc/u8g2_selection_list.c **** /*
+  44:..\..\u8g2\csrc/u8g2_selection_list.c ****   Draw a string at x,y
+  45:..\..\u8g2\csrc/u8g2_selection_list.c ****   Center string within w (left adjust if w < pixel len of s)
+  46:..\..\u8g2\csrc/u8g2_selection_list.c ****   
+  47:..\..\u8g2\csrc/u8g2_selection_list.c ****   Side effects:
+  48:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8g2_SetFontDirection(u8g2, 0);
+  49:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8g2_SetFontPosBaseline(u8g2);
+  50:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  51:..\..\u8g2\csrc/u8g2_selection_list.c **** */
+  52:..\..\u8g2\csrc/u8g2_selection_list.c **** void u8g2_DrawUTF8Line(u8g2_t *u8g2, u8g2_uint_t x, u8g2_uint_t y, u8g2_uint_t w, const char *s, ui
+  53:..\..\u8g2\csrc/u8g2_selection_list.c **** {
+  28              		.loc 1 53 0
+  29              		.cfi_startproc
+  30              		@ args = 12, pretend = 0, frame = 32
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  34              		.cfi_def_cfa_offset 20
+  35              		.cfi_offset 4, -20
+  36              		.cfi_offset 5, -16
+  37              		.cfi_offset 6, -12
+  38              		.cfi_offset 7, -8
+  39              		.cfi_offset 14, -4
+  40 0002 0400     		movs	r4, r0
+  41 0004 8BB0     		sub	sp, sp, #44
+  42              		.cfi_def_cfa_offset 64
+  43              		.loc 1 53 0
+  44 0006 1E00     		movs	r6, r3
+  45 0008 10AB     		add	r3, sp, #64
+  46              	.LVL1:
+  47 000a 1500     		movs	r5, r2
+  48 000c 04CB     		ldmia	r3!, {r2}
+  49              	.LVL2:
+  50 000e 0291     		str	r1, [sp, #8]
+  51 0010 1F78     		ldrb	r7, [r3]
+  52 0012 12AB     		add	r3, sp, #72
+  53              	.LVL3:
+  54 0014 1B78     		ldrb	r3, [r3]
+  55              	.LVL4:
+  54:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_uint_t d, str_width;
+  55:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_uint_t fx, fy, fw, fh;
+  56:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  57:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* only horizontal strings are supported, so force this here */
+  58:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_SetFontDirection(u8g2, 0);
+  56              		.loc 1 58 0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 3
+
+
+  57 0016 0021     		movs	r1, #0
+  58              	.LVL5:
+  53:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_uint_t d, str_width;
+  59              		.loc 1 53 0
+  60 0018 0792     		str	r2, [sp, #28]
+  61 001a 0893     		str	r3, [sp, #32]
+  62              		.loc 1 58 0
+  63 001c FFF7FEFF 		bl	u8g2_SetFontDirection
+  64              	.LVL6:
+  59:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  60:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* revert y position back to baseline ref */
+  61:..\..\u8g2\csrc/u8g2_selection_list.c ****   y += u8g2->font_calc_vref(u8g2);   
+  65              		.loc 1 61 0
+  66 0020 E36C     		ldr	r3, [r4, #76]
+  67 0022 2000     		movs	r0, r4
+  68 0024 9847     		blx	r3
+  69              	.LVL7:
+  70 0026 4519     		adds	r5, r0, r5
+  71 0028 EBB2     		uxtb	r3, r5
+  62:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  63:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* calculate the width of the string in pixel */
+  64:..\..\u8g2\csrc/u8g2_selection_list.c ****   str_width = u8g2_GetUTF8Width(u8g2, s);
+  72              		.loc 1 64 0
+  73 002a 0799     		ldr	r1, [sp, #28]
+  74 002c 2000     		movs	r0, r4
+  61:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  75              		.loc 1 61 0
+  76 002e 0493     		str	r3, [sp, #16]
+  77              	.LVL8:
+  78              		.loc 1 64 0
+  79 0030 FFF7FEFF 		bl	u8g2_GetUTF8Width
+  80              	.LVL9:
+  65:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  66:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* calculate delta d within the box */
+  67:..\..\u8g2\csrc/u8g2_selection_list.c ****   d = 0;
+  81              		.loc 1 67 0
+  82 0034 0023     		movs	r3, #0
+  64:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  83              		.loc 1 64 0
+  84 0036 0500     		movs	r5, r0
+  85              	.LVL10:
+  86              		.loc 1 67 0
+  87 0038 0393     		str	r3, [sp, #12]
+  68:..\..\u8g2\csrc/u8g2_selection_list.c ****   if ( str_width < w )
+  88              		.loc 1 68 0
+  89 003a B042     		cmp	r0, r6
+  90 003c 04D2     		bcs	.L2
+  91              	.LVL11:
+  69:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+  70:..\..\u8g2\csrc/u8g2_selection_list.c ****     d = w;
+  71:..\..\u8g2\csrc/u8g2_selection_list.c ****     d -=str_width;
+  92              		.loc 1 71 0
+  93 003e 351A     		subs	r5, r6, r0
+  94 0040 EDB2     		uxtb	r5, r5
+  95              	.LVL12:
+  72:..\..\u8g2\csrc/u8g2_selection_list.c ****     d /= 2;
+  96              		.loc 1 72 0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 4
+
+
+  97 0042 6B08     		lsrs	r3, r5, #1
+  98 0044 3500     		movs	r5, r6
+  99              	.LVL13:
+ 100 0046 0393     		str	r3, [sp, #12]
+ 101              	.LVL14:
+ 102              	.L2:
+  73:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+  74:..\..\u8g2\csrc/u8g2_selection_list.c ****   else
+  75:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+  76:..\..\u8g2\csrc/u8g2_selection_list.c ****     w = str_width;
+  77:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+  78:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  79:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* caluclate text box */
+  80:..\..\u8g2\csrc/u8g2_selection_list.c ****   fx = x;
+  81:..\..\u8g2\csrc/u8g2_selection_list.c ****   fy = y - u8g2_GetAscent(u8g2) ;
+ 103              		.loc 1 81 0
+ 104 0048 2300     		movs	r3, r4
+ 105 004a 7933     		adds	r3, r3, #121
+ 106 004c 1B78     		ldrb	r3, [r3]
+ 107 004e 049A     		ldr	r2, [sp, #16]
+  82:..\..\u8g2\csrc/u8g2_selection_list.c ****   fw = w;
+  83:..\..\u8g2\csrc/u8g2_selection_list.c ****   fh = u8g2_GetAscent(u8g2) - u8g2_GetDescent(u8g2) ;
+  84:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  85:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* draw the box, if inverted */
+  86:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_SetDrawColor(u8g2, 1);
+ 108              		.loc 1 86 0
+ 109 0050 0121     		movs	r1, #1
+  81:..\..\u8g2\csrc/u8g2_selection_list.c ****   fw = w;
+ 110              		.loc 1 81 0
+ 111 0052 D21A     		subs	r2, r2, r3
+ 112 0054 D2B2     		uxtb	r2, r2
+ 113 0056 0592     		str	r2, [sp, #20]
+ 114              	.LVL15:
+  83:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 115              		.loc 1 83 0
+ 116 0058 2200     		movs	r2, r4
+ 117 005a 7A32     		adds	r2, r2, #122
+ 118 005c 1278     		ldrb	r2, [r2]
+ 119              		.loc 1 86 0
+ 120 005e 2000     		movs	r0, r4
+ 121              	.LVL16:
+  83:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 122              		.loc 1 83 0
+ 123 0060 9B1A     		subs	r3, r3, r2
+ 124 0062 DBB2     		uxtb	r3, r3
+ 125 0064 0693     		str	r3, [sp, #24]
+ 126              	.LVL17:
+ 127              		.loc 1 86 0
+ 128 0066 FFF7FEFF 		bl	u8g2_SetDrawColor
+ 129              	.LVL18:
+  87:..\..\u8g2\csrc/u8g2_selection_list.c ****   if ( is_invert )
+ 130              		.loc 1 87 0
+ 131 006a 089B     		ldr	r3, [sp, #32]
+ 132 006c 002B     		cmp	r3, #0
+ 133 006e 07D0     		beq	.L3
+  88:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+  89:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8g2_DrawBox(u8g2, fx, fy, fw, fh);
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 5
+
+
+ 134              		.loc 1 89 0
+ 135 0070 069B     		ldr	r3, [sp, #24]
+ 136 0072 059A     		ldr	r2, [sp, #20]
+ 137 0074 0093     		str	r3, [sp]
+ 138 0076 0299     		ldr	r1, [sp, #8]
+ 139 0078 2B00     		movs	r3, r5
+ 140 007a 2000     		movs	r0, r4
+ 141 007c FFF7FEFF 		bl	u8g2_DrawBox
+ 142              	.LVL19:
+ 143              	.L3:
+ 144 0080 029B     		ldr	r3, [sp, #8]
+  67:..\..\u8g2\csrc/u8g2_selection_list.c ****   if ( str_width < w )
+ 145              		.loc 1 67 0
+ 146 0082 029E     		ldr	r6, [sp, #8]
+ 147 0084 DF1B     		subs	r7, r3, r7
+ 148 0086 FBB2     		uxtb	r3, r7
+ 149 0088 2F00     		movs	r7, r5
+ 150 008a 0993     		str	r3, [sp, #36]
+ 151              	.LVL20:
+ 152              	.L4:
+  90:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+  91:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+  92:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* draw the frame */
+  93:..\..\u8g2\csrc/u8g2_selection_list.c ****   while( border_size > 0 )
+ 153              		.loc 1 93 0
+ 154 008c 099B     		ldr	r3, [sp, #36]
+ 155 008e 9E42     		cmp	r6, r3
+ 156 0090 13D0     		beq	.L14
+  94:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+  95:..\..\u8g2\csrc/u8g2_selection_list.c ****     fx--;
+  96:..\..\u8g2\csrc/u8g2_selection_list.c ****     fy--;
+  97:..\..\u8g2\csrc/u8g2_selection_list.c ****     fw +=2;
+  98:..\..\u8g2\csrc/u8g2_selection_list.c ****     fh +=2;
+  99:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8g2_DrawFrame(u8g2, fx, fy, fw, fh );
+ 157              		.loc 1 99 0
+ 158 0092 059B     		ldr	r3, [sp, #20]
+ 159 0094 029A     		ldr	r2, [sp, #8]
+  97:..\..\u8g2\csrc/u8g2_selection_list.c ****     fh +=2;
+ 160              		.loc 1 97 0
+ 161 0096 0237     		adds	r7, r7, #2
+ 162              	.LVL21:
+ 163              		.loc 1 99 0
+ 164 0098 9A1A     		subs	r2, r3, r2
+ 165 009a 069B     		ldr	r3, [sp, #24]
+  97:..\..\u8g2\csrc/u8g2_selection_list.c ****     fh +=2;
+ 166              		.loc 1 97 0
+ 167 009c FFB2     		uxtb	r7, r7
+ 168              		.loc 1 99 0
+ 169 009e DB19     		adds	r3, r3, r7
+  95:..\..\u8g2\csrc/u8g2_selection_list.c ****     fy--;
+ 170              		.loc 1 95 0
+ 171 00a0 013E     		subs	r6, r6, #1
+ 172              	.LVL22:
+ 173 00a2 F6B2     		uxtb	r6, r6
+ 174              	.LVL23:
+ 175              		.loc 1 99 0
+ 176 00a4 5B1B     		subs	r3, r3, r5
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 6
+
+
+ 177 00a6 B218     		adds	r2, r6, r2
+ 178 00a8 DBB2     		uxtb	r3, r3
+ 179 00aa 0093     		str	r3, [sp]
+ 180 00ac D2B2     		uxtb	r2, r2
+ 181 00ae 3B00     		movs	r3, r7
+ 182 00b0 3100     		movs	r1, r6
+ 183 00b2 2000     		movs	r0, r4
+ 184 00b4 FFF7FEFF 		bl	u8g2_DrawFrame
+ 185              	.LVL24:
+ 186 00b8 E8E7     		b	.L4
+ 187              	.L14:
+ 100:..\..\u8g2\csrc/u8g2_selection_list.c ****     border_size--;
+ 101:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+ 102:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 103:..\..\u8g2\csrc/u8g2_selection_list.c ****   if ( is_invert )
+ 188              		.loc 1 103 0
+ 189 00ba 089B     		ldr	r3, [sp, #32]
+ 104:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 105:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8g2_SetDrawColor(u8g2, 0);
+ 190              		.loc 1 105 0
+ 191 00bc 0021     		movs	r1, #0
+ 103:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 192              		.loc 1 103 0
+ 193 00be 002B     		cmp	r3, #0
+ 194 00c0 00D1     		bne	.L12
+ 106:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+ 107:..\..\u8g2\csrc/u8g2_selection_list.c ****   else
+ 108:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 109:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8g2_SetDrawColor(u8g2, 1);
+ 195              		.loc 1 109 0
+ 196 00c2 0121     		movs	r1, #1
+ 197              	.L12:
+ 198 00c4 2000     		movs	r0, r4
+ 199 00c6 FFF7FEFF 		bl	u8g2_SetDrawColor
+ 200              	.LVL25:
+ 110:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+ 111:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 112:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* draw the text */
+ 113:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_DrawUTF8(u8g2, x+d, y, s);
+ 201              		.loc 1 113 0
+ 202 00ca 029A     		ldr	r2, [sp, #8]
+ 203 00cc 039B     		ldr	r3, [sp, #12]
+ 204 00ce 9446     		mov	ip, r2
+ 205 00d0 6344     		add	r3, r3, ip
+ 206 00d2 D9B2     		uxtb	r1, r3
+ 207 00d4 049A     		ldr	r2, [sp, #16]
+ 208 00d6 079B     		ldr	r3, [sp, #28]
+ 209 00d8 2000     		movs	r0, r4
+ 210 00da FFF7FEFF 		bl	u8g2_DrawUTF8
+ 211              	.LVL26:
+ 114:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 115:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* revert draw color */
+ 116:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_SetDrawColor(u8g2, 1);
+ 212              		.loc 1 116 0
+ 213 00de 0121     		movs	r1, #1
+ 214 00e0 2000     		movs	r0, r4
+ 215 00e2 FFF7FEFF 		bl	u8g2_SetDrawColor
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 7
+
+
+ 216              	.LVL27:
+ 117:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 118:..\..\u8g2\csrc/u8g2_selection_list.c **** }
+ 217              		.loc 1 118 0
+ 218 00e6 0BB0     		add	sp, sp, #44
+ 219              		@ sp needed
+ 220              	.LVL28:
+ 221              	.LVL29:
+ 222              	.LVL30:
+ 223              	.LVL31:
+ 224 00e8 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 225              		.cfi_endproc
+ 226              	.LFE0:
+ 227              		.size	u8g2_DrawUTF8Line, .-u8g2_DrawUTF8Line
+ 228              		.section	.text.u8g2_draw_selection_list_line.isra.0,"ax",%progbits
+ 229              		.align	1
+ 230              		.code	16
+ 231              		.thumb_func
+ 232              		.type	u8g2_draw_selection_list_line.isra.0, %function
+ 233              	u8g2_draw_selection_list_line.isra.0:
+ 234              	.LFB5:
+ 119:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 120:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 121:..\..\u8g2\csrc/u8g2_selection_list.c **** /*
+ 122:..\..\u8g2\csrc/u8g2_selection_list.c ****   draw several lines at position x,y.
+ 123:..\..\u8g2\csrc/u8g2_selection_list.c ****   lines are stored in s and must be separated with '\n'.
+ 124:..\..\u8g2\csrc/u8g2_selection_list.c ****   lines can be centered with respect to "w"
+ 125:..\..\u8g2\csrc/u8g2_selection_list.c ****   if s == NULL nothing is drawn and 0 is returned
+ 126:..\..\u8g2\csrc/u8g2_selection_list.c ****   returns the number of lines in s multiplied with line_height
+ 127:..\..\u8g2\csrc/u8g2_selection_list.c **** */
+ 128:..\..\u8g2\csrc/u8g2_selection_list.c **** u8g2_uint_t u8g2_DrawUTF8Lines(u8g2_t *u8g2, u8g2_uint_t x, u8g2_uint_t y, u8g2_uint_t w, u8g2_uint
+ 129:..\..\u8g2\csrc/u8g2_selection_list.c **** {
+ 130:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t i;
+ 131:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t cnt;
+ 132:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_uint_t yy = 0;
+ 133:..\..\u8g2\csrc/u8g2_selection_list.c ****   cnt = u8x8_GetStringLineCnt(s);
+ 134:..\..\u8g2\csrc/u8g2_selection_list.c ****   //printf("str=%s\n", s);
+ 135:..\..\u8g2\csrc/u8g2_selection_list.c ****   //printf("cnt=%d, y=%d, line_height=%d\n", cnt, y, line_height);
+ 136:..\..\u8g2\csrc/u8g2_selection_list.c ****   for( i = 0; i < cnt; i++ )
+ 137:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 138:..\..\u8g2\csrc/u8g2_selection_list.c ****     //printf("  i=%d, y=%d, line_height=%d\n", i, y, line_height);
+ 139:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8g2_DrawUTF8Line(u8g2, x, y, w, u8x8_GetStringLineStart(i, s), 0, 0);
+ 140:..\..\u8g2\csrc/u8g2_selection_list.c ****     y+=line_height;
+ 141:..\..\u8g2\csrc/u8g2_selection_list.c ****     yy+=line_height;
+ 142:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+ 143:..\..\u8g2\csrc/u8g2_selection_list.c ****   return yy;
+ 144:..\..\u8g2\csrc/u8g2_selection_list.c **** }
+ 145:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 146:..\..\u8g2\csrc/u8g2_selection_list.c **** /*
+ 147:..\..\u8g2\csrc/u8g2_selection_list.c ****   selection list with string line
+ 148:..\..\u8g2\csrc/u8g2_selection_list.c ****   returns line height
+ 149:..\..\u8g2\csrc/u8g2_selection_list.c **** */
+ 150:..\..\u8g2\csrc/u8g2_selection_list.c **** static u8g2_uint_t u8g2_draw_selection_list_line(u8g2_t *u8g2, u8sl_t *u8sl, u8g2_uint_t y, uint8_t
+ 151:..\..\u8g2\csrc/u8g2_selection_list.c **** static u8g2_uint_t u8g2_draw_selection_list_line(u8g2_t *u8g2, u8sl_t *u8sl, u8g2_uint_t y, uint8_t
+ 235              		.loc 1 151 0
+ 236              		.cfi_startproc
+ 237              		@ args = 4, pretend = 0, frame = 0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 8
+
+
+ 238              		@ frame_needed = 0, uses_anonymous_args = 0
+ 239              	.LVL32:
+ 240 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 241              		.cfi_def_cfa_offset 20
+ 242              		.cfi_offset 4, -20
+ 243              		.cfi_offset 5, -16
+ 244              		.cfi_offset 6, -12
+ 245              		.cfi_offset 7, -8
+ 246              		.cfi_offset 14, -4
+ 247 0002 1700     		movs	r7, r2
+ 152:..\..\u8g2\csrc/u8g2_selection_list.c **** {
+ 153:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_uint_t yy;
+ 154:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t border_size = 0;
+ 155:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t is_invert = 0;
+ 156:..\..\u8g2\csrc/u8g2_selection_list.c **** 	
+ 157:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_uint_t line_height = u8g2_GetAscent(u8g2) - u8g2_GetDescent(u8g2)+MY_BORDER_SIZE;
+ 248              		.loc 1 157 0
+ 249 0004 0200     		movs	r2, r0
+ 250              	.LVL33:
+ 154:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t is_invert = 0;
+ 251              		.loc 1 154 0
+ 252 0006 5C1A     		subs	r4, r3, r1
+ 253 0008 6142     		rsbs	r1, r4, #0
+ 254 000a 4C41     		adcs	r4, r4, r1
+ 255              		.loc 1 157 0
+ 256 000c 7932     		adds	r2, r2, #121
+ 257 000e 1578     		ldrb	r5, [r2]
+ 258 0010 0132     		adds	r2, r2, #1
+ 259 0012 1278     		ldrb	r2, [r2]
+ 151:..\..\u8g2\csrc/u8g2_selection_list.c **** {
+ 260              		.loc 1 151 0
+ 261 0014 85B0     		sub	sp, sp, #20
+ 262              		.cfi_def_cfa_offset 40
+ 263              		.loc 1 157 0
+ 264 0016 0135     		adds	r5, r5, #1
+ 151:..\..\u8g2\csrc/u8g2_selection_list.c **** {
+ 265              		.loc 1 151 0
+ 266 0018 0600     		movs	r6, r0
+ 267              		.loc 1 157 0
+ 268 001a AD1A     		subs	r5, r5, r2
+ 158:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 159:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* calculate offset from display upper border */
+ 160:..\..\u8g2\csrc/u8g2_selection_list.c ****   yy = idx;
+ 161:..\..\u8g2\csrc/u8g2_selection_list.c ****   yy -= u8sl->first_pos;
+ 162:..\..\u8g2\csrc/u8g2_selection_list.c ****   yy *= line_height;
+ 163:..\..\u8g2\csrc/u8g2_selection_list.c ****   yy += y;
+ 164:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 165:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* check whether this is the current cursor line */
+ 166:..\..\u8g2\csrc/u8g2_selection_list.c ****   if ( idx == u8sl->current_pos )
+ 167:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 168:..\..\u8g2\csrc/u8g2_selection_list.c ****     border_size = MY_BORDER_SIZE;
+ 169:..\..\u8g2\csrc/u8g2_selection_list.c ****     is_invert = 1;
+ 170:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+ 171:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 172:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* get the line from the array */
+ 173:..\..\u8g2\csrc/u8g2_selection_list.c ****   s = u8x8_GetStringLineStart(idx, s);
+ 269              		.loc 1 173 0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 9
+
+
+ 270 001c 0A99     		ldr	r1, [sp, #40]
+ 271 001e 1800     		movs	r0, r3
+ 272              	.LVL34:
+ 157:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 273              		.loc 1 157 0
+ 274 0020 EDB2     		uxtb	r5, r5
+ 275              	.LVL35:
+ 154:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t is_invert = 0;
+ 276              		.loc 1 154 0
+ 277 0022 E4B2     		uxtb	r4, r4
+ 278              	.LVL36:
+ 279              		.loc 1 173 0
+ 280 0024 FFF7FEFF 		bl	u8x8_GetStringLineStart
+ 281              	.LVL37:
+ 174:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 175:..\..\u8g2\csrc/u8g2_selection_list.c ****   /* draw the line */
+ 176:..\..\u8g2\csrc/u8g2_selection_list.c ****   if ( s == NULL )
+ 282              		.loc 1 176 0
+ 283 0028 0028     		cmp	r0, #0
+ 284 002a 00D1     		bne	.L16
+ 177:..\..\u8g2\csrc/u8g2_selection_list.c ****     s = "";
+ 285              		.loc 1 177 0
+ 286 002c 0848     		ldr	r0, .L17
+ 287              	.LVL38:
+ 288              	.L16:
+ 178:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_DrawUTF8Line(u8g2, MY_BORDER_SIZE, y, u8g2_GetDisplayWidth(u8g2)-2*MY_BORDER_SIZE, s, border
+ 289              		.loc 1 178 0
+ 290 002e 3300     		movs	r3, r6
+ 291 0030 3F33     		adds	r3, r3, #63
+ 292 0032 1B78     		ldrb	r3, [r3]
+ 293 0034 3A00     		movs	r2, r7
+ 294 0036 023B     		subs	r3, r3, #2
+ 295 0038 0090     		str	r0, [sp]
+ 296 003a DBB2     		uxtb	r3, r3
+ 297 003c 3000     		movs	r0, r6
+ 298              	.LVL39:
+ 299 003e 0294     		str	r4, [sp, #8]
+ 300 0040 0194     		str	r4, [sp, #4]
+ 301 0042 0121     		movs	r1, #1
+ 302 0044 FFF7FEFF 		bl	u8g2_DrawUTF8Line
+ 303              	.LVL40:
+ 179:..\..\u8g2\csrc/u8g2_selection_list.c ****   return line_height;
+ 180:..\..\u8g2\csrc/u8g2_selection_list.c **** }
+ 304              		.loc 1 180 0
+ 305 0048 2800     		movs	r0, r5
+ 306 004a 05B0     		add	sp, sp, #20
+ 307              		@ sp needed
+ 308              	.LVL41:
+ 309              	.LVL42:
+ 310              	.LVL43:
+ 311 004c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 312              	.L18:
+ 313 004e C046     		.align	2
+ 314              	.L17:
+ 315 0050 00000000 		.word	.LC0
+ 316              		.cfi_endproc
+ 317              	.LFE5:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 10
+
+
+ 318              		.size	u8g2_draw_selection_list_line.isra.0, .-u8g2_draw_selection_list_line.isra.0
+ 319              		.section	.text.u8g2_DrawUTF8Lines,"ax",%progbits
+ 320              		.align	1
+ 321              		.global	u8g2_DrawUTF8Lines
+ 322              		.code	16
+ 323              		.thumb_func
+ 324              		.type	u8g2_DrawUTF8Lines, %function
+ 325              	u8g2_DrawUTF8Lines:
+ 326              	.LFB1:
+ 129:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t i;
+ 327              		.loc 1 129 0
+ 328              		.cfi_startproc
+ 329              		@ args = 8, pretend = 0, frame = 16
+ 330              		@ frame_needed = 0, uses_anonymous_args = 0
+ 331              	.LVL44:
+ 332 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 333              		.cfi_def_cfa_offset 20
+ 334              		.cfi_offset 4, -20
+ 335              		.cfi_offset 5, -16
+ 336              		.cfi_offset 6, -12
+ 337              		.cfi_offset 7, -8
+ 338              		.cfi_offset 14, -4
+ 339 0002 89B0     		sub	sp, sp, #36
+ 340              		.cfi_def_cfa_offset 56
+ 129:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t i;
+ 341              		.loc 1 129 0
+ 342 0004 0590     		str	r0, [sp, #20]
+ 343 0006 1F00     		movs	r7, r3
+ 133:..\..\u8g2\csrc/u8g2_selection_list.c ****   //printf("str=%s\n", s);
+ 344              		.loc 1 133 0
+ 345 0008 0F98     		ldr	r0, [sp, #60]
+ 346              	.LVL45:
+ 129:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t i;
+ 347              		.loc 1 129 0
+ 348 000a 0EAB     		add	r3, sp, #56
+ 349              	.LVL46:
+ 350 000c 0691     		str	r1, [sp, #24]
+ 351 000e 1500     		movs	r5, r2
+ 352 0010 1E78     		ldrb	r6, [r3]
+ 133:..\..\u8g2\csrc/u8g2_selection_list.c ****   //printf("str=%s\n", s);
+ 353              		.loc 1 133 0
+ 354 0012 FFF7FEFF 		bl	u8x8_GetStringLineCnt
+ 355              	.LVL47:
+ 136:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 356              		.loc 1 136 0
+ 357 0016 0024     		movs	r4, #0
+ 133:..\..\u8g2\csrc/u8g2_selection_list.c ****   //printf("str=%s\n", s);
+ 358              		.loc 1 133 0
+ 359 0018 0790     		str	r0, [sp, #28]
+ 360              	.LVL48:
+ 361              	.L20:
+ 136:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 362              		.loc 1 136 0 discriminator 1
+ 363 001a 079B     		ldr	r3, [sp, #28]
+ 364 001c 9C42     		cmp	r4, r3
+ 365 001e 12D0     		beq	.L22
+ 139:..\..\u8g2\csrc/u8g2_selection_list.c ****     y+=line_height;
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 11
+
+
+ 366              		.loc 1 139 0 discriminator 3
+ 367 0020 0F99     		ldr	r1, [sp, #60]
+ 368 0022 2000     		movs	r0, r4
+ 369 0024 FFF7FEFF 		bl	u8x8_GetStringLineStart
+ 370              	.LVL49:
+ 371 0028 0023     		movs	r3, #0
+ 372 002a 0090     		str	r0, [sp]
+ 373 002c 0293     		str	r3, [sp, #8]
+ 374 002e 0193     		str	r3, [sp, #4]
+ 375 0030 2A00     		movs	r2, r5
+ 376 0032 3B00     		movs	r3, r7
+ 377 0034 0699     		ldr	r1, [sp, #24]
+ 378 0036 0598     		ldr	r0, [sp, #20]
+ 140:..\..\u8g2\csrc/u8g2_selection_list.c ****     yy+=line_height;
+ 379              		.loc 1 140 0 discriminator 3
+ 380 0038 AD19     		adds	r5, r5, r6
+ 381              	.LVL50:
+ 136:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 382              		.loc 1 136 0 discriminator 3
+ 383 003a 0134     		adds	r4, r4, #1
+ 384              	.LVL51:
+ 139:..\..\u8g2\csrc/u8g2_selection_list.c ****     y+=line_height;
+ 385              		.loc 1 139 0 discriminator 3
+ 386 003c FFF7FEFF 		bl	u8g2_DrawUTF8Line
+ 387              	.LVL52:
+ 140:..\..\u8g2\csrc/u8g2_selection_list.c ****     yy+=line_height;
+ 388              		.loc 1 140 0 discriminator 3
+ 389 0040 EDB2     		uxtb	r5, r5
+ 390              	.LVL53:
+ 136:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 391              		.loc 1 136 0 discriminator 3
+ 392 0042 E4B2     		uxtb	r4, r4
+ 393              	.LVL54:
+ 394 0044 E9E7     		b	.L20
+ 395              	.L22:
+ 143:..\..\u8g2\csrc/u8g2_selection_list.c **** }
+ 396              		.loc 1 143 0
+ 397 0046 7443     		muls	r4, r6
+ 398              	.LVL55:
+ 399 0048 E0B2     		uxtb	r0, r4
+ 144:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 400              		.loc 1 144 0
+ 401 004a 09B0     		add	sp, sp, #36
+ 402              		@ sp needed
+ 403              	.LVL56:
+ 404 004c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 405              		.cfi_endproc
+ 406              	.LFE1:
+ 407              		.size	u8g2_DrawUTF8Lines, .-u8g2_DrawUTF8Lines
+ 408              		.section	.text.u8g2_DrawSelectionList,"ax",%progbits
+ 409              		.align	1
+ 410              		.global	u8g2_DrawSelectionList
+ 411              		.code	16
+ 412              		.thumb_func
+ 413              		.type	u8g2_DrawSelectionList, %function
+ 414              	u8g2_DrawSelectionList:
+ 415              	.LFB3:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 12
+
+
+ 181:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 182:..\..\u8g2\csrc/u8g2_selection_list.c **** void u8g2_DrawSelectionList(u8g2_t *u8g2, u8sl_t *u8sl, u8g2_uint_t y, const char *s)
+ 183:..\..\u8g2\csrc/u8g2_selection_list.c **** {
+ 416              		.loc 1 183 0
+ 417              		.cfi_startproc
+ 418              		@ args = 0, pretend = 0, frame = 8
+ 419              		@ frame_needed = 0, uses_anonymous_args = 0
+ 420              	.LVL57:
+ 421 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 422              		.cfi_def_cfa_offset 20
+ 423              		.cfi_offset 4, -20
+ 424              		.cfi_offset 5, -16
+ 425              		.cfi_offset 6, -12
+ 426              		.cfi_offset 7, -8
+ 427              		.cfi_offset 14, -4
+ 428 0002 0700     		movs	r7, r0
+ 429 0004 0D00     		movs	r5, r1
+ 430 0006 1600     		movs	r6, r2
+ 184:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t i;
+ 185:..\..\u8g2\csrc/u8g2_selection_list.c ****   for( i = 0; i < u8sl->visible; i++ )
+ 431              		.loc 1 185 0
+ 432 0008 0024     		movs	r4, #0
+ 183:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t i;
+ 433              		.loc 1 183 0
+ 434 000a 85B0     		sub	sp, sp, #20
+ 435              		.cfi_def_cfa_offset 40
+ 183:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t i;
+ 436              		.loc 1 183 0
+ 437 000c 0393     		str	r3, [sp, #12]
+ 438              	.LVL58:
+ 439              	.L24:
+ 440              		.loc 1 185 0 discriminator 1
+ 441 000e 2B78     		ldrb	r3, [r5]
+ 442 0010 A342     		cmp	r3, r4
+ 443 0012 0ED9     		bls	.L26
+ 186:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 187:..\..\u8g2\csrc/u8g2_selection_list.c ****     y += u8g2_draw_selection_list_line(u8g2, u8sl, y, i+u8sl->first_pos, s);
+ 444              		.loc 1 187 0 discriminator 3
+ 445 0014 AB78     		ldrb	r3, [r5, #2]
+ 446 0016 039A     		ldr	r2, [sp, #12]
+ 447 0018 E318     		adds	r3, r4, r3
+ 448 001a 0092     		str	r2, [sp]
+ 449 001c DBB2     		uxtb	r3, r3
+ 450 001e 3200     		movs	r2, r6
+ 451 0020 E978     		ldrb	r1, [r5, #3]
+ 452 0022 3800     		movs	r0, r7
+ 453 0024 FFF7FEFF 		bl	u8g2_draw_selection_list_line.isra.0
+ 454              	.LVL59:
+ 185:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 455              		.loc 1 185 0 discriminator 3
+ 456 0028 0134     		adds	r4, r4, #1
+ 457              	.LVL60:
+ 458              		.loc 1 187 0 discriminator 3
+ 459 002a 3618     		adds	r6, r6, r0
+ 460              	.LVL61:
+ 461 002c F6B2     		uxtb	r6, r6
+ 462              	.LVL62:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 13
+
+
+ 185:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 463              		.loc 1 185 0 discriminator 3
+ 464 002e E4B2     		uxtb	r4, r4
+ 465              	.LVL63:
+ 466 0030 EDE7     		b	.L24
+ 467              	.L26:
+ 188:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+ 189:..\..\u8g2\csrc/u8g2_selection_list.c **** }
+ 468              		.loc 1 189 0
+ 469 0032 05B0     		add	sp, sp, #20
+ 470              		@ sp needed
+ 471              	.LVL64:
+ 472              	.LVL65:
+ 473              	.LVL66:
+ 474              	.LVL67:
+ 475 0034 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 476              		.cfi_endproc
+ 477              	.LFE3:
+ 478              		.size	u8g2_DrawSelectionList, .-u8g2_DrawSelectionList
+ 479              		.global	__aeabi_idiv
+ 480              		.global	__aeabi_uidiv
+ 481              		.section	.text.u8g2_UserInterfaceSelectionList,"ax",%progbits
+ 482              		.align	1
+ 483              		.global	u8g2_UserInterfaceSelectionList
+ 484              		.code	16
+ 485              		.thumb_func
+ 486              		.type	u8g2_UserInterfaceSelectionList, %function
+ 487              	u8g2_UserInterfaceSelectionList:
+ 488              	.LFB4:
+ 190:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 191:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 192:..\..\u8g2\csrc/u8g2_selection_list.c **** /*
+ 193:..\..\u8g2\csrc/u8g2_selection_list.c ****   title: 		NULL for no title, valid str for title line. Can contain mutliple lines, separated by '\
+ 194:..\..\u8g2\csrc/u8g2_selection_list.c ****   start_pos: 	default position for the cursor, first line is 1.
+ 195:..\..\u8g2\csrc/u8g2_selection_list.c ****   sl:			string list (list of strings separated by \n)
+ 196:..\..\u8g2\csrc/u8g2_selection_list.c ****   returns 0 if user has pressed the home key
+ 197:..\..\u8g2\csrc/u8g2_selection_list.c ****   returns the selected line if user has pressed the select key
+ 198:..\..\u8g2\csrc/u8g2_selection_list.c ****   side effects:
+ 199:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8g2_SetFontDirection(u8g2, 0);
+ 200:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8g2_SetFontPosBaseline(u8g2);
+ 201:..\..\u8g2\csrc/u8g2_selection_list.c **** 	
+ 202:..\..\u8g2\csrc/u8g2_selection_list.c **** */
+ 203:..\..\u8g2\csrc/u8g2_selection_list.c **** uint8_t u8g2_UserInterfaceSelectionList(u8g2_t *u8g2, const char *title, uint8_t start_pos, const c
+ 204:..\..\u8g2\csrc/u8g2_selection_list.c **** {
+ 489              		.loc 1 204 0
+ 490              		.cfi_startproc
+ 491              		@ args = 0, pretend = 0, frame = 24
+ 492              		@ frame_needed = 0, uses_anonymous_args = 0
+ 493              	.LVL68:
+ 494 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 495              		.cfi_def_cfa_offset 20
+ 496              		.cfi_offset 4, -20
+ 497              		.cfi_offset 5, -16
+ 498              		.cfi_offset 6, -12
+ 499              		.cfi_offset 7, -8
+ 500              		.cfi_offset 14, -4
+ 501 0002 89B0     		sub	sp, sp, #36
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 14
+
+
+ 502              		.cfi_def_cfa_offset 56
+ 503              		.loc 1 204 0
+ 504 0004 0593     		str	r3, [sp, #20]
+ 205:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8sl_t u8sl;
+ 206:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_uint_t yy;
+ 207:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 208:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t event;
+ 209:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 210:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_uint_t line_height = u8g2_GetAscent(u8g2) - u8g2_GetDescent(u8g2)+MY_BORDER_SIZE;
+ 505              		.loc 1 210 0
+ 506 0006 0300     		movs	r3, r0
+ 507              	.LVL69:
+ 204:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8sl_t u8sl;
+ 508              		.loc 1 204 0
+ 509 0008 1500     		movs	r5, r2
+ 510              		.loc 1 210 0
+ 511 000a 0200     		movs	r2, r0
+ 512              	.LVL70:
+ 204:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8sl_t u8sl;
+ 513              		.loc 1 204 0
+ 514 000c 0491     		str	r1, [sp, #16]
+ 515              		.loc 1 210 0
+ 516 000e 7933     		adds	r3, r3, #121
+ 517 0010 1B78     		ldrb	r3, [r3]
+ 518 0012 7A32     		adds	r2, r2, #122
+ 519 0014 1278     		ldrb	r2, [r2]
+ 520 0016 0133     		adds	r3, r3, #1
+ 521 0018 9B1A     		subs	r3, r3, r2
+ 204:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8sl_t u8sl;
+ 522              		.loc 1 204 0
+ 523 001a 0400     		movs	r4, r0
+ 211:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 212:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t title_lines = u8x8_GetStringLineCnt(title);
+ 524              		.loc 1 212 0
+ 525 001c 0800     		movs	r0, r1
+ 526              	.LVL71:
+ 210:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 527              		.loc 1 210 0
+ 528 001e DFB2     		uxtb	r7, r3
+ 529              	.LVL72:
+ 530              		.loc 1 212 0
+ 531 0020 FFF7FEFF 		bl	u8x8_GetStringLineCnt
+ 532              	.LVL73:
+ 533 0024 0390     		str	r0, [sp, #12]
+ 534              	.LVL74:
+ 213:..\..\u8g2\csrc/u8g2_selection_list.c ****   uint8_t display_lines;
+ 214:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 215:..\..\u8g2\csrc/u8g2_selection_list.c ****   
+ 216:..\..\u8g2\csrc/u8g2_selection_list.c ****   if ( start_pos > 0 )	/* issue 112 */
+ 535              		.loc 1 216 0
+ 536 0026 002D     		cmp	r5, #0
+ 537 0028 01D0     		beq	.L28
+ 217:..\..\u8g2\csrc/u8g2_selection_list.c ****     start_pos--;		/* issue 112 */
+ 538              		.loc 1 217 0
+ 539 002a 013D     		subs	r5, r5, #1
+ 540 002c EDB2     		uxtb	r5, r5
+ 541              	.LVL75:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 15
+
+
+ 542              	.L28:
+ 543 002e 2300     		movs	r3, r4
+ 218:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 219:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 220:..\..\u8g2\csrc/u8g2_selection_list.c ****   if ( title_lines > 0 )
+ 544              		.loc 1 220 0
+ 545 0030 039A     		ldr	r2, [sp, #12]
+ 546 0032 4033     		adds	r3, r3, #64
+ 547 0034 06AE     		add	r6, sp, #24
+ 221:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 222:..\..\u8g2\csrc/u8g2_selection_list.c **** 	display_lines = (u8g2_GetDisplayHeight(u8g2)-3) / line_height;
+ 223:..\..\u8g2\csrc/u8g2_selection_list.c **** 	u8sl.visible = display_lines;
+ 224:..\..\u8g2\csrc/u8g2_selection_list.c **** 	u8sl.visible -= title_lines;
+ 548              		.loc 1 224 0
+ 549 0036 1878     		ldrb	r0, [r3]
+ 220:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 550              		.loc 1 220 0
+ 551 0038 002A     		cmp	r2, #0
+ 552 003a 06D0     		beq	.L29
+ 553              	.LVL76:
+ 554              		.loc 1 224 0
+ 555 003c 0338     		subs	r0, r0, #3
+ 556 003e 3900     		movs	r1, r7
+ 557 0040 FFF7FEFF 		bl	__aeabi_idiv
+ 558              	.LVL77:
+ 559 0044 039B     		ldr	r3, [sp, #12]
+ 560 0046 C01A     		subs	r0, r0, r3
+ 561 0048 02E0     		b	.L53
+ 562              	.L29:
+ 563              	.LVL78:
+ 225:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+ 226:..\..\u8g2\csrc/u8g2_selection_list.c ****   else
+ 227:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 228:..\..\u8g2\csrc/u8g2_selection_list.c **** 	display_lines = u8g2_GetDisplayHeight(u8g2) / line_height;
+ 229:..\..\u8g2\csrc/u8g2_selection_list.c **** 	u8sl.visible = display_lines;
+ 564              		.loc 1 229 0
+ 565 004a 3900     		movs	r1, r7
+ 566 004c FFF7FEFF 		bl	__aeabi_uidiv
+ 567              	.LVL79:
+ 568              	.L53:
+ 569 0050 3070     		strb	r0, [r6]
+ 230:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+ 231:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 232:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8sl.total = u8x8_GetStringLineCnt(sl);
+ 570              		.loc 1 232 0
+ 571 0052 0598     		ldr	r0, [sp, #20]
+ 572 0054 FFF7FEFF 		bl	u8x8_GetStringLineCnt
+ 573              	.LVL80:
+ 233:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8sl.first_pos = 0;
+ 574              		.loc 1 233 0
+ 575 0058 0022     		movs	r2, #0
+ 232:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8sl.first_pos = 0;
+ 576              		.loc 1 232 0
+ 577 005a 06AB     		add	r3, sp, #24
+ 578 005c 5870     		strb	r0, [r3, #1]
+ 579              		.loc 1 233 0
+ 580 005e 9A70     		strb	r2, [r3, #2]
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 16
+
+
+ 234:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8sl.current_pos = start_pos;
+ 235:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 236:..\..\u8g2\csrc/u8g2_selection_list.c ****   if ( u8sl.current_pos >= u8sl.total )
+ 581              		.loc 1 236 0
+ 582 0060 8542     		cmp	r5, r0
+ 583 0062 01D2     		bcs	.L31
+ 234:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8sl.current_pos = start_pos;
+ 584              		.loc 1 234 0
+ 585 0064 DD70     		strb	r5, [r3, #3]
+ 586 0066 01E0     		b	.L32
+ 587              	.L31:
+ 237:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8sl.current_pos = u8sl.total-1;
+ 588              		.loc 1 237 0
+ 589 0068 0138     		subs	r0, r0, #1
+ 590 006a D870     		strb	r0, [r3, #3]
+ 591              	.L32:
+ 238:..\..\u8g2\csrc/u8g2_selection_list.c ****   if ( u8sl.first_pos+u8sl.visible <= u8sl.current_pos )
+ 592              		.loc 1 238 0
+ 593 006c 1978     		ldrb	r1, [r3]
+ 594 006e DA78     		ldrb	r2, [r3, #3]
+ 595 0070 9142     		cmp	r1, r2
+ 596 0072 02DC     		bgt	.L33
+ 239:..\..\u8g2\csrc/u8g2_selection_list.c ****     u8sl.first_pos = u8sl.current_pos-u8sl.visible+1;
+ 597              		.loc 1 239 0
+ 598 0074 0132     		adds	r2, r2, #1
+ 599 0076 521A     		subs	r2, r2, r1
+ 600 0078 9A70     		strb	r2, [r3, #2]
+ 601              	.L33:
+ 240:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 241:..\..\u8g2\csrc/u8g2_selection_list.c ****   u8g2_SetFontPosBaseline(u8g2);
+ 602              		.loc 1 241 0
+ 603 007a 2000     		movs	r0, r4
+ 604 007c FFF7FEFF 		bl	u8g2_SetFontPosBaseline
+ 605              	.LVL81:
+ 606              	.L34:
+ 242:..\..\u8g2\csrc/u8g2_selection_list.c ****   
+ 243:..\..\u8g2\csrc/u8g2_selection_list.c ****   for(;;)
+ 244:..\..\u8g2\csrc/u8g2_selection_list.c ****   {
+ 245:..\..\u8g2\csrc/u8g2_selection_list.c ****       u8g2_FirstPage(u8g2);
+ 607              		.loc 1 245 0
+ 608 0080 2000     		movs	r0, r4
+ 609 0082 FFF7FEFF 		bl	u8g2_FirstPage
+ 610              	.LVL82:
+ 611              	.L36:
+ 246:..\..\u8g2\csrc/u8g2_selection_list.c ****       do
+ 247:..\..\u8g2\csrc/u8g2_selection_list.c ****       {
+ 248:..\..\u8g2\csrc/u8g2_selection_list.c ****         yy = u8g2_GetAscent(u8g2);
+ 612              		.loc 1 248 0
+ 613 0086 2300     		movs	r3, r4
+ 614 0088 7933     		adds	r3, r3, #121
+ 615 008a 1D78     		ldrb	r5, [r3]
+ 616              	.LVL83:
+ 249:..\..\u8g2\csrc/u8g2_selection_list.c ****         if ( title_lines > 0 )
+ 617              		.loc 1 249 0
+ 618 008c 039B     		ldr	r3, [sp, #12]
+ 619 008e 002B     		cmp	r3, #0
+ 620 0090 1BD0     		beq	.L35
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 17
+
+
+ 250:..\..\u8g2\csrc/u8g2_selection_list.c ****         {
+ 251:..\..\u8g2\csrc/u8g2_selection_list.c ****           yy += u8g2_DrawUTF8Lines(u8g2, 0, yy, u8g2_GetDisplayWidth(u8g2), line_height, title);
+ 621              		.loc 1 251 0
+ 622 0092 2600     		movs	r6, r4
+ 623 0094 049A     		ldr	r2, [sp, #16]
+ 624 0096 3F36     		adds	r6, r6, #63
+ 625 0098 3378     		ldrb	r3, [r6]
+ 626 009a 0021     		movs	r1, #0
+ 627 009c 0192     		str	r2, [sp, #4]
+ 628 009e 0097     		str	r7, [sp]
+ 629 00a0 2A00     		movs	r2, r5
+ 630 00a2 2000     		movs	r0, r4
+ 631 00a4 FFF7FEFF 		bl	u8g2_DrawUTF8Lines
+ 632              	.LVL84:
+ 252:..\..\u8g2\csrc/u8g2_selection_list.c **** 		
+ 253:..\..\u8g2\csrc/u8g2_selection_list.c **** 	  u8g2_DrawHLine(u8g2, 0, yy-line_height- u8g2_GetDescent(u8g2) + 1, u8g2_GetDisplayWidth(u8g2));
+ 633              		.loc 1 253 0
+ 634 00a8 2200     		movs	r2, r4
+ 635 00aa 0121     		movs	r1, #1
+ 636 00ac 7A32     		adds	r2, r2, #122
+ 637 00ae 1278     		ldrb	r2, [r2]
+ 251:..\..\u8g2\csrc/u8g2_selection_list.c **** 		
+ 638              		.loc 1 251 0
+ 639 00b0 2D18     		adds	r5, r5, r0
+ 640              	.LVL85:
+ 641              		.loc 1 253 0
+ 642 00b2 8A1A     		subs	r2, r1, r2
+ 251:..\..\u8g2\csrc/u8g2_selection_list.c **** 		
+ 643              		.loc 1 251 0
+ 644 00b4 EDB2     		uxtb	r5, r5
+ 645              	.LVL86:
+ 646              		.loc 1 253 0
+ 647 00b6 D21B     		subs	r2, r2, r7
+ 648 00b8 AA18     		adds	r2, r5, r2
+ 649 00ba 3378     		ldrb	r3, [r6]
+ 650 00bc D2B2     		uxtb	r2, r2
+ 651 00be 0021     		movs	r1, #0
+ 652 00c0 2000     		movs	r0, r4
+ 653 00c2 FFF7FEFF 		bl	u8g2_DrawHLine
+ 654              	.LVL87:
+ 254:..\..\u8g2\csrc/u8g2_selection_list.c **** 		
+ 255:..\..\u8g2\csrc/u8g2_selection_list.c **** 	  yy += 3;
+ 655              		.loc 1 255 0
+ 656 00c6 0335     		adds	r5, r5, #3
+ 657              	.LVL88:
+ 658 00c8 EDB2     		uxtb	r5, r5
+ 659              	.LVL89:
+ 660              	.L35:
+ 256:..\..\u8g2\csrc/u8g2_selection_list.c ****         }
+ 257:..\..\u8g2\csrc/u8g2_selection_list.c ****         u8g2_DrawSelectionList(u8g2, &u8sl, yy, sl);
+ 661              		.loc 1 257 0
+ 662 00ca 06AE     		add	r6, sp, #24
+ 663 00cc 2A00     		movs	r2, r5
+ 664 00ce 059B     		ldr	r3, [sp, #20]
+ 665 00d0 3100     		movs	r1, r6
+ 666 00d2 2000     		movs	r0, r4
+ 667 00d4 FFF7FEFF 		bl	u8g2_DrawSelectionList
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 18
+
+
+ 668              	.LVL90:
+ 258:..\..\u8g2\csrc/u8g2_selection_list.c ****       } while( u8g2_NextPage(u8g2) );
+ 669              		.loc 1 258 0
+ 670 00d8 2000     		movs	r0, r4
+ 671 00da FFF7FEFF 		bl	u8g2_NextPage
+ 672              	.LVL91:
+ 673 00de 051E     		subs	r5, r0, #0
+ 674              	.LVL92:
+ 675 00e0 D1D1     		bne	.L36
+ 676              	.L41:
+ 259:..\..\u8g2\csrc/u8g2_selection_list.c ****       
+ 260:..\..\u8g2\csrc/u8g2_selection_list.c **** #ifdef U8G2_REF_MAN_PIC
+ 261:..\..\u8g2\csrc/u8g2_selection_list.c ****       return 0;
+ 262:..\..\u8g2\csrc/u8g2_selection_list.c **** #endif
+ 263:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 264:..\..\u8g2\csrc/u8g2_selection_list.c **** 
+ 265:..\..\u8g2\csrc/u8g2_selection_list.c ****       for(;;)
+ 266:..\..\u8g2\csrc/u8g2_selection_list.c ****       {
+ 267:..\..\u8g2\csrc/u8g2_selection_list.c ****         event = u8x8_GetMenuEvent(u8g2_GetU8x8(u8g2));
+ 677              		.loc 1 267 0
+ 678 00e2 2000     		movs	r0, r4
+ 679 00e4 FFF7FEFF 		bl	u8x8_GetMenuEvent
+ 680              	.LVL93:
+ 268:..\..\u8g2\csrc/u8g2_selection_list.c ****         if ( event == U8X8_MSG_GPIO_MENU_SELECT )
+ 681              		.loc 1 268 0
+ 682 00e8 5028     		cmp	r0, #80
+ 683 00ea 03D1     		bne	.L37
+ 269:..\..\u8g2\csrc/u8g2_selection_list.c ****           return u8sl.current_pos+1;		/* +1, issue 112 */
+ 684              		.loc 1 269 0
+ 685 00ec F578     		ldrb	r5, [r6, #3]
+ 686 00ee 0135     		adds	r5, r5, #1
+ 687 00f0 EDB2     		uxtb	r5, r5
+ 688 00f2 15E0     		b	.L38
+ 689              	.L37:
+ 270:..\..\u8g2\csrc/u8g2_selection_list.c ****         else if ( event == U8X8_MSG_GPIO_MENU_HOME )
+ 690              		.loc 1 270 0
+ 691 00f4 5328     		cmp	r0, #83
+ 692 00f6 13D0     		beq	.L38
+ 271:..\..\u8g2\csrc/u8g2_selection_list.c ****           return 0;				/* issue 112: return 0 instead of start_pos */
+ 272:..\..\u8g2\csrc/u8g2_selection_list.c ****         else if ( event == U8X8_MSG_GPIO_MENU_NEXT || event == U8X8_MSG_GPIO_MENU_DOWN )
+ 693              		.loc 1 272 0
+ 694 00f8 0300     		movs	r3, r0
+ 695 00fa 0422     		movs	r2, #4
+ 696 00fc 9343     		bics	r3, r2
+ 697 00fe DBB2     		uxtb	r3, r3
+ 698 0100 512B     		cmp	r3, #81
+ 699 0102 03D1     		bne	.L39
+ 273:..\..\u8g2\csrc/u8g2_selection_list.c ****         {
+ 274:..\..\u8g2\csrc/u8g2_selection_list.c ****           u8sl_Next(&u8sl);
+ 700              		.loc 1 274 0
+ 701 0104 3000     		movs	r0, r6
+ 702              	.LVL94:
+ 703 0106 FFF7FEFF 		bl	u8sl_Next
+ 704              	.LVL95:
+ 275:..\..\u8g2\csrc/u8g2_selection_list.c ****           break;
+ 705              		.loc 1 275 0
+ 706 010a B9E7     		b	.L34
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 19
+
+
+ 707              	.LVL96:
+ 708              	.L39:
+ 276:..\..\u8g2\csrc/u8g2_selection_list.c ****         }
+ 277:..\..\u8g2\csrc/u8g2_selection_list.c ****         else if ( event == U8X8_MSG_GPIO_MENU_PREV || event == U8X8_MSG_GPIO_MENU_UP )
+ 709              		.loc 1 277 0
+ 710 010c 0223     		movs	r3, #2
+ 711 010e 5238     		subs	r0, r0, #82
+ 712              	.LVL97:
+ 713 0110 9843     		bics	r0, r3
+ 714 0112 C0B2     		uxtb	r0, r0
+ 715 0114 0028     		cmp	r0, #0
+ 716 0116 E4D1     		bne	.L41
+ 278:..\..\u8g2\csrc/u8g2_selection_list.c ****         {
+ 279:..\..\u8g2\csrc/u8g2_selection_list.c ****           u8sl_Prev(&u8sl);
+ 717              		.loc 1 279 0
+ 718 0118 3000     		movs	r0, r6
+ 719 011a FFF7FEFF 		bl	u8sl_Prev
+ 720              	.LVL98:
+ 280:..\..\u8g2\csrc/u8g2_selection_list.c ****           break;
+ 721              		.loc 1 280 0
+ 722 011e AFE7     		b	.L34
+ 723              	.LVL99:
+ 724              	.L38:
+ 281:..\..\u8g2\csrc/u8g2_selection_list.c ****         }
+ 282:..\..\u8g2\csrc/u8g2_selection_list.c ****       }
+ 283:..\..\u8g2\csrc/u8g2_selection_list.c ****   }
+ 284:..\..\u8g2\csrc/u8g2_selection_list.c **** }
+ 725              		.loc 1 284 0
+ 726 0120 2800     		movs	r0, r5
+ 727              	.LVL100:
+ 728 0122 09B0     		add	sp, sp, #36
+ 729              		@ sp needed
+ 730              	.LVL101:
+ 731              	.LVL102:
+ 732 0124 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 733              		.cfi_endproc
+ 734              	.LFE4:
+ 735              		.size	u8g2_UserInterfaceSelectionList, .-u8g2_UserInterfaceSelectionList
+ 736              		.section	.rodata.str1.1,"aMS",%progbits,1
+ 737              	.LC0:
+ 738 0000 00       		.ascii	"\000"
+ 739              		.text
+ 740              	.Letext0:
+ 741              		.file 2 "c:\\program files\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.1\\arm
+ 742              		.file 3 "c:\\program files\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.1\\arm
+ 743              		.file 4 "..\\..\\u8g2\\csrc\\u8x8.h"
+ 744              		.file 5 "..\\..\\u8g2\\csrc\\u8g2.h"
+ 745              		.section	.debug_info,"",%progbits
+ 746              	.Ldebug_info0:
+ 747 0000 960E0000 		.4byte	0xe96
+ 748 0004 0400     		.2byte	0x4
+ 749 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 750 000a 04       		.byte	0x4
+ 751 000b 01       		.uleb128 0x1
+ 752 000c 69050000 		.4byte	.LASF167
+ 753 0010 0C       		.byte	0xc
+ 754 0011 C8010000 		.4byte	.LASF168
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 20
+
+
+ 755 0015 75040000 		.4byte	.LASF169
+ 756 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 757 001d 00000000 		.4byte	0
+ 758 0021 00000000 		.4byte	.Ldebug_line0
+ 759 0025 02       		.uleb128 0x2
+ 760 0026 01       		.byte	0x1
+ 761 0027 08       		.byte	0x8
+ 762 0028 DF060000 		.4byte	.LASF0
+ 763 002c 03       		.uleb128 0x3
+ 764 002d 9D000000 		.4byte	.LASF2
+ 765 0031 02       		.byte	0x2
+ 766 0032 1B       		.byte	0x1b
+ 767 0033 37000000 		.4byte	0x37
+ 768 0037 02       		.uleb128 0x2
+ 769 0038 01       		.byte	0x1
+ 770 0039 06       		.byte	0x6
+ 771 003a 10010000 		.4byte	.LASF1
+ 772 003e 03       		.uleb128 0x3
+ 773 003f 31000000 		.4byte	.LASF3
+ 774 0043 02       		.byte	0x2
+ 775 0044 1D       		.byte	0x1d
+ 776 0045 25000000 		.4byte	0x25
+ 777 0049 02       		.uleb128 0x2
+ 778 004a 02       		.byte	0x2
+ 779 004b 05       		.byte	0x5
+ 780 004c 19070000 		.4byte	.LASF4
+ 781 0050 03       		.uleb128 0x3
+ 782 0051 1B080000 		.4byte	.LASF5
+ 783 0055 02       		.byte	0x2
+ 784 0056 2B       		.byte	0x2b
+ 785 0057 5B000000 		.4byte	0x5b
+ 786 005b 02       		.uleb128 0x2
+ 787 005c 02       		.byte	0x2
+ 788 005d 07       		.byte	0x7
+ 789 005e BE030000 		.4byte	.LASF6
+ 790 0062 02       		.uleb128 0x2
+ 791 0063 04       		.byte	0x4
+ 792 0064 05       		.byte	0x5
+ 793 0065 86010000 		.4byte	.LASF7
+ 794 0069 03       		.uleb128 0x3
+ 795 006a 5E020000 		.4byte	.LASF8
+ 796 006e 02       		.byte	0x2
+ 797 006f 41       		.byte	0x41
+ 798 0070 74000000 		.4byte	0x74
+ 799 0074 02       		.uleb128 0x2
+ 800 0075 04       		.byte	0x4
+ 801 0076 07       		.byte	0x7
+ 802 0077 52030000 		.4byte	.LASF9
+ 803 007b 02       		.uleb128 0x2
+ 804 007c 08       		.byte	0x8
+ 805 007d 05       		.byte	0x5
+ 806 007e 02010000 		.4byte	.LASF10
+ 807 0082 02       		.uleb128 0x2
+ 808 0083 08       		.byte	0x8
+ 809 0084 07       		.byte	0x7
+ 810 0085 7C000000 		.4byte	.LASF11
+ 811 0089 04       		.uleb128 0x4
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 21
+
+
+ 812 008a 04       		.byte	0x4
+ 813 008b 05       		.byte	0x5
+ 814 008c 696E7400 		.ascii	"int\000"
+ 815 0090 02       		.uleb128 0x2
+ 816 0091 04       		.byte	0x4
+ 817 0092 07       		.byte	0x7
+ 818 0093 EE020000 		.4byte	.LASF12
+ 819 0097 03       		.uleb128 0x3
+ 820 0098 BB080000 		.4byte	.LASF13
+ 821 009c 03       		.byte	0x3
+ 822 009d 14       		.byte	0x14
+ 823 009e 2C000000 		.4byte	0x2c
+ 824 00a2 03       		.uleb128 0x3
+ 825 00a3 41090000 		.4byte	.LASF14
+ 826 00a7 03       		.byte	0x3
+ 827 00a8 18       		.byte	0x18
+ 828 00a9 3E000000 		.4byte	0x3e
+ 829 00ad 03       		.uleb128 0x3
+ 830 00ae B7010000 		.4byte	.LASF15
+ 831 00b2 03       		.byte	0x3
+ 832 00b3 24       		.byte	0x24
+ 833 00b4 50000000 		.4byte	0x50
+ 834 00b8 03       		.uleb128 0x3
+ 835 00b9 9D070000 		.4byte	.LASF16
+ 836 00bd 03       		.byte	0x3
+ 837 00be 30       		.byte	0x30
+ 838 00bf 69000000 		.4byte	0x69
+ 839 00c3 02       		.uleb128 0x2
+ 840 00c4 08       		.byte	0x8
+ 841 00c5 04       		.byte	0x4
+ 842 00c6 4E050000 		.4byte	.LASF17
+ 843 00ca 03       		.uleb128 0x3
+ 844 00cb 90080000 		.4byte	.LASF18
+ 845 00cf 04       		.byte	0x4
+ 846 00d0 B5       		.byte	0xb5
+ 847 00d1 D5000000 		.4byte	0xd5
+ 848 00d5 05       		.uleb128 0x5
+ 849 00d6 51040000 		.4byte	.LASF39
+ 850 00da 2C       		.byte	0x2c
+ 851 00db 04       		.byte	0x4
+ 852 00dc 3801     		.2byte	0x138
+ 853 00de DA010000 		.4byte	0x1da
+ 854 00e2 06       		.uleb128 0x6
+ 855 00e3 27040000 		.4byte	.LASF19
+ 856 00e7 04       		.byte	0x4
+ 857 00e8 3A01     		.2byte	0x13a
+ 858 00ea 3D030000 		.4byte	0x33d
+ 859 00ee 00       		.byte	0
+ 860 00ef 06       		.uleb128 0x6
+ 861 00f0 C0010000 		.4byte	.LASF20
+ 862 00f4 04       		.byte	0x4
+ 863 00f5 3B01     		.2byte	0x13b
+ 864 00f7 12030000 		.4byte	0x312
+ 865 00fb 04       		.byte	0x4
+ 866 00fc 06       		.uleb128 0x6
+ 867 00fd 3D010000 		.4byte	.LASF21
+ 868 0101 04       		.byte	0x4
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 22
+
+
+ 869 0102 3C01     		.2byte	0x13c
+ 870 0104 DB020000 		.4byte	0x2db
+ 871 0108 08       		.byte	0x8
+ 872 0109 06       		.uleb128 0x6
+ 873 010a F7050000 		.4byte	.LASF22
+ 874 010e 04       		.byte	0x4
+ 875 010f 3D01     		.2byte	0x13d
+ 876 0111 DB020000 		.4byte	0x2db
+ 877 0115 0C       		.byte	0xc
+ 878 0116 06       		.uleb128 0x6
+ 879 0117 41000000 		.4byte	.LASF23
+ 880 011b 04       		.byte	0x4
+ 881 011c 3E01     		.2byte	0x13e
+ 882 011e DB020000 		.4byte	0x2db
+ 883 0122 10       		.byte	0x10
+ 884 0123 06       		.uleb128 0x6
+ 885 0124 EE010000 		.4byte	.LASF24
+ 886 0128 04       		.byte	0x4
+ 887 0129 3F01     		.2byte	0x13f
+ 888 012b DB020000 		.4byte	0x2db
+ 889 012f 14       		.byte	0x14
+ 890 0130 06       		.uleb128 0x6
+ 891 0131 13090000 		.4byte	.LASF25
+ 892 0135 04       		.byte	0x4
+ 893 0136 4001     		.2byte	0x140
+ 894 0138 48030000 		.4byte	0x348
+ 895 013c 18       		.byte	0x18
+ 896 013d 06       		.uleb128 0x6
+ 897 013e D8040000 		.4byte	.LASF26
+ 898 0142 04       		.byte	0x4
+ 899 0143 4101     		.2byte	0x141
+ 900 0145 AD000000 		.4byte	0xad
+ 901 0149 1C       		.byte	0x1c
+ 902 014a 06       		.uleb128 0x6
+ 903 014b 71060000 		.4byte	.LASF27
+ 904 014f 04       		.byte	0x4
+ 905 0150 4201     		.2byte	0x142
+ 906 0152 A2000000 		.4byte	0xa2
+ 907 0156 1E       		.byte	0x1e
+ 908 0157 06       		.uleb128 0x6
+ 909 0158 28010000 		.4byte	.LASF28
+ 910 015c 04       		.byte	0x4
+ 911 015d 4301     		.2byte	0x143
+ 912 015f A2000000 		.4byte	0xa2
+ 913 0163 1F       		.byte	0x1f
+ 914 0164 06       		.uleb128 0x6
+ 915 0165 46030000 		.4byte	.LASF29
+ 916 0169 04       		.byte	0x4
+ 917 016a 4401     		.2byte	0x144
+ 918 016c A2000000 		.4byte	0xa2
+ 919 0170 20       		.byte	0x20
+ 920 0171 06       		.uleb128 0x6
+ 921 0172 55090000 		.4byte	.LASF30
+ 922 0176 04       		.byte	0x4
+ 923 0177 4701     		.2byte	0x147
+ 924 0179 A2000000 		.4byte	0xa2
+ 925 017d 21       		.byte	0x21
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 23
+
+
+ 926 017e 06       		.uleb128 0x6
+ 927 017f 42060000 		.4byte	.LASF31
+ 928 0183 04       		.byte	0x4
+ 929 0184 4801     		.2byte	0x148
+ 930 0186 A2000000 		.4byte	0xa2
+ 931 018a 22       		.byte	0x22
+ 932 018b 06       		.uleb128 0x6
+ 933 018c C2000000 		.4byte	.LASF32
+ 934 0190 04       		.byte	0x4
+ 935 0191 4901     		.2byte	0x149
+ 936 0193 A2000000 		.4byte	0xa2
+ 937 0197 23       		.byte	0x23
+ 938 0198 06       		.uleb128 0x6
+ 939 0199 D6000000 		.4byte	.LASF33
+ 940 019d 04       		.byte	0x4
+ 941 019e 4A01     		.2byte	0x14a
+ 942 01a0 A2000000 		.4byte	0xa2
+ 943 01a4 24       		.byte	0x24
+ 944 01a5 06       		.uleb128 0x6
+ 945 01a6 78090000 		.4byte	.LASF34
+ 946 01aa 04       		.byte	0x4
+ 947 01ab 4B01     		.2byte	0x14b
+ 948 01ad A2000000 		.4byte	0xa2
+ 949 01b1 25       		.byte	0x25
+ 950 01b2 06       		.uleb128 0x6
+ 951 01b3 F0030000 		.4byte	.LASF35
+ 952 01b7 04       		.byte	0x4
+ 953 01b8 4C01     		.2byte	0x14c
+ 954 01ba A2000000 		.4byte	0xa2
+ 955 01be 26       		.byte	0x26
+ 956 01bf 06       		.uleb128 0x6
+ 957 01c0 C8080000 		.4byte	.LASF36
+ 958 01c4 04       		.byte	0x4
+ 959 01c5 4D01     		.2byte	0x14d
+ 960 01c7 A2000000 		.4byte	0xa2
+ 961 01cb 27       		.byte	0x27
+ 962 01cc 06       		.uleb128 0x6
+ 963 01cd DA020000 		.4byte	.LASF37
+ 964 01d1 04       		.byte	0x4
+ 965 01d2 4E01     		.2byte	0x14e
+ 966 01d4 A2000000 		.4byte	0xa2
+ 967 01d8 28       		.byte	0x28
+ 968 01d9 00       		.byte	0
+ 969 01da 03       		.uleb128 0x3
+ 970 01db 40020000 		.4byte	.LASF38
+ 971 01df 04       		.byte	0x4
+ 972 01e0 B6       		.byte	0xb6
+ 973 01e1 E5010000 		.4byte	0x1e5
+ 974 01e5 07       		.uleb128 0x7
+ 975 01e6 B8090000 		.4byte	.LASF40
+ 976 01ea 18       		.byte	0x18
+ 977 01eb 04       		.byte	0x4
+ 978 01ec CF       		.byte	0xcf
+ 979 01ed DB020000 		.4byte	0x2db
+ 980 01f1 08       		.uleb128 0x8
+ 981 01f2 D9070000 		.4byte	.LASF41
+ 982 01f6 04       		.byte	0x4
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 24
+
+
+ 983 01f7 D3       		.byte	0xd3
+ 984 01f8 A2000000 		.4byte	0xa2
+ 985 01fc 00       		.byte	0
+ 986 01fd 08       		.uleb128 0x8
+ 987 01fe 00090000 		.4byte	.LASF42
+ 988 0202 04       		.byte	0x4
+ 989 0203 D4       		.byte	0xd4
+ 990 0204 A2000000 		.4byte	0xa2
+ 991 0208 01       		.byte	0x1
+ 992 0209 08       		.uleb128 0x8
+ 993 020a 31080000 		.4byte	.LASF43
+ 994 020e 04       		.byte	0x4
+ 995 020f D6       		.byte	0xd6
+ 996 0210 A2000000 		.4byte	0xa2
+ 997 0214 02       		.byte	0x2
+ 998 0215 08       		.uleb128 0x8
+ 999 0216 6D010000 		.4byte	.LASF44
+ 1000 021a 04       		.byte	0x4
+ 1001 021b D7       		.byte	0xd7
+ 1002 021c A2000000 		.4byte	0xa2
+ 1003 0220 03       		.byte	0x3
+ 1004 0221 08       		.uleb128 0x8
+ 1005 0222 0A000000 		.4byte	.LASF45
+ 1006 0226 04       		.byte	0x4
+ 1007 0227 D8       		.byte	0xd8
+ 1008 0228 A2000000 		.4byte	0xa2
+ 1009 022c 04       		.byte	0x4
+ 1010 022d 08       		.uleb128 0x8
+ 1011 022e A6000000 		.4byte	.LASF46
+ 1012 0232 04       		.byte	0x4
+ 1013 0233 D9       		.byte	0xd9
+ 1014 0234 A2000000 		.4byte	0xa2
+ 1015 0238 05       		.byte	0x5
+ 1016 0239 08       		.uleb128 0x8
+ 1017 023a 93020000 		.4byte	.LASF47
+ 1018 023e 04       		.byte	0x4
+ 1019 023f E0       		.byte	0xe0
+ 1020 0240 A2000000 		.4byte	0xa2
+ 1021 0244 06       		.byte	0x6
+ 1022 0245 08       		.uleb128 0x8
+ 1023 0246 3E040000 		.4byte	.LASF48
+ 1024 024a 04       		.byte	0x4
+ 1025 024b E4       		.byte	0xe4
+ 1026 024c A2000000 		.4byte	0xa2
+ 1027 0250 07       		.byte	0x7
+ 1028 0251 08       		.uleb128 0x8
+ 1029 0252 FE090000 		.4byte	.LASF49
+ 1030 0256 04       		.byte	0x4
+ 1031 0257 E7       		.byte	0xe7
+ 1032 0258 B8000000 		.4byte	0xb8
+ 1033 025c 08       		.byte	0x8
+ 1034 025d 08       		.uleb128 0x8
+ 1035 025e D0070000 		.4byte	.LASF50
+ 1036 0262 04       		.byte	0x4
+ 1037 0263 F1       		.byte	0xf1
+ 1038 0264 A2000000 		.4byte	0xa2
+ 1039 0268 0C       		.byte	0xc
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 25
+
+
+ 1040 0269 08       		.uleb128 0x8
+ 1041 026a 88070000 		.4byte	.LASF51
+ 1042 026e 04       		.byte	0x4
+ 1043 026f F4       		.byte	0xf4
+ 1044 0270 A2000000 		.4byte	0xa2
+ 1045 0274 0D       		.byte	0xd
+ 1046 0275 08       		.uleb128 0x8
+ 1047 0276 58070000 		.4byte	.LASF52
+ 1048 027a 04       		.byte	0x4
+ 1049 027b FA       		.byte	0xfa
+ 1050 027c A2000000 		.4byte	0xa2
+ 1051 0280 0E       		.byte	0xe
+ 1052 0281 08       		.uleb128 0x8
+ 1053 0282 1F060000 		.4byte	.LASF53
+ 1054 0286 04       		.byte	0x4
+ 1055 0287 FC       		.byte	0xfc
+ 1056 0288 A2000000 		.4byte	0xa2
+ 1057 028c 0F       		.byte	0xf
+ 1058 028d 08       		.uleb128 0x8
+ 1059 028e 6D090000 		.4byte	.LASF54
+ 1060 0292 04       		.byte	0x4
+ 1061 0293 FF       		.byte	0xff
+ 1062 0294 A2000000 		.4byte	0xa2
+ 1063 0298 10       		.byte	0x10
+ 1064 0299 06       		.uleb128 0x6
+ 1065 029a 7A060000 		.4byte	.LASF55
+ 1066 029e 04       		.byte	0x4
+ 1067 029f 0001     		.2byte	0x100
+ 1068 02a1 A2000000 		.4byte	0xa2
+ 1069 02a5 11       		.byte	0x11
+ 1070 02a6 06       		.uleb128 0x6
+ 1071 02a7 C7040000 		.4byte	.LASF56
+ 1072 02ab 04       		.byte	0x4
+ 1073 02ac 0201     		.2byte	0x102
+ 1074 02ae A2000000 		.4byte	0xa2
+ 1075 02b2 12       		.byte	0x12
+ 1076 02b3 06       		.uleb128 0x6
+ 1077 02b4 04050000 		.4byte	.LASF57
+ 1078 02b8 04       		.byte	0x4
+ 1079 02b9 0301     		.2byte	0x103
+ 1080 02bb A2000000 		.4byte	0xa2
+ 1081 02bf 13       		.byte	0x13
+ 1082 02c0 06       		.uleb128 0x6
+ 1083 02c1 61090000 		.4byte	.LASF58
+ 1084 02c5 04       		.byte	0x4
+ 1085 02c6 0B01     		.2byte	0x10b
+ 1086 02c8 AD000000 		.4byte	0xad
+ 1087 02cc 14       		.byte	0x14
+ 1088 02cd 06       		.uleb128 0x6
+ 1089 02ce F1090000 		.4byte	.LASF59
+ 1090 02d2 04       		.byte	0x4
+ 1091 02d3 0C01     		.2byte	0x10c
+ 1092 02d5 AD000000 		.4byte	0xad
+ 1093 02d9 16       		.byte	0x16
+ 1094 02da 00       		.byte	0
+ 1095 02db 03       		.uleb128 0x3
+ 1096 02dc B8060000 		.4byte	.LASF60
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 26
+
+
+ 1097 02e0 04       		.byte	0x4
+ 1098 02e1 B9       		.byte	0xb9
+ 1099 02e2 E6020000 		.4byte	0x2e6
+ 1100 02e6 09       		.uleb128 0x9
+ 1101 02e7 04       		.byte	0x4
+ 1102 02e8 EC020000 		.4byte	0x2ec
+ 1103 02ec 0A       		.uleb128 0xa
+ 1104 02ed A2000000 		.4byte	0xa2
+ 1105 02f1 0A030000 		.4byte	0x30a
+ 1106 02f5 0B       		.uleb128 0xb
+ 1107 02f6 0A030000 		.4byte	0x30a
+ 1108 02fa 0B       		.uleb128 0xb
+ 1109 02fb A2000000 		.4byte	0xa2
+ 1110 02ff 0B       		.uleb128 0xb
+ 1111 0300 A2000000 		.4byte	0xa2
+ 1112 0304 0B       		.uleb128 0xb
+ 1113 0305 10030000 		.4byte	0x310
+ 1114 0309 00       		.byte	0
+ 1115 030a 09       		.uleb128 0x9
+ 1116 030b 04       		.byte	0x4
+ 1117 030c CA000000 		.4byte	0xca
+ 1118 0310 0C       		.uleb128 0xc
+ 1119 0311 04       		.byte	0x4
+ 1120 0312 03       		.uleb128 0x3
+ 1121 0313 19030000 		.4byte	.LASF61
+ 1122 0317 04       		.byte	0x4
+ 1123 0318 BA       		.byte	0xba
+ 1124 0319 1D030000 		.4byte	0x31d
+ 1125 031d 09       		.uleb128 0x9
+ 1126 031e 04       		.byte	0x4
+ 1127 031f 23030000 		.4byte	0x323
+ 1128 0323 0A       		.uleb128 0xa
+ 1129 0324 AD000000 		.4byte	0xad
+ 1130 0328 37030000 		.4byte	0x337
+ 1131 032c 0B       		.uleb128 0xb
+ 1132 032d 0A030000 		.4byte	0x30a
+ 1133 0331 0B       		.uleb128 0xb
+ 1134 0332 A2000000 		.4byte	0xa2
+ 1135 0336 00       		.byte	0
+ 1136 0337 09       		.uleb128 0x9
+ 1137 0338 04       		.byte	0x4
+ 1138 0339 A2000000 		.4byte	0xa2
+ 1139 033d 09       		.uleb128 0x9
+ 1140 033e 04       		.byte	0x4
+ 1141 033f 43030000 		.4byte	0x343
+ 1142 0343 0D       		.uleb128 0xd
+ 1143 0344 DA010000 		.4byte	0x1da
+ 1144 0348 09       		.uleb128 0x9
+ 1145 0349 04       		.byte	0x4
+ 1146 034a 4E030000 		.4byte	0x34e
+ 1147 034e 0D       		.uleb128 0xd
+ 1148 034f A2000000 		.4byte	0xa2
+ 1149 0353 05       		.uleb128 0x5
+ 1150 0354 08040000 		.4byte	.LASF62
+ 1151 0358 06       		.byte	0x6
+ 1152 0359 04       		.byte	0x4
+ 1153 035a 3503     		.2byte	0x335
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 27
+
+
+ 1154 035c AB030000 		.4byte	0x3ab
+ 1155 0360 06       		.uleb128 0x6
+ 1156 0361 F8080000 		.4byte	.LASF63
+ 1157 0365 04       		.byte	0x4
+ 1158 0366 3703     		.2byte	0x337
+ 1159 0368 A2000000 		.4byte	0xa2
+ 1160 036c 00       		.byte	0
+ 1161 036d 06       		.uleb128 0x6
+ 1162 036e C2080000 		.4byte	.LASF64
+ 1163 0372 04       		.byte	0x4
+ 1164 0373 3803     		.2byte	0x338
+ 1165 0375 A2000000 		.4byte	0xa2
+ 1166 0379 01       		.byte	0x1
+ 1167 037a 06       		.uleb128 0x6
+ 1168 037b 00000000 		.4byte	.LASF65
+ 1169 037f 04       		.byte	0x4
+ 1170 0380 3903     		.2byte	0x339
+ 1171 0382 A2000000 		.4byte	0xa2
+ 1172 0386 02       		.byte	0x2
+ 1173 0387 06       		.uleb128 0x6
+ 1174 0388 49090000 		.4byte	.LASF66
+ 1175 038c 04       		.byte	0x4
+ 1176 038d 3A03     		.2byte	0x33a
+ 1177 038f A2000000 		.4byte	0xa2
+ 1178 0393 03       		.byte	0x3
+ 1179 0394 0E       		.uleb128 0xe
+ 1180 0395 7800     		.ascii	"x\000"
+ 1181 0397 04       		.byte	0x4
+ 1182 0398 3C03     		.2byte	0x33c
+ 1183 039a A2000000 		.4byte	0xa2
+ 1184 039e 04       		.byte	0x4
+ 1185 039f 0E       		.uleb128 0xe
+ 1186 03a0 7900     		.ascii	"y\000"
+ 1187 03a2 04       		.byte	0x4
+ 1188 03a3 3D03     		.2byte	0x33d
+ 1189 03a5 A2000000 		.4byte	0xa2
+ 1190 03a9 05       		.byte	0x5
+ 1191 03aa 00       		.byte	0
+ 1192 03ab 0F       		.uleb128 0xf
+ 1193 03ac D8090000 		.4byte	.LASF67
+ 1194 03b0 04       		.byte	0x4
+ 1195 03b1 3F03     		.2byte	0x33f
+ 1196 03b3 53030000 		.4byte	0x353
+ 1197 03b7 09       		.uleb128 0x9
+ 1198 03b8 04       		.byte	0x4
+ 1199 03b9 AB030000 		.4byte	0x3ab
+ 1200 03bd 03       		.uleb128 0x3
+ 1201 03be 1C010000 		.4byte	.LASF68
+ 1202 03c2 05       		.byte	0x5
+ 1203 03c3 B9       		.byte	0xb9
+ 1204 03c4 A2000000 		.4byte	0xa2
+ 1205 03c8 03       		.uleb128 0x3
+ 1206 03c9 76030000 		.4byte	.LASF69
+ 1207 03cd 05       		.byte	0x5
+ 1208 03ce BF       		.byte	0xbf
+ 1209 03cf D3030000 		.4byte	0x3d3
+ 1210 03d3 05       		.uleb128 0x5
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 28
+
+
+ 1211 03d4 6B070000 		.4byte	.LASF70
+ 1212 03d8 80       		.byte	0x80
+ 1213 03d9 05       		.byte	0x5
+ 1214 03da 1C01     		.2byte	0x11c
+ 1215 03dc 3F050000 		.4byte	0x53f
+ 1216 03e0 06       		.uleb128 0x6
+ 1217 03e1 23070000 		.4byte	.LASF71
+ 1218 03e5 05       		.byte	0x5
+ 1219 03e6 1E01     		.2byte	0x11e
+ 1220 03e8 CA000000 		.4byte	0xca
+ 1221 03ec 00       		.byte	0
+ 1222 03ed 06       		.uleb128 0x6
+ 1223 03ee 86060000 		.4byte	.LASF72
+ 1224 03f2 05       		.byte	0x5
+ 1225 03f3 1F01     		.2byte	0x11f
+ 1226 03f5 C4050000 		.4byte	0x5c4
+ 1227 03f9 2C       		.byte	0x2c
+ 1228 03fa 0E       		.uleb128 0xe
+ 1229 03fb 636200   		.ascii	"cb\000"
+ 1230 03fe 05       		.byte	0x5
+ 1231 03ff 2001     		.2byte	0x120
+ 1232 0401 9F070000 		.4byte	0x79f
+ 1233 0405 30       		.byte	0x30
+ 1234 0406 06       		.uleb128 0x6
+ 1235 0407 24000000 		.4byte	.LASF73
+ 1236 040b 05       		.byte	0x5
+ 1237 040c 2301     		.2byte	0x123
+ 1238 040e 37030000 		.4byte	0x337
+ 1239 0412 34       		.byte	0x34
+ 1240 0413 06       		.uleb128 0x6
+ 1241 0414 AE030000 		.4byte	.LASF74
+ 1242 0418 05       		.byte	0x5
+ 1243 0419 2401     		.2byte	0x124
+ 1244 041b A2000000 		.4byte	0xa2
+ 1245 041f 38       		.byte	0x38
+ 1246 0420 06       		.uleb128 0x6
+ 1247 0421 B8070000 		.4byte	.LASF75
+ 1248 0425 05       		.byte	0x5
+ 1249 0426 2501     		.2byte	0x125
+ 1250 0428 A2000000 		.4byte	0xa2
+ 1251 042c 39       		.byte	0x39
+ 1252 042d 06       		.uleb128 0x6
+ 1253 042e 09070000 		.4byte	.LASF76
+ 1254 0432 05       		.byte	0x5
+ 1255 0433 2801     		.2byte	0x128
+ 1256 0435 BD030000 		.4byte	0x3bd
+ 1257 0439 3A       		.byte	0x3a
+ 1258 043a 06       		.uleb128 0x6
+ 1259 043b 26030000 		.4byte	.LASF77
+ 1260 043f 05       		.byte	0x5
+ 1261 0440 2901     		.2byte	0x129
+ 1262 0442 BD030000 		.4byte	0x3bd
+ 1263 0446 3B       		.byte	0x3b
+ 1264 0447 06       		.uleb128 0x6
+ 1265 0448 5A050000 		.4byte	.LASF78
+ 1266 044c 05       		.byte	0x5
+ 1267 044d 2A01     		.2byte	0x12a
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 29
+
+
+ 1268 044f BD030000 		.4byte	0x3bd
+ 1269 0453 3C       		.byte	0x3c
+ 1270 0454 06       		.uleb128 0x6
+ 1271 0455 34060000 		.4byte	.LASF79
+ 1272 0459 05       		.byte	0x5
+ 1273 045a 3001     		.2byte	0x130
+ 1274 045c BD030000 		.4byte	0x3bd
+ 1275 0460 3D       		.byte	0x3d
+ 1276 0461 06       		.uleb128 0x6
+ 1277 0462 3B060000 		.4byte	.LASF80
+ 1278 0466 05       		.byte	0x5
+ 1279 0467 3101     		.2byte	0x131
+ 1280 0469 BD030000 		.4byte	0x3bd
+ 1281 046d 3E       		.byte	0x3e
+ 1282 046e 06       		.uleb128 0x6
+ 1283 046f A8030000 		.4byte	.LASF81
+ 1284 0473 05       		.byte	0x5
+ 1285 0474 3401     		.2byte	0x134
+ 1286 0476 BD030000 		.4byte	0x3bd
+ 1287 047a 3F       		.byte	0x3f
+ 1288 047b 06       		.uleb128 0x6
+ 1289 047c D1090000 		.4byte	.LASF82
+ 1290 0480 05       		.byte	0x5
+ 1291 0481 3501     		.2byte	0x135
+ 1292 0483 BD030000 		.4byte	0x3bd
+ 1293 0487 40       		.byte	0x40
+ 1294 0488 06       		.uleb128 0x6
+ 1295 0489 3A070000 		.4byte	.LASF83
+ 1296 048d 05       		.byte	0x5
+ 1297 048e 3A01     		.2byte	0x13a
+ 1298 0490 BD030000 		.4byte	0x3bd
+ 1299 0494 41       		.byte	0x41
+ 1300 0495 06       		.uleb128 0x6
+ 1301 0496 42070000 		.4byte	.LASF84
+ 1302 049a 05       		.byte	0x5
+ 1303 049b 3B01     		.2byte	0x13b
+ 1304 049d BD030000 		.4byte	0x3bd
+ 1305 04a1 42       		.byte	0x42
+ 1306 04a2 06       		.uleb128 0x6
+ 1307 04a3 97080000 		.4byte	.LASF85
+ 1308 04a7 05       		.byte	0x5
+ 1309 04a8 3C01     		.2byte	0x13c
+ 1310 04aa BD030000 		.4byte	0x3bd
+ 1311 04ae 43       		.byte	0x43
+ 1312 04af 06       		.uleb128 0x6
+ 1313 04b0 9F080000 		.4byte	.LASF86
+ 1314 04b4 05       		.byte	0x5
+ 1315 04b5 3D01     		.2byte	0x13d
+ 1316 04b7 BD030000 		.4byte	0x3bd
+ 1317 04bb 44       		.byte	0x44
+ 1318 04bc 06       		.uleb128 0x6
+ 1319 04bd 13090000 		.4byte	.LASF25
+ 1320 04c1 05       		.byte	0x5
+ 1321 04c2 4001     		.2byte	0x140
+ 1322 04c4 48030000 		.4byte	0x348
+ 1323 04c8 48       		.byte	0x48
+ 1324 04c9 06       		.uleb128 0x6
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 30
+
+
+ 1325 04ca 74020000 		.4byte	.LASF87
+ 1326 04ce 05       		.byte	0x5
+ 1327 04cf 4401     		.2byte	0x144
+ 1328 04d1 7E070000 		.4byte	0x77e
+ 1329 04d5 4C       		.byte	0x4c
+ 1330 04d6 06       		.uleb128 0x6
+ 1331 04d7 F0070000 		.4byte	.LASF88
+ 1332 04db 05       		.byte	0x5
+ 1333 04dc 4501     		.2byte	0x145
+ 1334 04de 72070000 		.4byte	0x772
+ 1335 04e2 50       		.byte	0x50
+ 1336 04e3 06       		.uleb128 0x6
+ 1337 04e4 34040000 		.4byte	.LASF89
+ 1338 04e8 05       		.byte	0x5
+ 1339 04e9 4601     		.2byte	0x146
+ 1340 04eb CC060000 		.4byte	0x6cc
+ 1341 04ef 60       		.byte	0x60
+ 1342 04f0 06       		.uleb128 0x6
+ 1343 04f1 E1040000 		.4byte	.LASF90
+ 1344 04f5 05       		.byte	0x5
+ 1345 04f6 4801     		.2byte	0x148
+ 1346 04f8 A2000000 		.4byte	0xa2
+ 1347 04fc 78       		.byte	0x78
+ 1348 04fd 06       		.uleb128 0x6
+ 1349 04fe 83020000 		.4byte	.LASF91
+ 1350 0502 05       		.byte	0x5
+ 1351 0503 4901     		.2byte	0x149
+ 1352 0505 97000000 		.4byte	0x97
+ 1353 0509 79       		.byte	0x79
+ 1354 050a 06       		.uleb128 0x6
+ 1355 050b 1D020000 		.4byte	.LASF92
+ 1356 050f 05       		.byte	0x5
+ 1357 0510 4A01     		.2byte	0x14a
+ 1358 0512 97000000 		.4byte	0x97
+ 1359 0516 7A       		.byte	0x7a
+ 1360 0517 06       		.uleb128 0x6
+ 1361 0518 5E010000 		.4byte	.LASF93
+ 1362 051c 05       		.byte	0x5
+ 1363 051d 4C01     		.2byte	0x14c
+ 1364 051f 97000000 		.4byte	0x97
+ 1365 0523 7B       		.byte	0x7b
+ 1366 0524 06       		.uleb128 0x6
+ 1367 0525 26080000 		.4byte	.LASF94
+ 1368 0529 05       		.byte	0x5
+ 1369 052a 4F01     		.2byte	0x14f
+ 1370 052c A2000000 		.4byte	0xa2
+ 1371 0530 7C       		.byte	0x7c
+ 1372 0531 06       		.uleb128 0x6
+ 1373 0532 F6060000 		.4byte	.LASF95
+ 1374 0536 05       		.byte	0x5
+ 1375 0537 5201     		.2byte	0x152
+ 1376 0539 A2000000 		.4byte	0xa2
+ 1377 053d 7D       		.byte	0x7d
+ 1378 053e 00       		.byte	0
+ 1379 053f 03       		.uleb128 0x3
+ 1380 0540 C6070000 		.4byte	.LASF96
+ 1381 0544 05       		.byte	0x5
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 31
+
+
+ 1382 0545 C0       		.byte	0xc0
+ 1383 0546 4A050000 		.4byte	0x54a
+ 1384 054a 05       		.uleb128 0x5
+ 1385 054b C4060000 		.4byte	.LASF97
+ 1386 054f 08       		.byte	0x8
+ 1387 0550 05       		.byte	0x5
+ 1388 0551 1301     		.2byte	0x113
+ 1389 0553 72050000 		.4byte	0x572
+ 1390 0557 06       		.uleb128 0x6
+ 1391 0558 D7080000 		.4byte	.LASF98
+ 1392 055c 05       		.byte	0x5
+ 1393 055d 1501     		.2byte	0x115
+ 1394 055f 72050000 		.4byte	0x572
+ 1395 0563 00       		.byte	0
+ 1396 0564 06       		.uleb128 0x6
+ 1397 0565 07060000 		.4byte	.LASF99
+ 1398 0569 05       		.byte	0x5
+ 1399 056a 1601     		.2byte	0x116
+ 1400 056c 94050000 		.4byte	0x594
+ 1401 0570 04       		.byte	0x4
+ 1402 0571 00       		.byte	0
+ 1403 0572 03       		.uleb128 0x3
+ 1404 0573 56080000 		.4byte	.LASF100
+ 1405 0577 05       		.byte	0x5
+ 1406 0578 C2       		.byte	0xc2
+ 1407 0579 7D050000 		.4byte	0x57d
+ 1408 057d 09       		.uleb128 0x9
+ 1409 057e 04       		.byte	0x4
+ 1410 057f 83050000 		.4byte	0x583
+ 1411 0583 10       		.uleb128 0x10
+ 1412 0584 8E050000 		.4byte	0x58e
+ 1413 0588 0B       		.uleb128 0xb
+ 1414 0589 8E050000 		.4byte	0x58e
+ 1415 058d 00       		.byte	0
+ 1416 058e 09       		.uleb128 0x9
+ 1417 058f 04       		.byte	0x4
+ 1418 0590 C8030000 		.4byte	0x3c8
+ 1419 0594 03       		.uleb128 0x3
+ 1420 0595 77070000 		.4byte	.LASF101
+ 1421 0599 05       		.byte	0x5
+ 1422 059a C3       		.byte	0xc3
+ 1423 059b 9F050000 		.4byte	0x59f
+ 1424 059f 09       		.uleb128 0x9
+ 1425 05a0 04       		.byte	0x4
+ 1426 05a1 A5050000 		.4byte	0x5a5
+ 1427 05a5 10       		.uleb128 0x10
+ 1428 05a6 C4050000 		.4byte	0x5c4
+ 1429 05aa 0B       		.uleb128 0xb
+ 1430 05ab 8E050000 		.4byte	0x58e
+ 1431 05af 0B       		.uleb128 0xb
+ 1432 05b0 BD030000 		.4byte	0x3bd
+ 1433 05b4 0B       		.uleb128 0xb
+ 1434 05b5 BD030000 		.4byte	0x3bd
+ 1435 05b9 0B       		.uleb128 0xb
+ 1436 05ba BD030000 		.4byte	0x3bd
+ 1437 05be 0B       		.uleb128 0xb
+ 1438 05bf A2000000 		.4byte	0xa2
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 32
+
+
+ 1439 05c3 00       		.byte	0
+ 1440 05c4 03       		.uleb128 0x3
+ 1441 05c5 A5020000 		.4byte	.LASF102
+ 1442 05c9 05       		.byte	0x5
+ 1443 05ca C4       		.byte	0xc4
+ 1444 05cb 9F050000 		.4byte	0x59f
+ 1445 05cf 07       		.uleb128 0x7
+ 1446 05d0 A6070000 		.4byte	.LASF103
+ 1447 05d4 18       		.byte	0x18
+ 1448 05d5 05       		.byte	0x5
+ 1449 05d6 CA       		.byte	0xca
+ 1450 05d7 CC060000 		.4byte	0x6cc
+ 1451 05db 08       		.uleb128 0x8
+ 1452 05dc 72000000 		.4byte	.LASF104
+ 1453 05e0 05       		.byte	0x5
+ 1454 05e1 CD       		.byte	0xcd
+ 1455 05e2 A2000000 		.4byte	0xa2
+ 1456 05e6 00       		.byte	0
+ 1457 05e7 08       		.uleb128 0x8
+ 1458 05e8 B9000000 		.4byte	.LASF105
+ 1459 05ec 05       		.byte	0x5
+ 1460 05ed CE       		.byte	0xce
+ 1461 05ee A2000000 		.4byte	0xa2
+ 1462 05f2 01       		.byte	0x1
+ 1463 05f3 08       		.uleb128 0x8
+ 1464 05f4 69020000 		.4byte	.LASF106
+ 1465 05f8 05       		.byte	0x5
+ 1466 05f9 CF       		.byte	0xcf
+ 1467 05fa A2000000 		.4byte	0xa2
+ 1468 05fe 02       		.byte	0x2
+ 1469 05ff 08       		.uleb128 0x8
+ 1470 0600 16050000 		.4byte	.LASF107
+ 1471 0604 05       		.byte	0x5
+ 1472 0605 D0       		.byte	0xd0
+ 1473 0606 A2000000 		.4byte	0xa2
+ 1474 060a 03       		.byte	0x3
+ 1475 060b 08       		.uleb128 0x8
+ 1476 060c C6020000 		.4byte	.LASF108
+ 1477 0610 05       		.byte	0x5
+ 1478 0611 D3       		.byte	0xd3
+ 1479 0612 A2000000 		.4byte	0xa2
+ 1480 0616 04       		.byte	0x4
+ 1481 0617 08       		.uleb128 0x8
+ 1482 0618 06080000 		.4byte	.LASF109
+ 1483 061c 05       		.byte	0x5
+ 1484 061d D4       		.byte	0xd4
+ 1485 061e A2000000 		.4byte	0xa2
+ 1486 0622 05       		.byte	0x5
+ 1487 0623 08       		.uleb128 0x8
+ 1488 0624 E2000000 		.4byte	.LASF110
+ 1489 0628 05       		.byte	0x5
+ 1490 0629 D5       		.byte	0xd5
+ 1491 062a A2000000 		.4byte	0xa2
+ 1492 062e 06       		.byte	0x6
+ 1493 062f 08       		.uleb128 0x8
+ 1494 0630 F2000000 		.4byte	.LASF111
+ 1495 0634 05       		.byte	0x5
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 33
+
+
+ 1496 0635 D6       		.byte	0xd6
+ 1497 0636 A2000000 		.4byte	0xa2
+ 1498 063a 07       		.byte	0x7
+ 1499 063b 08       		.uleb128 0x8
+ 1500 063c 21050000 		.4byte	.LASF112
+ 1501 0640 05       		.byte	0x5
+ 1502 0641 D7       		.byte	0xd7
+ 1503 0642 A2000000 		.4byte	0xa2
+ 1504 0646 08       		.byte	0x8
+ 1505 0647 08       		.uleb128 0x8
+ 1506 0648 10060000 		.4byte	.LASF113
+ 1507 064c 05       		.byte	0x5
+ 1508 064d DA       		.byte	0xda
+ 1509 064e 97000000 		.4byte	0x97
+ 1510 0652 09       		.byte	0x9
+ 1511 0653 08       		.uleb128 0x8
+ 1512 0654 A7010000 		.4byte	.LASF114
+ 1513 0658 05       		.byte	0x5
+ 1514 0659 DB       		.byte	0xdb
+ 1515 065a 97000000 		.4byte	0x97
+ 1516 065e 0A       		.byte	0xa
+ 1517 065f 08       		.uleb128 0x8
+ 1518 0660 71060000 		.4byte	.LASF27
+ 1519 0664 05       		.byte	0x5
+ 1520 0665 DC       		.byte	0xdc
+ 1521 0666 97000000 		.4byte	0x97
+ 1522 066a 0B       		.byte	0xb
+ 1523 066b 08       		.uleb128 0x8
+ 1524 066c CD000000 		.4byte	.LASF115
+ 1525 0670 05       		.byte	0x5
+ 1526 0671 DD       		.byte	0xdd
+ 1527 0672 97000000 		.4byte	0x97
+ 1528 0676 0C       		.byte	0xc
+ 1529 0677 08       		.uleb128 0x8
+ 1530 0678 ED060000 		.4byte	.LASF116
+ 1531 067c 05       		.byte	0x5
+ 1532 067d E0       		.byte	0xe0
+ 1533 067e 97000000 		.4byte	0x97
+ 1534 0682 0D       		.byte	0xd
+ 1535 0683 08       		.uleb128 0x8
+ 1536 0684 BC020000 		.4byte	.LASF117
+ 1537 0688 05       		.byte	0x5
+ 1538 0689 E1       		.byte	0xe1
+ 1539 068a 97000000 		.4byte	0x97
+ 1540 068e 0E       		.byte	0xe
+ 1541 068f 08       		.uleb128 0x8
+ 1542 0690 52010000 		.4byte	.LASF118
+ 1543 0694 05       		.byte	0x5
+ 1544 0695 E2       		.byte	0xe2
+ 1545 0696 97000000 		.4byte	0x97
+ 1546 069a 0F       		.byte	0xf
+ 1547 069b 08       		.uleb128 0x8
+ 1548 069c 1A040000 		.4byte	.LASF119
+ 1549 06a0 05       		.byte	0x5
+ 1550 06a1 E3       		.byte	0xe3
+ 1551 06a2 97000000 		.4byte	0x97
+ 1552 06a6 10       		.byte	0x10
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 34
+
+
+ 1553 06a7 08       		.uleb128 0x8
+ 1554 06a8 F2040000 		.4byte	.LASF120
+ 1555 06ac 05       		.byte	0x5
+ 1556 06ad E6       		.byte	0xe6
+ 1557 06ae AD000000 		.4byte	0xad
+ 1558 06b2 12       		.byte	0x12
+ 1559 06b3 08       		.uleb128 0x8
+ 1560 06b4 18090000 		.4byte	.LASF121
+ 1561 06b8 05       		.byte	0x5
+ 1562 06b9 E7       		.byte	0xe7
+ 1563 06ba AD000000 		.4byte	0xad
+ 1564 06be 14       		.byte	0x14
+ 1565 06bf 08       		.uleb128 0x8
+ 1566 06c0 2E020000 		.4byte	.LASF122
+ 1567 06c4 05       		.byte	0x5
+ 1568 06c5 EB       		.byte	0xeb
+ 1569 06c6 AD000000 		.4byte	0xad
+ 1570 06ca 16       		.byte	0x16
+ 1571 06cb 00       		.byte	0
+ 1572 06cc 03       		.uleb128 0x3
+ 1573 06cd 00020000 		.4byte	.LASF123
+ 1574 06d1 05       		.byte	0x5
+ 1575 06d2 EE       		.byte	0xee
+ 1576 06d3 CF050000 		.4byte	0x5cf
+ 1577 06d7 07       		.uleb128 0x7
+ 1578 06d8 A7080000 		.4byte	.LASF124
+ 1579 06dc 10       		.byte	0x10
+ 1580 06dd 05       		.byte	0x5
+ 1581 06de F1       		.byte	0xf1
+ 1582 06df 72070000 		.4byte	0x772
+ 1583 06e3 08       		.uleb128 0x8
+ 1584 06e4 9D030000 		.4byte	.LASF125
+ 1585 06e8 05       		.byte	0x5
+ 1586 06e9 F3       		.byte	0xf3
+ 1587 06ea 48030000 		.4byte	0x348
+ 1588 06ee 00       		.byte	0
+ 1589 06ef 08       		.uleb128 0x8
+ 1590 06f0 7E080000 		.4byte	.LASF126
+ 1591 06f4 05       		.byte	0x5
+ 1592 06f5 F5       		.byte	0xf5
+ 1593 06f6 BD030000 		.4byte	0x3bd
+ 1594 06fa 04       		.byte	0x4
+ 1595 06fb 08       		.uleb128 0x8
+ 1596 06fc 87080000 		.4byte	.LASF127
+ 1597 0700 05       		.byte	0x5
+ 1598 0701 F6       		.byte	0xf6
+ 1599 0702 BD030000 		.4byte	0x3bd
+ 1600 0706 05       		.byte	0x5
+ 1601 0707 11       		.uleb128 0x11
+ 1602 0708 7800     		.ascii	"x\000"
+ 1603 070a 05       		.byte	0x5
+ 1604 070b F8       		.byte	0xf8
+ 1605 070c 97000000 		.4byte	0x97
+ 1606 0710 06       		.byte	0x6
+ 1607 0711 11       		.uleb128 0x11
+ 1608 0712 7900     		.ascii	"y\000"
+ 1609 0714 05       		.byte	0x5
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 35
+
+
+ 1610 0715 F9       		.byte	0xf9
+ 1611 0716 97000000 		.4byte	0x97
+ 1612 071a 07       		.byte	0x7
+ 1613 071b 08       		.uleb128 0x8
+ 1614 071c D3060000 		.4byte	.LASF128
+ 1615 0720 05       		.byte	0x5
+ 1616 0721 FA       		.byte	0xfa
+ 1617 0722 97000000 		.4byte	0x97
+ 1618 0726 08       		.byte	0x8
+ 1619 0727 08       		.uleb128 0x8
+ 1620 0728 41050000 		.4byte	.LASF129
+ 1621 072c 05       		.byte	0x5
+ 1622 072d FB       		.byte	0xfb
+ 1623 072e 97000000 		.4byte	0x97
+ 1624 0732 09       		.byte	0x9
+ 1625 0733 08       		.uleb128 0x8
+ 1626 0734 32050000 		.4byte	.LASF130
+ 1627 0738 05       		.byte	0x5
+ 1628 0739 FD       		.byte	0xfd
+ 1629 073a A2000000 		.4byte	0xa2
+ 1630 073e 0A       		.byte	0xa
+ 1631 073f 08       		.uleb128 0x8
+ 1632 0740 37030000 		.4byte	.LASF131
+ 1633 0744 05       		.byte	0x5
+ 1634 0745 FE       		.byte	0xfe
+ 1635 0746 A2000000 		.4byte	0xa2
+ 1636 074a 0B       		.byte	0xb
+ 1637 074b 08       		.uleb128 0x8
+ 1638 074c A0060000 		.4byte	.LASF132
+ 1639 0750 05       		.byte	0x5
+ 1640 0751 FF       		.byte	0xff
+ 1641 0752 A2000000 		.4byte	0xa2
+ 1642 0756 0C       		.byte	0xc
+ 1643 0757 06       		.uleb128 0x6
+ 1644 0758 FE050000 		.4byte	.LASF133
+ 1645 075c 05       		.byte	0x5
+ 1646 075d 0001     		.2byte	0x100
+ 1647 075f A2000000 		.4byte	0xa2
+ 1648 0763 0D       		.byte	0xd
+ 1649 0764 0E       		.uleb128 0xe
+ 1650 0765 64697200 		.ascii	"dir\000"
+ 1651 0769 05       		.byte	0x5
+ 1652 076a 0201     		.2byte	0x102
+ 1653 076c A2000000 		.4byte	0xa2
+ 1654 0770 0E       		.byte	0xe
+ 1655 0771 00       		.byte	0
+ 1656 0772 0F       		.uleb128 0xf
+ 1657 0773 49000000 		.4byte	.LASF134
+ 1658 0777 05       		.byte	0x5
+ 1659 0778 0501     		.2byte	0x105
+ 1660 077a D7060000 		.4byte	0x6d7
+ 1661 077e 0F       		.uleb128 0xf
+ 1662 077f DE080000 		.4byte	.LASF135
+ 1663 0783 05       		.byte	0x5
+ 1664 0784 1901     		.2byte	0x119
+ 1665 0786 8A070000 		.4byte	0x78a
+ 1666 078a 09       		.uleb128 0x9
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 36
+
+
+ 1667 078b 04       		.byte	0x4
+ 1668 078c 90070000 		.4byte	0x790
+ 1669 0790 0A       		.uleb128 0xa
+ 1670 0791 BD030000 		.4byte	0x3bd
+ 1671 0795 9F070000 		.4byte	0x79f
+ 1672 0799 0B       		.uleb128 0xb
+ 1673 079a 8E050000 		.4byte	0x58e
+ 1674 079e 00       		.byte	0
+ 1675 079f 09       		.uleb128 0x9
+ 1676 07a0 04       		.byte	0x4
+ 1677 07a1 A5070000 		.4byte	0x7a5
+ 1678 07a5 0D       		.uleb128 0xd
+ 1679 07a6 3F050000 		.4byte	0x53f
+ 1680 07aa 12       		.uleb128 0x12
+ 1681 07ab FB020000 		.4byte	.LASF170
+ 1682 07af 01       		.byte	0x1
+ 1683 07b0 97       		.byte	0x97
+ 1684 07b1 BD030000 		.4byte	0x3bd
+ 1685 07b5 00       		.byte	0
+ 1686 07b6 19080000 		.4byte	0x819
+ 1687 07ba 13       		.uleb128 0x13
+ 1688 07bb 15040000 		.4byte	.LASF136
+ 1689 07bf 01       		.byte	0x1
+ 1690 07c0 97       		.byte	0x97
+ 1691 07c1 8E050000 		.4byte	0x58e
+ 1692 07c5 13       		.uleb128 0x13
+ 1693 07c6 1F000000 		.4byte	.LASF137
+ 1694 07ca 01       		.byte	0x1
+ 1695 07cb 97       		.byte	0x97
+ 1696 07cc B7030000 		.4byte	0x3b7
+ 1697 07d0 14       		.uleb128 0x14
+ 1698 07d1 7900     		.ascii	"y\000"
+ 1699 07d3 01       		.byte	0x1
+ 1700 07d4 97       		.byte	0x97
+ 1701 07d5 BD030000 		.4byte	0x3bd
+ 1702 07d9 14       		.uleb128 0x14
+ 1703 07da 69647800 		.ascii	"idx\000"
+ 1704 07de 01       		.byte	0x1
+ 1705 07df 97       		.byte	0x97
+ 1706 07e0 A2000000 		.4byte	0xa2
+ 1707 07e4 14       		.uleb128 0x14
+ 1708 07e5 7300     		.ascii	"s\000"
+ 1709 07e7 01       		.byte	0x1
+ 1710 07e8 97       		.byte	0x97
+ 1711 07e9 19080000 		.4byte	0x819
+ 1712 07ed 15       		.uleb128 0x15
+ 1713 07ee 797900   		.ascii	"yy\000"
+ 1714 07f1 01       		.byte	0x1
+ 1715 07f2 99       		.byte	0x99
+ 1716 07f3 BD030000 		.4byte	0x3bd
+ 1717 07f7 16       		.uleb128 0x16
+ 1718 07f8 11020000 		.4byte	.LASF138
+ 1719 07fc 01       		.byte	0x1
+ 1720 07fd 9A       		.byte	0x9a
+ 1721 07fe A2000000 		.4byte	0xa2
+ 1722 0802 16       		.uleb128 0x16
+ 1723 0803 96060000 		.4byte	.LASF139
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 37
+
+
+ 1724 0807 01       		.byte	0x1
+ 1725 0808 9B       		.byte	0x9b
+ 1726 0809 A2000000 		.4byte	0xa2
+ 1727 080d 16       		.uleb128 0x16
+ 1728 080e D1030000 		.4byte	.LASF140
+ 1729 0812 01       		.byte	0x1
+ 1730 0813 9D       		.byte	0x9d
+ 1731 0814 BD030000 		.4byte	0x3bd
+ 1732 0818 00       		.byte	0
+ 1733 0819 09       		.uleb128 0x9
+ 1734 081a 04       		.byte	0x4
+ 1735 081b 26080000 		.4byte	0x826
+ 1736 081f 02       		.uleb128 0x2
+ 1737 0820 01       		.byte	0x1
+ 1738 0821 08       		.byte	0x8
+ 1739 0822 EB070000 		.4byte	.LASF141
+ 1740 0826 0D       		.uleb128 0xd
+ 1741 0827 1F080000 		.4byte	0x81f
+ 1742 082b 17       		.uleb128 0x17
+ 1743 082c 64030000 		.4byte	.LASF143
+ 1744 0830 01       		.byte	0x1
+ 1745 0831 34       		.byte	0x34
+ 1746 0832 00000000 		.4byte	.LFB0
+ 1747 0836 EA000000 		.4byte	.LFE0-.LFB0
+ 1748 083a 01       		.uleb128 0x1
+ 1749 083b 9C       		.byte	0x9c
+ 1750 083c 190A0000 		.4byte	0xa19
+ 1751 0840 18       		.uleb128 0x18
+ 1752 0841 15040000 		.4byte	.LASF136
+ 1753 0845 01       		.byte	0x1
+ 1754 0846 34       		.byte	0x34
+ 1755 0847 8E050000 		.4byte	0x58e
+ 1756 084b 00000000 		.4byte	.LLST0
+ 1757 084f 19       		.uleb128 0x19
+ 1758 0850 7800     		.ascii	"x\000"
+ 1759 0852 01       		.byte	0x1
+ 1760 0853 34       		.byte	0x34
+ 1761 0854 BD030000 		.4byte	0x3bd
+ 1762 0858 2C000000 		.4byte	.LLST1
+ 1763 085c 19       		.uleb128 0x19
+ 1764 085d 7900     		.ascii	"y\000"
+ 1765 085f 01       		.byte	0x1
+ 1766 0860 34       		.byte	0x34
+ 1767 0861 BD030000 		.4byte	0x3bd
+ 1768 0865 4D000000 		.4byte	.LLST2
+ 1769 0869 19       		.uleb128 0x19
+ 1770 086a 7700     		.ascii	"w\000"
+ 1771 086c 01       		.byte	0x1
+ 1772 086d 34       		.byte	0x34
+ 1773 086e BD030000 		.4byte	0x3bd
+ 1774 0872 7A000000 		.4byte	.LLST3
+ 1775 0876 19       		.uleb128 0x19
+ 1776 0877 7300     		.ascii	"s\000"
+ 1777 0879 01       		.byte	0x1
+ 1778 087a 34       		.byte	0x34
+ 1779 087b 19080000 		.4byte	0x819
+ 1780 087f A6000000 		.4byte	.LLST4
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 38
+
+
+ 1781 0883 18       		.uleb128 0x18
+ 1782 0884 11020000 		.4byte	.LASF138
+ 1783 0888 01       		.byte	0x1
+ 1784 0889 34       		.byte	0x34
+ 1785 088a A2000000 		.4byte	0xa2
+ 1786 088e DE000000 		.4byte	.LLST5
+ 1787 0892 18       		.uleb128 0x18
+ 1788 0893 96060000 		.4byte	.LASF139
+ 1789 0897 01       		.byte	0x1
+ 1790 0898 34       		.byte	0x34
+ 1791 0899 A2000000 		.4byte	0xa2
+ 1792 089d 16010000 		.4byte	.LLST6
+ 1793 08a1 1A       		.uleb128 0x1a
+ 1794 08a2 6400     		.ascii	"d\000"
+ 1795 08a4 01       		.byte	0x1
+ 1796 08a5 36       		.byte	0x36
+ 1797 08a6 BD030000 		.4byte	0x3bd
+ 1798 08aa 5A010000 		.4byte	.LLST7
+ 1799 08ae 1B       		.uleb128 0x1b
+ 1800 08af 54020000 		.4byte	.LASF142
+ 1801 08b3 01       		.byte	0x1
+ 1802 08b4 36       		.byte	0x36
+ 1803 08b5 BD030000 		.4byte	0x3bd
+ 1804 08b9 A0010000 		.4byte	.LLST8
+ 1805 08bd 1A       		.uleb128 0x1a
+ 1806 08be 667800   		.ascii	"fx\000"
+ 1807 08c1 01       		.byte	0x1
+ 1808 08c2 37       		.byte	0x37
+ 1809 08c3 BD030000 		.4byte	0x3bd
+ 1810 08c7 B3010000 		.4byte	.LLST9
+ 1811 08cb 1A       		.uleb128 0x1a
+ 1812 08cc 667900   		.ascii	"fy\000"
+ 1813 08cf 01       		.byte	0x1
+ 1814 08d0 37       		.byte	0x37
+ 1815 08d1 BD030000 		.4byte	0x3bd
+ 1816 08d5 DD010000 		.4byte	.LLST10
+ 1817 08d9 1A       		.uleb128 0x1a
+ 1818 08da 667700   		.ascii	"fw\000"
+ 1819 08dd 01       		.byte	0x1
+ 1820 08de 37       		.byte	0x37
+ 1821 08df BD030000 		.4byte	0x3bd
+ 1822 08e3 1F020000 		.4byte	.LLST11
+ 1823 08e7 1A       		.uleb128 0x1a
+ 1824 08e8 666800   		.ascii	"fh\000"
+ 1825 08eb 01       		.byte	0x1
+ 1826 08ec 37       		.byte	0x37
+ 1827 08ed BD030000 		.4byte	0x3bd
+ 1828 08f1 48020000 		.4byte	.LLST12
+ 1829 08f5 1C       		.uleb128 0x1c
+ 1830 08f6 20000000 		.4byte	.LVL6
+ 1831 08fa E50D0000 		.4byte	0xde5
+ 1832 08fe 0E090000 		.4byte	0x90e
+ 1833 0902 1D       		.uleb128 0x1d
+ 1834 0903 01       		.uleb128 0x1
+ 1835 0904 50       		.byte	0x50
+ 1836 0905 02       		.uleb128 0x2
+ 1837 0906 74       		.byte	0x74
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 39
+
+
+ 1838 0907 00       		.sleb128 0
+ 1839 0908 1D       		.uleb128 0x1d
+ 1840 0909 01       		.uleb128 0x1
+ 1841 090a 51       		.byte	0x51
+ 1842 090b 01       		.uleb128 0x1
+ 1843 090c 30       		.byte	0x30
+ 1844 090d 00       		.byte	0
+ 1845 090e 1E       		.uleb128 0x1e
+ 1846 090f 26000000 		.4byte	.LVL7
+ 1847 0913 1E090000 		.4byte	0x91e
+ 1848 0917 1D       		.uleb128 0x1d
+ 1849 0918 01       		.uleb128 0x1
+ 1850 0919 50       		.byte	0x50
+ 1851 091a 02       		.uleb128 0x2
+ 1852 091b 74       		.byte	0x74
+ 1853 091c 00       		.sleb128 0
+ 1854 091d 00       		.byte	0
+ 1855 091e 1C       		.uleb128 0x1c
+ 1856 091f 34000000 		.4byte	.LVL9
+ 1857 0923 F10D0000 		.4byte	0xdf1
+ 1858 0927 39090000 		.4byte	0x939
+ 1859 092b 1D       		.uleb128 0x1d
+ 1860 092c 01       		.uleb128 0x1
+ 1861 092d 50       		.byte	0x50
+ 1862 092e 02       		.uleb128 0x2
+ 1863 092f 74       		.byte	0x74
+ 1864 0930 00       		.sleb128 0
+ 1865 0931 1D       		.uleb128 0x1d
+ 1866 0932 01       		.uleb128 0x1
+ 1867 0933 51       		.byte	0x51
+ 1868 0934 03       		.uleb128 0x3
+ 1869 0935 91       		.byte	0x91
+ 1870 0936 5C       		.sleb128 -36
+ 1871 0937 06       		.byte	0x6
+ 1872 0938 00       		.byte	0
+ 1873 0939 1C       		.uleb128 0x1c
+ 1874 093a 6A000000 		.4byte	.LVL18
+ 1875 093e FD0D0000 		.4byte	0xdfd
+ 1876 0942 52090000 		.4byte	0x952
+ 1877 0946 1D       		.uleb128 0x1d
+ 1878 0947 01       		.uleb128 0x1
+ 1879 0948 50       		.byte	0x50
+ 1880 0949 02       		.uleb128 0x2
+ 1881 094a 74       		.byte	0x74
+ 1882 094b 00       		.sleb128 0
+ 1883 094c 1D       		.uleb128 0x1d
+ 1884 094d 01       		.uleb128 0x1
+ 1885 094e 51       		.byte	0x51
+ 1886 094f 01       		.uleb128 0x1
+ 1887 0950 31       		.byte	0x31
+ 1888 0951 00       		.byte	0
+ 1889 0952 1C       		.uleb128 0x1c
+ 1890 0953 80000000 		.4byte	.LVL19
+ 1891 0957 090E0000 		.4byte	0xe09
+ 1892 095b 85090000 		.4byte	0x985
+ 1893 095f 1D       		.uleb128 0x1d
+ 1894 0960 01       		.uleb128 0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 40
+
+
+ 1895 0961 50       		.byte	0x50
+ 1896 0962 02       		.uleb128 0x2
+ 1897 0963 74       		.byte	0x74
+ 1898 0964 00       		.sleb128 0
+ 1899 0965 1D       		.uleb128 0x1d
+ 1900 0966 01       		.uleb128 0x1
+ 1901 0967 51       		.byte	0x51
+ 1902 0968 04       		.uleb128 0x4
+ 1903 0969 91       		.byte	0x91
+ 1904 096a 48       		.sleb128 -56
+ 1905 096b 94       		.byte	0x94
+ 1906 096c 01       		.byte	0x1
+ 1907 096d 1D       		.uleb128 0x1d
+ 1908 096e 01       		.uleb128 0x1
+ 1909 096f 52       		.byte	0x52
+ 1910 0970 04       		.uleb128 0x4
+ 1911 0971 91       		.byte	0x91
+ 1912 0972 54       		.sleb128 -44
+ 1913 0973 94       		.byte	0x94
+ 1914 0974 01       		.byte	0x1
+ 1915 0975 1D       		.uleb128 0x1d
+ 1916 0976 01       		.uleb128 0x1
+ 1917 0977 53       		.byte	0x53
+ 1918 0978 02       		.uleb128 0x2
+ 1919 0979 75       		.byte	0x75
+ 1920 097a 00       		.sleb128 0
+ 1921 097b 1D       		.uleb128 0x1d
+ 1922 097c 02       		.uleb128 0x2
+ 1923 097d 7D       		.byte	0x7d
+ 1924 097e 00       		.sleb128 0
+ 1925 097f 04       		.uleb128 0x4
+ 1926 0980 91       		.byte	0x91
+ 1927 0981 58       		.sleb128 -40
+ 1928 0982 94       		.byte	0x94
+ 1929 0983 01       		.byte	0x1
+ 1930 0984 00       		.byte	0
+ 1931 0985 1C       		.uleb128 0x1c
+ 1932 0986 B8000000 		.4byte	.LVL24
+ 1933 098a 150E0000 		.4byte	0xe15
+ 1934 098e C1090000 		.4byte	0x9c1
+ 1935 0992 1D       		.uleb128 0x1d
+ 1936 0993 01       		.uleb128 0x1
+ 1937 0994 50       		.byte	0x50
+ 1938 0995 02       		.uleb128 0x2
+ 1939 0996 74       		.byte	0x74
+ 1940 0997 00       		.sleb128 0
+ 1941 0998 1D       		.uleb128 0x1d
+ 1942 0999 01       		.uleb128 0x1
+ 1943 099a 51       		.byte	0x51
+ 1944 099b 02       		.uleb128 0x2
+ 1945 099c 76       		.byte	0x76
+ 1946 099d 00       		.sleb128 0
+ 1947 099e 1D       		.uleb128 0x1d
+ 1948 099f 01       		.uleb128 0x1
+ 1949 09a0 52       		.byte	0x52
+ 1950 09a1 0A       		.uleb128 0xa
+ 1951 09a2 91       		.byte	0x91
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 41
+
+
+ 1952 09a3 54       		.sleb128 -44
+ 1953 09a4 06       		.byte	0x6
+ 1954 09a5 76       		.byte	0x76
+ 1955 09a6 00       		.sleb128 0
+ 1956 09a7 22       		.byte	0x22
+ 1957 09a8 91       		.byte	0x91
+ 1958 09a9 48       		.sleb128 -56
+ 1959 09aa 06       		.byte	0x6
+ 1960 09ab 1C       		.byte	0x1c
+ 1961 09ac 1D       		.uleb128 0x1d
+ 1962 09ad 01       		.uleb128 0x1
+ 1963 09ae 53       		.byte	0x53
+ 1964 09af 02       		.uleb128 0x2
+ 1965 09b0 77       		.byte	0x77
+ 1966 09b1 00       		.sleb128 0
+ 1967 09b2 1D       		.uleb128 0x1d
+ 1968 09b3 02       		.uleb128 0x2
+ 1969 09b4 7D       		.byte	0x7d
+ 1970 09b5 00       		.sleb128 0
+ 1971 09b6 09       		.uleb128 0x9
+ 1972 09b7 91       		.byte	0x91
+ 1973 09b8 58       		.sleb128 -40
+ 1974 09b9 06       		.byte	0x6
+ 1975 09ba 75       		.byte	0x75
+ 1976 09bb 00       		.sleb128 0
+ 1977 09bc 1C       		.byte	0x1c
+ 1978 09bd 77       		.byte	0x77
+ 1979 09be 00       		.sleb128 0
+ 1980 09bf 22       		.byte	0x22
+ 1981 09c0 00       		.byte	0
+ 1982 09c1 1C       		.uleb128 0x1c
+ 1983 09c2 CA000000 		.4byte	.LVL25
+ 1984 09c6 FD0D0000 		.4byte	0xdfd
+ 1985 09ca D5090000 		.4byte	0x9d5
+ 1986 09ce 1D       		.uleb128 0x1d
+ 1987 09cf 01       		.uleb128 0x1
+ 1988 09d0 50       		.byte	0x50
+ 1989 09d1 02       		.uleb128 0x2
+ 1990 09d2 74       		.byte	0x74
+ 1991 09d3 00       		.sleb128 0
+ 1992 09d4 00       		.byte	0
+ 1993 09d5 1C       		.uleb128 0x1c
+ 1994 09d6 DE000000 		.4byte	.LVL26
+ 1995 09da 210E0000 		.4byte	0xe21
+ 1996 09de 030A0000 		.4byte	0xa03
+ 1997 09e2 1D       		.uleb128 0x1d
+ 1998 09e3 01       		.uleb128 0x1
+ 1999 09e4 50       		.byte	0x50
+ 2000 09e5 02       		.uleb128 0x2
+ 2001 09e6 74       		.byte	0x74
+ 2002 09e7 00       		.sleb128 0
+ 2003 09e8 1D       		.uleb128 0x1d
+ 2004 09e9 01       		.uleb128 0x1
+ 2005 09ea 51       		.byte	0x51
+ 2006 09eb 07       		.uleb128 0x7
+ 2007 09ec 91       		.byte	0x91
+ 2008 09ed 4C       		.sleb128 -52
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 42
+
+
+ 2009 09ee 06       		.byte	0x6
+ 2010 09ef 91       		.byte	0x91
+ 2011 09f0 48       		.sleb128 -56
+ 2012 09f1 06       		.byte	0x6
+ 2013 09f2 22       		.byte	0x22
+ 2014 09f3 1D       		.uleb128 0x1d
+ 2015 09f4 01       		.uleb128 0x1
+ 2016 09f5 52       		.byte	0x52
+ 2017 09f6 04       		.uleb128 0x4
+ 2018 09f7 91       		.byte	0x91
+ 2019 09f8 50       		.sleb128 -48
+ 2020 09f9 94       		.byte	0x94
+ 2021 09fa 01       		.byte	0x1
+ 2022 09fb 1D       		.uleb128 0x1d
+ 2023 09fc 01       		.uleb128 0x1
+ 2024 09fd 53       		.byte	0x53
+ 2025 09fe 03       		.uleb128 0x3
+ 2026 09ff 91       		.byte	0x91
+ 2027 0a00 5C       		.sleb128 -36
+ 2028 0a01 06       		.byte	0x6
+ 2029 0a02 00       		.byte	0
+ 2030 0a03 1F       		.uleb128 0x1f
+ 2031 0a04 E6000000 		.4byte	.LVL27
+ 2032 0a08 FD0D0000 		.4byte	0xdfd
+ 2033 0a0c 1D       		.uleb128 0x1d
+ 2034 0a0d 01       		.uleb128 0x1
+ 2035 0a0e 50       		.byte	0x50
+ 2036 0a0f 02       		.uleb128 0x2
+ 2037 0a10 74       		.byte	0x74
+ 2038 0a11 00       		.sleb128 0
+ 2039 0a12 1D       		.uleb128 0x1d
+ 2040 0a13 01       		.uleb128 0x1
+ 2041 0a14 51       		.byte	0x51
+ 2042 0a15 01       		.uleb128 0x1
+ 2043 0a16 31       		.byte	0x31
+ 2044 0a17 00       		.byte	0
+ 2045 0a18 00       		.byte	0
+ 2046 0a19 20       		.uleb128 0x20
+ 2047 0a1a AA070000 		.4byte	0x7aa
+ 2048 0a1e 00000000 		.4byte	.LFB5
+ 2049 0a22 54000000 		.4byte	.LFE5-.LFB5
+ 2050 0a26 01       		.uleb128 0x1
+ 2051 0a27 9C       		.byte	0x9c
+ 2052 0a28 BF0A0000 		.4byte	0xabf
+ 2053 0a2c 21       		.uleb128 0x21
+ 2054 0a2d BA070000 		.4byte	0x7ba
+ 2055 0a31 86020000 		.4byte	.LLST13
+ 2056 0a35 21       		.uleb128 0x21
+ 2057 0a36 D0070000 		.4byte	0x7d0
+ 2058 0a3a B2020000 		.4byte	.LLST14
+ 2059 0a3e 21       		.uleb128 0x21
+ 2060 0a3f D9070000 		.4byte	0x7d9
+ 2061 0a43 D3020000 		.4byte	.LLST15
+ 2062 0a47 21       		.uleb128 0x21
+ 2063 0a48 E4070000 		.4byte	0x7e4
+ 2064 0a4c F4020000 		.4byte	.LLST16
+ 2065 0a50 22       		.uleb128 0x22
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 43
+
+
+ 2066 0a51 C5070000 		.4byte	0x7c5
+ 2067 0a55 06       		.uleb128 0x6
+ 2068 0a56 FA       		.byte	0xfa
+ 2069 0a57 C5070000 		.4byte	0x7c5
+ 2070 0a5b 9F       		.byte	0x9f
+ 2071 0a5c 23       		.uleb128 0x23
+ 2072 0a5d ED070000 		.4byte	0x7ed
+ 2073 0a61 1F030000 		.4byte	.LLST17
+ 2074 0a65 23       		.uleb128 0x23
+ 2075 0a66 F7070000 		.4byte	0x7f7
+ 2076 0a6a 44030000 		.4byte	.LLST18
+ 2077 0a6e 23       		.uleb128 0x23
+ 2078 0a6f 02080000 		.4byte	0x802
+ 2079 0a73 44030000 		.4byte	.LLST18
+ 2080 0a77 23       		.uleb128 0x23
+ 2081 0a78 0D080000 		.4byte	0x80d
+ 2082 0a7c 63030000 		.4byte	.LLST20
+ 2083 0a80 1C       		.uleb128 0x1c
+ 2084 0a81 28000000 		.4byte	.LVL37
+ 2085 0a85 2D0E0000 		.4byte	0xe2d
+ 2086 0a89 950A0000 		.4byte	0xa95
+ 2087 0a8d 1D       		.uleb128 0x1d
+ 2088 0a8e 01       		.uleb128 0x1
+ 2089 0a8f 51       		.byte	0x51
+ 2090 0a90 03       		.uleb128 0x3
+ 2091 0a91 91       		.byte	0x91
+ 2092 0a92 00       		.sleb128 0
+ 2093 0a93 06       		.byte	0x6
+ 2094 0a94 00       		.byte	0
+ 2095 0a95 1F       		.uleb128 0x1f
+ 2096 0a96 48000000 		.4byte	.LVL40
+ 2097 0a9a 2B080000 		.4byte	0x82b
+ 2098 0a9e 1D       		.uleb128 0x1d
+ 2099 0a9f 01       		.uleb128 0x1
+ 2100 0aa0 50       		.byte	0x50
+ 2101 0aa1 02       		.uleb128 0x2
+ 2102 0aa2 76       		.byte	0x76
+ 2103 0aa3 00       		.sleb128 0
+ 2104 0aa4 1D       		.uleb128 0x1d
+ 2105 0aa5 01       		.uleb128 0x1
+ 2106 0aa6 51       		.byte	0x51
+ 2107 0aa7 01       		.uleb128 0x1
+ 2108 0aa8 31       		.byte	0x31
+ 2109 0aa9 1D       		.uleb128 0x1d
+ 2110 0aaa 01       		.uleb128 0x1
+ 2111 0aab 52       		.byte	0x52
+ 2112 0aac 02       		.uleb128 0x2
+ 2113 0aad 77       		.byte	0x77
+ 2114 0aae 00       		.sleb128 0
+ 2115 0aaf 1D       		.uleb128 0x1d
+ 2116 0ab0 02       		.uleb128 0x2
+ 2117 0ab1 7D       		.byte	0x7d
+ 2118 0ab2 04       		.sleb128 4
+ 2119 0ab3 02       		.uleb128 0x2
+ 2120 0ab4 74       		.byte	0x74
+ 2121 0ab5 00       		.sleb128 0
+ 2122 0ab6 1D       		.uleb128 0x1d
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 44
+
+
+ 2123 0ab7 02       		.uleb128 0x2
+ 2124 0ab8 7D       		.byte	0x7d
+ 2125 0ab9 08       		.sleb128 8
+ 2126 0aba 02       		.uleb128 0x2
+ 2127 0abb 74       		.byte	0x74
+ 2128 0abc 00       		.sleb128 0
+ 2129 0abd 00       		.byte	0
+ 2130 0abe 00       		.byte	0
+ 2131 0abf 24       		.uleb128 0x24
+ 2132 0ac0 DD030000 		.4byte	.LASF145
+ 2133 0ac4 01       		.byte	0x1
+ 2134 0ac5 80       		.byte	0x80
+ 2135 0ac6 BD030000 		.4byte	0x3bd
+ 2136 0aca 00000000 		.4byte	.LFB1
+ 2137 0ace 4E000000 		.4byte	.LFE1-.LFB1
+ 2138 0ad2 01       		.uleb128 0x1
+ 2139 0ad3 9C       		.byte	0x9c
+ 2140 0ad4 AC0B0000 		.4byte	0xbac
+ 2141 0ad8 18       		.uleb128 0x18
+ 2142 0ad9 15040000 		.4byte	.LASF136
+ 2143 0add 01       		.byte	0x1
+ 2144 0ade 80       		.byte	0x80
+ 2145 0adf 8E050000 		.4byte	0x58e
+ 2146 0ae3 81030000 		.4byte	.LLST21
+ 2147 0ae7 19       		.uleb128 0x19
+ 2148 0ae8 7800     		.ascii	"x\000"
+ 2149 0aea 01       		.byte	0x1
+ 2150 0aeb 80       		.byte	0x80
+ 2151 0aec BD030000 		.4byte	0x3bd
+ 2152 0af0 B8030000 		.4byte	.LLST22
+ 2153 0af4 19       		.uleb128 0x19
+ 2154 0af5 7900     		.ascii	"y\000"
+ 2155 0af7 01       		.byte	0x1
+ 2156 0af8 80       		.byte	0x80
+ 2157 0af9 BD030000 		.4byte	0x3bd
+ 2158 0afd D9030000 		.4byte	.LLST23
+ 2159 0b01 19       		.uleb128 0x19
+ 2160 0b02 7700     		.ascii	"w\000"
+ 2161 0b04 01       		.byte	0x1
+ 2162 0b05 80       		.byte	0x80
+ 2163 0b06 BD030000 		.4byte	0x3bd
+ 2164 0b0a 10040000 		.4byte	.LLST24
+ 2165 0b0e 18       		.uleb128 0x18
+ 2166 0b0f D1030000 		.4byte	.LASF140
+ 2167 0b13 01       		.byte	0x1
+ 2168 0b14 80       		.byte	0x80
+ 2169 0b15 BD030000 		.4byte	0x3bd
+ 2170 0b19 31040000 		.4byte	.LLST25
+ 2171 0b1d 19       		.uleb128 0x19
+ 2172 0b1e 7300     		.ascii	"s\000"
+ 2173 0b20 01       		.byte	0x1
+ 2174 0b21 80       		.byte	0x80
+ 2175 0b22 19080000 		.4byte	0x819
+ 2176 0b26 5D040000 		.4byte	.LLST26
+ 2177 0b2a 1A       		.uleb128 0x1a
+ 2178 0b2b 6900     		.ascii	"i\000"
+ 2179 0b2d 01       		.byte	0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 45
+
+
+ 2180 0b2e 82       		.byte	0x82
+ 2181 0b2f A2000000 		.4byte	0xa2
+ 2182 0b33 89040000 		.4byte	.LLST27
+ 2183 0b37 25       		.uleb128 0x25
+ 2184 0b38 636E7400 		.ascii	"cnt\000"
+ 2185 0b3c 01       		.byte	0x1
+ 2186 0b3d 83       		.byte	0x83
+ 2187 0b3e A2000000 		.4byte	0xa2
+ 2188 0b42 02       		.uleb128 0x2
+ 2189 0b43 91       		.byte	0x91
+ 2190 0b44 64       		.sleb128 -28
+ 2191 0b45 26       		.uleb128 0x26
+ 2192 0b46 797900   		.ascii	"yy\000"
+ 2193 0b49 01       		.byte	0x1
+ 2194 0b4a 84       		.byte	0x84
+ 2195 0b4b BD030000 		.4byte	0x3bd
+ 2196 0b4f 00       		.byte	0
+ 2197 0b50 1C       		.uleb128 0x1c
+ 2198 0b51 16000000 		.4byte	.LVL47
+ 2199 0b55 390E0000 		.4byte	0xe39
+ 2200 0b59 650B0000 		.4byte	0xb65
+ 2201 0b5d 1D       		.uleb128 0x1d
+ 2202 0b5e 01       		.uleb128 0x1
+ 2203 0b5f 50       		.byte	0x50
+ 2204 0b60 03       		.uleb128 0x3
+ 2205 0b61 91       		.byte	0x91
+ 2206 0b62 04       		.sleb128 4
+ 2207 0b63 06       		.byte	0x6
+ 2208 0b64 00       		.byte	0
+ 2209 0b65 1C       		.uleb128 0x1c
+ 2210 0b66 28000000 		.4byte	.LVL49
+ 2211 0b6a 2D0E0000 		.4byte	0xe2d
+ 2212 0b6e 800B0000 		.4byte	0xb80
+ 2213 0b72 1D       		.uleb128 0x1d
+ 2214 0b73 01       		.uleb128 0x1
+ 2215 0b74 50       		.byte	0x50
+ 2216 0b75 02       		.uleb128 0x2
+ 2217 0b76 74       		.byte	0x74
+ 2218 0b77 00       		.sleb128 0
+ 2219 0b78 1D       		.uleb128 0x1d
+ 2220 0b79 01       		.uleb128 0x1
+ 2221 0b7a 51       		.byte	0x51
+ 2222 0b7b 03       		.uleb128 0x3
+ 2223 0b7c 91       		.byte	0x91
+ 2224 0b7d 04       		.sleb128 4
+ 2225 0b7e 06       		.byte	0x6
+ 2226 0b7f 00       		.byte	0
+ 2227 0b80 1F       		.uleb128 0x1f
+ 2228 0b81 40000000 		.4byte	.LVL52
+ 2229 0b85 2B080000 		.4byte	0x82b
+ 2230 0b89 1D       		.uleb128 0x1d
+ 2231 0b8a 01       		.uleb128 0x1
+ 2232 0b8b 50       		.byte	0x50
+ 2233 0b8c 03       		.uleb128 0x3
+ 2234 0b8d 91       		.byte	0x91
+ 2235 0b8e 5C       		.sleb128 -36
+ 2236 0b8f 06       		.byte	0x6
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 46
+
+
+ 2237 0b90 1D       		.uleb128 0x1d
+ 2238 0b91 01       		.uleb128 0x1
+ 2239 0b92 51       		.byte	0x51
+ 2240 0b93 04       		.uleb128 0x4
+ 2241 0b94 91       		.byte	0x91
+ 2242 0b95 60       		.sleb128 -32
+ 2243 0b96 94       		.byte	0x94
+ 2244 0b97 01       		.byte	0x1
+ 2245 0b98 1D       		.uleb128 0x1d
+ 2246 0b99 01       		.uleb128 0x1
+ 2247 0b9a 53       		.byte	0x53
+ 2248 0b9b 02       		.uleb128 0x2
+ 2249 0b9c 77       		.byte	0x77
+ 2250 0b9d 00       		.sleb128 0
+ 2251 0b9e 1D       		.uleb128 0x1d
+ 2252 0b9f 02       		.uleb128 0x2
+ 2253 0ba0 7D       		.byte	0x7d
+ 2254 0ba1 04       		.sleb128 4
+ 2255 0ba2 01       		.uleb128 0x1
+ 2256 0ba3 30       		.byte	0x30
+ 2257 0ba4 1D       		.uleb128 0x1d
+ 2258 0ba5 02       		.uleb128 0x2
+ 2259 0ba6 7D       		.byte	0x7d
+ 2260 0ba7 08       		.sleb128 8
+ 2261 0ba8 01       		.uleb128 0x1
+ 2262 0ba9 30       		.byte	0x30
+ 2263 0baa 00       		.byte	0
+ 2264 0bab 00       		.byte	0
+ 2265 0bac 17       		.uleb128 0x17
+ 2266 0bad 2A090000 		.4byte	.LASF144
+ 2267 0bb1 01       		.byte	0x1
+ 2268 0bb2 B6       		.byte	0xb6
+ 2269 0bb3 00000000 		.4byte	.LFB3
+ 2270 0bb7 36000000 		.4byte	.LFE3-.LFB3
+ 2271 0bbb 01       		.uleb128 0x1
+ 2272 0bbc 9C       		.byte	0x9c
+ 2273 0bbd 2D0C0000 		.4byte	0xc2d
+ 2274 0bc1 18       		.uleb128 0x18
+ 2275 0bc2 15040000 		.4byte	.LASF136
+ 2276 0bc6 01       		.byte	0x1
+ 2277 0bc7 B6       		.byte	0xb6
+ 2278 0bc8 8E050000 		.4byte	0x58e
+ 2279 0bcc A7040000 		.4byte	.LLST28
+ 2280 0bd0 18       		.uleb128 0x18
+ 2281 0bd1 1F000000 		.4byte	.LASF137
+ 2282 0bd5 01       		.byte	0x1
+ 2283 0bd6 B6       		.byte	0xb6
+ 2284 0bd7 B7030000 		.4byte	0x3b7
+ 2285 0bdb D3040000 		.4byte	.LLST29
+ 2286 0bdf 19       		.uleb128 0x19
+ 2287 0be0 7900     		.ascii	"y\000"
+ 2288 0be2 01       		.byte	0x1
+ 2289 0be3 B6       		.byte	0xb6
+ 2290 0be4 BD030000 		.4byte	0x3bd
+ 2291 0be8 FF040000 		.4byte	.LLST30
+ 2292 0bec 19       		.uleb128 0x19
+ 2293 0bed 7300     		.ascii	"s\000"
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 47
+
+
+ 2294 0bef 01       		.byte	0x1
+ 2295 0bf0 B6       		.byte	0xb6
+ 2296 0bf1 19080000 		.4byte	0x819
+ 2297 0bf5 28050000 		.4byte	.LLST31
+ 2298 0bf9 1A       		.uleb128 0x1a
+ 2299 0bfa 6900     		.ascii	"i\000"
+ 2300 0bfc 01       		.byte	0x1
+ 2301 0bfd B8       		.byte	0xb8
+ 2302 0bfe A2000000 		.4byte	0xa2
+ 2303 0c02 47050000 		.4byte	.LLST32
+ 2304 0c06 1F       		.uleb128 0x1f
+ 2305 0c07 28000000 		.4byte	.LVL59
+ 2306 0c0b 190A0000 		.4byte	0xa19
+ 2307 0c0f 1D       		.uleb128 0x1d
+ 2308 0c10 01       		.uleb128 0x1
+ 2309 0c11 50       		.byte	0x50
+ 2310 0c12 02       		.uleb128 0x2
+ 2311 0c13 77       		.byte	0x77
+ 2312 0c14 00       		.sleb128 0
+ 2313 0c15 1D       		.uleb128 0x1d
+ 2314 0c16 01       		.uleb128 0x1
+ 2315 0c17 52       		.byte	0x52
+ 2316 0c18 02       		.uleb128 0x2
+ 2317 0c19 76       		.byte	0x76
+ 2318 0c1a 00       		.sleb128 0
+ 2319 0c1b 1D       		.uleb128 0x1d
+ 2320 0c1c 02       		.uleb128 0x2
+ 2321 0c1d 7D       		.byte	0x7d
+ 2322 0c1e 00       		.sleb128 0
+ 2323 0c1f 03       		.uleb128 0x3
+ 2324 0c20 91       		.byte	0x91
+ 2325 0c21 64       		.sleb128 -28
+ 2326 0c22 06       		.byte	0x6
+ 2327 0c23 27       		.uleb128 0x27
+ 2328 0c24 C5070000 		.4byte	0x7c5
+ 2329 0c28 02       		.uleb128 0x2
+ 2330 0c29 75       		.byte	0x75
+ 2331 0c2a 00       		.sleb128 0
+ 2332 0c2b 00       		.byte	0
+ 2333 0c2c 00       		.byte	0
+ 2334 0c2d 28       		.uleb128 0x28
+ 2335 0c2e 51060000 		.4byte	.LASF146
+ 2336 0c32 01       		.byte	0x1
+ 2337 0c33 CB       		.byte	0xcb
+ 2338 0c34 A2000000 		.4byte	0xa2
+ 2339 0c38 00000000 		.4byte	.LFB4
+ 2340 0c3c 26010000 		.4byte	.LFE4-.LFB4
+ 2341 0c40 01       		.uleb128 0x1
+ 2342 0c41 9C       		.byte	0x9c
+ 2343 0c42 E50D0000 		.4byte	0xde5
+ 2344 0c46 18       		.uleb128 0x18
+ 2345 0c47 15040000 		.4byte	.LASF136
+ 2346 0c4b 01       		.byte	0x1
+ 2347 0c4c CB       		.byte	0xcb
+ 2348 0c4d 8E050000 		.4byte	0x58e
+ 2349 0c51 71050000 		.4byte	.LLST33
+ 2350 0c55 18       		.uleb128 0x18
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 48
+
+
+ 2351 0c56 3B000000 		.4byte	.LASF147
+ 2352 0c5a 01       		.byte	0x1
+ 2353 0c5b CB       		.byte	0xcb
+ 2354 0c5c 19080000 		.4byte	0x819
+ 2355 0c60 9D050000 		.4byte	.LLST34
+ 2356 0c64 18       		.uleb128 0x18
+ 2357 0c65 FC070000 		.4byte	.LASF148
+ 2358 0c69 01       		.byte	0x1
+ 2359 0c6a CB       		.byte	0xcb
+ 2360 0c6b A2000000 		.4byte	0xa2
+ 2361 0c6f BC050000 		.4byte	.LLST35
+ 2362 0c73 19       		.uleb128 0x19
+ 2363 0c74 736C00   		.ascii	"sl\000"
+ 2364 0c77 01       		.byte	0x1
+ 2365 0c78 CB       		.byte	0xcb
+ 2366 0c79 19080000 		.4byte	0x819
+ 2367 0c7d E8050000 		.4byte	.LLST36
+ 2368 0c81 29       		.uleb128 0x29
+ 2369 0c82 1F000000 		.4byte	.LASF137
+ 2370 0c86 01       		.byte	0x1
+ 2371 0c87 CD       		.byte	0xcd
+ 2372 0c88 AB030000 		.4byte	0x3ab
+ 2373 0c8c 02       		.uleb128 0x2
+ 2374 0c8d 91       		.byte	0x91
+ 2375 0c8e 60       		.sleb128 -32
+ 2376 0c8f 1A       		.uleb128 0x1a
+ 2377 0c90 797900   		.ascii	"yy\000"
+ 2378 0c93 01       		.byte	0x1
+ 2379 0c94 CE       		.byte	0xce
+ 2380 0c95 BD030000 		.4byte	0x3bd
+ 2381 0c99 07060000 		.4byte	.LLST37
+ 2382 0c9d 1B       		.uleb128 0x1b
+ 2383 0c9e 90060000 		.4byte	.LASF149
+ 2384 0ca2 01       		.byte	0x1
+ 2385 0ca3 D0       		.byte	0xd0
+ 2386 0ca4 A2000000 		.4byte	0xa2
+ 2387 0ca8 3D060000 		.4byte	.LLST38
+ 2388 0cac 1B       		.uleb128 0x1b
+ 2389 0cad D1030000 		.4byte	.LASF140
+ 2390 0cb1 01       		.byte	0x1
+ 2391 0cb2 D2       		.byte	0xd2
+ 2392 0cb3 BD030000 		.4byte	0x3bd
+ 2393 0cb7 66060000 		.4byte	.LLST39
+ 2394 0cbb 29       		.uleb128 0x29
+ 2395 0cbc 4A080000 		.4byte	.LASF150
+ 2396 0cc0 01       		.byte	0x1
+ 2397 0cc1 D4       		.byte	0xd4
+ 2398 0cc2 A2000000 		.4byte	0xa2
+ 2399 0cc6 02       		.uleb128 0x2
+ 2400 0cc7 91       		.byte	0x91
+ 2401 0cc8 54       		.sleb128 -44
+ 2402 0cc9 1B       		.uleb128 0x1b
+ 2403 0cca 8F030000 		.4byte	.LASF151
+ 2404 0cce 01       		.byte	0x1
+ 2405 0ccf D5       		.byte	0xd5
+ 2406 0cd0 A2000000 		.4byte	0xa2
+ 2407 0cd4 79060000 		.4byte	.LLST40
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 49
+
+
+ 2408 0cd8 1C       		.uleb128 0x1c
+ 2409 0cd9 24000000 		.4byte	.LVL73
+ 2410 0cdd 390E0000 		.4byte	0xe39
+ 2411 0ce1 ED0C0000 		.4byte	0xced
+ 2412 0ce5 1D       		.uleb128 0x1d
+ 2413 0ce6 01       		.uleb128 0x1
+ 2414 0ce7 50       		.byte	0x50
+ 2415 0ce8 03       		.uleb128 0x3
+ 2416 0ce9 91       		.byte	0x91
+ 2417 0cea 58       		.sleb128 -40
+ 2418 0ceb 06       		.byte	0x6
+ 2419 0cec 00       		.byte	0
+ 2420 0ced 1C       		.uleb128 0x1c
+ 2421 0cee 58000000 		.4byte	.LVL80
+ 2422 0cf2 390E0000 		.4byte	0xe39
+ 2423 0cf6 020D0000 		.4byte	0xd02
+ 2424 0cfa 1D       		.uleb128 0x1d
+ 2425 0cfb 01       		.uleb128 0x1
+ 2426 0cfc 50       		.byte	0x50
+ 2427 0cfd 03       		.uleb128 0x3
+ 2428 0cfe 91       		.byte	0x91
+ 2429 0cff 5C       		.sleb128 -36
+ 2430 0d00 06       		.byte	0x6
+ 2431 0d01 00       		.byte	0
+ 2432 0d02 1C       		.uleb128 0x1c
+ 2433 0d03 80000000 		.4byte	.LVL81
+ 2434 0d07 450E0000 		.4byte	0xe45
+ 2435 0d0b 160D0000 		.4byte	0xd16
+ 2436 0d0f 1D       		.uleb128 0x1d
+ 2437 0d10 01       		.uleb128 0x1
+ 2438 0d11 50       		.byte	0x50
+ 2439 0d12 02       		.uleb128 0x2
+ 2440 0d13 74       		.byte	0x74
+ 2441 0d14 00       		.sleb128 0
+ 2442 0d15 00       		.byte	0
+ 2443 0d16 1C       		.uleb128 0x1c
+ 2444 0d17 86000000 		.4byte	.LVL82
+ 2445 0d1b 510E0000 		.4byte	0xe51
+ 2446 0d1f 2A0D0000 		.4byte	0xd2a
+ 2447 0d23 1D       		.uleb128 0x1d
+ 2448 0d24 01       		.uleb128 0x1
+ 2449 0d25 50       		.byte	0x50
+ 2450 0d26 02       		.uleb128 0x2
+ 2451 0d27 74       		.byte	0x74
+ 2452 0d28 00       		.sleb128 0
+ 2453 0d29 00       		.byte	0
+ 2454 0d2a 1C       		.uleb128 0x1c
+ 2455 0d2b A8000000 		.4byte	.LVL84
+ 2456 0d2f BF0A0000 		.4byte	0xabf
+ 2457 0d33 580D0000 		.4byte	0xd58
+ 2458 0d37 1D       		.uleb128 0x1d
+ 2459 0d38 01       		.uleb128 0x1
+ 2460 0d39 50       		.byte	0x50
+ 2461 0d3a 02       		.uleb128 0x2
+ 2462 0d3b 74       		.byte	0x74
+ 2463 0d3c 00       		.sleb128 0
+ 2464 0d3d 1D       		.uleb128 0x1d
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 50
+
+
+ 2465 0d3e 01       		.uleb128 0x1
+ 2466 0d3f 51       		.byte	0x51
+ 2467 0d40 01       		.uleb128 0x1
+ 2468 0d41 30       		.byte	0x30
+ 2469 0d42 1D       		.uleb128 0x1d
+ 2470 0d43 01       		.uleb128 0x1
+ 2471 0d44 52       		.byte	0x52
+ 2472 0d45 02       		.uleb128 0x2
+ 2473 0d46 75       		.byte	0x75
+ 2474 0d47 00       		.sleb128 0
+ 2475 0d48 1D       		.uleb128 0x1d
+ 2476 0d49 02       		.uleb128 0x2
+ 2477 0d4a 7D       		.byte	0x7d
+ 2478 0d4b 00       		.sleb128 0
+ 2479 0d4c 02       		.uleb128 0x2
+ 2480 0d4d 77       		.byte	0x77
+ 2481 0d4e 00       		.sleb128 0
+ 2482 0d4f 1D       		.uleb128 0x1d
+ 2483 0d50 02       		.uleb128 0x2
+ 2484 0d51 7D       		.byte	0x7d
+ 2485 0d52 04       		.sleb128 4
+ 2486 0d53 03       		.uleb128 0x3
+ 2487 0d54 91       		.byte	0x91
+ 2488 0d55 58       		.sleb128 -40
+ 2489 0d56 06       		.byte	0x6
+ 2490 0d57 00       		.byte	0
+ 2491 0d58 1C       		.uleb128 0x1c
+ 2492 0d59 C6000000 		.4byte	.LVL87
+ 2493 0d5d 5D0E0000 		.4byte	0xe5d
+ 2494 0d61 710D0000 		.4byte	0xd71
+ 2495 0d65 1D       		.uleb128 0x1d
+ 2496 0d66 01       		.uleb128 0x1
+ 2497 0d67 50       		.byte	0x50
+ 2498 0d68 02       		.uleb128 0x2
+ 2499 0d69 74       		.byte	0x74
+ 2500 0d6a 00       		.sleb128 0
+ 2501 0d6b 1D       		.uleb128 0x1d
+ 2502 0d6c 01       		.uleb128 0x1
+ 2503 0d6d 51       		.byte	0x51
+ 2504 0d6e 01       		.uleb128 0x1
+ 2505 0d6f 30       		.byte	0x30
+ 2506 0d70 00       		.byte	0
+ 2507 0d71 1C       		.uleb128 0x1c
+ 2508 0d72 D8000000 		.4byte	.LVL90
+ 2509 0d76 AC0B0000 		.4byte	0xbac
+ 2510 0d7a 980D0000 		.4byte	0xd98
+ 2511 0d7e 1D       		.uleb128 0x1d
+ 2512 0d7f 01       		.uleb128 0x1
+ 2513 0d80 50       		.byte	0x50
+ 2514 0d81 02       		.uleb128 0x2
+ 2515 0d82 74       		.byte	0x74
+ 2516 0d83 00       		.sleb128 0
+ 2517 0d84 1D       		.uleb128 0x1d
+ 2518 0d85 01       		.uleb128 0x1
+ 2519 0d86 51       		.byte	0x51
+ 2520 0d87 02       		.uleb128 0x2
+ 2521 0d88 76       		.byte	0x76
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 51
+
+
+ 2522 0d89 00       		.sleb128 0
+ 2523 0d8a 1D       		.uleb128 0x1d
+ 2524 0d8b 01       		.uleb128 0x1
+ 2525 0d8c 52       		.byte	0x52
+ 2526 0d8d 02       		.uleb128 0x2
+ 2527 0d8e 75       		.byte	0x75
+ 2528 0d8f 00       		.sleb128 0
+ 2529 0d90 1D       		.uleb128 0x1d
+ 2530 0d91 01       		.uleb128 0x1
+ 2531 0d92 53       		.byte	0x53
+ 2532 0d93 03       		.uleb128 0x3
+ 2533 0d94 91       		.byte	0x91
+ 2534 0d95 5C       		.sleb128 -36
+ 2535 0d96 06       		.byte	0x6
+ 2536 0d97 00       		.byte	0
+ 2537 0d98 1C       		.uleb128 0x1c
+ 2538 0d99 DE000000 		.4byte	.LVL91
+ 2539 0d9d 690E0000 		.4byte	0xe69
+ 2540 0da1 AC0D0000 		.4byte	0xdac
+ 2541 0da5 1D       		.uleb128 0x1d
+ 2542 0da6 01       		.uleb128 0x1
+ 2543 0da7 50       		.byte	0x50
+ 2544 0da8 02       		.uleb128 0x2
+ 2545 0da9 74       		.byte	0x74
+ 2546 0daa 00       		.sleb128 0
+ 2547 0dab 00       		.byte	0
+ 2548 0dac 1C       		.uleb128 0x1c
+ 2549 0dad E8000000 		.4byte	.LVL93
+ 2550 0db1 750E0000 		.4byte	0xe75
+ 2551 0db5 C00D0000 		.4byte	0xdc0
+ 2552 0db9 1D       		.uleb128 0x1d
+ 2553 0dba 01       		.uleb128 0x1
+ 2554 0dbb 50       		.byte	0x50
+ 2555 0dbc 02       		.uleb128 0x2
+ 2556 0dbd 74       		.byte	0x74
+ 2557 0dbe 00       		.sleb128 0
+ 2558 0dbf 00       		.byte	0
+ 2559 0dc0 1C       		.uleb128 0x1c
+ 2560 0dc1 0A010000 		.4byte	.LVL95
+ 2561 0dc5 810E0000 		.4byte	0xe81
+ 2562 0dc9 D40D0000 		.4byte	0xdd4
+ 2563 0dcd 1D       		.uleb128 0x1d
+ 2564 0dce 01       		.uleb128 0x1
+ 2565 0dcf 50       		.byte	0x50
+ 2566 0dd0 02       		.uleb128 0x2
+ 2567 0dd1 76       		.byte	0x76
+ 2568 0dd2 00       		.sleb128 0
+ 2569 0dd3 00       		.byte	0
+ 2570 0dd4 1F       		.uleb128 0x1f
+ 2571 0dd5 1E010000 		.4byte	.LVL98
+ 2572 0dd9 8D0E0000 		.4byte	0xe8d
+ 2573 0ddd 1D       		.uleb128 0x1d
+ 2574 0dde 01       		.uleb128 0x1
+ 2575 0ddf 50       		.byte	0x50
+ 2576 0de0 02       		.uleb128 0x2
+ 2577 0de1 76       		.byte	0x76
+ 2578 0de2 00       		.sleb128 0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 52
+
+
+ 2579 0de3 00       		.byte	0
+ 2580 0de4 00       		.byte	0
+ 2581 0de5 2A       		.uleb128 0x2a
+ 2582 0de6 5C000000 		.4byte	.LASF152
+ 2583 0dea 5C000000 		.4byte	.LASF152
+ 2584 0dee 05       		.byte	0x5
+ 2585 0def 5F03     		.2byte	0x35f
+ 2586 0df1 2A       		.uleb128 0x2a
+ 2587 0df2 28070000 		.4byte	.LASF153
+ 2588 0df6 28070000 		.4byte	.LASF153
+ 2589 0dfa 05       		.byte	0x5
+ 2590 0dfb 6D03     		.2byte	0x36d
+ 2591 0dfd 2A       		.uleb128 0x2a
+ 2592 0dfe 7D030000 		.4byte	.LASF154
+ 2593 0e02 7D030000 		.4byte	.LASF154
+ 2594 0e06 05       		.byte	0x5
+ 2595 0e07 1203     		.2byte	0x312
+ 2596 0e09 2A       		.uleb128 0x2a
+ 2597 0e0a AC040000 		.4byte	.LASF155
+ 2598 0e0e AC040000 		.4byte	.LASF155
+ 2599 0e12 05       		.byte	0x5
+ 2600 0e13 3803     		.2byte	0x338
+ 2601 0e15 2A       		.uleb128 0x2a
+ 2602 0e16 6F080000 		.4byte	.LASF156
+ 2603 0e1a 6F080000 		.4byte	.LASF156
+ 2604 0e1e 05       		.byte	0x5
+ 2605 0e1f 3903     		.2byte	0x339
+ 2606 0e21 2A       		.uleb128 0x2a
+ 2607 0e22 B9040000 		.4byte	.LASF157
+ 2608 0e26 B9040000 		.4byte	.LASF157
+ 2609 0e2a 05       		.byte	0x5
+ 2610 0e2b 6103     		.2byte	0x361
+ 2611 0e2d 2A       		.uleb128 0x2a
+ 2612 0e2e 8F010000 		.4byte	.LASF158
+ 2613 0e32 8F010000 		.4byte	.LASF158
+ 2614 0e36 04       		.byte	0x4
+ 2615 0e37 2B03     		.2byte	0x32b
+ 2616 0e39 2A       		.uleb128 0x2a
+ 2617 0e3a A2090000 		.4byte	.LASF159
+ 2618 0e3e A2090000 		.4byte	.LASF159
+ 2619 0e42 04       		.byte	0x4
+ 2620 0e43 2A03     		.2byte	0x32a
+ 2621 0e45 2A       		.uleb128 0x2a
+ 2622 0e46 5D040000 		.4byte	.LASF160
+ 2623 0e4a 5D040000 		.4byte	.LASF160
+ 2624 0e4e 05       		.byte	0x5
+ 2625 0e4f 6F03     		.2byte	0x36f
+ 2626 0e51 2A       		.uleb128 0x2a
+ 2627 0e52 A9060000 		.4byte	.LASF161
+ 2628 0e56 A9060000 		.4byte	.LASF161
+ 2629 0e5a 05       		.byte	0x5
+ 2630 0e5b EE02     		.2byte	0x2ee
+ 2631 0e5d 2A       		.uleb128 0x2a
+ 2632 0e5e 93090000 		.4byte	.LASF162
+ 2633 0e62 93090000 		.4byte	.LASF162
+ 2634 0e66 05       		.byte	0x5
+ 2635 0e67 0F03     		.2byte	0x30f
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 53
+
+
+ 2636 0e69 2A       		.uleb128 0x2a
+ 2637 0e6a 4A070000 		.4byte	.LASF163
+ 2638 0e6e 4A070000 		.4byte	.LASF163
+ 2639 0e72 05       		.byte	0x5
+ 2640 0e73 EF02     		.2byte	0x2ef
+ 2641 0e75 2A       		.uleb128 0x2a
+ 2642 0e76 DF090000 		.4byte	.LASF164
+ 2643 0e7a DF090000 		.4byte	.LASF164
+ 2644 0e7e 04       		.byte	0x4
+ 2645 0e7f BC02     		.2byte	0x2bc
+ 2646 0e81 2A       		.uleb128 0x2a
+ 2647 0e82 48010000 		.4byte	.LASF165
+ 2648 0e86 48010000 		.4byte	.LASF165
+ 2649 0e8a 04       		.byte	0x4
+ 2650 0e8b 4303     		.2byte	0x343
+ 2651 0e8d 2A       		.uleb128 0x2a
+ 2652 0e8e 93000000 		.4byte	.LASF166
+ 2653 0e92 93000000 		.4byte	.LASF166
+ 2654 0e96 04       		.byte	0x4
+ 2655 0e97 4403     		.2byte	0x344
+ 2656 0e99 00       		.byte	0
+ 2657              		.section	.debug_abbrev,"",%progbits
+ 2658              	.Ldebug_abbrev0:
+ 2659 0000 01       		.uleb128 0x1
+ 2660 0001 11       		.uleb128 0x11
+ 2661 0002 01       		.byte	0x1
+ 2662 0003 25       		.uleb128 0x25
+ 2663 0004 0E       		.uleb128 0xe
+ 2664 0005 13       		.uleb128 0x13
+ 2665 0006 0B       		.uleb128 0xb
+ 2666 0007 03       		.uleb128 0x3
+ 2667 0008 0E       		.uleb128 0xe
+ 2668 0009 1B       		.uleb128 0x1b
+ 2669 000a 0E       		.uleb128 0xe
+ 2670 000b 55       		.uleb128 0x55
+ 2671 000c 17       		.uleb128 0x17
+ 2672 000d 11       		.uleb128 0x11
+ 2673 000e 01       		.uleb128 0x1
+ 2674 000f 10       		.uleb128 0x10
+ 2675 0010 17       		.uleb128 0x17
+ 2676 0011 00       		.byte	0
+ 2677 0012 00       		.byte	0
+ 2678 0013 02       		.uleb128 0x2
+ 2679 0014 24       		.uleb128 0x24
+ 2680 0015 00       		.byte	0
+ 2681 0016 0B       		.uleb128 0xb
+ 2682 0017 0B       		.uleb128 0xb
+ 2683 0018 3E       		.uleb128 0x3e
+ 2684 0019 0B       		.uleb128 0xb
+ 2685 001a 03       		.uleb128 0x3
+ 2686 001b 0E       		.uleb128 0xe
+ 2687 001c 00       		.byte	0
+ 2688 001d 00       		.byte	0
+ 2689 001e 03       		.uleb128 0x3
+ 2690 001f 16       		.uleb128 0x16
+ 2691 0020 00       		.byte	0
+ 2692 0021 03       		.uleb128 0x3
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 54
+
+
+ 2693 0022 0E       		.uleb128 0xe
+ 2694 0023 3A       		.uleb128 0x3a
+ 2695 0024 0B       		.uleb128 0xb
+ 2696 0025 3B       		.uleb128 0x3b
+ 2697 0026 0B       		.uleb128 0xb
+ 2698 0027 49       		.uleb128 0x49
+ 2699 0028 13       		.uleb128 0x13
+ 2700 0029 00       		.byte	0
+ 2701 002a 00       		.byte	0
+ 2702 002b 04       		.uleb128 0x4
+ 2703 002c 24       		.uleb128 0x24
+ 2704 002d 00       		.byte	0
+ 2705 002e 0B       		.uleb128 0xb
+ 2706 002f 0B       		.uleb128 0xb
+ 2707 0030 3E       		.uleb128 0x3e
+ 2708 0031 0B       		.uleb128 0xb
+ 2709 0032 03       		.uleb128 0x3
+ 2710 0033 08       		.uleb128 0x8
+ 2711 0034 00       		.byte	0
+ 2712 0035 00       		.byte	0
+ 2713 0036 05       		.uleb128 0x5
+ 2714 0037 13       		.uleb128 0x13
+ 2715 0038 01       		.byte	0x1
+ 2716 0039 03       		.uleb128 0x3
+ 2717 003a 0E       		.uleb128 0xe
+ 2718 003b 0B       		.uleb128 0xb
+ 2719 003c 0B       		.uleb128 0xb
+ 2720 003d 3A       		.uleb128 0x3a
+ 2721 003e 0B       		.uleb128 0xb
+ 2722 003f 3B       		.uleb128 0x3b
+ 2723 0040 05       		.uleb128 0x5
+ 2724 0041 01       		.uleb128 0x1
+ 2725 0042 13       		.uleb128 0x13
+ 2726 0043 00       		.byte	0
+ 2727 0044 00       		.byte	0
+ 2728 0045 06       		.uleb128 0x6
+ 2729 0046 0D       		.uleb128 0xd
+ 2730 0047 00       		.byte	0
+ 2731 0048 03       		.uleb128 0x3
+ 2732 0049 0E       		.uleb128 0xe
+ 2733 004a 3A       		.uleb128 0x3a
+ 2734 004b 0B       		.uleb128 0xb
+ 2735 004c 3B       		.uleb128 0x3b
+ 2736 004d 05       		.uleb128 0x5
+ 2737 004e 49       		.uleb128 0x49
+ 2738 004f 13       		.uleb128 0x13
+ 2739 0050 38       		.uleb128 0x38
+ 2740 0051 0B       		.uleb128 0xb
+ 2741 0052 00       		.byte	0
+ 2742 0053 00       		.byte	0
+ 2743 0054 07       		.uleb128 0x7
+ 2744 0055 13       		.uleb128 0x13
+ 2745 0056 01       		.byte	0x1
+ 2746 0057 03       		.uleb128 0x3
+ 2747 0058 0E       		.uleb128 0xe
+ 2748 0059 0B       		.uleb128 0xb
+ 2749 005a 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 55
+
+
+ 2750 005b 3A       		.uleb128 0x3a
+ 2751 005c 0B       		.uleb128 0xb
+ 2752 005d 3B       		.uleb128 0x3b
+ 2753 005e 0B       		.uleb128 0xb
+ 2754 005f 01       		.uleb128 0x1
+ 2755 0060 13       		.uleb128 0x13
+ 2756 0061 00       		.byte	0
+ 2757 0062 00       		.byte	0
+ 2758 0063 08       		.uleb128 0x8
+ 2759 0064 0D       		.uleb128 0xd
+ 2760 0065 00       		.byte	0
+ 2761 0066 03       		.uleb128 0x3
+ 2762 0067 0E       		.uleb128 0xe
+ 2763 0068 3A       		.uleb128 0x3a
+ 2764 0069 0B       		.uleb128 0xb
+ 2765 006a 3B       		.uleb128 0x3b
+ 2766 006b 0B       		.uleb128 0xb
+ 2767 006c 49       		.uleb128 0x49
+ 2768 006d 13       		.uleb128 0x13
+ 2769 006e 38       		.uleb128 0x38
+ 2770 006f 0B       		.uleb128 0xb
+ 2771 0070 00       		.byte	0
+ 2772 0071 00       		.byte	0
+ 2773 0072 09       		.uleb128 0x9
+ 2774 0073 0F       		.uleb128 0xf
+ 2775 0074 00       		.byte	0
+ 2776 0075 0B       		.uleb128 0xb
+ 2777 0076 0B       		.uleb128 0xb
+ 2778 0077 49       		.uleb128 0x49
+ 2779 0078 13       		.uleb128 0x13
+ 2780 0079 00       		.byte	0
+ 2781 007a 00       		.byte	0
+ 2782 007b 0A       		.uleb128 0xa
+ 2783 007c 15       		.uleb128 0x15
+ 2784 007d 01       		.byte	0x1
+ 2785 007e 27       		.uleb128 0x27
+ 2786 007f 19       		.uleb128 0x19
+ 2787 0080 49       		.uleb128 0x49
+ 2788 0081 13       		.uleb128 0x13
+ 2789 0082 01       		.uleb128 0x1
+ 2790 0083 13       		.uleb128 0x13
+ 2791 0084 00       		.byte	0
+ 2792 0085 00       		.byte	0
+ 2793 0086 0B       		.uleb128 0xb
+ 2794 0087 05       		.uleb128 0x5
+ 2795 0088 00       		.byte	0
+ 2796 0089 49       		.uleb128 0x49
+ 2797 008a 13       		.uleb128 0x13
+ 2798 008b 00       		.byte	0
+ 2799 008c 00       		.byte	0
+ 2800 008d 0C       		.uleb128 0xc
+ 2801 008e 0F       		.uleb128 0xf
+ 2802 008f 00       		.byte	0
+ 2803 0090 0B       		.uleb128 0xb
+ 2804 0091 0B       		.uleb128 0xb
+ 2805 0092 00       		.byte	0
+ 2806 0093 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 56
+
+
+ 2807 0094 0D       		.uleb128 0xd
+ 2808 0095 26       		.uleb128 0x26
+ 2809 0096 00       		.byte	0
+ 2810 0097 49       		.uleb128 0x49
+ 2811 0098 13       		.uleb128 0x13
+ 2812 0099 00       		.byte	0
+ 2813 009a 00       		.byte	0
+ 2814 009b 0E       		.uleb128 0xe
+ 2815 009c 0D       		.uleb128 0xd
+ 2816 009d 00       		.byte	0
+ 2817 009e 03       		.uleb128 0x3
+ 2818 009f 08       		.uleb128 0x8
+ 2819 00a0 3A       		.uleb128 0x3a
+ 2820 00a1 0B       		.uleb128 0xb
+ 2821 00a2 3B       		.uleb128 0x3b
+ 2822 00a3 05       		.uleb128 0x5
+ 2823 00a4 49       		.uleb128 0x49
+ 2824 00a5 13       		.uleb128 0x13
+ 2825 00a6 38       		.uleb128 0x38
+ 2826 00a7 0B       		.uleb128 0xb
+ 2827 00a8 00       		.byte	0
+ 2828 00a9 00       		.byte	0
+ 2829 00aa 0F       		.uleb128 0xf
+ 2830 00ab 16       		.uleb128 0x16
+ 2831 00ac 00       		.byte	0
+ 2832 00ad 03       		.uleb128 0x3
+ 2833 00ae 0E       		.uleb128 0xe
+ 2834 00af 3A       		.uleb128 0x3a
+ 2835 00b0 0B       		.uleb128 0xb
+ 2836 00b1 3B       		.uleb128 0x3b
+ 2837 00b2 05       		.uleb128 0x5
+ 2838 00b3 49       		.uleb128 0x49
+ 2839 00b4 13       		.uleb128 0x13
+ 2840 00b5 00       		.byte	0
+ 2841 00b6 00       		.byte	0
+ 2842 00b7 10       		.uleb128 0x10
+ 2843 00b8 15       		.uleb128 0x15
+ 2844 00b9 01       		.byte	0x1
+ 2845 00ba 27       		.uleb128 0x27
+ 2846 00bb 19       		.uleb128 0x19
+ 2847 00bc 01       		.uleb128 0x1
+ 2848 00bd 13       		.uleb128 0x13
+ 2849 00be 00       		.byte	0
+ 2850 00bf 00       		.byte	0
+ 2851 00c0 11       		.uleb128 0x11
+ 2852 00c1 0D       		.uleb128 0xd
+ 2853 00c2 00       		.byte	0
+ 2854 00c3 03       		.uleb128 0x3
+ 2855 00c4 08       		.uleb128 0x8
+ 2856 00c5 3A       		.uleb128 0x3a
+ 2857 00c6 0B       		.uleb128 0xb
+ 2858 00c7 3B       		.uleb128 0x3b
+ 2859 00c8 0B       		.uleb128 0xb
+ 2860 00c9 49       		.uleb128 0x49
+ 2861 00ca 13       		.uleb128 0x13
+ 2862 00cb 38       		.uleb128 0x38
+ 2863 00cc 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 57
+
+
+ 2864 00cd 00       		.byte	0
+ 2865 00ce 00       		.byte	0
+ 2866 00cf 12       		.uleb128 0x12
+ 2867 00d0 2E       		.uleb128 0x2e
+ 2868 00d1 01       		.byte	0x1
+ 2869 00d2 03       		.uleb128 0x3
+ 2870 00d3 0E       		.uleb128 0xe
+ 2871 00d4 3A       		.uleb128 0x3a
+ 2872 00d5 0B       		.uleb128 0xb
+ 2873 00d6 3B       		.uleb128 0x3b
+ 2874 00d7 0B       		.uleb128 0xb
+ 2875 00d8 27       		.uleb128 0x27
+ 2876 00d9 19       		.uleb128 0x19
+ 2877 00da 49       		.uleb128 0x49
+ 2878 00db 13       		.uleb128 0x13
+ 2879 00dc 20       		.uleb128 0x20
+ 2880 00dd 0B       		.uleb128 0xb
+ 2881 00de 01       		.uleb128 0x1
+ 2882 00df 13       		.uleb128 0x13
+ 2883 00e0 00       		.byte	0
+ 2884 00e1 00       		.byte	0
+ 2885 00e2 13       		.uleb128 0x13
+ 2886 00e3 05       		.uleb128 0x5
+ 2887 00e4 00       		.byte	0
+ 2888 00e5 03       		.uleb128 0x3
+ 2889 00e6 0E       		.uleb128 0xe
+ 2890 00e7 3A       		.uleb128 0x3a
+ 2891 00e8 0B       		.uleb128 0xb
+ 2892 00e9 3B       		.uleb128 0x3b
+ 2893 00ea 0B       		.uleb128 0xb
+ 2894 00eb 49       		.uleb128 0x49
+ 2895 00ec 13       		.uleb128 0x13
+ 2896 00ed 00       		.byte	0
+ 2897 00ee 00       		.byte	0
+ 2898 00ef 14       		.uleb128 0x14
+ 2899 00f0 05       		.uleb128 0x5
+ 2900 00f1 00       		.byte	0
+ 2901 00f2 03       		.uleb128 0x3
+ 2902 00f3 08       		.uleb128 0x8
+ 2903 00f4 3A       		.uleb128 0x3a
+ 2904 00f5 0B       		.uleb128 0xb
+ 2905 00f6 3B       		.uleb128 0x3b
+ 2906 00f7 0B       		.uleb128 0xb
+ 2907 00f8 49       		.uleb128 0x49
+ 2908 00f9 13       		.uleb128 0x13
+ 2909 00fa 00       		.byte	0
+ 2910 00fb 00       		.byte	0
+ 2911 00fc 15       		.uleb128 0x15
+ 2912 00fd 34       		.uleb128 0x34
+ 2913 00fe 00       		.byte	0
+ 2914 00ff 03       		.uleb128 0x3
+ 2915 0100 08       		.uleb128 0x8
+ 2916 0101 3A       		.uleb128 0x3a
+ 2917 0102 0B       		.uleb128 0xb
+ 2918 0103 3B       		.uleb128 0x3b
+ 2919 0104 0B       		.uleb128 0xb
+ 2920 0105 49       		.uleb128 0x49
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 58
+
+
+ 2921 0106 13       		.uleb128 0x13
+ 2922 0107 00       		.byte	0
+ 2923 0108 00       		.byte	0
+ 2924 0109 16       		.uleb128 0x16
+ 2925 010a 34       		.uleb128 0x34
+ 2926 010b 00       		.byte	0
+ 2927 010c 03       		.uleb128 0x3
+ 2928 010d 0E       		.uleb128 0xe
+ 2929 010e 3A       		.uleb128 0x3a
+ 2930 010f 0B       		.uleb128 0xb
+ 2931 0110 3B       		.uleb128 0x3b
+ 2932 0111 0B       		.uleb128 0xb
+ 2933 0112 49       		.uleb128 0x49
+ 2934 0113 13       		.uleb128 0x13
+ 2935 0114 00       		.byte	0
+ 2936 0115 00       		.byte	0
+ 2937 0116 17       		.uleb128 0x17
+ 2938 0117 2E       		.uleb128 0x2e
+ 2939 0118 01       		.byte	0x1
+ 2940 0119 3F       		.uleb128 0x3f
+ 2941 011a 19       		.uleb128 0x19
+ 2942 011b 03       		.uleb128 0x3
+ 2943 011c 0E       		.uleb128 0xe
+ 2944 011d 3A       		.uleb128 0x3a
+ 2945 011e 0B       		.uleb128 0xb
+ 2946 011f 3B       		.uleb128 0x3b
+ 2947 0120 0B       		.uleb128 0xb
+ 2948 0121 27       		.uleb128 0x27
+ 2949 0122 19       		.uleb128 0x19
+ 2950 0123 11       		.uleb128 0x11
+ 2951 0124 01       		.uleb128 0x1
+ 2952 0125 12       		.uleb128 0x12
+ 2953 0126 06       		.uleb128 0x6
+ 2954 0127 40       		.uleb128 0x40
+ 2955 0128 18       		.uleb128 0x18
+ 2956 0129 9742     		.uleb128 0x2117
+ 2957 012b 19       		.uleb128 0x19
+ 2958 012c 01       		.uleb128 0x1
+ 2959 012d 13       		.uleb128 0x13
+ 2960 012e 00       		.byte	0
+ 2961 012f 00       		.byte	0
+ 2962 0130 18       		.uleb128 0x18
+ 2963 0131 05       		.uleb128 0x5
+ 2964 0132 00       		.byte	0
+ 2965 0133 03       		.uleb128 0x3
+ 2966 0134 0E       		.uleb128 0xe
+ 2967 0135 3A       		.uleb128 0x3a
+ 2968 0136 0B       		.uleb128 0xb
+ 2969 0137 3B       		.uleb128 0x3b
+ 2970 0138 0B       		.uleb128 0xb
+ 2971 0139 49       		.uleb128 0x49
+ 2972 013a 13       		.uleb128 0x13
+ 2973 013b 02       		.uleb128 0x2
+ 2974 013c 17       		.uleb128 0x17
+ 2975 013d 00       		.byte	0
+ 2976 013e 00       		.byte	0
+ 2977 013f 19       		.uleb128 0x19
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 59
+
+
+ 2978 0140 05       		.uleb128 0x5
+ 2979 0141 00       		.byte	0
+ 2980 0142 03       		.uleb128 0x3
+ 2981 0143 08       		.uleb128 0x8
+ 2982 0144 3A       		.uleb128 0x3a
+ 2983 0145 0B       		.uleb128 0xb
+ 2984 0146 3B       		.uleb128 0x3b
+ 2985 0147 0B       		.uleb128 0xb
+ 2986 0148 49       		.uleb128 0x49
+ 2987 0149 13       		.uleb128 0x13
+ 2988 014a 02       		.uleb128 0x2
+ 2989 014b 17       		.uleb128 0x17
+ 2990 014c 00       		.byte	0
+ 2991 014d 00       		.byte	0
+ 2992 014e 1A       		.uleb128 0x1a
+ 2993 014f 34       		.uleb128 0x34
+ 2994 0150 00       		.byte	0
+ 2995 0151 03       		.uleb128 0x3
+ 2996 0152 08       		.uleb128 0x8
+ 2997 0153 3A       		.uleb128 0x3a
+ 2998 0154 0B       		.uleb128 0xb
+ 2999 0155 3B       		.uleb128 0x3b
+ 3000 0156 0B       		.uleb128 0xb
+ 3001 0157 49       		.uleb128 0x49
+ 3002 0158 13       		.uleb128 0x13
+ 3003 0159 02       		.uleb128 0x2
+ 3004 015a 17       		.uleb128 0x17
+ 3005 015b 00       		.byte	0
+ 3006 015c 00       		.byte	0
+ 3007 015d 1B       		.uleb128 0x1b
+ 3008 015e 34       		.uleb128 0x34
+ 3009 015f 00       		.byte	0
+ 3010 0160 03       		.uleb128 0x3
+ 3011 0161 0E       		.uleb128 0xe
+ 3012 0162 3A       		.uleb128 0x3a
+ 3013 0163 0B       		.uleb128 0xb
+ 3014 0164 3B       		.uleb128 0x3b
+ 3015 0165 0B       		.uleb128 0xb
+ 3016 0166 49       		.uleb128 0x49
+ 3017 0167 13       		.uleb128 0x13
+ 3018 0168 02       		.uleb128 0x2
+ 3019 0169 17       		.uleb128 0x17
+ 3020 016a 00       		.byte	0
+ 3021 016b 00       		.byte	0
+ 3022 016c 1C       		.uleb128 0x1c
+ 3023 016d 898201   		.uleb128 0x4109
+ 3024 0170 01       		.byte	0x1
+ 3025 0171 11       		.uleb128 0x11
+ 3026 0172 01       		.uleb128 0x1
+ 3027 0173 31       		.uleb128 0x31
+ 3028 0174 13       		.uleb128 0x13
+ 3029 0175 01       		.uleb128 0x1
+ 3030 0176 13       		.uleb128 0x13
+ 3031 0177 00       		.byte	0
+ 3032 0178 00       		.byte	0
+ 3033 0179 1D       		.uleb128 0x1d
+ 3034 017a 8A8201   		.uleb128 0x410a
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 60
+
+
+ 3035 017d 00       		.byte	0
+ 3036 017e 02       		.uleb128 0x2
+ 3037 017f 18       		.uleb128 0x18
+ 3038 0180 9142     		.uleb128 0x2111
+ 3039 0182 18       		.uleb128 0x18
+ 3040 0183 00       		.byte	0
+ 3041 0184 00       		.byte	0
+ 3042 0185 1E       		.uleb128 0x1e
+ 3043 0186 898201   		.uleb128 0x4109
+ 3044 0189 01       		.byte	0x1
+ 3045 018a 11       		.uleb128 0x11
+ 3046 018b 01       		.uleb128 0x1
+ 3047 018c 01       		.uleb128 0x1
+ 3048 018d 13       		.uleb128 0x13
+ 3049 018e 00       		.byte	0
+ 3050 018f 00       		.byte	0
+ 3051 0190 1F       		.uleb128 0x1f
+ 3052 0191 898201   		.uleb128 0x4109
+ 3053 0194 01       		.byte	0x1
+ 3054 0195 11       		.uleb128 0x11
+ 3055 0196 01       		.uleb128 0x1
+ 3056 0197 31       		.uleb128 0x31
+ 3057 0198 13       		.uleb128 0x13
+ 3058 0199 00       		.byte	0
+ 3059 019a 00       		.byte	0
+ 3060 019b 20       		.uleb128 0x20
+ 3061 019c 2E       		.uleb128 0x2e
+ 3062 019d 01       		.byte	0x1
+ 3063 019e 31       		.uleb128 0x31
+ 3064 019f 13       		.uleb128 0x13
+ 3065 01a0 11       		.uleb128 0x11
+ 3066 01a1 01       		.uleb128 0x1
+ 3067 01a2 12       		.uleb128 0x12
+ 3068 01a3 06       		.uleb128 0x6
+ 3069 01a4 40       		.uleb128 0x40
+ 3070 01a5 18       		.uleb128 0x18
+ 3071 01a6 9742     		.uleb128 0x2117
+ 3072 01a8 19       		.uleb128 0x19
+ 3073 01a9 01       		.uleb128 0x1
+ 3074 01aa 13       		.uleb128 0x13
+ 3075 01ab 00       		.byte	0
+ 3076 01ac 00       		.byte	0
+ 3077 01ad 21       		.uleb128 0x21
+ 3078 01ae 05       		.uleb128 0x5
+ 3079 01af 00       		.byte	0
+ 3080 01b0 31       		.uleb128 0x31
+ 3081 01b1 13       		.uleb128 0x13
+ 3082 01b2 02       		.uleb128 0x2
+ 3083 01b3 17       		.uleb128 0x17
+ 3084 01b4 00       		.byte	0
+ 3085 01b5 00       		.byte	0
+ 3086 01b6 22       		.uleb128 0x22
+ 3087 01b7 05       		.uleb128 0x5
+ 3088 01b8 00       		.byte	0
+ 3089 01b9 31       		.uleb128 0x31
+ 3090 01ba 13       		.uleb128 0x13
+ 3091 01bb 02       		.uleb128 0x2
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 61
+
+
+ 3092 01bc 18       		.uleb128 0x18
+ 3093 01bd 00       		.byte	0
+ 3094 01be 00       		.byte	0
+ 3095 01bf 23       		.uleb128 0x23
+ 3096 01c0 34       		.uleb128 0x34
+ 3097 01c1 00       		.byte	0
+ 3098 01c2 31       		.uleb128 0x31
+ 3099 01c3 13       		.uleb128 0x13
+ 3100 01c4 02       		.uleb128 0x2
+ 3101 01c5 17       		.uleb128 0x17
+ 3102 01c6 00       		.byte	0
+ 3103 01c7 00       		.byte	0
+ 3104 01c8 24       		.uleb128 0x24
+ 3105 01c9 2E       		.uleb128 0x2e
+ 3106 01ca 01       		.byte	0x1
+ 3107 01cb 3F       		.uleb128 0x3f
+ 3108 01cc 19       		.uleb128 0x19
+ 3109 01cd 03       		.uleb128 0x3
+ 3110 01ce 0E       		.uleb128 0xe
+ 3111 01cf 3A       		.uleb128 0x3a
+ 3112 01d0 0B       		.uleb128 0xb
+ 3113 01d1 3B       		.uleb128 0x3b
+ 3114 01d2 0B       		.uleb128 0xb
+ 3115 01d3 27       		.uleb128 0x27
+ 3116 01d4 19       		.uleb128 0x19
+ 3117 01d5 49       		.uleb128 0x49
+ 3118 01d6 13       		.uleb128 0x13
+ 3119 01d7 11       		.uleb128 0x11
+ 3120 01d8 01       		.uleb128 0x1
+ 3121 01d9 12       		.uleb128 0x12
+ 3122 01da 06       		.uleb128 0x6
+ 3123 01db 40       		.uleb128 0x40
+ 3124 01dc 18       		.uleb128 0x18
+ 3125 01dd 9742     		.uleb128 0x2117
+ 3126 01df 19       		.uleb128 0x19
+ 3127 01e0 01       		.uleb128 0x1
+ 3128 01e1 13       		.uleb128 0x13
+ 3129 01e2 00       		.byte	0
+ 3130 01e3 00       		.byte	0
+ 3131 01e4 25       		.uleb128 0x25
+ 3132 01e5 34       		.uleb128 0x34
+ 3133 01e6 00       		.byte	0
+ 3134 01e7 03       		.uleb128 0x3
+ 3135 01e8 08       		.uleb128 0x8
+ 3136 01e9 3A       		.uleb128 0x3a
+ 3137 01ea 0B       		.uleb128 0xb
+ 3138 01eb 3B       		.uleb128 0x3b
+ 3139 01ec 0B       		.uleb128 0xb
+ 3140 01ed 49       		.uleb128 0x49
+ 3141 01ee 13       		.uleb128 0x13
+ 3142 01ef 02       		.uleb128 0x2
+ 3143 01f0 18       		.uleb128 0x18
+ 3144 01f1 00       		.byte	0
+ 3145 01f2 00       		.byte	0
+ 3146 01f3 26       		.uleb128 0x26
+ 3147 01f4 34       		.uleb128 0x34
+ 3148 01f5 00       		.byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 62
+
+
+ 3149 01f6 03       		.uleb128 0x3
+ 3150 01f7 08       		.uleb128 0x8
+ 3151 01f8 3A       		.uleb128 0x3a
+ 3152 01f9 0B       		.uleb128 0xb
+ 3153 01fa 3B       		.uleb128 0x3b
+ 3154 01fb 0B       		.uleb128 0xb
+ 3155 01fc 49       		.uleb128 0x49
+ 3156 01fd 13       		.uleb128 0x13
+ 3157 01fe 1C       		.uleb128 0x1c
+ 3158 01ff 0B       		.uleb128 0xb
+ 3159 0200 00       		.byte	0
+ 3160 0201 00       		.byte	0
+ 3161 0202 27       		.uleb128 0x27
+ 3162 0203 8A8201   		.uleb128 0x410a
+ 3163 0206 00       		.byte	0
+ 3164 0207 31       		.uleb128 0x31
+ 3165 0208 13       		.uleb128 0x13
+ 3166 0209 9142     		.uleb128 0x2111
+ 3167 020b 18       		.uleb128 0x18
+ 3168 020c 00       		.byte	0
+ 3169 020d 00       		.byte	0
+ 3170 020e 28       		.uleb128 0x28
+ 3171 020f 2E       		.uleb128 0x2e
+ 3172 0210 01       		.byte	0x1
+ 3173 0211 3F       		.uleb128 0x3f
+ 3174 0212 19       		.uleb128 0x19
+ 3175 0213 03       		.uleb128 0x3
+ 3176 0214 0E       		.uleb128 0xe
+ 3177 0215 3A       		.uleb128 0x3a
+ 3178 0216 0B       		.uleb128 0xb
+ 3179 0217 3B       		.uleb128 0x3b
+ 3180 0218 0B       		.uleb128 0xb
+ 3181 0219 27       		.uleb128 0x27
+ 3182 021a 19       		.uleb128 0x19
+ 3183 021b 49       		.uleb128 0x49
+ 3184 021c 13       		.uleb128 0x13
+ 3185 021d 11       		.uleb128 0x11
+ 3186 021e 01       		.uleb128 0x1
+ 3187 021f 12       		.uleb128 0x12
+ 3188 0220 06       		.uleb128 0x6
+ 3189 0221 40       		.uleb128 0x40
+ 3190 0222 18       		.uleb128 0x18
+ 3191 0223 9642     		.uleb128 0x2116
+ 3192 0225 19       		.uleb128 0x19
+ 3193 0226 01       		.uleb128 0x1
+ 3194 0227 13       		.uleb128 0x13
+ 3195 0228 00       		.byte	0
+ 3196 0229 00       		.byte	0
+ 3197 022a 29       		.uleb128 0x29
+ 3198 022b 34       		.uleb128 0x34
+ 3199 022c 00       		.byte	0
+ 3200 022d 03       		.uleb128 0x3
+ 3201 022e 0E       		.uleb128 0xe
+ 3202 022f 3A       		.uleb128 0x3a
+ 3203 0230 0B       		.uleb128 0xb
+ 3204 0231 3B       		.uleb128 0x3b
+ 3205 0232 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 63
+
+
+ 3206 0233 49       		.uleb128 0x49
+ 3207 0234 13       		.uleb128 0x13
+ 3208 0235 02       		.uleb128 0x2
+ 3209 0236 18       		.uleb128 0x18
+ 3210 0237 00       		.byte	0
+ 3211 0238 00       		.byte	0
+ 3212 0239 2A       		.uleb128 0x2a
+ 3213 023a 2E       		.uleb128 0x2e
+ 3214 023b 00       		.byte	0
+ 3215 023c 3F       		.uleb128 0x3f
+ 3216 023d 19       		.uleb128 0x19
+ 3217 023e 3C       		.uleb128 0x3c
+ 3218 023f 19       		.uleb128 0x19
+ 3219 0240 6E       		.uleb128 0x6e
+ 3220 0241 0E       		.uleb128 0xe
+ 3221 0242 03       		.uleb128 0x3
+ 3222 0243 0E       		.uleb128 0xe
+ 3223 0244 3A       		.uleb128 0x3a
+ 3224 0245 0B       		.uleb128 0xb
+ 3225 0246 3B       		.uleb128 0x3b
+ 3226 0247 05       		.uleb128 0x5
+ 3227 0248 00       		.byte	0
+ 3228 0249 00       		.byte	0
+ 3229 024a 00       		.byte	0
+ 3230              		.section	.debug_loc,"",%progbits
+ 3231              	.Ldebug_loc0:
+ 3232              	.LLST0:
+ 3233 0000 00000000 		.4byte	.LVL0
+ 3234 0004 1F000000 		.4byte	.LVL6-1
+ 3235 0008 0100     		.2byte	0x1
+ 3236 000a 50       		.byte	0x50
+ 3237 000b 1F000000 		.4byte	.LVL6-1
+ 3238 000f E8000000 		.4byte	.LVL28
+ 3239 0013 0100     		.2byte	0x1
+ 3240 0015 54       		.byte	0x54
+ 3241 0016 E8000000 		.4byte	.LVL28
+ 3242 001a EA000000 		.4byte	.LFE0
+ 3243 001e 0400     		.2byte	0x4
+ 3244 0020 F3       		.byte	0xf3
+ 3245 0021 01       		.uleb128 0x1
+ 3246 0022 50       		.byte	0x50
+ 3247 0023 9F       		.byte	0x9f
+ 3248 0024 00000000 		.4byte	0
+ 3249 0028 00000000 		.4byte	0
+ 3250              	.LLST1:
+ 3251 002c 00000000 		.4byte	.LVL0
+ 3252 0030 18000000 		.4byte	.LVL5
+ 3253 0034 0100     		.2byte	0x1
+ 3254 0036 51       		.byte	0x51
+ 3255 0037 18000000 		.4byte	.LVL5
+ 3256 003b EA000000 		.4byte	.LFE0
+ 3257 003f 0400     		.2byte	0x4
+ 3258 0041 F3       		.byte	0xf3
+ 3259 0042 01       		.uleb128 0x1
+ 3260 0043 51       		.byte	0x51
+ 3261 0044 9F       		.byte	0x9f
+ 3262 0045 00000000 		.4byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 64
+
+
+ 3263 0049 00000000 		.4byte	0
+ 3264              	.LLST2:
+ 3265 004d 00000000 		.4byte	.LVL0
+ 3266 0051 0E000000 		.4byte	.LVL2
+ 3267 0055 0100     		.2byte	0x1
+ 3268 0057 52       		.byte	0x52
+ 3269 0058 0E000000 		.4byte	.LVL2
+ 3270 005c 30000000 		.4byte	.LVL8
+ 3271 0060 0400     		.2byte	0x4
+ 3272 0062 F3       		.byte	0xf3
+ 3273 0063 01       		.uleb128 0x1
+ 3274 0064 52       		.byte	0x52
+ 3275 0065 9F       		.byte	0x9f
+ 3276 0066 30000000 		.4byte	.LVL8
+ 3277 006a EA000000 		.4byte	.LFE0
+ 3278 006e 0200     		.2byte	0x2
+ 3279 0070 91       		.byte	0x91
+ 3280 0071 50       		.sleb128 -48
+ 3281 0072 00000000 		.4byte	0
+ 3282 0076 00000000 		.4byte	0
+ 3283              	.LLST3:
+ 3284 007a 00000000 		.4byte	.LVL0
+ 3285 007e 0A000000 		.4byte	.LVL1
+ 3286 0082 0100     		.2byte	0x1
+ 3287 0084 53       		.byte	0x53
+ 3288 0085 0A000000 		.4byte	.LVL1
+ 3289 0089 48000000 		.4byte	.LVL14
+ 3290 008d 0400     		.2byte	0x4
+ 3291 008f F3       		.byte	0xf3
+ 3292 0090 01       		.uleb128 0x1
+ 3293 0091 53       		.byte	0x53
+ 3294 0092 9F       		.byte	0x9f
+ 3295 0093 48000000 		.4byte	.LVL14
+ 3296 0097 E8000000 		.4byte	.LVL29
+ 3297 009b 0100     		.2byte	0x1
+ 3298 009d 55       		.byte	0x55
+ 3299 009e 00000000 		.4byte	0
+ 3300 00a2 00000000 		.4byte	0
+ 3301              	.LLST4:
+ 3302 00a6 00000000 		.4byte	.LVL0
+ 3303 00aa 0A000000 		.4byte	.LVL1
+ 3304 00ae 0200     		.2byte	0x2
+ 3305 00b0 91       		.byte	0x91
+ 3306 00b1 00       		.sleb128 0
+ 3307 00b2 0A000000 		.4byte	.LVL1
+ 3308 00b6 0E000000 		.4byte	.LVL2
+ 3309 00ba 0200     		.2byte	0x2
+ 3310 00bc 73       		.byte	0x73
+ 3311 00bd 00       		.sleb128 0
+ 3312 00be 0E000000 		.4byte	.LVL2
+ 3313 00c2 14000000 		.4byte	.LVL3
+ 3314 00c6 0200     		.2byte	0x2
+ 3315 00c8 73       		.byte	0x73
+ 3316 00c9 7C       		.sleb128 -4
+ 3317 00ca 14000000 		.4byte	.LVL3
+ 3318 00ce EA000000 		.4byte	.LFE0
+ 3319 00d2 0200     		.2byte	0x2
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 65
+
+
+ 3320 00d4 91       		.byte	0x91
+ 3321 00d5 00       		.sleb128 0
+ 3322 00d6 00000000 		.4byte	0
+ 3323 00da 00000000 		.4byte	0
+ 3324              	.LLST5:
+ 3325 00de 00000000 		.4byte	.LVL0
+ 3326 00e2 0A000000 		.4byte	.LVL1
+ 3327 00e6 0200     		.2byte	0x2
+ 3328 00e8 91       		.byte	0x91
+ 3329 00e9 04       		.sleb128 4
+ 3330 00ea 0A000000 		.4byte	.LVL1
+ 3331 00ee 0E000000 		.4byte	.LVL2
+ 3332 00f2 0200     		.2byte	0x2
+ 3333 00f4 73       		.byte	0x73
+ 3334 00f5 04       		.sleb128 4
+ 3335 00f6 0E000000 		.4byte	.LVL2
+ 3336 00fa 14000000 		.4byte	.LVL3
+ 3337 00fe 0200     		.2byte	0x2
+ 3338 0100 73       		.byte	0x73
+ 3339 0101 00       		.sleb128 0
+ 3340 0102 14000000 		.4byte	.LVL3
+ 3341 0106 8C000000 		.4byte	.LVL20
+ 3342 010a 0200     		.2byte	0x2
+ 3343 010c 91       		.byte	0x91
+ 3344 010d 04       		.sleb128 4
+ 3345 010e 00000000 		.4byte	0
+ 3346 0112 00000000 		.4byte	0
+ 3347              	.LLST6:
+ 3348 0116 00000000 		.4byte	.LVL0
+ 3349 011a 0A000000 		.4byte	.LVL1
+ 3350 011e 0200     		.2byte	0x2
+ 3351 0120 91       		.byte	0x91
+ 3352 0121 08       		.sleb128 8
+ 3353 0122 0A000000 		.4byte	.LVL1
+ 3354 0126 0E000000 		.4byte	.LVL2
+ 3355 012a 0200     		.2byte	0x2
+ 3356 012c 73       		.byte	0x73
+ 3357 012d 08       		.sleb128 8
+ 3358 012e 0E000000 		.4byte	.LVL2
+ 3359 0132 14000000 		.4byte	.LVL3
+ 3360 0136 0200     		.2byte	0x2
+ 3361 0138 73       		.byte	0x73
+ 3362 0139 04       		.sleb128 4
+ 3363 013a 14000000 		.4byte	.LVL3
+ 3364 013e 16000000 		.4byte	.LVL4
+ 3365 0142 0200     		.2byte	0x2
+ 3366 0144 73       		.byte	0x73
+ 3367 0145 00       		.sleb128 0
+ 3368 0146 16000000 		.4byte	.LVL4
+ 3369 014a EA000000 		.4byte	.LFE0
+ 3370 014e 0200     		.2byte	0x2
+ 3371 0150 91       		.byte	0x91
+ 3372 0151 08       		.sleb128 8
+ 3373 0152 00000000 		.4byte	0
+ 3374 0156 00000000 		.4byte	0
+ 3375              	.LLST7:
+ 3376 015a 38000000 		.4byte	.LVL10
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 66
+
+
+ 3377 015e 3E000000 		.4byte	.LVL11
+ 3378 0162 0200     		.2byte	0x2
+ 3379 0164 30       		.byte	0x30
+ 3380 0165 9F       		.byte	0x9f
+ 3381 0166 3E000000 		.4byte	.LVL11
+ 3382 016a 42000000 		.4byte	.LVL12
+ 3383 016e 0100     		.2byte	0x1
+ 3384 0170 56       		.byte	0x56
+ 3385 0171 42000000 		.4byte	.LVL12
+ 3386 0175 46000000 		.4byte	.LVL13
+ 3387 0179 0100     		.2byte	0x1
+ 3388 017b 55       		.byte	0x55
+ 3389 017c 46000000 		.4byte	.LVL13
+ 3390 0180 48000000 		.4byte	.LVL14
+ 3391 0184 0600     		.2byte	0x6
+ 3392 0186 75       		.byte	0x75
+ 3393 0187 00       		.sleb128 0
+ 3394 0188 70       		.byte	0x70
+ 3395 0189 00       		.sleb128 0
+ 3396 018a 1C       		.byte	0x1c
+ 3397 018b 9F       		.byte	0x9f
+ 3398 018c 48000000 		.4byte	.LVL14
+ 3399 0190 EA000000 		.4byte	.LFE0
+ 3400 0194 0200     		.2byte	0x2
+ 3401 0196 91       		.byte	0x91
+ 3402 0197 4C       		.sleb128 -52
+ 3403 0198 00000000 		.4byte	0
+ 3404 019c 00000000 		.4byte	0
+ 3405              	.LLST8:
+ 3406 01a0 38000000 		.4byte	.LVL10
+ 3407 01a4 60000000 		.4byte	.LVL16
+ 3408 01a8 0100     		.2byte	0x1
+ 3409 01aa 50       		.byte	0x50
+ 3410 01ab 00000000 		.4byte	0
+ 3411 01af 00000000 		.4byte	0
+ 3412              	.LLST9:
+ 3413 01b3 48000000 		.4byte	.LVL14
+ 3414 01b7 8C000000 		.4byte	.LVL20
+ 3415 01bb 0200     		.2byte	0x2
+ 3416 01bd 91       		.byte	0x91
+ 3417 01be 48       		.sleb128 -56
+ 3418 01bf 8C000000 		.4byte	.LVL20
+ 3419 01c3 A2000000 		.4byte	.LVL22
+ 3420 01c7 0100     		.2byte	0x1
+ 3421 01c9 56       		.byte	0x56
+ 3422 01ca A4000000 		.4byte	.LVL23
+ 3423 01ce E8000000 		.4byte	.LVL30
+ 3424 01d2 0100     		.2byte	0x1
+ 3425 01d4 56       		.byte	0x56
+ 3426 01d5 00000000 		.4byte	0
+ 3427 01d9 00000000 		.4byte	0
+ 3428              	.LLST10:
+ 3429 01dd 58000000 		.4byte	.LVL15
+ 3430 01e1 8C000000 		.4byte	.LVL20
+ 3431 01e5 0200     		.2byte	0x2
+ 3432 01e7 91       		.byte	0x91
+ 3433 01e8 54       		.sleb128 -44
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 67
+
+
+ 3434 01e9 8C000000 		.4byte	.LVL20
+ 3435 01ed A2000000 		.4byte	.LVL22
+ 3436 01f1 0D00     		.2byte	0xd
+ 3437 01f3 91       		.byte	0x91
+ 3438 01f4 54       		.sleb128 -44
+ 3439 01f5 94       		.byte	0x94
+ 3440 01f6 01       		.byte	0x1
+ 3441 01f7 76       		.byte	0x76
+ 3442 01f8 00       		.sleb128 0
+ 3443 01f9 22       		.byte	0x22
+ 3444 01fa 91       		.byte	0x91
+ 3445 01fb 48       		.sleb128 -56
+ 3446 01fc 94       		.byte	0x94
+ 3447 01fd 01       		.byte	0x1
+ 3448 01fe 1C       		.byte	0x1c
+ 3449 01ff 9F       		.byte	0x9f
+ 3450 0200 A4000000 		.4byte	.LVL23
+ 3451 0204 E8000000 		.4byte	.LVL30
+ 3452 0208 0D00     		.2byte	0xd
+ 3453 020a 91       		.byte	0x91
+ 3454 020b 54       		.sleb128 -44
+ 3455 020c 94       		.byte	0x94
+ 3456 020d 01       		.byte	0x1
+ 3457 020e 76       		.byte	0x76
+ 3458 020f 00       		.sleb128 0
+ 3459 0210 22       		.byte	0x22
+ 3460 0211 91       		.byte	0x91
+ 3461 0212 48       		.sleb128 -56
+ 3462 0213 94       		.byte	0x94
+ 3463 0214 01       		.byte	0x1
+ 3464 0215 1C       		.byte	0x1c
+ 3465 0216 9F       		.byte	0x9f
+ 3466 0217 00000000 		.4byte	0
+ 3467 021b 00000000 		.4byte	0
+ 3468              	.LLST11:
+ 3469 021f 58000000 		.4byte	.LVL15
+ 3470 0223 8C000000 		.4byte	.LVL20
+ 3471 0227 0100     		.2byte	0x1
+ 3472 0229 55       		.byte	0x55
+ 3473 022a 8C000000 		.4byte	.LVL20
+ 3474 022e 98000000 		.4byte	.LVL21
+ 3475 0232 0100     		.2byte	0x1
+ 3476 0234 57       		.byte	0x57
+ 3477 0235 A4000000 		.4byte	.LVL23
+ 3478 0239 E8000000 		.4byte	.LVL31
+ 3479 023d 0100     		.2byte	0x1
+ 3480 023f 57       		.byte	0x57
+ 3481 0240 00000000 		.4byte	0
+ 3482 0244 00000000 		.4byte	0
+ 3483              	.LLST12:
+ 3484 0248 66000000 		.4byte	.LVL17
+ 3485 024c 8C000000 		.4byte	.LVL20
+ 3486 0250 0200     		.2byte	0x2
+ 3487 0252 91       		.byte	0x91
+ 3488 0253 58       		.sleb128 -40
+ 3489 0254 8C000000 		.4byte	.LVL20
+ 3490 0258 98000000 		.4byte	.LVL21
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 68
+
+
+ 3491 025c 0B00     		.2byte	0xb
+ 3492 025e 91       		.byte	0x91
+ 3493 025f 58       		.sleb128 -40
+ 3494 0260 94       		.byte	0x94
+ 3495 0261 01       		.byte	0x1
+ 3496 0262 75       		.byte	0x75
+ 3497 0263 00       		.sleb128 0
+ 3498 0264 1C       		.byte	0x1c
+ 3499 0265 77       		.byte	0x77
+ 3500 0266 00       		.sleb128 0
+ 3501 0267 22       		.byte	0x22
+ 3502 0268 9F       		.byte	0x9f
+ 3503 0269 A4000000 		.4byte	.LVL23
+ 3504 026d E8000000 		.4byte	.LVL29
+ 3505 0271 0B00     		.2byte	0xb
+ 3506 0273 91       		.byte	0x91
+ 3507 0274 58       		.sleb128 -40
+ 3508 0275 94       		.byte	0x94
+ 3509 0276 01       		.byte	0x1
+ 3510 0277 75       		.byte	0x75
+ 3511 0278 00       		.sleb128 0
+ 3512 0279 1C       		.byte	0x1c
+ 3513 027a 77       		.byte	0x77
+ 3514 027b 00       		.sleb128 0
+ 3515 027c 22       		.byte	0x22
+ 3516 027d 9F       		.byte	0x9f
+ 3517 027e 00000000 		.4byte	0
+ 3518 0282 00000000 		.4byte	0
+ 3519              	.LLST13:
+ 3520 0286 00000000 		.4byte	.LVL32
+ 3521 028a 20000000 		.4byte	.LVL34
+ 3522 028e 0100     		.2byte	0x1
+ 3523 0290 50       		.byte	0x50
+ 3524 0291 20000000 		.4byte	.LVL34
+ 3525 0295 4C000000 		.4byte	.LVL43
+ 3526 0299 0100     		.2byte	0x1
+ 3527 029b 56       		.byte	0x56
+ 3528 029c 4C000000 		.4byte	.LVL43
+ 3529 02a0 54000000 		.4byte	.LFE5
+ 3530 02a4 0400     		.2byte	0x4
+ 3531 02a6 F3       		.byte	0xf3
+ 3532 02a7 01       		.uleb128 0x1
+ 3533 02a8 50       		.byte	0x50
+ 3534 02a9 9F       		.byte	0x9f
+ 3535 02aa 00000000 		.4byte	0
+ 3536 02ae 00000000 		.4byte	0
+ 3537              	.LLST14:
+ 3538 02b2 00000000 		.4byte	.LVL32
+ 3539 02b6 06000000 		.4byte	.LVL33
+ 3540 02ba 0100     		.2byte	0x1
+ 3541 02bc 52       		.byte	0x52
+ 3542 02bd 06000000 		.4byte	.LVL33
+ 3543 02c1 54000000 		.4byte	.LFE5
+ 3544 02c5 0400     		.2byte	0x4
+ 3545 02c7 F3       		.byte	0xf3
+ 3546 02c8 01       		.uleb128 0x1
+ 3547 02c9 52       		.byte	0x52
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 69
+
+
+ 3548 02ca 9F       		.byte	0x9f
+ 3549 02cb 00000000 		.4byte	0
+ 3550 02cf 00000000 		.4byte	0
+ 3551              	.LLST15:
+ 3552 02d3 00000000 		.4byte	.LVL32
+ 3553 02d7 27000000 		.4byte	.LVL37-1
+ 3554 02db 0100     		.2byte	0x1
+ 3555 02dd 53       		.byte	0x53
+ 3556 02de 27000000 		.4byte	.LVL37-1
+ 3557 02e2 54000000 		.4byte	.LFE5
+ 3558 02e6 0400     		.2byte	0x4
+ 3559 02e8 F3       		.byte	0xf3
+ 3560 02e9 01       		.uleb128 0x1
+ 3561 02ea 53       		.byte	0x53
+ 3562 02eb 9F       		.byte	0x9f
+ 3563 02ec 00000000 		.4byte	0
+ 3564 02f0 00000000 		.4byte	0
+ 3565              	.LLST16:
+ 3566 02f4 00000000 		.4byte	.LVL32
+ 3567 02f8 28000000 		.4byte	.LVL37
+ 3568 02fc 0200     		.2byte	0x2
+ 3569 02fe 91       		.byte	0x91
+ 3570 02ff 00       		.sleb128 0
+ 3571 0300 28000000 		.4byte	.LVL37
+ 3572 0304 3E000000 		.4byte	.LVL39
+ 3573 0308 0100     		.2byte	0x1
+ 3574 030a 50       		.byte	0x50
+ 3575 030b 3E000000 		.4byte	.LVL39
+ 3576 030f 47000000 		.4byte	.LVL40-1
+ 3577 0313 0200     		.2byte	0x2
+ 3578 0315 7D       		.byte	0x7d
+ 3579 0316 00       		.sleb128 0
+ 3580 0317 00000000 		.4byte	0
+ 3581 031b 00000000 		.4byte	0
+ 3582              	.LLST17:
+ 3583 031f 22000000 		.4byte	.LVL35
+ 3584 0323 27000000 		.4byte	.LVL37-1
+ 3585 0327 1300     		.2byte	0x13
+ 3586 0329 73       		.byte	0x73
+ 3587 032a 00       		.sleb128 0
+ 3588 032b FA       		.byte	0xfa
+ 3589 032c C5070000 		.4byte	0x7c5
+ 3590 0330 23       		.byte	0x23
+ 3591 0331 02       		.uleb128 0x2
+ 3592 0332 94       		.byte	0x94
+ 3593 0333 01       		.byte	0x1
+ 3594 0334 1C       		.byte	0x1c
+ 3595 0335 75       		.byte	0x75
+ 3596 0336 00       		.sleb128 0
+ 3597 0337 1E       		.byte	0x1e
+ 3598 0338 77       		.byte	0x77
+ 3599 0339 00       		.sleb128 0
+ 3600 033a 22       		.byte	0x22
+ 3601 033b 9F       		.byte	0x9f
+ 3602 033c 00000000 		.4byte	0
+ 3603 0340 00000000 		.4byte	0
+ 3604              	.LLST18:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 70
+
+
+ 3605 0344 00000000 		.4byte	.LVL32
+ 3606 0348 24000000 		.4byte	.LVL36
+ 3607 034c 0200     		.2byte	0x2
+ 3608 034e 30       		.byte	0x30
+ 3609 034f 9F       		.byte	0x9f
+ 3610 0350 24000000 		.4byte	.LVL36
+ 3611 0354 4C000000 		.4byte	.LVL41
+ 3612 0358 0100     		.2byte	0x1
+ 3613 035a 54       		.byte	0x54
+ 3614 035b 00000000 		.4byte	0
+ 3615 035f 00000000 		.4byte	0
+ 3616              	.LLST20:
+ 3617 0363 22000000 		.4byte	.LVL35
+ 3618 0367 4C000000 		.4byte	.LVL42
+ 3619 036b 0100     		.2byte	0x1
+ 3620 036d 55       		.byte	0x55
+ 3621 036e 4C000000 		.4byte	.LVL42
+ 3622 0372 54000000 		.4byte	.LFE5
+ 3623 0376 0100     		.2byte	0x1
+ 3624 0378 50       		.byte	0x50
+ 3625 0379 00000000 		.4byte	0
+ 3626 037d 00000000 		.4byte	0
+ 3627              	.LLST21:
+ 3628 0381 00000000 		.4byte	.LVL44
+ 3629 0385 0A000000 		.4byte	.LVL45
+ 3630 0389 0100     		.2byte	0x1
+ 3631 038b 50       		.byte	0x50
+ 3632 038c 0A000000 		.4byte	.LVL45
+ 3633 0390 0C000000 		.4byte	.LVL46
+ 3634 0394 0200     		.2byte	0x2
+ 3635 0396 91       		.byte	0x91
+ 3636 0397 5C       		.sleb128 -36
+ 3637 0398 0C000000 		.4byte	.LVL46
+ 3638 039c 15000000 		.4byte	.LVL47-1
+ 3639 03a0 0200     		.2byte	0x2
+ 3640 03a2 73       		.byte	0x73
+ 3641 03a3 5C       		.sleb128 -36
+ 3642 03a4 15000000 		.4byte	.LVL47-1
+ 3643 03a8 4E000000 		.4byte	.LFE1
+ 3644 03ac 0200     		.2byte	0x2
+ 3645 03ae 91       		.byte	0x91
+ 3646 03af 5C       		.sleb128 -36
+ 3647 03b0 00000000 		.4byte	0
+ 3648 03b4 00000000 		.4byte	0
+ 3649              	.LLST22:
+ 3650 03b8 00000000 		.4byte	.LVL44
+ 3651 03bc 15000000 		.4byte	.LVL47-1
+ 3652 03c0 0100     		.2byte	0x1
+ 3653 03c2 51       		.byte	0x51
+ 3654 03c3 15000000 		.4byte	.LVL47-1
+ 3655 03c7 4E000000 		.4byte	.LFE1
+ 3656 03cb 0400     		.2byte	0x4
+ 3657 03cd F3       		.byte	0xf3
+ 3658 03ce 01       		.uleb128 0x1
+ 3659 03cf 51       		.byte	0x51
+ 3660 03d0 9F       		.byte	0x9f
+ 3661 03d1 00000000 		.4byte	0
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 71
+
+
+ 3662 03d5 00000000 		.4byte	0
+ 3663              	.LLST23:
+ 3664 03d9 00000000 		.4byte	.LVL44
+ 3665 03dd 15000000 		.4byte	.LVL47-1
+ 3666 03e1 0100     		.2byte	0x1
+ 3667 03e3 52       		.byte	0x52
+ 3668 03e4 15000000 		.4byte	.LVL47-1
+ 3669 03e8 1A000000 		.4byte	.LVL48
+ 3670 03ec 0400     		.2byte	0x4
+ 3671 03ee F3       		.byte	0xf3
+ 3672 03ef 01       		.uleb128 0x1
+ 3673 03f0 52       		.byte	0x52
+ 3674 03f1 9F       		.byte	0x9f
+ 3675 03f2 1A000000 		.4byte	.LVL48
+ 3676 03f6 3A000000 		.4byte	.LVL50
+ 3677 03fa 0100     		.2byte	0x1
+ 3678 03fc 55       		.byte	0x55
+ 3679 03fd 42000000 		.4byte	.LVL53
+ 3680 0401 4C000000 		.4byte	.LVL56
+ 3681 0405 0100     		.2byte	0x1
+ 3682 0407 55       		.byte	0x55
+ 3683 0408 00000000 		.4byte	0
+ 3684 040c 00000000 		.4byte	0
+ 3685              	.LLST24:
+ 3686 0410 00000000 		.4byte	.LVL44
+ 3687 0414 0C000000 		.4byte	.LVL46
+ 3688 0418 0100     		.2byte	0x1
+ 3689 041a 53       		.byte	0x53
+ 3690 041b 0C000000 		.4byte	.LVL46
+ 3691 041f 4E000000 		.4byte	.LFE1
+ 3692 0423 0400     		.2byte	0x4
+ 3693 0425 F3       		.byte	0xf3
+ 3694 0426 01       		.uleb128 0x1
+ 3695 0427 53       		.byte	0x53
+ 3696 0428 9F       		.byte	0x9f
+ 3697 0429 00000000 		.4byte	0
+ 3698 042d 00000000 		.4byte	0
+ 3699              	.LLST25:
+ 3700 0431 00000000 		.4byte	.LVL44
+ 3701 0435 0C000000 		.4byte	.LVL46
+ 3702 0439 0200     		.2byte	0x2
+ 3703 043b 91       		.byte	0x91
+ 3704 043c 00       		.sleb128 0
+ 3705 043d 0C000000 		.4byte	.LVL46
+ 3706 0441 15000000 		.4byte	.LVL47-1
+ 3707 0445 0200     		.2byte	0x2
+ 3708 0447 73       		.byte	0x73
+ 3709 0448 00       		.sleb128 0
+ 3710 0449 15000000 		.4byte	.LVL47-1
+ 3711 044d 4E000000 		.4byte	.LFE1
+ 3712 0451 0200     		.2byte	0x2
+ 3713 0453 91       		.byte	0x91
+ 3714 0454 00       		.sleb128 0
+ 3715 0455 00000000 		.4byte	0
+ 3716 0459 00000000 		.4byte	0
+ 3717              	.LLST26:
+ 3718 045d 00000000 		.4byte	.LVL44
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 72
+
+
+ 3719 0461 0C000000 		.4byte	.LVL46
+ 3720 0465 0200     		.2byte	0x2
+ 3721 0467 91       		.byte	0x91
+ 3722 0468 04       		.sleb128 4
+ 3723 0469 0C000000 		.4byte	.LVL46
+ 3724 046d 15000000 		.4byte	.LVL47-1
+ 3725 0471 0200     		.2byte	0x2
+ 3726 0473 73       		.byte	0x73
+ 3727 0474 04       		.sleb128 4
+ 3728 0475 15000000 		.4byte	.LVL47-1
+ 3729 0479 4E000000 		.4byte	.LFE1
+ 3730 047d 0200     		.2byte	0x2
+ 3731 047f 91       		.byte	0x91
+ 3732 0480 04       		.sleb128 4
+ 3733 0481 00000000 		.4byte	0
+ 3734 0485 00000000 		.4byte	0
+ 3735              	.LLST27:
+ 3736 0489 1A000000 		.4byte	.LVL48
+ 3737 048d 3C000000 		.4byte	.LVL51
+ 3738 0491 0100     		.2byte	0x1
+ 3739 0493 54       		.byte	0x54
+ 3740 0494 44000000 		.4byte	.LVL54
+ 3741 0498 48000000 		.4byte	.LVL55
+ 3742 049c 0100     		.2byte	0x1
+ 3743 049e 54       		.byte	0x54
+ 3744 049f 00000000 		.4byte	0
+ 3745 04a3 00000000 		.4byte	0
+ 3746              	.LLST28:
+ 3747 04a7 00000000 		.4byte	.LVL57
+ 3748 04ab 0E000000 		.4byte	.LVL58
+ 3749 04af 0100     		.2byte	0x1
+ 3750 04b1 50       		.byte	0x50
+ 3751 04b2 0E000000 		.4byte	.LVL58
+ 3752 04b6 34000000 		.4byte	.LVL67
+ 3753 04ba 0100     		.2byte	0x1
+ 3754 04bc 57       		.byte	0x57
+ 3755 04bd 34000000 		.4byte	.LVL67
+ 3756 04c1 36000000 		.4byte	.LFE3
+ 3757 04c5 0400     		.2byte	0x4
+ 3758 04c7 F3       		.byte	0xf3
+ 3759 04c8 01       		.uleb128 0x1
+ 3760 04c9 50       		.byte	0x50
+ 3761 04ca 9F       		.byte	0x9f
+ 3762 04cb 00000000 		.4byte	0
+ 3763 04cf 00000000 		.4byte	0
+ 3764              	.LLST29:
+ 3765 04d3 00000000 		.4byte	.LVL57
+ 3766 04d7 0E000000 		.4byte	.LVL58
+ 3767 04db 0100     		.2byte	0x1
+ 3768 04dd 51       		.byte	0x51
+ 3769 04de 0E000000 		.4byte	.LVL58
+ 3770 04e2 34000000 		.4byte	.LVL65
+ 3771 04e6 0100     		.2byte	0x1
+ 3772 04e8 55       		.byte	0x55
+ 3773 04e9 34000000 		.4byte	.LVL65
+ 3774 04ed 36000000 		.4byte	.LFE3
+ 3775 04f1 0400     		.2byte	0x4
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 73
+
+
+ 3776 04f3 F3       		.byte	0xf3
+ 3777 04f4 01       		.uleb128 0x1
+ 3778 04f5 51       		.byte	0x51
+ 3779 04f6 9F       		.byte	0x9f
+ 3780 04f7 00000000 		.4byte	0
+ 3781 04fb 00000000 		.4byte	0
+ 3782              	.LLST30:
+ 3783 04ff 00000000 		.4byte	.LVL57
+ 3784 0503 0E000000 		.4byte	.LVL58
+ 3785 0507 0100     		.2byte	0x1
+ 3786 0509 52       		.byte	0x52
+ 3787 050a 0E000000 		.4byte	.LVL58
+ 3788 050e 2C000000 		.4byte	.LVL61
+ 3789 0512 0100     		.2byte	0x1
+ 3790 0514 56       		.byte	0x56
+ 3791 0515 2E000000 		.4byte	.LVL62
+ 3792 0519 34000000 		.4byte	.LVL66
+ 3793 051d 0100     		.2byte	0x1
+ 3794 051f 56       		.byte	0x56
+ 3795 0520 00000000 		.4byte	0
+ 3796 0524 00000000 		.4byte	0
+ 3797              	.LLST31:
+ 3798 0528 00000000 		.4byte	.LVL57
+ 3799 052c 0E000000 		.4byte	.LVL58
+ 3800 0530 0100     		.2byte	0x1
+ 3801 0532 53       		.byte	0x53
+ 3802 0533 0E000000 		.4byte	.LVL58
+ 3803 0537 36000000 		.4byte	.LFE3
+ 3804 053b 0200     		.2byte	0x2
+ 3805 053d 91       		.byte	0x91
+ 3806 053e 64       		.sleb128 -28
+ 3807 053f 00000000 		.4byte	0
+ 3808 0543 00000000 		.4byte	0
+ 3809              	.LLST32:
+ 3810 0547 00000000 		.4byte	.LVL57
+ 3811 054b 0E000000 		.4byte	.LVL58
+ 3812 054f 0200     		.2byte	0x2
+ 3813 0551 30       		.byte	0x30
+ 3814 0552 9F       		.byte	0x9f
+ 3815 0553 0E000000 		.4byte	.LVL58
+ 3816 0557 2A000000 		.4byte	.LVL60
+ 3817 055b 0100     		.2byte	0x1
+ 3818 055d 54       		.byte	0x54
+ 3819 055e 30000000 		.4byte	.LVL63
+ 3820 0562 34000000 		.4byte	.LVL64
+ 3821 0566 0100     		.2byte	0x1
+ 3822 0568 54       		.byte	0x54
+ 3823 0569 00000000 		.4byte	0
+ 3824 056d 00000000 		.4byte	0
+ 3825              	.LLST33:
+ 3826 0571 00000000 		.4byte	.LVL68
+ 3827 0575 1E000000 		.4byte	.LVL71
+ 3828 0579 0100     		.2byte	0x1
+ 3829 057b 50       		.byte	0x50
+ 3830 057c 1E000000 		.4byte	.LVL71
+ 3831 0580 24010000 		.4byte	.LVL101
+ 3832 0584 0100     		.2byte	0x1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 74
+
+
+ 3833 0586 54       		.byte	0x54
+ 3834 0587 24010000 		.4byte	.LVL101
+ 3835 058b 26010000 		.4byte	.LFE4
+ 3836 058f 0400     		.2byte	0x4
+ 3837 0591 F3       		.byte	0xf3
+ 3838 0592 01       		.uleb128 0x1
+ 3839 0593 50       		.byte	0x50
+ 3840 0594 9F       		.byte	0x9f
+ 3841 0595 00000000 		.4byte	0
+ 3842 0599 00000000 		.4byte	0
+ 3843              	.LLST34:
+ 3844 059d 00000000 		.4byte	.LVL68
+ 3845 05a1 23000000 		.4byte	.LVL73-1
+ 3846 05a5 0100     		.2byte	0x1
+ 3847 05a7 51       		.byte	0x51
+ 3848 05a8 23000000 		.4byte	.LVL73-1
+ 3849 05ac 26010000 		.4byte	.LFE4
+ 3850 05b0 0200     		.2byte	0x2
+ 3851 05b2 91       		.byte	0x91
+ 3852 05b3 58       		.sleb128 -40
+ 3853 05b4 00000000 		.4byte	0
+ 3854 05b8 00000000 		.4byte	0
+ 3855              	.LLST35:
+ 3856 05bc 00000000 		.4byte	.LVL68
+ 3857 05c0 0C000000 		.4byte	.LVL70
+ 3858 05c4 0100     		.2byte	0x1
+ 3859 05c6 52       		.byte	0x52
+ 3860 05c7 0C000000 		.4byte	.LVL70
+ 3861 05cb 2E000000 		.4byte	.LVL75
+ 3862 05cf 0400     		.2byte	0x4
+ 3863 05d1 F3       		.byte	0xf3
+ 3864 05d2 01       		.uleb128 0x1
+ 3865 05d3 52       		.byte	0x52
+ 3866 05d4 9F       		.byte	0x9f
+ 3867 05d5 2E000000 		.4byte	.LVL75
+ 3868 05d9 80000000 		.4byte	.LVL81
+ 3869 05dd 0100     		.2byte	0x1
+ 3870 05df 55       		.byte	0x55
+ 3871 05e0 00000000 		.4byte	0
+ 3872 05e4 00000000 		.4byte	0
+ 3873              	.LLST36:
+ 3874 05e8 00000000 		.4byte	.LVL68
+ 3875 05ec 08000000 		.4byte	.LVL69
+ 3876 05f0 0100     		.2byte	0x1
+ 3877 05f2 53       		.byte	0x53
+ 3878 05f3 08000000 		.4byte	.LVL69
+ 3879 05f7 26010000 		.4byte	.LFE4
+ 3880 05fb 0200     		.2byte	0x2
+ 3881 05fd 91       		.byte	0x91
+ 3882 05fe 5C       		.sleb128 -36
+ 3883 05ff 00000000 		.4byte	0
+ 3884 0603 00000000 		.4byte	0
+ 3885              	.LLST37:
+ 3886 0607 8C000000 		.4byte	.LVL83
+ 3887 060b B2000000 		.4byte	.LVL85
+ 3888 060f 0100     		.2byte	0x1
+ 3889 0611 55       		.byte	0x55
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 75
+
+
+ 3890 0612 B6000000 		.4byte	.LVL86
+ 3891 0616 C8000000 		.4byte	.LVL88
+ 3892 061a 0100     		.2byte	0x1
+ 3893 061c 55       		.byte	0x55
+ 3894 061d C8000000 		.4byte	.LVL88
+ 3895 0621 CA000000 		.4byte	.LVL89
+ 3896 0625 0300     		.2byte	0x3
+ 3897 0627 75       		.byte	0x75
+ 3898 0628 7D       		.sleb128 -3
+ 3899 0629 9F       		.byte	0x9f
+ 3900 062a CA000000 		.4byte	.LVL89
+ 3901 062e E0000000 		.4byte	.LVL92
+ 3902 0632 0100     		.2byte	0x1
+ 3903 0634 55       		.byte	0x55
+ 3904 0635 00000000 		.4byte	0
+ 3905 0639 00000000 		.4byte	0
+ 3906              	.LLST38:
+ 3907 063d E8000000 		.4byte	.LVL93
+ 3908 0641 06010000 		.4byte	.LVL94
+ 3909 0645 0100     		.2byte	0x1
+ 3910 0647 50       		.byte	0x50
+ 3911 0648 0C010000 		.4byte	.LVL96
+ 3912 064c 10010000 		.4byte	.LVL97
+ 3913 0650 0100     		.2byte	0x1
+ 3914 0652 50       		.byte	0x50
+ 3915 0653 20010000 		.4byte	.LVL99
+ 3916 0657 22010000 		.4byte	.LVL100
+ 3917 065b 0100     		.2byte	0x1
+ 3918 065d 50       		.byte	0x50
+ 3919 065e 00000000 		.4byte	0
+ 3920 0662 00000000 		.4byte	0
+ 3921              	.LLST39:
+ 3922 0666 20000000 		.4byte	.LVL72
+ 3923 066a 24010000 		.4byte	.LVL102
+ 3924 066e 0100     		.2byte	0x1
+ 3925 0670 57       		.byte	0x57
+ 3926 0671 00000000 		.4byte	0
+ 3927 0675 00000000 		.4byte	0
+ 3928              	.LLST40:
+ 3929 0679 3C000000 		.4byte	.LVL76
+ 3930 067d 43000000 		.4byte	.LVL77-1
+ 3931 0681 1000     		.2byte	0x10
+ 3932 0683 73       		.byte	0x73
+ 3933 0684 00       		.sleb128 0
+ 3934 0685 94       		.byte	0x94
+ 3935 0686 01       		.byte	0x1
+ 3936 0687 08       		.byte	0x8
+ 3937 0688 FF       		.byte	0xff
+ 3938 0689 1A       		.byte	0x1a
+ 3939 068a 33       		.byte	0x33
+ 3940 068b 1C       		.byte	0x1c
+ 3941 068c 77       		.byte	0x77
+ 3942 068d 00       		.sleb128 0
+ 3943 068e 08       		.byte	0x8
+ 3944 068f FF       		.byte	0xff
+ 3945 0690 1A       		.byte	0x1a
+ 3946 0691 1B       		.byte	0x1b
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 76
+
+
+ 3947 0692 9F       		.byte	0x9f
+ 3948 0693 4A000000 		.4byte	.LVL78
+ 3949 0697 4F000000 		.4byte	.LVL79-1
+ 3950 069b 0F00     		.2byte	0xf
+ 3951 069d 74       		.byte	0x74
+ 3952 069e C000     		.sleb128 64
+ 3953 06a0 94       		.byte	0x94
+ 3954 06a1 01       		.byte	0x1
+ 3955 06a2 F7       		.byte	0xf7
+ 3956 06a3 25       		.uleb128 0x25
+ 3957 06a4 77       		.byte	0x77
+ 3958 06a5 00       		.sleb128 0
+ 3959 06a6 F7       		.byte	0xf7
+ 3960 06a7 25       		.uleb128 0x25
+ 3961 06a8 1B       		.byte	0x1b
+ 3962 06a9 F7       		.byte	0xf7
+ 3963 06aa 00       		.uleb128 0
+ 3964 06ab 9F       		.byte	0x9f
+ 3965 06ac 00000000 		.4byte	0
+ 3966 06b0 00000000 		.4byte	0
+ 3967              		.section	.debug_aranges,"",%progbits
+ 3968 0000 3C000000 		.4byte	0x3c
+ 3969 0004 0200     		.2byte	0x2
+ 3970 0006 00000000 		.4byte	.Ldebug_info0
+ 3971 000a 04       		.byte	0x4
+ 3972 000b 00       		.byte	0
+ 3973 000c 0000     		.2byte	0
+ 3974 000e 0000     		.2byte	0
+ 3975 0010 00000000 		.4byte	.LFB0
+ 3976 0014 EA000000 		.4byte	.LFE0-.LFB0
+ 3977 0018 00000000 		.4byte	.LFB5
+ 3978 001c 54000000 		.4byte	.LFE5-.LFB5
+ 3979 0020 00000000 		.4byte	.LFB1
+ 3980 0024 4E000000 		.4byte	.LFE1-.LFB1
+ 3981 0028 00000000 		.4byte	.LFB3
+ 3982 002c 36000000 		.4byte	.LFE3-.LFB3
+ 3983 0030 00000000 		.4byte	.LFB4
+ 3984 0034 26010000 		.4byte	.LFE4-.LFB4
+ 3985 0038 00000000 		.4byte	0
+ 3986 003c 00000000 		.4byte	0
+ 3987              		.section	.debug_ranges,"",%progbits
+ 3988              	.Ldebug_ranges0:
+ 3989 0000 00000000 		.4byte	.LFB0
+ 3990 0004 EA000000 		.4byte	.LFE0
+ 3991 0008 00000000 		.4byte	.LFB5
+ 3992 000c 54000000 		.4byte	.LFE5
+ 3993 0010 00000000 		.4byte	.LFB1
+ 3994 0014 4E000000 		.4byte	.LFE1
+ 3995 0018 00000000 		.4byte	.LFB3
+ 3996 001c 36000000 		.4byte	.LFE3
+ 3997 0020 00000000 		.4byte	.LFB4
+ 3998 0024 26010000 		.4byte	.LFE4
+ 3999 0028 00000000 		.4byte	0
+ 4000 002c 00000000 		.4byte	0
+ 4001              		.section	.debug_line,"",%progbits
+ 4002              	.Ldebug_line0:
+ 4003 0000 5E020000 		.section	.debug_str,"MS",%progbits,1
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 77
+
+
+ 4003      02004101 
+ 4003      00000201 
+ 4003      FB0E0D00 
+ 4003      01010101 
+ 4004              	.LASF65:
+ 4005 0000 66697273 		.ascii	"first_pos\000"
+ 4005      745F706F 
+ 4005      7300
+ 4006              	.LASF45:
+ 4007 000a 72657365 		.ascii	"reset_pulse_width_ms\000"
+ 4007      745F7075 
+ 4007      6C73655F 
+ 4007      77696474 
+ 4007      685F6D73 
+ 4008              	.LASF137:
+ 4009 001f 7538736C 		.ascii	"u8sl\000"
+ 4009      00
+ 4010              	.LASF73:
+ 4011 0024 74696C65 		.ascii	"tile_buf_ptr\000"
+ 4011      5F627566 
+ 4011      5F707472 
+ 4011      00
+ 4012              	.LASF3:
+ 4013 0031 5F5F7569 		.ascii	"__uint8_t\000"
+ 4013      6E74385F 
+ 4013      7400
+ 4014              	.LASF147:
+ 4015 003b 7469746C 		.ascii	"title\000"
+ 4015      6500
+ 4016              	.LASF23:
+ 4017 0041 62797465 		.ascii	"byte_cb\000"
+ 4017      5F636200 
+ 4018              	.LASF134:
+ 4019 0049 75386732 		.ascii	"u8g2_font_decode_t\000"
+ 4019      5F666F6E 
+ 4019      745F6465 
+ 4019      636F6465 
+ 4019      5F7400
+ 4020              	.LASF152:
+ 4021 005c 75386732 		.ascii	"u8g2_SetFontDirection\000"
+ 4021      5F536574 
+ 4021      466F6E74 
+ 4021      44697265 
+ 4021      6374696F 
+ 4022              	.LASF104:
+ 4023 0072 676C7970 		.ascii	"glyph_cnt\000"
+ 4023      685F636E 
+ 4023      7400
+ 4024              	.LASF11:
+ 4025 007c 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 4025      206C6F6E 
+ 4025      6720756E 
+ 4025      7369676E 
+ 4025      65642069 
+ 4026              	.LASF166:
+ 4027 0093 7538736C 		.ascii	"u8sl_Prev\000"
+ 4027      5F507265 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 78
+
+
+ 4027      7600
+ 4028              	.LASF2:
+ 4029 009d 5F5F696E 		.ascii	"__int8_t\000"
+ 4029      74385F74 
+ 4029      00
+ 4030              	.LASF46:
+ 4031 00a6 706F7374 		.ascii	"post_reset_wait_ms\000"
+ 4031      5F726573 
+ 4031      65745F77 
+ 4031      6169745F 
+ 4031      6D7300
+ 4032              	.LASF105:
+ 4033 00b9 6262785F 		.ascii	"bbx_mode\000"
+ 4033      6D6F6465 
+ 4033      00
+ 4034              	.LASF32:
+ 4035 00c2 75746638 		.ascii	"utf8_state\000"
+ 4035      5F737461 
+ 4035      746500
+ 4036              	.LASF115:
+ 4037 00cd 795F6F66 		.ascii	"y_offset\000"
+ 4037      66736574 
+ 4037      00
+ 4038              	.LASF33:
+ 4039 00d6 6770696F 		.ascii	"gpio_result\000"
+ 4039      5F726573 
+ 4039      756C7400 
+ 4040              	.LASF110:
+ 4041 00e2 62697473 		.ascii	"bits_per_char_x\000"
+ 4041      5F706572 
+ 4041      5F636861 
+ 4041      725F7800 
+ 4042              	.LASF111:
+ 4043 00f2 62697473 		.ascii	"bits_per_char_y\000"
+ 4043      5F706572 
+ 4043      5F636861 
+ 4043      725F7900 
+ 4044              	.LASF10:
+ 4045 0102 6C6F6E67 		.ascii	"long long int\000"
+ 4045      206C6F6E 
+ 4045      6720696E 
+ 4045      7400
+ 4046              	.LASF1:
+ 4047 0110 7369676E 		.ascii	"signed char\000"
+ 4047      65642063 
+ 4047      68617200 
+ 4048              	.LASF68:
+ 4049 011c 75386732 		.ascii	"u8g2_uint_t\000"
+ 4049      5F75696E 
+ 4049      745F7400 
+ 4050              	.LASF28:
+ 4051 0128 69735F66 		.ascii	"is_font_inverse_mode\000"
+ 4051      6F6E745F 
+ 4051      696E7665 
+ 4051      7273655F 
+ 4051      6D6F6465 
+ 4052              	.LASF21:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 79
+
+
+ 4053 013d 64697370 		.ascii	"display_cb\000"
+ 4053      6C61795F 
+ 4053      636200
+ 4054              	.LASF165:
+ 4055 0148 7538736C 		.ascii	"u8sl_Next\000"
+ 4055      5F4E6578 
+ 4055      7400
+ 4056              	.LASF118:
+ 4057 0152 61736365 		.ascii	"ascent_para\000"
+ 4057      6E745F70 
+ 4057      61726100 
+ 4058              	.LASF93:
+ 4059 015e 676C7970 		.ascii	"glyph_x_offset\000"
+ 4059      685F785F 
+ 4059      6F666673 
+ 4059      657400
+ 4060              	.LASF44:
+ 4061 016d 7072655F 		.ascii	"pre_chip_disable_wait_ns\000"
+ 4061      63686970 
+ 4061      5F646973 
+ 4061      61626C65 
+ 4061      5F776169 
+ 4062              	.LASF7:
+ 4063 0186 6C6F6E67 		.ascii	"long int\000"
+ 4063      20696E74 
+ 4063      00
+ 4064              	.LASF158:
+ 4065 018f 75387838 		.ascii	"u8x8_GetStringLineStart\000"
+ 4065      5F476574 
+ 4065      53747269 
+ 4065      6E674C69 
+ 4065      6E655374 
+ 4066              	.LASF114:
+ 4067 01a7 6D61785F 		.ascii	"max_char_height\000"
+ 4067      63686172 
+ 4067      5F686569 
+ 4067      67687400 
+ 4068              	.LASF15:
+ 4069 01b7 75696E74 		.ascii	"uint16_t\000"
+ 4069      31365F74 
+ 4069      00
+ 4070              	.LASF20:
+ 4071 01c0 6E657874 		.ascii	"next_cb\000"
+ 4071      5F636200 
+ 4072              	.LASF168:
+ 4073 01c8 2E2E5C2E 		.ascii	"..\\..\\u8g2\\csrc\\u8g2_selection_list.c\000"
+ 4073      2E5C7538 
+ 4073      67325C63 
+ 4073      7372635C 
+ 4073      75386732 
+ 4074              	.LASF24:
+ 4075 01ee 6770696F 		.ascii	"gpio_and_delay_cb\000"
+ 4075      5F616E64 
+ 4075      5F64656C 
+ 4075      61795F63 
+ 4075      6200
+ 4076              	.LASF123:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 80
+
+
+ 4077 0200 75386732 		.ascii	"u8g2_font_info_t\000"
+ 4077      5F666F6E 
+ 4077      745F696E 
+ 4077      666F5F74 
+ 4077      00
+ 4078              	.LASF138:
+ 4079 0211 626F7264 		.ascii	"border_size\000"
+ 4079      65725F73 
+ 4079      697A6500 
+ 4080              	.LASF92:
+ 4081 021d 666F6E74 		.ascii	"font_ref_descent\000"
+ 4081      5F726566 
+ 4081      5F646573 
+ 4081      63656E74 
+ 4081      00
+ 4082              	.LASF122:
+ 4083 022e 73746172 		.ascii	"start_pos_unicode\000"
+ 4083      745F706F 
+ 4083      735F756E 
+ 4083      69636F64 
+ 4083      6500
+ 4084              	.LASF38:
+ 4085 0240 75387838 		.ascii	"u8x8_display_info_t\000"
+ 4085      5F646973 
+ 4085      706C6179 
+ 4085      5F696E66 
+ 4085      6F5F7400 
+ 4086              	.LASF142:
+ 4087 0254 7374725F 		.ascii	"str_width\000"
+ 4087      77696474 
+ 4087      6800
+ 4088              	.LASF8:
+ 4089 025e 5F5F7569 		.ascii	"__uint32_t\000"
+ 4089      6E743332 
+ 4089      5F7400
+ 4090              	.LASF106:
+ 4091 0269 62697473 		.ascii	"bits_per_0\000"
+ 4091      5F706572 
+ 4091      5F3000
+ 4092              	.LASF87:
+ 4093 0274 666F6E74 		.ascii	"font_calc_vref\000"
+ 4093      5F63616C 
+ 4093      635F7672 
+ 4093      656600
+ 4094              	.LASF91:
+ 4095 0283 666F6E74 		.ascii	"font_ref_ascent\000"
+ 4095      5F726566 
+ 4095      5F617363 
+ 4095      656E7400 
+ 4096              	.LASF47:
+ 4097 0293 7364615F 		.ascii	"sda_setup_time_ns\000"
+ 4097      73657475 
+ 4097      705F7469 
+ 4097      6D655F6E 
+ 4097      7300
+ 4098              	.LASF102:
+ 4099 02a5 75386732 		.ascii	"u8g2_draw_ll_hvline_cb\000"
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 81
+
+
+ 4099      5F647261 
+ 4099      775F6C6C 
+ 4099      5F68766C 
+ 4099      696E655F 
+ 4100              	.LASF117:
+ 4101 02bc 64657363 		.ascii	"descent_g\000"
+ 4101      656E745F 
+ 4101      6700
+ 4102              	.LASF108:
+ 4103 02c6 62697473 		.ascii	"bits_per_char_width\000"
+ 4103      5F706572 
+ 4103      5F636861 
+ 4103      725F7769 
+ 4103      64746800 
+ 4104              	.LASF37:
+ 4105 02da 6465626F 		.ascii	"debounce_result_msg\000"
+ 4105      756E6365 
+ 4105      5F726573 
+ 4105      756C745F 
+ 4105      6D736700 
+ 4106              	.LASF12:
+ 4107 02ee 756E7369 		.ascii	"unsigned int\000"
+ 4107      676E6564 
+ 4107      20696E74 
+ 4107      00
+ 4108              	.LASF170:
+ 4109 02fb 75386732 		.ascii	"u8g2_draw_selection_list_line\000"
+ 4109      5F647261 
+ 4109      775F7365 
+ 4109      6C656374 
+ 4109      696F6E5F 
+ 4110              	.LASF61:
+ 4111 0319 75387838 		.ascii	"u8x8_char_cb\000"
+ 4111      5F636861 
+ 4111      725F6362 
+ 4111      00
+ 4112              	.LASF77:
+ 4113 0326 70697865 		.ascii	"pixel_buf_height\000"
+ 4113      6C5F6275 
+ 4113      665F6865 
+ 4113      69676874 
+ 4113      00
+ 4114              	.LASF131:
+ 4115 0337 69735F74 		.ascii	"is_transparent\000"
+ 4115      72616E73 
+ 4115      70617265 
+ 4115      6E7400
+ 4116              	.LASF29:
+ 4117 0346 6932635F 		.ascii	"i2c_address\000"
+ 4117      61646472 
+ 4117      65737300 
+ 4118              	.LASF9:
+ 4119 0352 6C6F6E67 		.ascii	"long unsigned int\000"
+ 4119      20756E73 
+ 4119      69676E65 
+ 4119      6420696E 
+ 4119      7400
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 82
+
+
+ 4120              	.LASF143:
+ 4121 0364 75386732 		.ascii	"u8g2_DrawUTF8Line\000"
+ 4121      5F447261 
+ 4121      77555446 
+ 4121      384C696E 
+ 4121      6500
+ 4122              	.LASF69:
+ 4123 0376 75386732 		.ascii	"u8g2_t\000"
+ 4123      5F7400
+ 4124              	.LASF154:
+ 4125 037d 75386732 		.ascii	"u8g2_SetDrawColor\000"
+ 4125      5F536574 
+ 4125      44726177 
+ 4125      436F6C6F 
+ 4125      7200
+ 4126              	.LASF151:
+ 4127 038f 64697370 		.ascii	"display_lines\000"
+ 4127      6C61795F 
+ 4127      6C696E65 
+ 4127      7300
+ 4128              	.LASF125:
+ 4129 039d 6465636F 		.ascii	"decode_ptr\000"
+ 4129      64655F70 
+ 4129      747200
+ 4130              	.LASF81:
+ 4131 03a8 77696474 		.ascii	"width\000"
+ 4131      6800
+ 4132              	.LASF74:
+ 4133 03ae 74696C65 		.ascii	"tile_buf_height\000"
+ 4133      5F627566 
+ 4133      5F686569 
+ 4133      67687400 
+ 4134              	.LASF6:
+ 4135 03be 73686F72 		.ascii	"short unsigned int\000"
+ 4135      7420756E 
+ 4135      7369676E 
+ 4135      65642069 
+ 4135      6E7400
+ 4136              	.LASF140:
+ 4137 03d1 6C696E65 		.ascii	"line_height\000"
+ 4137      5F686569 
+ 4137      67687400 
+ 4138              	.LASF145:
+ 4139 03dd 75386732 		.ascii	"u8g2_DrawUTF8Lines\000"
+ 4139      5F447261 
+ 4139      77555446 
+ 4139      384C696E 
+ 4139      657300
+ 4140              	.LASF35:
+ 4141 03f0 6465626F 		.ascii	"debounce_last_pin_state\000"
+ 4141      756E6365 
+ 4141      5F6C6173 
+ 4141      745F7069 
+ 4141      6E5F7374 
+ 4142              	.LASF62:
+ 4143 0408 5F753873 		.ascii	"_u8sl_struct\000"
+ 4143      6C5F7374 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 83
+
+
+ 4143      72756374 
+ 4143      00
+ 4144              	.LASF136:
+ 4145 0415 75386732 		.ascii	"u8g2\000"
+ 4145      00
+ 4146              	.LASF119:
+ 4147 041a 64657363 		.ascii	"descent_para\000"
+ 4147      656E745F 
+ 4147      70617261 
+ 4147      00
+ 4148              	.LASF19:
+ 4149 0427 64697370 		.ascii	"display_info\000"
+ 4149      6C61795F 
+ 4149      696E666F 
+ 4149      00
+ 4150              	.LASF89:
+ 4151 0434 666F6E74 		.ascii	"font_info\000"
+ 4151      5F696E66 
+ 4151      6F00
+ 4152              	.LASF48:
+ 4153 043e 73636B5F 		.ascii	"sck_pulse_width_ns\000"
+ 4153      70756C73 
+ 4153      655F7769 
+ 4153      6474685F 
+ 4153      6E7300
+ 4154              	.LASF39:
+ 4155 0451 75387838 		.ascii	"u8x8_struct\000"
+ 4155      5F737472 
+ 4155      75637400 
+ 4156              	.LASF160:
+ 4157 045d 75386732 		.ascii	"u8g2_SetFontPosBaseline\000"
+ 4157      5F536574 
+ 4157      466F6E74 
+ 4157      506F7342 
+ 4157      6173656C 
+ 4158              	.LASF169:
+ 4159 0475 5A3A5C47 		.ascii	"Z:\\Git\\WA101\\ww101-shield\\firmware\\TestProgram"
+ 4159      69745C57 
+ 4159      41313031 
+ 4159      5C777731 
+ 4159      30312D73 
+ 4160 04a3 344D2E63 		.ascii	"4M.cydsn\000"
+ 4160      7964736E 
+ 4160      00
+ 4161              	.LASF155:
+ 4162 04ac 75386732 		.ascii	"u8g2_DrawBox\000"
+ 4162      5F447261 
+ 4162      77426F78 
+ 4162      00
+ 4163              	.LASF157:
+ 4164 04b9 75386732 		.ascii	"u8g2_DrawUTF8\000"
+ 4164      5F447261 
+ 4164      77555446 
+ 4164      3800
+ 4165              	.LASF56:
+ 4166 04c7 64656661 		.ascii	"default_x_offset\000"
+ 4166      756C745F 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 84
+
+
+ 4166      785F6F66 
+ 4166      66736574 
+ 4166      00
+ 4167              	.LASF26:
+ 4168 04d8 656E636F 		.ascii	"encoding\000"
+ 4168      64696E67 
+ 4168      00
+ 4169              	.LASF90:
+ 4170 04e1 666F6E74 		.ascii	"font_height_mode\000"
+ 4170      5F686569 
+ 4170      6768745F 
+ 4170      6D6F6465 
+ 4170      00
+ 4171              	.LASF120:
+ 4172 04f2 73746172 		.ascii	"start_pos_upper_A\000"
+ 4172      745F706F 
+ 4172      735F7570 
+ 4172      7065725F 
+ 4172      4100
+ 4173              	.LASF57:
+ 4174 0504 666C6970 		.ascii	"flipmode_x_offset\000"
+ 4174      6D6F6465 
+ 4174      5F785F6F 
+ 4174      66667365 
+ 4174      7400
+ 4175              	.LASF107:
+ 4176 0516 62697473 		.ascii	"bits_per_1\000"
+ 4176      5F706572 
+ 4176      5F3100
+ 4177              	.LASF112:
+ 4178 0521 62697473 		.ascii	"bits_per_delta_x\000"
+ 4178      5F706572 
+ 4178      5F64656C 
+ 4178      74615F78 
+ 4178      00
+ 4179              	.LASF130:
+ 4180 0532 6465636F 		.ascii	"decode_bit_pos\000"
+ 4180      64655F62 
+ 4180      69745F70 
+ 4180      6F7300
+ 4181              	.LASF129:
+ 4182 0541 676C7970 		.ascii	"glyph_height\000"
+ 4182      685F6865 
+ 4182      69676874 
+ 4182      00
+ 4183              	.LASF17:
+ 4184 054e 6C6F6E67 		.ascii	"long double\000"
+ 4184      20646F75 
+ 4184      626C6500 
+ 4185              	.LASF78:
+ 4186 055a 70697865 		.ascii	"pixel_curr_row\000"
+ 4186      6C5F6375 
+ 4186      72725F72 
+ 4186      6F7700
+ 4187              	.LASF167:
+ 4188 0569 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 4188      43313120 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 85
+
+
+ 4188      352E342E 
+ 4188      31203230 
+ 4188      31363036 
+ 4189 059c 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 4189      20726576 
+ 4189      6973696F 
+ 4189      6E203233 
+ 4189      37373135 
+ 4190 05cf 73202D66 		.ascii	"s -ffunction-sections -ffat-lto-objects\000"
+ 4190      66756E63 
+ 4190      74696F6E 
+ 4190      2D736563 
+ 4190      74696F6E 
+ 4191              	.LASF22:
+ 4192 05f7 6361645F 		.ascii	"cad_cb\000"
+ 4192      636200
+ 4193              	.LASF133:
+ 4194 05fe 62675F63 		.ascii	"bg_color\000"
+ 4194      6F6C6F72 
+ 4194      00
+ 4195              	.LASF99:
+ 4196 0607 64726177 		.ascii	"draw_l90\000"
+ 4196      5F6C3930 
+ 4196      00
+ 4197              	.LASF113:
+ 4198 0610 6D61785F 		.ascii	"max_char_width\000"
+ 4198      63686172 
+ 4198      5F776964 
+ 4198      746800
+ 4199              	.LASF53:
+ 4200 061f 77726974 		.ascii	"write_pulse_width_ns\000"
+ 4200      655F7075 
+ 4200      6C73655F 
+ 4200      77696474 
+ 4200      685F6E73 
+ 4201              	.LASF79:
+ 4202 0634 6275665F 		.ascii	"buf_y0\000"
+ 4202      793000
+ 4203              	.LASF80:
+ 4204 063b 6275665F 		.ascii	"buf_y1\000"
+ 4204      793100
+ 4205              	.LASF31:
+ 4206 0642 64657669 		.ascii	"device_address\000"
+ 4206      63655F61 
+ 4206      64647265 
+ 4206      737300
+ 4207              	.LASF146:
+ 4208 0651 75386732 		.ascii	"u8g2_UserInterfaceSelectionList\000"
+ 4208      5F557365 
+ 4208      72496E74 
+ 4208      65726661 
+ 4208      63655365 
+ 4209              	.LASF27:
+ 4210 0671 785F6F66 		.ascii	"x_offset\000"
+ 4210      66736574 
+ 4210      00
+ 4211              	.LASF55:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 86
+
+
+ 4212 067a 74696C65 		.ascii	"tile_height\000"
+ 4212      5F686569 
+ 4212      67687400 
+ 4213              	.LASF72:
+ 4214 0686 6C6C5F68 		.ascii	"ll_hvline\000"
+ 4214      766C696E 
+ 4214      6500
+ 4215              	.LASF149:
+ 4216 0690 6576656E 		.ascii	"event\000"
+ 4216      7400
+ 4217              	.LASF139:
+ 4218 0696 69735F69 		.ascii	"is_invert\000"
+ 4218      6E766572 
+ 4218      7400
+ 4219              	.LASF132:
+ 4220 06a0 66675F63 		.ascii	"fg_color\000"
+ 4220      6F6C6F72 
+ 4220      00
+ 4221              	.LASF161:
+ 4222 06a9 75386732 		.ascii	"u8g2_FirstPage\000"
+ 4222      5F466972 
+ 4222      73745061 
+ 4222      676500
+ 4223              	.LASF60:
+ 4224 06b8 75387838 		.ascii	"u8x8_msg_cb\000"
+ 4224      5F6D7367 
+ 4224      5F636200 
+ 4225              	.LASF97:
+ 4226 06c4 75386732 		.ascii	"u8g2_cb_struct\000"
+ 4226      5F63625F 
+ 4226      73747275 
+ 4226      637400
+ 4227              	.LASF128:
+ 4228 06d3 676C7970 		.ascii	"glyph_width\000"
+ 4228      685F7769 
+ 4228      64746800 
+ 4229              	.LASF0:
+ 4230 06df 756E7369 		.ascii	"unsigned char\000"
+ 4230      676E6564 
+ 4230      20636861 
+ 4230      7200
+ 4231              	.LASF116:
+ 4232 06ed 61736365 		.ascii	"ascent_A\000"
+ 4232      6E745F41 
+ 4232      00
+ 4233              	.LASF95:
+ 4234 06f6 69735F61 		.ascii	"is_auto_page_clear\000"
+ 4234      75746F5F 
+ 4234      70616765 
+ 4234      5F636C65 
+ 4234      617200
+ 4235              	.LASF76:
+ 4236 0709 70697865 		.ascii	"pixel_buf_width\000"
+ 4236      6C5F6275 
+ 4236      665F7769 
+ 4236      64746800 
+ 4237              	.LASF4:
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 87
+
+
+ 4238 0719 73686F72 		.ascii	"short int\000"
+ 4238      7420696E 
+ 4238      7400
+ 4239              	.LASF71:
+ 4240 0723 75387838 		.ascii	"u8x8\000"
+ 4240      00
+ 4241              	.LASF153:
+ 4242 0728 75386732 		.ascii	"u8g2_GetUTF8Width\000"
+ 4242      5F476574 
+ 4242      55544638 
+ 4242      57696474 
+ 4242      6800
+ 4243              	.LASF83:
+ 4244 073a 75736572 		.ascii	"user_x0\000"
+ 4244      5F783000 
+ 4245              	.LASF84:
+ 4246 0742 75736572 		.ascii	"user_x1\000"
+ 4246      5F783100 
+ 4247              	.LASF163:
+ 4248 074a 75386732 		.ascii	"u8g2_NextPage\000"
+ 4248      5F4E6578 
+ 4248      74506167 
+ 4248      6500
+ 4249              	.LASF52:
+ 4250 0758 64617461 		.ascii	"data_setup_time_ns\000"
+ 4250      5F736574 
+ 4250      75705F74 
+ 4250      696D655F 
+ 4250      6E7300
+ 4251              	.LASF70:
+ 4252 076b 75386732 		.ascii	"u8g2_struct\000"
+ 4252      5F737472 
+ 4252      75637400 
+ 4253              	.LASF101:
+ 4254 0777 75386732 		.ascii	"u8g2_draw_l90_cb\000"
+ 4254      5F647261 
+ 4254      775F6C39 
+ 4254      305F6362 
+ 4254      00
+ 4255              	.LASF51:
+ 4256 0788 6932635F 		.ascii	"i2c_bus_clock_100kHz\000"
+ 4256      6275735F 
+ 4256      636C6F63 
+ 4256      6B5F3130 
+ 4256      306B487A 
+ 4257              	.LASF16:
+ 4258 079d 75696E74 		.ascii	"uint32_t\000"
+ 4258      33325F74 
+ 4258      00
+ 4259              	.LASF103:
+ 4260 07a6 5F753867 		.ascii	"_u8g2_font_info_t\000"
+ 4260      325F666F 
+ 4260      6E745F69 
+ 4260      6E666F5F 
+ 4260      7400
+ 4261              	.LASF75:
+ 4262 07b8 74696C65 		.ascii	"tile_curr_row\000"
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 88
+
+
+ 4262      5F637572 
+ 4262      725F726F 
+ 4262      7700
+ 4263              	.LASF96:
+ 4264 07c6 75386732 		.ascii	"u8g2_cb_t\000"
+ 4264      5F63625F 
+ 4264      7400
+ 4265              	.LASF50:
+ 4266 07d0 7370695F 		.ascii	"spi_mode\000"
+ 4266      6D6F6465 
+ 4266      00
+ 4267              	.LASF41:
+ 4268 07d9 63686970 		.ascii	"chip_enable_level\000"
+ 4268      5F656E61 
+ 4268      626C655F 
+ 4268      6C657665 
+ 4268      6C00
+ 4269              	.LASF141:
+ 4270 07eb 63686172 		.ascii	"char\000"
+ 4270      00
+ 4271              	.LASF88:
+ 4272 07f0 666F6E74 		.ascii	"font_decode\000"
+ 4272      5F646563 
+ 4272      6F646500 
+ 4273              	.LASF148:
+ 4274 07fc 73746172 		.ascii	"start_pos\000"
+ 4274      745F706F 
+ 4274      7300
+ 4275              	.LASF109:
+ 4276 0806 62697473 		.ascii	"bits_per_char_height\000"
+ 4276      5F706572 
+ 4276      5F636861 
+ 4276      725F6865 
+ 4276      69676874 
+ 4277              	.LASF5:
+ 4278 081b 5F5F7569 		.ascii	"__uint16_t\000"
+ 4278      6E743136 
+ 4278      5F7400
+ 4279              	.LASF94:
+ 4280 0826 64726177 		.ascii	"draw_color\000"
+ 4280      5F636F6C 
+ 4280      6F7200
+ 4281              	.LASF43:
+ 4282 0831 706F7374 		.ascii	"post_chip_enable_wait_ns\000"
+ 4282      5F636869 
+ 4282      705F656E 
+ 4282      61626C65 
+ 4282      5F776169 
+ 4283              	.LASF150:
+ 4284 084a 7469746C 		.ascii	"title_lines\000"
+ 4284      655F6C69 
+ 4284      6E657300 
+ 4285              	.LASF100:
+ 4286 0856 75386732 		.ascii	"u8g2_update_dimension_cb\000"
+ 4286      5F757064 
+ 4286      6174655F 
+ 4286      64696D65 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 89
+
+
+ 4286      6E73696F 
+ 4287              	.LASF156:
+ 4288 086f 75386732 		.ascii	"u8g2_DrawFrame\000"
+ 4288      5F447261 
+ 4288      77467261 
+ 4288      6D6500
+ 4289              	.LASF126:
+ 4290 087e 74617267 		.ascii	"target_x\000"
+ 4290      65745F78 
+ 4290      00
+ 4291              	.LASF127:
+ 4292 0887 74617267 		.ascii	"target_y\000"
+ 4292      65745F79 
+ 4292      00
+ 4293              	.LASF18:
+ 4294 0890 75387838 		.ascii	"u8x8_t\000"
+ 4294      5F7400
+ 4295              	.LASF85:
+ 4296 0897 75736572 		.ascii	"user_y0\000"
+ 4296      5F793000 
+ 4297              	.LASF86:
+ 4298 089f 75736572 		.ascii	"user_y1\000"
+ 4298      5F793100 
+ 4299              	.LASF124:
+ 4300 08a7 5F753867 		.ascii	"_u8g2_font_decode_t\000"
+ 4300      325F666F 
+ 4300      6E745F64 
+ 4300      65636F64 
+ 4300      655F7400 
+ 4301              	.LASF13:
+ 4302 08bb 696E7438 		.ascii	"int8_t\000"
+ 4302      5F7400
+ 4303              	.LASF64:
+ 4304 08c2 746F7461 		.ascii	"total\000"
+ 4304      6C00
+ 4305              	.LASF36:
+ 4306 08c8 6465626F 		.ascii	"debounce_state\000"
+ 4306      756E6365 
+ 4306      5F737461 
+ 4306      746500
+ 4307              	.LASF98:
+ 4308 08d7 75706461 		.ascii	"update\000"
+ 4308      746500
+ 4309              	.LASF135:
+ 4310 08de 75386732 		.ascii	"u8g2_font_calc_vref_fnptr\000"
+ 4310      5F666F6E 
+ 4310      745F6361 
+ 4310      6C635F76 
+ 4310      7265665F 
+ 4311              	.LASF63:
+ 4312 08f8 76697369 		.ascii	"visible\000"
+ 4312      626C6500 
+ 4313              	.LASF42:
+ 4314 0900 63686970 		.ascii	"chip_disable_level\000"
+ 4314      5F646973 
+ 4314      61626C65 
+ 4314      5F6C6576 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 90
+
+
+ 4314      656C00
+ 4315              	.LASF25:
+ 4316 0913 666F6E74 		.ascii	"font\000"
+ 4316      00
+ 4317              	.LASF121:
+ 4318 0918 73746172 		.ascii	"start_pos_lower_a\000"
+ 4318      745F706F 
+ 4318      735F6C6F 
+ 4318      7765725F 
+ 4318      6100
+ 4319              	.LASF144:
+ 4320 092a 75386732 		.ascii	"u8g2_DrawSelectionList\000"
+ 4320      5F447261 
+ 4320      7753656C 
+ 4320      65637469 
+ 4320      6F6E4C69 
+ 4321              	.LASF14:
+ 4322 0941 75696E74 		.ascii	"uint8_t\000"
+ 4322      385F7400 
+ 4323              	.LASF66:
+ 4324 0949 63757272 		.ascii	"current_pos\000"
+ 4324      656E745F 
+ 4324      706F7300 
+ 4325              	.LASF30:
+ 4326 0955 6932635F 		.ascii	"i2c_started\000"
+ 4326      73746172 
+ 4326      74656400 
+ 4327              	.LASF58:
+ 4328 0961 70697865 		.ascii	"pixel_width\000"
+ 4328      6C5F7769 
+ 4328      64746800 
+ 4329              	.LASF54:
+ 4330 096d 74696C65 		.ascii	"tile_width\000"
+ 4330      5F776964 
+ 4330      746800
+ 4331              	.LASF34:
+ 4332 0978 6465626F 		.ascii	"debounce_default_pin_state\000"
+ 4332      756E6365 
+ 4332      5F646566 
+ 4332      61756C74 
+ 4332      5F70696E 
+ 4333              	.LASF162:
+ 4334 0993 75386732 		.ascii	"u8g2_DrawHLine\000"
+ 4334      5F447261 
+ 4334      77484C69 
+ 4334      6E6500
+ 4335              	.LASF159:
+ 4336 09a2 75387838 		.ascii	"u8x8_GetStringLineCnt\000"
+ 4336      5F476574 
+ 4336      53747269 
+ 4336      6E674C69 
+ 4336      6E65436E 
+ 4337              	.LASF40:
+ 4338 09b8 75387838 		.ascii	"u8x8_display_info_struct\000"
+ 4338      5F646973 
+ 4338      706C6179 
+ 4338      5F696E66 
+ARM GAS  C:\Users\Greg\AppData\Local\Temp\ccArDwy9.s 			page 91
+
+
+ 4338      6F5F7374 
+ 4339              	.LASF82:
+ 4340 09d1 68656967 		.ascii	"height\000"
+ 4340      687400
+ 4341              	.LASF67:
+ 4342 09d8 7538736C 		.ascii	"u8sl_t\000"
+ 4342      5F7400
+ 4343              	.LASF164:
+ 4344 09df 75387838 		.ascii	"u8x8_GetMenuEvent\000"
+ 4344      5F476574 
+ 4344      4D656E75 
+ 4344      4576656E 
+ 4344      7400
+ 4345              	.LASF59:
+ 4346 09f1 70697865 		.ascii	"pixel_height\000"
+ 4346      6C5F6865 
+ 4346      69676874 
+ 4346      00
+ 4347              	.LASF49:
+ 4348 09fe 73636B5F 		.ascii	"sck_clock_hz\000"
+ 4348      636C6F63 
+ 4348      6B5F687A 
+ 4348      00
+ 4349              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
