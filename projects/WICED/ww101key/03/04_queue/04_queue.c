@@ -22,7 +22,12 @@ wiced_bool_t buttonFlag = WICED_FALSE;
 /* Interrupt service routine for the button */
 void button_isr(void* arg)
 {
-	buttonFlag = WICED_TRUE;
+	static uint32_t blinks = 0;
+
+	blinks ++;
+	/* We will use WICED_NO_WAIT here so that the ISR won't lock execution if the queue is full */
+	/* In addition, WICED_WAIT_FOREVER is not allowed inside an ISR */
+	wiced_rtos_push_to_queue(&queueHandle, &blinks, WICED_NO_WAIT); /* Push value onto queue*/
 }
 
 /* Define the thread function that will toggle the LED */
@@ -53,7 +58,6 @@ void ledThread(wiced_thread_arg_t arg)
 
 void application_start( )
 {
-	uint32_t blinks = 0;
 
 	wiced_init();	/* Initialize the WICED device */
 
@@ -66,19 +70,5 @@ void application_start( )
 	/* Initialize and start LED thread */
     wiced_rtos_create_thread(&ledThreadHandle, THREAD_PRIORITY, "ledThread", ledThread, THREAD_STACK_SIZE, NULL);
 
-    while ( 1 )
-    {
-    	if(buttonFlag)
-    	{
-    		buttonFlag = WICED_FALSE;
-
-			blinks ++;
-			/* We will only try to add to the queue if it is not full. */
-			if(wiced_rtos_is_queue_full(&queueHandle) != WICED_SUCCESS) /* There is room in the queue*/
-			{
-				wiced_rtos_push_to_queue(&queueHandle, &blinks, WICED_WAIT_FOREVER); /* Push value onto queue*/
-			}
-    	}
-    	wiced_rtos_delay_milliseconds( 1 ); /* Allow other threads to have a turn */
-    }
+    /* No while(1) here since everything is done by the new thread. */
 }

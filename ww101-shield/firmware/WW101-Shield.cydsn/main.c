@@ -3,6 +3,9 @@
 #include "regmap.h"
 #include <stdbool.h>
 
+/* Use this to run the tuner. */
+//#define ENABLE_TUNER
+
 /* Button State */
 #define PRESSED (0)
 
@@ -57,30 +60,28 @@
 /* Global variables and typedefs */
 /* CapSense sensors */
 typedef enum {
-    B0 = 0,
-    B1 = 1,
-    B2 = 2,
-    B3 = 3,
-    PROX = 4,
-    HUM = 5
+    B0,
+    B1,
+    B2,
+    B3,
+    PROX,
+    HUM
 } CapSenseWidget;
 
 /* ADC Channels */
 typedef enum {
-    ALS = 0,
-    THERM_REF = 1,
-    THERM = 2,
-    POT = 3,
+    ALS,
+    THERM_REF,
+    THERM,
+    POT,
 } ADC_Chan;  
 
 /* ADC States */
 typedef enum {
-    RUNNING = 0,
-    PROCESS = 1,
-    DONE = 2,
+    RUNNING,
+    PROCESS,
+    DONE,
 } ADC_States;
-
-
 
 volatile dataSet_t I2Cbuf;   /* I2C buffer containing the data set */
 volatile dataSet_t LocData;  /* Local working copy of the data set */
@@ -129,7 +130,6 @@ void ADC_ISR_Callback( void )
     }
     adcState = PROCESS;    /* Set ADC state to process results */
 }
-
 
 /*******************************************************************************
 * Function Name: __inline uint16 CalculateCapacitance(uint16 RawCounts, uint16 RefsensorCounts)
@@ -199,10 +199,10 @@ __inline uint16 CalculateHumidity(uint16 capacitance)
 *******************************************************************************/
 void processCapSense(void)
 {
-    static uint8 state = 0;
+    static uint8 state = B0;
     static uint16 humidityRawCounts;    /* Raw count from CapSense Component for the humidity sensor */
     static uint16 humidityRefRawCounts; /* Raw count from CapSense Component for the Reference capacitor */
-    
+        
     if(!CapSense_IsBusy())
     {
         switch(state) {
@@ -226,7 +226,6 @@ void processCapSense(void)
                     LocData.buttonVal &= (~BVAL_B0_MASK);
                 }
                 CapSense_SetupWidget(CapSense_BUTTON1_WDGT_ID);
-                CapSense_Scan();
                 state++;
                 break;
             case B1: /* Process Button 1, Scan Button 2 */
@@ -249,9 +248,7 @@ void processCapSense(void)
                 }
                 
                 CapSense_SetupWidget(CapSense_BUTTON2_WDGT_ID);
-                CapSense_Scan();
-                state++;
-                
+                state++;                
                 break;
             case B2: /* Process Button 2, Scan Button 3 */
                 CapSense_ProcessWidget(CapSense_BUTTON2_WDGT_ID);
@@ -272,7 +269,6 @@ void processCapSense(void)
                     LocData.buttonVal &= (~BVAL_B2_MASK);
                 }
                 CapSense_SetupWidget(CapSense_BUTTON3_WDGT_ID);
-                CapSense_Scan();
                 state++;
                 break;
             case B3: /* Process Button 3, Scan Proximity */
@@ -294,7 +290,6 @@ void processCapSense(void)
                     LocData.buttonVal &= (~BVAL_B3_MASK);
                 }
                 CapSense_SetupWidget(CapSense_PROXIMITY0_WDGT_ID);
-                CapSense_Scan();
                 state++;
                 break;      
             case PROX: /* Process Proximity, Scan Humidity */
@@ -308,7 +303,6 @@ void processCapSense(void)
                     LocData.buttonVal &= (~BVAL_PROX_MASK);
                 }
                 CapSense_SetupWidget(CapSense_HUMIDITY_WDGT_ID);
-                CapSense_Scan();
                 state++;
                 break;
             case HUM: /* Process Humidity, Scan Button 0  and go back to start of loop */                
@@ -320,18 +314,21 @@ void processCapSense(void)
                 humidity = CalculateHumidity(capacitance);                             
                 LocData.humidity = ((float32)(humidity))/10.0;
                 CapSense_SetupWidget(CapSense_BUTTON0_WDGT_ID);
-                CapSense_Scan();
                 state=0;
                 break;
         }
+        #ifdef ENABLE_TUNER
+        CapSense_RunTuner();
+        #endif
+        CapSense_Scan();
     }
 }
 
 int main(void)
 {
     /* Local variables */
-    uint8   interruptState = 0;   /* Variable to store the status returned by CyEnterCriticalSection() */
     bool    BootloadCountFlag = false;
+    uint8   interruptState = 0;   /* Variable to store the status returned by CyEnterCriticalSection() */
     int32   dacValPrev = 0;
     float32 dacVal;
     int32   dacCode;
@@ -339,26 +336,29 @@ int main(void)
     int16   thermistorResistance; /* Variables for temperature calculation */
     int16   temp16; /* Temperature expressed as a 16 bit integer in 1/100th of a degree */
     uint8   i;
-    
+        
     BL_INT_StartEx(BL_ISR);
     
     CyGlobalIntEnable; /* Enable global interrupts. */
 
-    EZI2C_Start();
-    EZI2C_EzI2CSetBuffer1(sizeof(I2Cbuf), RW, (void *) &I2Cbuf);
-    
     CapSense_Start();   
     CapSense_SetupWidget(CapSense_BUTTON0_WDGT_ID);
-    CapSense_Scan();            
+    CapSense_Scan();       
     
-    SmartIO_Start();
-    
+    EZI2C_Start();
+    #ifdef ENABLE_TUNER
+    EZI2C_EzI2CSetBuffer1(sizeof(CapSense_dsRam), sizeof(CapSense_dsRam),(uint8 *)&CapSense_dsRam);        
+    #else
+    EZI2C_EzI2CSetBuffer1(sizeof(I2Cbuf), RW, (void *) &I2Cbuf);     
+    #endif   
+ 
+    SmartIO_Start();    
     VDAC_Start();
     PVref_ALS_Start();
     Opamp_ALS1_Start();
     Opamp_ALS2_Start();
     PVref_Therm_Start();
-    Opamp_Therm_Start();
+    Opamp_Therm_Start();    
     ADC_Start();
     ADC_IRQ_Enable();
     
@@ -380,8 +380,11 @@ int main(void)
         /* Look for bootloader entry - both mechanical buttons held down for 2 seconds */
         if((MB0_Read() == PRESSED) && (MB1_Read() == PRESSED))
         {
+            if(BootloadCountFlag == false)
+            {
+                BootloadTimer_Start();
+            }
             BootloadCountFlag = true;
-            BootloadTimer_Start();
         }
         else if(BootloadCountFlag == true)
         {
@@ -419,7 +422,7 @@ int main(void)
             CBLED2_Write(!(LocData.ledVal & BVAL_B2_MASK));
             CBLED3_Write(!(LocData.ledVal & BVAL_B3_MASK));
         }
-        
+ 
         /* Set VDAC value if it has changed */
         dacVal = LocData.dacVal;
         if(dacValPrev != dacVal)
@@ -433,7 +436,7 @@ int main(void)
             }
             VDAC_SetValue(VDAC_SaturateTwosComp(dacCode));
         }
-                
+        
         /* Process ADC results that were captured in the interrupt */
         if(adcState == PROCESS)
         {

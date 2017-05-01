@@ -110,8 +110,6 @@ void application_start( )
 {
 	wiced_init();	/* Initialize the WICED device */
 
-	char pubCmd[4]; /* Command pushed onto the queue to determine what to publish */
-
 	/* Setup Thread Control functions */
     wiced_rtos_init_semaphore(&displaySemaphoreHandle);
     wiced_rtos_init_semaphore(&commandStartupSemaphoreHandle);
@@ -130,18 +128,7 @@ void application_start( )
     wiced_rtos_init_timer(&publishTimerHandle, TIMER_TIME, publish30sec, NULL);
     wiced_rtos_start_timer(&publishTimerHandle);
 
-    while ( 1 )
-    {
-		if (publish30Flag == WICED_TRUE)
-		{
-			publish30Flag = WICED_FALSE;
-			pubCmd[0] = WEATHER_CMD;
-			wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_WAIT_FOREVER); /* Push value onto queue*/
-		}
-
-    	/* Give other threads a turn */
-    	wiced_rtos_delay_milliseconds( 1000 );
-    }
+    /* No while(1) here since everything is done by the new thread. */
 }
 
 /*************** Data Acquisition Thread ***************/
@@ -570,8 +557,10 @@ void subscribeThread(wiced_thread_arg_t arg)
 /*************** Timer to publish weather data every 30sec ***************/
 void publish30sec(void* arg)
 {
-	/* A flag is used because pushing to the queue doesn't work from inside the timer function */
-	publish30Flag = WICED_TRUE;
+	char pubCmd[4]; /* Command pushed onto the queue to determine what to publish */
+	pubCmd[0] = WEATHER_CMD;
+	/* Must use WICED_NO_WAIT here because waiting is not allowed in a timer */
+	wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_NO_WAIT); /* Push value onto queue*/
 }
 
 
