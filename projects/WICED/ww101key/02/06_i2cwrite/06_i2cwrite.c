@@ -55,7 +55,7 @@ void application_start( )
     	if(buttonPress)
     	{
     		/* Send new I2C data */
-    		ret = wiced_i2c_transfer(&i2cDevice, &msg, NUM_MESSAGES);
+    		wiced_i2c_transfer(&i2cDevice, &msg, NUM_MESSAGES);
     		tx_buffer[1] = tx_buffer[1] << 1; /* Shift to the next LED */
     		if (tx_buffer[1] > 0x08) /* Reset after turning on LED3 */
     		{

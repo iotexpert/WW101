@@ -86,11 +86,11 @@ void application_start( )
             	case 'p': // Print Network Info
             		print_network_info();
             		break;
-            	case '0': // Switch to Open Network
-            		update_network_info("WW101OPEN", "", WICED_SECURITY_OPEN);
+            	case '0': // Switch to Alternate Network
+            		update_network_info("WW101WPA_SWITCH", "cypresswicedwifi101s", WICED_SECURITY_WPA2_AES_PSK);
             		break;
-            	case '1': // Switch to WAP Network
-            		update_network_info("WW101WPA", "kywpa123", WICED_SECURITY_WPA2_AES_PSK);
+            	case '1': // Switch to WPA Network
+            		update_network_info("WW101WPA", "cypresswicedwifi101", WICED_SECURITY_WPA2_AES_PSK);
             		break;
         	}
         }
