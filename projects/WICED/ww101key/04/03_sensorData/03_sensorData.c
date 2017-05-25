@@ -17,6 +17,7 @@ void application_start()
         .address_width = I2C_ADDRESS_WIDTH_7BIT,
         .flags         = 0,
         .speed_mode    = I2C_STANDARD_SPEED_MODE,
+
     };
 
     u8g_t display;
