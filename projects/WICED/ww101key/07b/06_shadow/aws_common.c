@@ -96,7 +96,7 @@ wiced_result_t aws_app_init( aws_app_info_t *app_info )
     /* Bringup the network interface */
     wiced_network_up( WICED_STA_INTERFACE, WICED_USE_EXTERNAL_DHCP_SERVER, NULL );
 
-    wiced_hostname_lookup( AWS_IOT_HOST_NAME, &broker_address, 10000 );
+    wiced_hostname_lookup( AWS_IOT_HOST_NAME, &broker_address, 10000, WICED_STA_INTERFACE );
 
     WPRINT_APP_INFO(("[MQTT] Connecting to broker %u.%u.%u.%u ...\n\n", (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 24),
                     (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 16),

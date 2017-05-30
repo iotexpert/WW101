@@ -1,7 +1,7 @@
-// Attach to the open network (WW101OPEN).
+// Attach to the standard WPA2 network (WW101WPA).
 //
-// Sending '0' from a terminal will cause the DCT to be updated to connect to WW101OPEN
-// Sending '1' from a terminal will cause the DCT to be updated to connect to WW101WPA
+// Sending '0' from a terminal will cause the DCT to be updated to connect to WW101WPA
+// Sending '1' from a terminal will cause the DCT to be updated to connect to WW101WPA_SWITCH
 // Sending 'p' from a terminal will print the values currently stored in the DCT
 //
 // The selected network is saved in the DCT (in Flash) so that the choice is
@@ -86,10 +86,10 @@ void application_start( )
             	case 'p': // Print Network Info
             		print_network_info();
             		break;
-            	case '0': // Switch to Alternate Network
+            	case '1': // Switch to Alternate Network
             		update_network_info("WW101WPA_SWITCH", "cypresswicedwifi101s", WICED_SECURITY_WPA2_AES_PSK);
             		break;
-            	case '1': // Switch to WPA Network
+            	case '0': // Switch to WPA Network
             		update_network_info("WW101WPA", "cypresswicedwifi101", WICED_SECURITY_WPA2_AES_PSK);
             		break;
         	}
