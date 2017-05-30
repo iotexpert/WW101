@@ -435,7 +435,7 @@ void publishThread(wiced_thread_arg_t arg)
     }
 
     WPRINT_APP_INFO( ( "Resolving IP address of MQTT broker...\n" ) );
-    ret = wiced_hostname_lookup( MQTT_BROKER_ADDRESS, &broker_address, 10000 );
+    ret = wiced_hostname_lookup( MQTT_BROKER_ADDRESS, &broker_address, 10000, WICED_STA_INTERFACE );
     WPRINT_APP_INFO(("Resolved Broker IP: %u.%u.%u.%u\n\n", (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 24),
                     (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 16),
                     (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 8),

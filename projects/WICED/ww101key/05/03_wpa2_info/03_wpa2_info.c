@@ -22,6 +22,7 @@ void application_start( )
     /* Variables */   
 	wiced_result_t connectResult;
     wiced_bool_t led = WICED_FALSE;
+    uint8_t ledToBlink;
     wiced_ip_address_t ipAddress;
     wiced_mac_t mac;
 
@@ -47,7 +48,7 @@ void application_start( )
     printIp(ipAddress);
 
     /* Cypress.com Address */
-    wiced_hostname_lookup("www.cypress.com", &ipAddress, WICED_NEVER_TIMEOUT);
+    wiced_hostname_lookup("www.cypress.com", &ipAddress, WICED_NEVER_TIMEOUT, WICED_STA_INTERFACE);
     WPRINT_APP_INFO(("Cypress: "));
     printIp(ipAddress);
 
@@ -58,21 +59,27 @@ void application_start( )
                mac.octet[0], mac.octet[1], mac.octet[2],
 			   mac.octet[3], mac.octet[4], mac.octet[5]));
 
+    if(connectResult == WICED_SUCCESS)
+    {
+        ledToBlink = WICED_SH_LED0; /* Blink LED0 if if connection was successful */
+    }
+    else
+    {
+        ledToBlink = WICED_SH_LED1; /* Blink LED1 if if connection was unsuccessful */
+    }
+
     while ( 1 )
     {
-        if(connectResult == WICED_SUCCESS)
+        /* Blink appropriate LED */
+        if ( led == WICED_TRUE )
         {
-        	/* Blink Green */
-        	if ( led == WICED_TRUE )
-        	{
-        		wiced_gpio_output_low( WICED_SH_LED1 );
-        		led = WICED_FALSE;
-        	}
-        	else
-        	{
-        		wiced_gpio_output_high( WICED_SH_LED1 );
-        		led = WICED_TRUE;
-        	}
+            wiced_gpio_output_low( ledToBlink );
+            led = WICED_FALSE;
+        }
+        else
+        {
+            wiced_gpio_output_high( ledToBlink );
+            led = WICED_TRUE;
         }
         wiced_rtos_delay_milliseconds(250);
     }
