@@ -4,9 +4,6 @@
 #include "wiced.h"
 
 #define I2C_ADDRESS (0x42)
-#define RETRIES (1)
-#define DISABLE_DMA (WICED_TRUE)
-#define NUM_MESSAGES (1)
 
 #define TEMPERATURE_REG 0x07
 
@@ -37,8 +34,6 @@ void application_start( )
 
     /* Tx buffer is used to set the offset */
     uint8_t tx_buffer[] = {TEMPERATURE_REG};
-    wiced_i2c_message_t setOffset;
-    wiced_i2c_init_tx_message(&setOffset, tx_buffer, sizeof(tx_buffer), RETRIES, DISABLE_DMA);
 
     /* Rx buffer is used to get temperature, humidity, light, and POT data - 4 bytes each */
     struct {
@@ -47,17 +42,15 @@ void application_start( )
 		float light;
 		float pot;
     } rx_buffer;
-    wiced_i2c_message_t msg;
-    wiced_i2c_init_rx_message(&msg, &rx_buffer, sizeof(rx_buffer), RETRIES, DISABLE_DMA);
 
     /* Initialize offset */
-    wiced_i2c_transfer(&i2cDevice, &setOffset, NUM_MESSAGES);
+    wiced_i2c_write(&i2cDevice, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, tx_buffer, sizeof(tx_buffer));
 
     while ( 1 )
     {
     	if(buttonPress)
     	{
-    		wiced_i2c_transfer(&i2cDevice, &msg, NUM_MESSAGES); /* Get new data from I2C */
+    	    wiced_i2c_read(&i2cDevice, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, &rx_buffer, sizeof(rx_buffer));
     		WPRINT_APP_INFO(("Temperature: %.1f\t Humidity: %.1f\t Light: %.1f\t POT: %.1f\n", rx_buffer.temp, rx_buffer.humidity, rx_buffer.light, rx_buffer.pot)); /* Print data to terminal */
 
     		buttonPress = WICED_FALSE; /* Reset flag for next button press */

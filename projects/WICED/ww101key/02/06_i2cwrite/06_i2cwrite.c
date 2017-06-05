@@ -4,9 +4,6 @@
 #include "wiced.h"
 
 #define I2C_ADDRESS  (0x42)
-#define RETRIES      (1)
-#define DISABLE_DMA  (WICED_TRUE)
-#define NUM_MESSAGES (1)
 
 /* I2C register locations */
 #define CONTROL_REG (0x05)
@@ -37,16 +34,14 @@ void application_start( )
 
     wiced_i2c_init(&i2cDevice);
 
-    /* Setup transmit buffer and message */
+    /* Setup transmit buffer */
     /* We will always write an offset and then a single value, so we need 2 bytes in the buffer */
     uint8_t tx_buffer[] = {0, 0};
-    wiced_i2c_message_t msg;
-    wiced_i2c_init_tx_message(&msg, tx_buffer, sizeof(tx_buffer), RETRIES, DISABLE_DMA);
 
     /* Write a value of 0x01 to the control register to enable control of the CapSense LEDs over I2C */
     tx_buffer[0] = CONTROL_REG;
     tx_buffer[1] = 0x01;
-	wiced_i2c_transfer(&i2cDevice, &msg, NUM_MESSAGES);
+	wiced_i2c_write(&i2cDevice, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, tx_buffer, sizeof(tx_buffer));
 
 	tx_buffer[0] = LED_REG; /* Set offset for the LED register */
 
@@ -55,7 +50,7 @@ void application_start( )
     	if(buttonPress)
     	{
     		/* Send new I2C data */
-    		wiced_i2c_transfer(&i2cDevice, &msg, NUM_MESSAGES);
+    	    wiced_i2c_write(&i2cDevice, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, tx_buffer, sizeof(tx_buffer));
     		tx_buffer[1] = tx_buffer[1] << 1; /* Shift to the next LED */
     		if (tx_buffer[1] > 0x08) /* Reset after turning on LED3 */
     		{
