@@ -150,7 +150,7 @@ void ADC_ISR_Callback( void )
 *******************************************************************************/
 __inline uint16 CalculateCapacitance(uint16 rawCounts, uint16 refsensorCounts)
 {
-    return (uint16)((float)(rawCounts - OFFSETCOUNT) * (CREF - COFFSET) / (float)(refsensorCounts - OFFSETCOUNT));
+    return (uint16)((float32)(rawCounts - OFFSETCOUNT) * (CREF - COFFSET) / (float32)(refsensorCounts - OFFSETCOUNT));   
 }
 
 /*******************************************************************************
