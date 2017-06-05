@@ -194,7 +194,7 @@ void application_start( void )
     resource_get_readonly_buffer( &resources_apps_DIR_aws_iot_DIR_rootca_cer, 0, MQTT_MAX_RESOURCE_SIZE, &size_out, (const void **) &security.ca_cert );
     security.ca_cert_len = size_out;
 
-    resource_get_readonly_buffer( &resources_apps_DIR_aws_iot_DIR_client_subscriber_cer, 0, MQTT_MAX_RESOURCE_SIZE, &size_out, (const void **) &security.cert );
+    resource_get_readonly_buffer( &resources_apps_DIR_aws_iot_DIR_client_cer, 0, MQTT_MAX_RESOURCE_SIZE, &size_out, (const void **) &security.cert );
     if(size_out < 64)
     {
         WPRINT_APP_INFO( ( "\nNot a valid Certificate! Please replace the dummy certificate file 'resources/app/aws_iot/client.cer' with the one got from AWS\n\n" ) );
@@ -202,7 +202,7 @@ void application_start( void )
     }
     security.cert_len = size_out;
 
-    resource_get_readonly_buffer( &resources_apps_DIR_aws_iot_DIR_privkey_subscriber_cer, 0, MQTT_MAX_RESOURCE_SIZE, &size_out, (const void **) &security.key );
+    resource_get_readonly_buffer( &resources_apps_DIR_aws_iot_DIR_privkey_cer, 0, MQTT_MAX_RESOURCE_SIZE, &size_out, (const void **) &security.key );
     if(size_out < 64)
     {
         WPRINT_APP_INFO( ( "\nNot a valid Private Key! Please replace the dummy private key file 'resources/app/aws_iot/privkey.cer' with the one got from AWS\n\n" ) );

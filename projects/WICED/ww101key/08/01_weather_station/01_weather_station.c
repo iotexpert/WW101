@@ -1,6 +1,4 @@
-// When the button on the base board is pressed, I2C is used to read
-// the temperature, humidity, light, and PWM values from the analog
-// co-processor on the shield board
+/* This is the class project for the WICED WiFi WW-101 class */
 #include "wiced.h"
 #include "u8g_arm.h"
 #include "mqtt_api.h"
@@ -8,15 +6,13 @@
 
 #define MY_THING 00
 
-/* I2C parameters */
+/* I2C device addresses */
 #define PSOC_ADDRESS (0x42)
 #define DISP_ADDRESS (0x3C)
-#define RETRIES (1)
-#define DISABLE_DMA (WICED_TRUE)
-#define NUM_MESSAGES (1)
 
-/* I2C Offset register for button measurement */
-#define OFFSET_REG (0x06)
+/* I2C Offset registers for CapSense buttons and start of weather data */
+#define BUTTON_OFFSET_REG       (0x06)
+#define WEATHER_OFFSET_REG      (0x07)
 
 /* CapSense Buttons */
 #define B0_MASK  (0x01)
@@ -27,7 +23,7 @@
 
 /* Queue configuration */
 #define MESSAGE_SIZE		(4)
-#define QUEUE_SIZE			(10)
+#define QUEUE_SIZE			(25)
 
 /* Thread parameters */
 #define THREAD_BASE_PRIORITY 	(10)
@@ -51,17 +47,28 @@ typedef enum command {
 	WEATHER_CMD,
 	TEMPERATURE_CMD,
 	HUMIDITY_CMD,
+	LIGHT_CMD,
 	ALERT_CMD,
 	IP_CMD
 } CMD;
 
 /*************** Global Variables *****************/
-/* Data from the PSoC Analog Co-processor  */
+
+/* Data from the PSoC Analog Coprocessor  */
+uint8_t CapSenseValues;
 struct {
-	uint8_t buttons;
 	float temp;
 	float humidity;
-} __attribute__((packed)) psoc_data;
+	float light;
+} __attribute__((packed)) weather_data;
+
+/* I2C for the Analog Coprocessor */
+const wiced_i2c_device_t i2cPsoc = {
+    .port = WICED_I2C_2,
+    .address = PSOC_ADDRESS,
+    .address_width = I2C_ADDRESS_WIDTH_7BIT,
+    .speed_mode = I2C_STANDARD_SPEED_MODE
+};
 
 /* Flag to determine if we have an active weather alert */
 wiced_bool_t weatherAlert = WICED_FALSE;
@@ -84,14 +91,20 @@ static wiced_semaphore_t commandStartupSemaphoreHandle;
 static wiced_mutex_t i2cMutexHandle;
 static wiced_queue_t pubQueueHandle;
 static wiced_timer_t publishTimerHandle;
-static wiced_thread_t getDataThreadHandle;
+static wiced_thread_t getWeatherDataThreadHandle;
+static wiced_thread_t getCapSenseThreadHandle;
 static wiced_thread_t displayThreadHandle;
 static wiced_thread_t commandThreadHandle;
 static wiced_thread_t publishThreadHandle;
 static wiced_thread_t subscribeThreadHandle;
 
 /*************** Function Prototypes ***************/
-void getDataThread(wiced_thread_arg_t arg);
+/* ISRs */
+void publish_button_isr(void* arg);
+void alert_button_isr(void* arg);
+/* Threads and timer functions */
+void getWeatherDataThread(wiced_thread_arg_t arg);
+void getCapSenseThread(wiced_thread_arg_t arg);
 void displayThread(wiced_thread_arg_t arg);
 void commandThread(wiced_thread_arg_t arg);
 void publishThread(wiced_thread_arg_t arg);
@@ -110,6 +123,10 @@ void application_start( )
 {
 	wiced_init();	/* Initialize the WICED device */
 
+	/* Initialize the I2C to read from the PSoC
+	 * 2 different threads will use this - reading weather data, and reading CapSense */
+	wiced_i2c_init(&i2cPsoc);
+
 	/* Setup Thread Control functions */
     wiced_rtos_init_semaphore(&displaySemaphoreHandle);
     wiced_rtos_init_semaphore(&commandStartupSemaphoreHandle);
@@ -118,7 +135,8 @@ void application_start( )
     wiced_rtos_init_semaphore( &msg_semaphore );
 
 	/* Setup/Start Threads */
-    wiced_rtos_create_thread(&getDataThreadHandle, THREAD_BASE_PRIORITY+2, NULL, getDataThread, THREAD_STACK_SIZE, NULL);
+    wiced_rtos_create_thread(&getWeatherDataThreadHandle, THREAD_BASE_PRIORITY+2, NULL, getWeatherDataThread, THREAD_STACK_SIZE, NULL);
+    wiced_rtos_create_thread(&getCapSenseThreadHandle, THREAD_BASE_PRIORITY+2, NULL, getCapSenseThread, THREAD_STACK_SIZE, NULL);
     wiced_rtos_create_thread(&displayThreadHandle, THREAD_BASE_PRIORITY+4, NULL, displayThread, THREAD_STACK_SIZE, NULL);
     wiced_rtos_create_thread(&commandThreadHandle, THREAD_BASE_PRIORITY+3, NULL, commandThread, THREAD_STACK_SIZE, NULL);
     wiced_rtos_create_thread(&publishThreadHandle, THREAD_BASE_PRIORITY+1, NULL, publishThread, THREAD_STACK_SIZE, NULL);
@@ -128,101 +146,122 @@ void application_start( )
     wiced_rtos_init_timer(&publishTimerHandle, TIMER_TIME, publish30sec, NULL);
     wiced_rtos_start_timer(&publishTimerHandle);
 
-    /* No while(1) here since everything is done by the new thread. */
+    /* Setup interrupts for the 2 mechanical buttons */
+    wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, publish_button_isr, NULL);
+    wiced_gpio_input_irq_enable(WICED_SH_MB0, IRQ_TRIGGER_FALLING_EDGE, alert_button_isr, NULL);
+
+    /* No while(1) here since everything is done by the new threads. */
 }
 
-/*************** Data Acquisition Thread ***************/
-/* Thread to read CapSense buttons, temperature and humidity from the PSoC analog Co-processor */
-void getDataThread(wiced_thread_arg_t arg)
+
+/*************** Weather Publish Button ISR ***************/
+/* When button is pressed, we publish the weather data */
+void publish_button_isr(void* arg)
+{
+     char pubCmd[4]; /* Command pushed onto the queue to determine what to publish */
+     pubCmd[0] = WEATHER_CMD;
+     /* Note - only WICED_NO_WAIT is supported in an ISR so if the queue is full we won't publish */
+     wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_NO_WAIT); /* Push value onto queue*/
+}
+
+
+/*************** Weather Alert Button ISR ***************/
+/* When button is pressed, we toggle the weather alert and publish it */
+void alert_button_isr(void* arg)
+{
+    char pubCmd[4]; /* Command pushed onto the queue to determine what to publish */
+
+    if(weatherAlert == WICED_TRUE)
+     {
+         weatherAlert = WICED_FALSE;
+     }
+     else
+     {
+         weatherAlert = WICED_TRUE;
+     }
+
+     /* Set a semaphore for the OLED to update the display */
+     wiced_rtos_set_semaphore(&displaySemaphoreHandle);
+     /* Publish the alert */
+     pubCmd[0] = ALERT_CMD;
+     /* Note - only WICED_NO_WAIT is supported in an ISR so if the queue is full we won't publish */
+     wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_NO_WAIT); /* Push value onto queue*/
+}
+
+
+/*************** Weather Data Acquisition Thread ***************/
+/* Thread to read temperature, humidity, and light from the PSoC analog Co-processor */
+void getWeatherDataThread(wiced_thread_arg_t arg)
 {
     /* Variables to remember previous values */
 	float tempPrev = 0;
 	float humPrev = 0;
+	float lightPrev = 0;
 
-	char pubCmd[4]; /* Command pushed onto the queue to determine what to publish */
-
-	wiced_bool_t buttonPressed = WICED_FALSE;
-
-	/* Setup I2C master */
-    const wiced_i2c_device_t i2cDevice = {
-    	.port = WICED_I2C_2,
-		.address = PSOC_ADDRESS,
-		.address_width = I2C_ADDRESS_WIDTH_7BIT,
-		.speed_mode = I2C_STANDARD_SPEED_MODE
-    };
-
-    wiced_i2c_init(&i2cDevice);
-
-    /* Tx buffer is used to set the offset */
-    uint8_t tx_buffer[] = {OFFSET_REG};
-    wiced_i2c_message_t setOffset;
-    wiced_i2c_init_tx_message(&setOffset, tx_buffer, sizeof(tx_buffer), RETRIES, DISABLE_DMA);
-
-    wiced_i2c_message_t msg;
-    wiced_i2c_init_rx_message(&msg, &psoc_data, sizeof(psoc_data), RETRIES, DISABLE_DMA);
-
-    /* Initialize offset */
-    wiced_i2c_transfer(&i2cDevice, &setOffset, NUM_MESSAGES);
+    /* Buffer to set the offset */
+    uint8_t offset[] = {WEATHER_OFFSET_REG};
 
 	while(1)
 	{
-   		/* Get I2C data */
-		wiced_rtos_lock_mutex(&i2cMutexHandle);
-		wiced_i2c_transfer(&i2cDevice, &msg, NUM_MESSAGES); /* Get new data from I2C */
+	    /* Get I2C data - use a Mutex to prevent conflicts */
+	    wiced_rtos_lock_mutex(&i2cMutexHandle);
+	    wiced_i2c_write(&i2cPsoc, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, offset, sizeof(offset)); /* Set the offset */
+        wiced_i2c_read(&i2cPsoc, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, &weather_data, sizeof(weather_data)); /* Get data */
 		wiced_rtos_unlock_mutex(&i2cMutexHandle);
 
-		/* Look for CapSense button presses */
-		if(buttonPressed == WICED_FALSE) /* Only look for new button presses */
-		{
-			if((psoc_data.buttons & B0_MASK) == B0_MASK) /* Button 0 goes to the local thing's screen */
-			{
-				buttonPressed = WICED_TRUE;
-			}
-			if((psoc_data.buttons & B1_MASK) == B1_MASK) /* Button 1 scrolls through screens */
-			{
-				buttonPressed = WICED_TRUE;
-
-			}
-			if((psoc_data.buttons & B2_MASK) == B2_MASK) /* Button 2 toggles the weather alert */
-			{
-				buttonPressed = WICED_TRUE;
-				if(weatherAlert == WICED_TRUE)
-				{
-					weatherAlert = WICED_FALSE;
-				}
-				else
-				{
-					weatherAlert = WICED_TRUE;
-				}
-				/* Set a semaphore for the OLED to update the display */
-				wiced_rtos_set_semaphore(&displaySemaphoreHandle);
-				/* Publish the alert */
-				pubCmd[0] = ALERT_CMD;
-				wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_WAIT_FOREVER); /* Push value onto queue*/
-			}
-			if((psoc_data.buttons & B3_MASK) == B3_MASK) /* Button 3 publishes temperature and humidity */
-			{
-				buttonPressed = WICED_TRUE;
-				pubCmd[0] = WEATHER_CMD;
-				wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_WAIT_FOREVER); /* Push value onto queue*/
-			}
-		}
-		if(((psoc_data.buttons | ~ALL_MASK) & ALL_MASK) == 0) /* All buttons released */
-		{
-			buttonPressed = WICED_FALSE;
-		}
-
 		/* Look at weather data - only update display if a value has changed*/
-		if((tempPrev != psoc_data.temp) || (humPrev != psoc_data.humidity)) /* Only update display if value has changed */
+		if((tempPrev != weather_data.temp) || (humPrev != weather_data.humidity) || (lightPrev != weather_data.light))
 		{
 			/* Set a semaphore for the OLED to update the display */
 			wiced_rtos_set_semaphore(&displaySemaphoreHandle);
 		}
 
-		/* Wait 100 milliseconds */
-		wiced_rtos_delay_milliseconds( 100 );
+		/* Wait 500 milliseconds */
+		wiced_rtos_delay_milliseconds( 500 );
 	}
 }
+
+
+/*************** CapSense Button Monitor Thread ***************/
+/* Thread to read CapSense button values */
+void getCapSenseThread(wiced_thread_arg_t arg)
+{
+    wiced_bool_t buttonPressed = WICED_FALSE;
+
+    /* Buffer to set the offset */
+    uint8_t offset[] = {BUTTON_OFFSET_REG};
+
+    while(1)
+    {
+        /* Get I2C data - use a Mutex to prevent conflicts */
+        wiced_rtos_lock_mutex(&i2cMutexHandle);
+        wiced_i2c_write(&i2cPsoc, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, offset, sizeof(offset)); /* Set the offset */
+        wiced_i2c_read(&i2cPsoc, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, &CapSenseValues, sizeof(CapSenseValues)); /* Get data */
+        wiced_rtos_unlock_mutex(&i2cMutexHandle);
+
+        /* Look for CapSense button presses */
+        if(buttonPressed == WICED_FALSE) /* Only look for new button presses */
+        {
+            if((CapSenseValues & B0_MASK) == B0_MASK) /* Button 0 goes to the local thing's screen */
+            {
+                buttonPressed = WICED_TRUE;
+            }
+            if((CapSenseValues & B1_MASK) == B1_MASK) /* Button 1 scrolls through other thing's screens */
+            {
+                buttonPressed = WICED_TRUE;
+            }
+            /* Buttons 2 and 3 not used */
+         }
+        if(((CapSenseValues | ~ALL_MASK) & ALL_MASK) == 0) /* All buttons released */
+        {
+            buttonPressed = WICED_FALSE;
+        }
+
+        /* Wait 100 milliseconds */
+        wiced_rtos_delay_milliseconds( 100 );
+    }
+}
+
 
 /*************** OLED Display Thread ***************/
 /* Thread to display data on the OLED */
@@ -232,6 +271,7 @@ void displayThread(wiced_thread_arg_t arg)
     char thing_str[25];
 	char temp_str[25];
     char humidity_str[25];
+    char light_str[25];
 
 	/* Initialize the OLED display */
 	wiced_i2c_device_t display_i2c =
@@ -259,25 +299,28 @@ void displayThread(wiced_thread_arg_t arg)
 		/* Setup Display Strings */
 		if(weatherAlert)
 		{
-			sprintf(thing_str,    "ww101_%02d *", MY_THING);
+			sprintf(thing_str,    "ww101_%02d *ALERT*", MY_THING);
 		} else {
 			sprintf(thing_str,    "ww101_%02d", MY_THING);
 		}
-		sprintf(temp_str,     "Temp:     %.1f", psoc_data.temp);
-		sprintf(humidity_str, "Humidity: %.1f", psoc_data.humidity);
+		sprintf(temp_str,     "Temp:     %.1f", weather_data.temp);
+		sprintf(humidity_str, "Humidity: %.1f", weather_data.humidity);
+        sprintf(light_str,    "Light:    %.0f", weather_data.light);
 
 		/* Send data to the display */
 		u8g_FirstPage(&display);
 		wiced_rtos_lock_mutex(&i2cMutexHandle);
 		do {
-			u8g_DrawStr(&display, 0, 5, thing_str);
-			u8g_DrawStr(&display, 0, 20, ip_str);
-			u8g_DrawStr(&display, 0, 35,  temp_str);
-			u8g_DrawStr(&display, 0, 50, humidity_str);
+			u8g_DrawStr(&display, 0, 2, thing_str);
+			u8g_DrawStr(&display, 0, 14, ip_str);
+			u8g_DrawStr(&display, 0, 26,  temp_str);
+			u8g_DrawStr(&display, 0, 38, humidity_str);
+			u8g_DrawStr(&display, 0, 50, light_str);
 		} while (u8g_NextPage(&display));
 		wiced_rtos_unlock_mutex(&i2cMutexHandle);
 	}
 }
+
 
 /*************** UART Command Interface Thread ***************/
 /* Tread to handle UART command input/output */
@@ -308,38 +351,47 @@ void commandThread(wiced_thread_arg_t arg)
 				WPRINT_APP_INFO(("Commands:\n"));
 				WPRINT_APP_INFO(("\tt - Print temperature and publish\n"));
 				WPRINT_APP_INFO(("\th - Print humidity and publish\n"));
+                WPRINT_APP_INFO(("\tl - Print light value and publish\n"));
 				WPRINT_APP_INFO(("\tA - Publish weather alert ON\n"));
 				WPRINT_APP_INFO(("\ta - Publish weather alert OFF\n"));
 				WPRINT_APP_INFO(("\tS - Turn subscriptions for other things ON\n"));
 				WPRINT_APP_INFO(("\ts - Turn subscriptions for other things OFF\n"));
 				WPRINT_APP_INFO(("\tP - Turn printing of messages from other things ON\n"));
 				WPRINT_APP_INFO(("\tp - Turn printing of messages from other things OFF\n"));
-				WPRINT_APP_INFO(("\tl - Scan for all things with valid data and print the list\n"));
+				WPRINT_APP_INFO(("\tn - Scan for all things with valid data and print the list\n"));
 				WPRINT_APP_INFO(("\tx - Print the current known state of the data from all things\n"));
 				WPRINT_APP_INFO(("\tc - Clear the terminal and set the cusor to the upper left corner\n"));
 				WPRINT_APP_INFO(("\t? - Print the list of commands\n"));
 				break;
 			case 't': /* Print temperature to terminal and publish */
-				WPRINT_APP_INFO(("Temperature: %.1f\n", psoc_data.temp)); /* Print temperature to terminal */
+				WPRINT_APP_INFO(("Temperature: %.1f\n", weather_data.temp)); /* Print temperature to terminal */
 			    /* Publish temperature to the cloud */
 				pubCmd[0] = TEMPERATURE_CMD;
 				wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_WAIT_FOREVER); /* Push value onto queue*/
 				break;
 			case 'h': /* Print humidity to terminal and publish */
-				WPRINT_APP_INFO(("Humidity: %.1f\t\n", psoc_data.humidity)); /* Print humidity to terminal */
+				WPRINT_APP_INFO(("Humidity: %.1f\t\n", weather_data.humidity)); /* Print humidity to terminal */
 			    /* Publish humidity to the cloud */
 				pubCmd[0] = HUMIDITY_CMD;
 				wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_WAIT_FOREVER); /* Push value onto queue*/
 				break;
+            case 'l': /* Print light value to terminal and publish */
+                WPRINT_APP_INFO(("Light: %.1f\t\n", weather_data.light)); /* Print humidity to terminal */
+                /* Publish light value to the cloud */
+                pubCmd[0] = LIGHT_CMD;
+                wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_WAIT_FOREVER); /* Push value onto queue*/
+                break;
 			case 'A': /* Publish Weather Alert ON */
 				WPRINT_APP_INFO(("\tWeather Alert ON\n"));
 				weatherAlert = WICED_TRUE;
-				pubCmd[0] = ALERT_CMD;
+			    wiced_rtos_set_semaphore(&displaySemaphoreHandle); /* Update display */
+	            pubCmd[0] = ALERT_CMD;
 				wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_WAIT_FOREVER); /* Push value onto queue*/
 				break;
 			case 'a': /* Publish Weather Alert OFF */
 				WPRINT_APP_INFO(("\tWeather Alert OFF\n"));
 				weatherAlert = WICED_FALSE;
+                wiced_rtos_set_semaphore(&displaySemaphoreHandle); /* Update display */
 				pubCmd[0] = ALERT_CMD;
 				wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_WAIT_FOREVER); /* Push value onto queue*/
 				break;
@@ -351,7 +403,7 @@ void commandThread(wiced_thread_arg_t arg)
 				break;
 			case 'p':
 				break;
-			case 'l':
+			case 'n':
 				break;
 			case 'x':
 				break;
@@ -373,11 +425,12 @@ void commandThread(wiced_thread_arg_t arg)
 	}
 }
 
+
 /*************** Publish Thread ***************/
 /* Thread to publish data to the cloud */
 void publishThread(wiced_thread_arg_t arg)
 {
-	char json[128] = "TEST";	  /* json message to send */
+	char json[100] = "TEST";	  /* json message to send */
 
 	/* Connect to the message broker */
     wiced_mqtt_object_t   mqtt_object;
@@ -483,14 +536,17 @@ void publishThread(wiced_thread_arg_t arg)
 			switch(command[0])
 			{
 				case WEATHER_CMD: 	/* publish temperature and humidity */
-					sprintf(json, "{\"state\" : {\"reported\" : {\"temperature\":%.1f,\"humidity\":%.1f} } }", psoc_data.temp, psoc_data.humidity);
+					sprintf(json, "{\"state\" : {\"reported\" : {\"temperature\":%.1f,\"humidity\":%.1f,\"light\":%.0f}}}", weather_data.temp, weather_data.humidity, weather_data.light);
 					break;
 				case TEMPERATURE_CMD: 	/* publish temperature */
-					sprintf(json, "{\"state\" : {\"reported\" : {\"temperature\":%.1f} } }", psoc_data.temp);
+					sprintf(json, "{\"state\" : {\"reported\" : {\"temperature\":%.1f} } }", weather_data.temp);
 					break;
 				case HUMIDITY_CMD: 	/* publish humidity */
-					sprintf(json, "{\"state\" : {\"reported\" : {\"humidity\":%.1f} } }", psoc_data.humidity);
+					sprintf(json, "{\"state\" : {\"reported\" : {\"humidity\":%.1f} } }", weather_data.humidity);
 					break;
+                case LIGHT_CMD:  /* publish light value */
+                    sprintf(json, "{\"state\" : {\"reported\" : {\"light\":%.1f} } }", weather_data.light);
+                    break;
 				case ALERT_CMD: /* weather alert */
 					if(weatherAlert)
 					{
@@ -544,6 +600,7 @@ void publishThread(wiced_thread_arg_t arg)
 
 }
 
+
 /*************** Subscribe Thread ***************/
 /* Thread to subscribe to data from the cloud */
 void subscribeThread(wiced_thread_arg_t arg)
@@ -554,12 +611,13 @@ void subscribeThread(wiced_thread_arg_t arg)
 	}
 }
 
+
 /*************** Timer to publish weather data every 30sec ***************/
 void publish30sec(void* arg)
 {
 	char pubCmd[4]; /* Command pushed onto the queue to determine what to publish */
 	pubCmd[0] = WEATHER_CMD;
-	/* Must use WICED_NO_WAIT here because waiting is not allowed in a timer */
+	/* Must use WICED_NO_WAIT here because waiting is not allowed in a timer - if the queue is full we wont publish */
 	wiced_rtos_push_to_queue(&pubQueueHandle, &pubCmd, WICED_NO_WAIT); /* Push value onto queue*/
 }
 
