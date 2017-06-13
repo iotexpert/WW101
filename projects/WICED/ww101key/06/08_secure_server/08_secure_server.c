@@ -93,6 +93,7 @@ static wiced_thread_t      tcp_thread;
 static wiced_tcp_socket_t socket;
 static platform_dct_security_t *dct_security;
 static wiced_tls_identity_t tls_identity;
+static wiced_tls_context_t tls_context;
 
 
 static const wiced_ip_setting_t ip_settings =
@@ -192,9 +193,6 @@ static void tcp_server_thread_main(uint32_t arg)
 		WPRINT_APP_INFO(("Create socket failed\n"));
 		return;
 	}
-
-
-
     result = wiced_tcp_listen( &socket, TCP_SERVER_LISTEN_PORT );
     if(WICED_SUCCESS != result)
     {
@@ -202,8 +200,16 @@ static void tcp_server_thread_main(uint32_t arg)
         return;
     }
 
+    result = wiced_tls_init_context( &tls_context, &tls_identity, NULL );
+    if(result != WICED_SUCCESS)
+    {
+        WPRINT_APP_INFO(("Init context failed %d",result));
+        return;
+    }
 
-    result = wiced_tcp_enable_tls(&socket,&tls_identity);
+
+    // result = wiced_tcp_enable_tls(&socket,&tls_identity);
+    result = wiced_tcp_enable_tls(&socket,&tls_context);
 
 	if(result != WICED_SUCCESS)
 	{
@@ -220,7 +226,6 @@ static void tcp_server_thread_main(uint32_t arg)
 	while (1 )
 	{
 		result = wiced_tcp_accept( &socket ); // this halts the thread until there is a connection
-		WPRINT_APP_INFO(("Got connection\n"));
 
 		if(result != WICED_SUCCESS) // this occurs if the accept times out
 			continue;

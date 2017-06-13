@@ -5,9 +5,9 @@
 #include "linked_list.h" //usr the WICED linked list library (libraries/utilities/linked_list)
 #include "wiced_tls.h"
 
-#define TCP_SERVER_LISTEN_PORT              (27708)
+#define TCP_SERVER_LISTEN_PORT              (40508)
 #define TCP_SERVER_THREAD_PRIORITY          (WICED_DEFAULT_LIBRARY_PRIORITY)
-#define TCP_SERVER_STACK_SIZE               (6200)
+#define TCP_SERVER_STACK_SIZE               (16384)
 
 static wiced_result_t client_connected_callback   ( wiced_tcp_socket_t* socket, void* arg );
 static wiced_result_t client_disconnected_callback( wiced_tcp_socket_t* socket, void* arg );
@@ -195,6 +195,7 @@ static void tcp_server_thread_main(uint32_t arg)
     wiced_tls_identity_t tls_identity;
 
 
+#if 0
 	wiced_tcp_server_start(&tcp_server,INTERFACE,TCP_SERVER_LISTEN_PORT,5, client_connected_callback, received_data_callback, client_disconnected_callback, NULL );
 
 	/* Lock the DCT to allow us to access the certificate and key */
@@ -213,7 +214,19 @@ static void tcp_server_thread_main(uint32_t arg)
 	    WPRINT_APP_INFO(( "Unable to initialize TLS identity. Error = [%d]\n", result ));
 	    return;
 	}
+	else
+	    WPRINT_APP_INFO(("Init identity succeeded\n"));
+
 	result = wiced_tcp_server_enable_tls  (&tcp_server, &tls_identity);
+	if(result != WICED_SUCCESS)
+	{
+	    WPRINT_APP_INFO(( "Failed to enable TLS. Error = [%d]\n", result ));
+        return;
+
+	}
+	else
+	    WPRINT_APP_INFO(("Enable TLS succeeded\n"));
+#endif
 
 	WPRINT_APP_INFO(("IP\t\tPort\tC\tDEVICE\tREGID\tVALUE\tDBSIZE\n"));
 	WPRINT_APP_INFO(("----------------------------------------------------------------------\n"));

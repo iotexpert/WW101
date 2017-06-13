@@ -5,8 +5,10 @@
 //
 // This version uses TCP Stream APIs instead of TCP Socket APIs which simplifies the firmware.
 #include "wiced.h"
+#include "wiced_tls.h"
 
-#define TCP_CLIENT_STACK_SIZE 	(6200)
+
+#define TCP_CLIENT_STACK_SIZE 	(16384)
 #define SERVER_PORT 			(40508)
 
 
@@ -32,14 +34,27 @@ void sendData(int data)
 	wiced_tcp_stream_t stream;						// The TCP stream
 	char sendMessage[12];
 	wiced_result_t result;
+	wiced_tls_context_t tls_context;
 
     // format the data per the specification in section 6
 	sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
 	WPRINT_APP_INFO(("Sent Message=%s\n",sendMessage)); // echo the message so that the user can see something
 
 	// Open the connection to the remote server via a socket
-	wiced_tcp_create_socket(&socket, WICED_STA_INTERFACE);
-	wiced_tcp_bind(&socket,WICED_ANY_PORT);
+	result = wiced_tcp_create_socket(&socket, WICED_STA_INTERFACE);
+	if(result!=WICED_SUCCESS)
+	{
+	    WPRINT_APP_INFO(("Failed to create socket %d\n",result));
+	    return;
+	}
+
+	result = wiced_tcp_bind(&socket,WICED_ANY_PORT);
+    if(result!=WICED_SUCCESS)
+    {
+        WPRINT_APP_INFO(("Failed to bind socket %d\n",result));
+        return;
+    }
+
 
     wiced_tls_identity_t tls_identity;
     platform_dct_security_t* dct_security = NULL;
@@ -53,8 +68,6 @@ void sendData(int data)
 	        return;
 	    }
 
-	        /* Setup TLS identity */
-
 	    result = wiced_tls_init_identity( &tls_identity, dct_security->private_key, strlen( dct_security->private_key ), (uint8_t*) dct_security->certificate, strlen( dct_security->certificate ) );
 	    if ( result != WICED_SUCCESS )
 	    {
@@ -62,8 +75,30 @@ void sendData(int data)
 	        return;
 	    }
 
+	    result = wiced_tls_init_context( &tls_context, &tls_identity, NULL );
+        if ( result != WICED_SUCCESS )
+        {
+            WPRINT_APP_INFO(( "Unable to initialize Context. Error = [%d]\n", result ));
+            return;
+        }
 
-	wiced_tcp_connect(&socket,&serverAddress,SERVER_PORT,2000); // 2 second timeout
+	 result = wiced_tcp_connect(&socket,&serverAddress,SERVER_PORT,2000); // 2 second timeout
+	 if ( result != WICED_SUCCESS )
+	        {
+	            WPRINT_APP_INFO(( "Failed connect = [%d]\n", result ));
+	            return;
+	        }
+     result =  wiced_tcp_enable_tls( &socket, &tls_context );
+         if ( result != WICED_SUCCESS )
+         {
+             WPRINT_APP_INFO(( "Start TLS Failed. Error = [%d]\n", result ));
+             return;
+         }
+
+
+	 WPRINT_APP_INFO(("Connect succeeded\n"));
+
+	 while(1);
 
 	// Initialize the TCP stream
 	wiced_tcp_stream_init(&stream, &socket);
@@ -143,4 +178,21 @@ void application_start(void)
     wiced_init( );
     wiced_network_up( WICED_STA_INTERFACE, WICED_USE_EXTERNAL_DHCP_SERVER, NULL );
     wiced_rtos_create_thread(&buttonThread, WICED_DEFAULT_LIBRARY_PRIORITY, "Button Thread", buttonThreadMain, TCP_CLIENT_STACK_SIZE, 0);
+    char receiveChar;
+    uint32_t expected_data_size=1;
+    while(1)
+        {
+            wiced_uart_receive_bytes( STDIO_UART, &receiveChar, &expected_data_size, WICED_NEVER_TIMEOUT );
+            switch(receiveChar)
+            {
+            case 'b':
+                wiced_rtos_set_semaphore(&button_semaphore);
+
+                break;
+            case '?':
+                WPRINT_APP_INFO(("b: Set the button semaphore\n"));
+                break;
+
+            }
+        }
 }
