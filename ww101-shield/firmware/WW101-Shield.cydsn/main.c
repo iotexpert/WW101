@@ -94,13 +94,6 @@ int16 adcResults[NUM_CHAN];     /* Array to hold raw ADC results */
 
 bool capLedBase = false;        /* Setting for whether the CapSense LEDs are controlled by CapSense or I2C */
 
-/* If we get here it is time to launch the bootloader */
-CY_ISR(BL_ISR)
-{
-    BootloadTimer_ClearInterrupt(BootloadTimer_INTR_MASK_TC);
-    Bootloadable_Load();
-}
-
 /* 1ms SysTick ISR */
 /* This is used to start a new ADC conversion every 100ms */
 void SysTickISRCallback(void)
@@ -327,7 +320,7 @@ void processCapSense(void)
 int main(void)
 {
     /* Local variables */
-    bool    BootloadCountFlag = false;
+    bool    pressFlag = false;
     uint8   interruptState = 0;   /* Variable to store the status returned by CyEnterCriticalSection() */
     int32   dacValPrev = 0;
     float32 dacVal;
@@ -336,8 +329,9 @@ int main(void)
     int16   thermistorResistance; /* Variables for temperature calculation */
     int16   temp16; /* Temperature expressed as a 16 bit integer in 1/100th of a degree */
     uint8   i;
-        
-    BL_INT_StartEx(BL_ISR);
+    // Range of POT for bootloader entry testing
+    uint32 potMin = 0xFFFF;
+    uint32 potMax = 0x0000;
     
     CyGlobalIntEnable; /* Enable global interrupts. */
 
@@ -377,20 +371,32 @@ int main(void)
     
     for(;;)
     {
-        /* Look for bootloader entry - both mechanical buttons held down for 2 seconds */
+        /* Look for bootloader entry - both mechanical buttons held down and POT moved by more than 1V */
         if((MB0_Read() == PRESSED) && (MB1_Read() == PRESSED))
-        {
-            if(BootloadCountFlag == false)
+        {   
+            // Reset pot range checking when buttons are first pressed
+            if(pressFlag == false)
             {
-                BootloadTimer_Start();
+                pressFlag = true;
+                potMin = LocData.potVal;
+                potMax = LocData.potVal;
             }
-            BootloadCountFlag = true;
+            if(LocData.potVal < potMin)
+            {
+                potMin = LocData.potVal;
+            }
+            else if(LocData.potVal > potMax)
+            {
+                potMax = LocData.potVal;
+            }
+            if((potMax - potMin) > 1.0) /* Pot moved more than 1V, time to bootload */
+            {
+                Bootloadable_Load();
+            }
         }
-        else if(BootloadCountFlag == true)
+        else /* Button not pressed */
         {
-            BootloadCountFlag = false;
-            BootloadTimer_Stop();
-            BootloadTimer_WriteCounter(0);
+            pressFlag = false;
         }
         
         /* CapSense Scanning */

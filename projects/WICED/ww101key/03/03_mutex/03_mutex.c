@@ -11,6 +11,8 @@
 #define THREAD_PRIORITY 	(10)
 #define THREAD_STACK_SIZE	(1024)
 
+static wiced_thread_t led1ThreadHandle;
+static wiced_thread_t led0ThreadHandle;
 static wiced_mutex_t printMutexHandle;
 
 /* Define the thread function that will blink LED1 on/off every 250ms */
@@ -74,10 +76,6 @@ void led0Thread(wiced_thread_arg_t arg)
 
 void application_start( )
 {
-	wiced_thread_t led1ThreadHandle;
-	wiced_thread_t led0ThreadHandle;
-
-
 	wiced_init();	/* Initialize the WICED device */
 
 	/* Initialize the Mutex */

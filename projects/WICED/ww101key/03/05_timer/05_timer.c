@@ -3,6 +3,8 @@
 
 #define TIMER_TIME (250)
 
+static wiced_timer_t timerHandle;
+
 /* Define the  function that will blink the LED on/off */
 void ledBlink(void* arg)
 {
@@ -23,8 +25,6 @@ void ledBlink(void* arg)
 
 void application_start( )
 {
-	wiced_timer_t timerHandle;
-
 	wiced_init();	/* Initialize the WICED device */
 
 	/* Initialize and start a timer */
