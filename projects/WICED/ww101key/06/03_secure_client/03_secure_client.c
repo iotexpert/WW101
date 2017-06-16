@@ -35,6 +35,8 @@ void sendData(int data)
 	char sendMessage[12];
 	wiced_result_t result;
 	wiced_tls_context_t tls_context;
+    wiced_tls_identity_t tls_identity;
+    platform_dct_security_t* dct_security = NULL;
 
     // format the data per the specification in section 6
 	sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
@@ -54,10 +56,6 @@ void sendData(int data)
         WPRINT_APP_INFO(("Failed to bind socket %d\n",result));
         return;
     }
-
-
-    wiced_tls_identity_t tls_identity;
-    platform_dct_security_t* dct_security = NULL;
 
 	/* Lock the DCT to allow us to access the certificate and key */
 	    WPRINT_APP_INFO(( "Read the certificate Key from DCT\n" ));
@@ -81,6 +79,13 @@ void sendData(int data)
             WPRINT_APP_INFO(( "Unable to initialize Context. Error = [%d]\n", result ));
             return;
         }
+        result =  wiced_tcp_enable_tls( &socket, &tls_context );
+            if ( result != WICED_SUCCESS )
+            {
+                WPRINT_APP_INFO(( "Start TLS Failed. Error = [%d]\n", result ));
+                return;
+            }
+
 
 	 result = wiced_tcp_connect(&socket,&serverAddress,SERVER_PORT,2000); // 2 second timeout
 	 if ( result != WICED_SUCCESS )
@@ -88,17 +93,10 @@ void sendData(int data)
 	            WPRINT_APP_INFO(( "Failed connect = [%d]\n", result ));
 	            return;
 	        }
-     result =  wiced_tcp_enable_tls( &socket, &tls_context );
-         if ( result != WICED_SUCCESS )
-         {
-             WPRINT_APP_INFO(( "Start TLS Failed. Error = [%d]\n", result ));
-             return;
-         }
 
 
 	 WPRINT_APP_INFO(("Connect succeeded\n"));
 
-	 while(1);
 
 	// Initialize the TCP stream
 	wiced_tcp_stream_init(&stream, &socket);
@@ -141,11 +139,13 @@ void buttonThreadMain()
 
 	// Use DNS to find the address.. if you can't look it up after 5 seconds then hard code it.
 	WPRINT_APP_INFO(("DNS Lookup wwep.ww101.cypress.com\n"));
-	result = wiced_hostname_lookup( "wwep.ww101.cypress.com", &serverAddress, 5000, WICED_STA_INTERFACE );
+	result = wiced_hostname_lookup( "fuck.ww101.cypress.com", &serverAddress, 5000, WICED_STA_INTERFACE );
+	//result = WICED_ERROR;
+
     if ( result == WICED_ERROR || serverAddress.ip.v4 == 0 )
 	{
         WPRINT_APP_INFO(("Error in resolving DNS using hard coded address\n"));
-        SET_IPV4_ADDRESS( serverAddress, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) );
+        SET_IPV4_ADDRESS( serverAddress, MAKE_IPV4_ADDRESS( 198,51,  100,  4 ) );
 	}
     else
     {

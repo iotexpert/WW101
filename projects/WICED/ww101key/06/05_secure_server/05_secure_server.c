@@ -88,17 +88,13 @@ void dbSetValue(dbEntry_t *newValue)
 //////////////// End of Database ////////////////
 
 // Globals for the tcp/ip communication system
-static void tcp_server_thread_main(uint32_t arg);
-static wiced_thread_t      tcp_thread;
-static wiced_tcp_socket_t socket;
-static platform_dct_security_t *dct_security;
-static wiced_tls_identity_t tls_identity;
-static wiced_tls_context_t tls_context;
+static void tcp_secure_server_thread_main(uint32_t arg);
+static wiced_thread_t      tcp_secure_server_thread;
 
 
 static const wiced_ip_setting_t ip_settings =
 {
-		INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) ),
+		INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  4 ) ),
 		INITIALISER_IPV4_ADDRESS( .netmask,    MAKE_IPV4_ADDRESS( 255,255,255,  0 ) ),
 		INITIALISER_IPV4_ADDRESS( .gateway,    MAKE_IPV4_ADDRESS( 198,51,  100,  1 ) ),
 };
@@ -116,7 +112,7 @@ static const wiced_ip_setting_t ip_settings =
 // The options for the NETWORK_TYPE define are:
 //     USE_STA (connect to an existing Wi-Fi access point as specified in the DCT)
 //     USE_AP  (create an access point as specified in the DCT that the clients can connect to)
-//     USE_ETHERNET (connect via an ethernet cable)
+//     USE_ETHERNET (connect via an Ethernet cable)
 #define NETWORK_TYPE USE_STA
 
 #if (NETWORK_TYPE == USE_STA)
@@ -134,20 +130,32 @@ static const wiced_ip_setting_t ip_settings =
 	#define DHCP_MODE WICED_USE_STATIC_IP
 #endif
 
+static void pingAP (void* arg)
+{
+    uint32_t time_elapsed;
+    wiced_ip_address_t someAddress;
+
+    SET_IPV4_ADDRESS(someAddress,MAKE_IPV4_ADDRESS( 198, 51, 100,  1 ));
+    wiced_ping (INTERFACE, &someAddress, 500, &time_elapsed);
+}
+
+
 // Main application thread which is started by the RTOS after boot
 void application_start(void)
 {
 
 	wiced_init( );
 
-	WPRINT_APP_INFO(("Starting Single Connection Server\n"));
+	WPRINT_APP_INFO(("Starting Secure Single Connection Server\n"));
+
 
 	wiced_network_up( INTERFACE, DHCP_MODE, &ip_settings );
 
+	pingAP(NULL);
 	// I created all of the server code in a separate thread to make it easier to put the server
 	// and client together in one application.
 
-	wiced_rtos_create_thread(&tcp_thread, TCP_SERVER_THREAD_PRIORITY, "Server TCP Server", tcp_server_thread_main, TCP_SERVER_STACK_SIZE, 0);
+	wiced_rtos_create_thread(&tcp_secure_server_thread, TCP_SERVER_THREAD_PRIORITY, "Server TCP Server", tcp_secure_server_thread_main, TCP_SERVER_STACK_SIZE, 0);
 
 	// just blink the led while the whole thing is running
 	while(1)
@@ -160,10 +168,30 @@ void application_start(void)
 }
 
 
-static void tcp_server_thread_main(uint32_t arg)
+static void tcp_secure_server_thread_main(uint32_t arg)
 {
 
+    wiced_tcp_socket_t socket;
+    platform_dct_security_t *dct_security;
+    wiced_tls_identity_t tls_identity;
+    wiced_tls_context_t tls_context;
+
 	wiced_result_t result;
+
+
+	// setup the server by creating the socket and hooking it to the correct TCP Port
+	result = wiced_tcp_create_socket(&socket, INTERFACE);
+	if(WICED_SUCCESS != result)
+	{
+		WPRINT_APP_INFO(("Create socket failed\n"));
+		return;
+	}
+    result = wiced_tcp_listen( &socket, TCP_SERVER_LISTEN_PORT );
+    if(WICED_SUCCESS != result)
+    {
+        WPRINT_APP_INFO(("Listen socket failed\n"));
+        return;
+    }
 
     /* Lock the DCT to allow us to access the certificate and key */
     WPRINT_APP_INFO(( "Read the certificate Key from DCT\n" ));
@@ -182,31 +210,12 @@ static void tcp_server_thread_main(uint32_t arg)
         return;
     }
 
-    WPRINT_APP_INFO(("Private Key = %s\n",dct_security->private_key));
-
-    WPRINT_APP_INFO(("Certificate = %s\n", dct_security->certificate));
-
-	// setup the server by creating the socket and hooking it to the correct TCP Port
-	result = wiced_tcp_create_socket(&socket, INTERFACE);
-	if(WICED_SUCCESS != result)
-	{
-		WPRINT_APP_INFO(("Create socket failed\n"));
-		return;
-	}
-    result = wiced_tcp_listen( &socket, TCP_SERVER_LISTEN_PORT );
-    if(WICED_SUCCESS != result)
-    {
-        WPRINT_APP_INFO(("Listen socket failed\n"));
-        return;
-    }
-
     result = wiced_tls_init_context( &tls_context, &tls_identity, NULL );
     if(result != WICED_SUCCESS)
     {
         WPRINT_APP_INFO(("Init context failed %d",result));
         return;
     }
-
 
     // result = wiced_tcp_enable_tls(&socket,&tls_identity);
     result = wiced_tcp_enable_tls(&socket,&tls_context);
@@ -215,10 +224,7 @@ static void tcp_server_thread_main(uint32_t arg)
 	{
 	    WPRINT_APP_INFO(("Enabling TLS failed %d",result));
 	    return;
-
 	}
-
-
 
 	WPRINT_APP_INFO(("IP\t\tPort\tC\tDEVICE\tREGID\tVALUE\tDBSIZE\n"));
 	WPRINT_APP_INFO(("----------------------------------------------------------------------\n"));
@@ -316,7 +322,6 @@ static void tcp_server_thread_main(uint32_t arg)
 			wiced_tcp_disconnect(&socket); // disconnect the connection
 
 		}
-
 	}
 }
 

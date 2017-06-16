@@ -1,6 +1,9 @@
-NAME := App_WW101KEY_06_07_client_response_secure_stream
+NAME := App_WW101KEY_06_05_secure_server
 
-$(NAME)_SOURCES := 07_client_response_secure_stream.c
+$(NAME)_SOURCES := 05_secure_server.c
+
+#GLOBAL_DEFINES     += RX_PACKET_POOL_SIZE=6
+#GLOBAL_DEFINES     += TX_PACKET_POOL_SIZE=6
 
 WIFI_CONFIG_DCT_H := wifi_config_dct.h
 
