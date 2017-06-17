@@ -13,7 +13,7 @@ dbEntry_t *dbFind(dbEntry_t *find);
 void dbSetValue(dbEntry_t *newValue);
 uint32_t dbGetCount();
 
-#define dbMax (100)
+#define dbMax (400)
 inline uint32_t dbGetMax()
 { return dbMax ;
 }

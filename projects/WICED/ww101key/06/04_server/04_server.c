@@ -6,18 +6,20 @@
 #include <stdlib.h>
 #include "ctype.h"
 #include "database.h"
-#define TCP_SERVER_LISTEN_PORT              (27708)
-#define TCP_SERVER_THREAD_PRIORITY          (WICED_DEFAULT_LIBRARY_PRIORITY)
-#define TCP_SERVER_STACK_SIZE               (6200)
-#define PING_THREAD_PRIORITY                (WICED_DEFAULT_LIBRARY_PRIORITY)
+#define TCP_SERVER_INSECURE_LISTEN_PORT              (27708)
+#define TCP_SERVER_INSECURE_STACK_SIZE               (6200)
+#define TCP_SERVER_INSECURE_THREAD_PRIORITY          (WICED_DEFAULT_LIBRARY_PRIORITY)
+#define PING_THREAD_PRIORITY                         (WICED_DEFAULT_LIBRARY_PRIORITY)
 
 
 // Globals for the tcp/ip communication system
-static void tcp_server_thread_main(wiced_thread_arg_t arg);
+static void tcp_server_insecure_thread_main(wiced_thread_arg_t arg);
 static void pingAP(wiced_thread_arg_t arg);
 static wiced_thread_t      tcp_thread;
 static wiced_thread_t      ping_thread;
+static int insecureConnectionCount = 0;
 
+// Hardcoded IP Address of the WWEP Server
 static const wiced_ip_setting_t ip_settings =
 {
         INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) ),
@@ -56,7 +58,8 @@ static const wiced_ip_setting_t ip_settings =
 #define DHCP_MODE WICED_USE_STATIC_IP
 #endif
 
-// Some APs will not stay attached if you don't talk periodically
+// Some APs will not stay attached if you don't talk periodically.
+// This thread will ping every 60 seconds
 void pingAP (wiced_thread_arg_t arg)
 {
     uint32_t time_elapsed;
@@ -81,15 +84,20 @@ void application_start(void)
 {
     wiced_init( );
 
-    WPRINT_APP_INFO(("Starting Single Connection Server\n"));
+    WPRINT_APP_INFO(("Starting WWEP Server\n"));
 
     while(wiced_network_up( INTERFACE, DHCP_MODE, &ip_settings ) != WICED_SUCCESS); // Keep trying until you get hooked up
 
     // I created all of the server code in a separate thread to make it easier to put the server
     // and client together in one application.
 
-    wiced_rtos_create_thread(&tcp_thread, TCP_SERVER_THREAD_PRIORITY, "Server TCP Server", tcp_server_thread_main, TCP_SERVER_STACK_SIZE, 0);
+    wiced_rtos_create_thread(&tcp_thread, TCP_SERVER_INSECURE_THREAD_PRIORITY, "Server TCP Server", tcp_server_insecure_thread_main, TCP_SERVER_INSECURE_STACK_SIZE, 0);
     wiced_rtos_create_thread(&ping_thread, PING_THREAD_PRIORITY, "Ping", pingAP, 1024, 0);
+
+    // Setup Display
+    WPRINT_APP_INFO(("#\t     IP\t\tPort\tMessage\n"));
+    WPRINT_APP_INFO(("----------------------------------------------------------------------\n"));
+
 
     // just blink the led while the whole thing is running
     while(1)
@@ -102,19 +110,20 @@ void application_start(void)
 }
 
 
+// This function takes a string of bytes...
+// - makes sure it is a legal WWEP command
+// - If it is a legal write it writes
+// - If it is a legal read then it reads
+// - It returns a message in the provided char *
 #define MAX_LEGAL_MSG (13)
-
-void processClientCommand(int dataReadCount, uint8_t *rbuffer,char *returnMessage,char *peerInfo,int connectionCount)
+void processClientCommand(uint8_t *rbuffer, int dataReadCount, char *returnMessage)
 {
 
-    int err;
-    err = 1; // assume an error
     /////////
     if(dataReadCount > 12) // to many characters reject
     {
         sprintf(returnMessage, "X illegal message length");
-        err = 1;
-        goto cleanup;
+        return;
     }
 
     dbEntry_t receive;
@@ -128,17 +137,16 @@ void processClientCommand(int dataReadCount, uint8_t *rbuffer,char *returnMessag
         if(rbuffer[dataReadCount-1] != 0x0A)
         {
             sprintf(returnMessage, "X illegal message length");
-            err = 1;
-            goto cleanup;
+            return;
         }
         dataReadCount -= 1; // Ignore the 0x0A at the end of the string
     }
 
+    // Check that it is the correct length and has a legal command
     if(!((dataReadCount  == 7 && rbuffer[0] == 'R') || (dataReadCount == 11 && rbuffer[0] == 'W'))) // if it isnt a R/W then it is illegal
     {
-        err = 1;
         sprintf(returnMessage,"X illegal command");
-        goto cleanup;
+        return;
     }
 
     for(int i=1;i<dataReadCount; i++) // all of the bytes must be a ASCII hex digit from 1->end of string
@@ -146,8 +154,7 @@ void processClientCommand(int dataReadCount, uint8_t *rbuffer,char *returnMessag
         if(!isxdigit(rbuffer[i]))
         {
             sprintf(returnMessage,"X illegal character");
-            err = 1;
-            goto cleanup;
+            return;
         }
     }
 
@@ -156,68 +163,62 @@ void processClientCommand(int dataReadCount, uint8_t *rbuffer,char *returnMessag
         // we have a legal string so parse it
         sscanf((const char *)rbuffer,"%c%4x%2x%4x",(char *)&commandId,( int *)&receive.deviceId,( int *)&receive.regId,( int *)&receive.value);
 
+        // See if the write already exists.... or that there is room for a new one in the database
         if((dbFind(&receive) != NULL) || (dbGetCount() <= dbGetMax()))
         {
             sprintf(returnMessage,"A%04X%02X%04X",(unsigned int)receive.deviceId,(unsigned int)receive.regId,(unsigned int)receive.value);
-            dbEntry_t *newDB;
-            newDB = malloc(sizeof(dbEntry_t)); // make a new entry to put in the database
+            dbEntry_t *newDB = malloc(sizeof(dbEntry_t)); // make a new entry to put in the database
             memcpy(newDB,&receive,sizeof(dbEntry_t)); // copy the received data into the new entry
             dbSetValue(newDB); // save it.
-            err = 0;
+            return;
         }
         else
         {
-            err = 1;
             sprintf(returnMessage,"X Database Full %d",(int)dbGetCount());
+            return;
         }
     }
 
-    if(rbuffer[0] == 'R')
-    {// It is a read
+    if(rbuffer[0] == 'R')  // It is a read
+    {
         sscanf((const char *)rbuffer,"%c%4x%2x",(char *)&commandId,( int *)&receive.deviceId,( int *)&receive.regId);
-        dbEntry_t *foundValue;
-
-        foundValue = dbFind(&receive); // look through the database to find a previous write of the deviceId/regId
+        dbEntry_t *foundValue = dbFind(&receive); // look through the database to find a previous write of the deviceId/regId
         if(foundValue)
         {
-            err=0;
             sprintf(returnMessage,"A%04X%02X%04X",(unsigned int)foundValue->deviceId,(unsigned int)foundValue->regId,(unsigned int)foundValue->value);
+            return;
         }
         else
         {
             sprintf(returnMessage,"X Not Found");
-            err = 1;
+            return;
         }
     }
-
-    cleanup:
-
-
-    WPRINT_APP_INFO(("%s",peerInfo));
-
-    if(err)
-    {
-        WPRINT_APP_INFO(("%s\n",returnMessage));
-    }
-    else
-    {
-        WPRINT_APP_INFO(("%c\t%04X\t%02X\t%04X\t%d\n",commandId,(unsigned int)receive.deviceId,(unsigned int)receive.regId,(unsigned int)receive.value,(int)connectionCount));
-    }
-
-
 }
 
-static void tcp_server_thread_main(wiced_thread_arg_t arg)
+// This function formats all of the data and prints it out ... called by the tcp_server
+static void displayResult(wiced_ip_address_t peerAddress, uint16_t    peerPort, char *returnMessage)
+{
+    WPRINT_APP_INFO(("%d\t",insecureConnectionCount));
+
+    WPRINT_APP_INFO(("%u.%u.%u.%u",
+                           (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 24),
+                           (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 16),
+                           (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 8),
+                           (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 0)
+                           ));
+       WPRINT_APP_INFO(("\t%d\t%s\n",peerPort,returnMessage));
+}
+
+// The insecure server thread
+static void tcp_server_insecure_thread_main(wiced_thread_arg_t arg)
 {
     wiced_result_t result;
     wiced_tcp_stream_t stream;                      // The TCP stream
     wiced_tcp_socket_t socket;
     uint8_t rbuffer[MAX_LEGAL_MSG];
 
-    int connectionCount = 0;
     char returnMessage[128]; // better use less than 128 bytes
-    char peerIP[32];
-
     // setup the server by creating the socket and hooking it to the correct TCP Port
     result = wiced_tcp_create_socket(&socket, INTERFACE);
     if(WICED_SUCCESS != result)
@@ -233,15 +234,13 @@ static void tcp_server_thread_main(wiced_thread_arg_t arg)
         return; // this is a bad outcome
     }
 
-    result = wiced_tcp_listen( &socket, TCP_SERVER_LISTEN_PORT );
+    result = wiced_tcp_listen( &socket, TCP_SERVER_INSECURE_LISTEN_PORT );
     if(WICED_SUCCESS != result)
     {
         WPRINT_APP_INFO(("Listen socket failed\n"));
         return;
     }
 
-    WPRINT_APP_INFO(("IP\t\tPort\tC\tDEVICE\tREGID\tVALUE\tCon #\n"));
-    WPRINT_APP_INFO(("----------------------------------------------------------------------\n"));
 
     while (1 )
     {
@@ -251,23 +250,19 @@ static void tcp_server_thread_main(wiced_thread_arg_t arg)
         if(result != WICED_SUCCESS) // this occurs if the accept times out
             continue;
 
-        connectionCount += 1;
+        insecureConnectionCount += 1;
 
         /// Figure out which client is talking to us... and on which port
         wiced_ip_address_t peerAddress;
         uint16_t	peerPort;
         wiced_tcp_server_peer(&socket,&peerAddress,&peerPort);
-        sprintf(peerIP,"%u.%u.%u.%u\t%d\t",
-                    (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 24),
-                    (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 16),
-                    (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 8),
-                    (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 0),
-                    peerPort);
 
         uint32_t dataReadCount;
         wiced_tcp_stream_read_with_count(&stream,&rbuffer,MAX_LEGAL_MSG,10,&dataReadCount); // timeout in 10ms
 
-        processClientCommand(dataReadCount, rbuffer,returnMessage,peerIP,connectionCount);
+        processClientCommand(rbuffer, dataReadCount ,returnMessage);
+
+        displayResult(peerAddress,peerPort,returnMessage);
 
 
         // send response and close things up
