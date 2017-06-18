@@ -58,7 +58,6 @@ void ledThread(wiced_thread_arg_t arg)
 
 void application_start( )
 {
-
 	wiced_init();	/* Initialize the WICED device */
 
 	/* Setup button interrupt */

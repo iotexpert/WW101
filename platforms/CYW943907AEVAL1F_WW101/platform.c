@@ -314,7 +314,7 @@ const platform_mfi_auth_chip_t platform_auth_chip =
  *               Function Definitions
  ******************************************************/
 
-/* LEDs on this platform are active LOW */
+/* LEDs on the base board are active LOW, LEDs on the shield are active high */
 platform_result_t platform_led_set_state(int led_index, int off_on )
 {
     if ((led_index >= 0) && (led_index < PLATFORM_LED_COUNT))
@@ -322,10 +322,24 @@ platform_result_t platform_led_set_state(int led_index, int off_on )
         switch (off_on)
         {
             case WICED_LED_OFF:
-                platform_gpio_output_high( &platform_gpio_pins[platform_gpio_leds[led_index]] );
+                if(led_index == PLATFORM_LED_1 || led_index == PLATFORM_LED_2)
+                {
+                    platform_gpio_output_high( &platform_gpio_pins[platform_gpio_leds[led_index]] );
+                }
+                else
+                {
+                    platform_gpio_output_low( &platform_gpio_pins[platform_gpio_leds[led_index]] );
+                }
                 break;
             case WICED_LED_ON:
-                platform_gpio_output_low( &platform_gpio_pins[platform_gpio_leds[led_index]] );
+                if(led_index == PLATFORM_LED_1 || led_index == PLATFORM_LED_2)
+                {
+                    platform_gpio_output_low( &platform_gpio_pins[platform_gpio_leds[led_index]] );
+                }
+                else
+                {
+                    platform_gpio_output_high( &platform_gpio_pins[platform_gpio_leds[led_index]] );
+                }
                 break;
         }
         return PLATFORM_SUCCESS;

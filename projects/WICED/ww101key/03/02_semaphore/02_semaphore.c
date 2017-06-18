@@ -6,6 +6,7 @@
 #define THREAD_PRIORITY 	(10)
 #define THREAD_STACK_SIZE	(1024)
 
+static wiced_thread_t ledThreadHandle;
 static wiced_semaphore_t semaphoreHandle;
 
 /* Interrupt service routine for the button */
@@ -40,8 +41,6 @@ void ledThread(wiced_thread_arg_t arg)
 
 void application_start( )
 {
-	wiced_thread_t ledThreadHandle;
-
 	wiced_init();	/* Initialize the WICED device */
 
 	/* Setup the semaphore which will be set by the button interrupt */

@@ -5,6 +5,8 @@
 #define THREAD_PRIORITY 	(10)
 #define THREAD_STACK_SIZE	(1024)
 
+static wiced_thread_t ledThreadHandle;
+
 /* Define the thread function that will blink the LED on/off every 500ms */
 void ledThread(wiced_thread_arg_t arg)
 {
@@ -29,8 +31,6 @@ void ledThread(wiced_thread_arg_t arg)
 
 void application_start( )
 {
-	wiced_thread_t ledThreadHandle;
-
 	wiced_init();	/* Initialize the WICED device */
 
 	/* Initialize and start a new thread */
