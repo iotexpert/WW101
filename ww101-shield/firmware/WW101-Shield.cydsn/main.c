@@ -4,7 +4,8 @@
 #include <stdbool.h>
 
 /* Use this to run the tuner. */
-//#define ENABLE_TUNER
+/* The tuner uses I2C address 0x42 and uses a 1 byte I2C address */
+#define ENABLE_TUNER
 
 /* Button State */
 #define PRESSED (0)
@@ -26,7 +27,7 @@
 
 /* Constants used to calculate humidity */
 /* This is the capacitance of the sensor at 55% RH with 0.1pF resolution */
-#define CAPACITANCE_AT_55_RH        (1800)
+#define CAPACITANCE_AT_55_RH        (1850)
 /* Sensitivity numerator and denominator indicate sensitivity of the sensor */
 #define SENSITIVITY_NUMERATOR       (31)
 #define SENSITIVITY_DENOMINATOR     (100)
