@@ -3,6 +3,8 @@
 
 #define TIMER_TIME (250)
 
+static wiced_timer_t timerHandle;
+
 /* Define the  function that will blink the LED on/off */
 void ledBlink(void* arg)
 {
@@ -11,20 +13,18 @@ void ledBlink(void* arg)
 	/* Toggle LED1 */
 	if ( led1 == WICED_TRUE )
 	{
-		wiced_gpio_output_low( WICED_LED1 );
+		wiced_gpio_output_low( WICED_SH_LED1 );
 		led1 = WICED_FALSE;
 	}
 	else
 	{
-		wiced_gpio_output_high( WICED_LED1 );
+		wiced_gpio_output_high( WICED_SH_LED1 );
 		led1 = WICED_TRUE;
 	}
 }
 
 void application_start( )
 {
-	wiced_timer_t timerHandle;
-
 	wiced_init();	/* Initialize the WICED device */
 
 	/* Initialize and start a timer */

@@ -1,97 +1,78 @@
-// Use a MUTEX to lock access to the WPRINT function.
-// Verify that printing works as expected on a terminal window.
-// One LED chagnes state every 250ms and the other changes state every
-// 249ms. Without the mutex, some of the printing may not be correct.
+// Use a MUTEX to lock access to an LED.
+// Button 0 blinks fast and Button 1 blinks slow.
+//
+// Without a Mutex, if you hold both buttons the blink rate will vary
+//
+// With a Mutex the blink rate will retain the value of the first button
+// that was pressed.
+
 #include "wiced.h"
 
 // Comment out the following line to see what happens without the mutex
-#define USE_MUTEX
+//#define USE_MUTEX
 
 /* Thread parameters */
-#define THREAD_PRIORITY 	(10)
-#define THREAD_STACK_SIZE	(1024)
+#define THREAD_PRIORITY     (10)
+#define THREAD_STACK_SIZE   (1024)
 
-static wiced_mutex_t printMutexHandle;
+static wiced_thread_t led1ThreadHandle;
+static wiced_thread_t led0ThreadHandle;
+static wiced_mutex_t MutexHandle;
 
-/* Define the thread function that will blink LED1 on/off every 250ms */
+/* Define the thread function that will blink LED1 if B1 is pressed */
 void led1Thread(wiced_thread_arg_t arg)
 {
-	wiced_bool_t led1 = WICED_FALSE;
-
-	while(1)
-	{
-		#ifdef USE_MUTEX
-			wiced_rtos_lock_mutex(&printMutexHandle);
-		#endif
-		WPRINT_APP_INFO(("TOGGLE LED1\n"));
-		#ifdef USE_MUTEX
-			wiced_rtos_unlock_mutex(&printMutexHandle);
-		#endif
-		/* Toggle LED1 */
-		if ( led1 == WICED_TRUE )
-		{
-			wiced_gpio_output_low( WICED_LED1 );
-			led1 = WICED_FALSE;
-		}
-		else
-		{
-			wiced_gpio_output_high( WICED_LED1 );
-			led1 = WICED_TRUE;
-		}
-		wiced_rtos_delay_milliseconds( 250 );
-	}
+    while(1)
+    {
+        #ifdef USE_MUTEX
+        wiced_rtos_lock_mutex(&MutexHandle);
+        #endif
+        while(!wiced_gpio_input_get( WICED_SH_MB1 )) // Loop while button is pressed
+        {
+            wiced_gpio_output_high( WICED_SH_LED1 );
+            wiced_rtos_delay_milliseconds(100);
+            wiced_gpio_output_low(WICED_SH_LED1);
+            wiced_rtos_delay_milliseconds(100);
+        }
+        #ifdef USE_MUTEX
+        wiced_rtos_unlock_mutex(&MutexHandle);
+        #endif
+        wiced_rtos_delay_milliseconds(1); // Yield control when button is not pressed
+    }
 }
 
-/* Define the thread function that will blink LED2 on/off every 249ms */
-void led2Thread(wiced_thread_arg_t arg)
+/* Define the thread function that will blink LED1 if B0 is pressed */
+void led0Thread(wiced_thread_arg_t arg)
 {
-	wiced_bool_t led2 = WICED_FALSE;
-
-	while(1)
-	{
-		#ifdef USE_MUTEX
-			wiced_rtos_lock_mutex(&printMutexHandle);
-		#endif
-		WPRINT_APP_INFO(("TOGGLE LED2\n"));
-		#ifdef USE_MUTEX
-			wiced_rtos_unlock_mutex(&printMutexHandle);
-		#endif
-
-		/* Toggle LED2 */
-		if ( led2 == WICED_TRUE )
-		{
-			wiced_gpio_output_low( WICED_LED2 );
-			led2 = WICED_FALSE;
-		}
-		else
-		{
-			wiced_gpio_output_high( WICED_LED2 );
-			led2 = WICED_TRUE;
-		}
-		wiced_rtos_delay_milliseconds( 249 );
-	}
+    while(1)
+    {
+        #ifdef USE_MUTEX
+        wiced_rtos_lock_mutex(&MutexHandle);
+        #endif
+        while(!wiced_gpio_input_get( WICED_SH_MB0 )) // Loop while button is pressed
+        {
+            wiced_gpio_output_low( WICED_SH_LED1 );
+            wiced_rtos_delay_milliseconds(150);
+            wiced_gpio_output_high( WICED_SH_LED1 );
+            wiced_rtos_delay_milliseconds(150);
+        }
+        #ifdef USE_MUTEX
+        wiced_rtos_unlock_mutex(&MutexHandle);
+        #endif
+        wiced_rtos_delay_milliseconds(1); // Yield control when button is not pressed
+    }
 }
 
 void application_start( )
 {
-	wiced_thread_t led1ThreadHandle;
-	wiced_thread_t led2ThreadHandle;
+    wiced_init();   /* Initialize the WICED device */
 
+    /* Initialize the Mutex */
+    wiced_rtos_init_mutex(&MutexHandle);
 
-	wiced_init();	/* Initialize the WICED device */
+    /* Initialize and start threads */
+    wiced_rtos_create_thread(&led1ThreadHandle, THREAD_PRIORITY, "led1Thread", led1Thread, THREAD_STACK_SIZE, NULL);
+    wiced_rtos_create_thread(&led0ThreadHandle, THREAD_PRIORITY, "led0Thread", led0Thread, THREAD_STACK_SIZE, NULL);
 
-	/* Initialize the Mutex */
-    wiced_rtos_init_mutex(&printMutexHandle);
-
-	/* Initialize and start threads */
-    wiced_rtos_create_thread(&led1ThreadHandle, 11, "led1Thread", led1Thread, THREAD_STACK_SIZE, NULL);
-    wiced_rtos_create_thread(&led2ThreadHandle, 12, "led2Thread", led2Thread, THREAD_STACK_SIZE, NULL);
-
-
-
-    while ( 1 )
-    {
-		wiced_rtos_delay_milliseconds( 1 ); /* The main application loop has to have something in it for the Thread to work */
-
-    }
+    /* No while(1) here since everything is done by the new threads. */
 }

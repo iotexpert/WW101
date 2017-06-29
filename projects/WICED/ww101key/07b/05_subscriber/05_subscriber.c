@@ -34,9 +34,9 @@
 /******************************************************
  *                      Macros
  ******************************************************/
-#define MQTT_BROKER_ADDRESS                 "a3ug7eqhjj06qg.iot.us-east-1.amazonaws.com"
-#define WICED_TOPIC                         "testtopic"
-#define CLIENT_ID                           "wiced_subcriber_aws"
+#define MQTT_BROKER_ADDRESS                 "amk6m51qrxr2u.iot.us-east-1.amazonaws.com"
+#define WICED_TOPIC                         "GJL_TestTopic"
+#define CLIENT_ID                           "wiced_subcriber_aws_GJL"
 #define MQTT_REQUEST_TIMEOUT                (5000)
 #define MQTT_DELAY_IN_MILLISECONDS          (1000)
 #define MQTT_MAX_RESOURCE_SIZE              (0x7fffffff)
@@ -79,12 +79,12 @@ static wiced_result_t mqtt_connection_event_cb( wiced_mqtt_object_t mqtt_object,
             data[ msg.data_len + 1 ] = '\0';
             if ( !strncmp( data, "LIGHT ON", msg.data_len ) )
             {
-                wiced_gpio_output_high( WICED_LED1 );
+                wiced_gpio_output_high( WICED_SH_LED1 );
                 WPRINT_APP_INFO(( "light on\n" ));
             }
             else
             {
-                wiced_gpio_output_low( WICED_LED1 );
+                wiced_gpio_output_low( WICED_SH_LED1 );
                 WPRINT_APP_INFO(( "light off\n" ));
             }
         }
@@ -194,7 +194,7 @@ void application_start( void )
     resource_get_readonly_buffer( &resources_apps_DIR_aws_iot_DIR_rootca_cer, 0, MQTT_MAX_RESOURCE_SIZE, &size_out, (const void **) &security.ca_cert );
     security.ca_cert_len = size_out;
 
-    resource_get_readonly_buffer( &resources_apps_DIR_aws_iot_DIR_client_subscriber_cer, 0, MQTT_MAX_RESOURCE_SIZE, &size_out, (const void **) &security.cert );
+    resource_get_readonly_buffer( &resources_apps_DIR_aws_iot_DIR_client_cer, 0, MQTT_MAX_RESOURCE_SIZE, &size_out, (const void **) &security.cert );
     if(size_out < 64)
     {
         WPRINT_APP_INFO( ( "\nNot a valid Certificate! Please replace the dummy certificate file 'resources/app/aws_iot/client.cer' with the one got from AWS\n\n" ) );
@@ -202,7 +202,7 @@ void application_start( void )
     }
     security.cert_len = size_out;
 
-    resource_get_readonly_buffer( &resources_apps_DIR_aws_iot_DIR_privkey_subscriber_cer, 0, MQTT_MAX_RESOURCE_SIZE, &size_out, (const void **) &security.key );
+    resource_get_readonly_buffer( &resources_apps_DIR_aws_iot_DIR_privkey_cer, 0, MQTT_MAX_RESOURCE_SIZE, &size_out, (const void **) &security.key );
     if(size_out < 64)
     {
         WPRINT_APP_INFO( ( "\nNot a valid Private Key! Please replace the dummy private key file 'resources/app/aws_iot/privkey.cer' with the one got from AWS\n\n" ) );
@@ -230,7 +230,7 @@ void application_start( void )
     }
 
     WPRINT_APP_INFO( ( "Resolving IP address of MQTT broker\n" ) );
-    ret = wiced_hostname_lookup( MQTT_BROKER_ADDRESS, &broker_address, 10000 );
+    ret = wiced_hostname_lookup( MQTT_BROKER_ADDRESS, &broker_address, 10000, WICED_STA_INTERFACE );
     WPRINT_APP_INFO(("Resolved Broker IP: %u.%u.%u.%u ...\n\n", (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 24),
                     (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 16),
                     (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 8),

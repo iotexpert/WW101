@@ -6,6 +6,7 @@
 #define THREAD_PRIORITY 	(10)
 #define THREAD_STACK_SIZE	(1024)
 
+static wiced_thread_t ledThreadHandle;
 static wiced_semaphore_t semaphoreHandle;
 
 /* Interrupt service routine for the button */
@@ -27,12 +28,12 @@ void ledThread(wiced_thread_arg_t arg)
 		/* Toggle LED1 */
 		if ( led1 == WICED_TRUE )
 		{
-			wiced_gpio_output_low( WICED_LED1 );
+			wiced_gpio_output_low( WICED_SH_LED1 );
 			led1 = WICED_FALSE;
 		}
 		else
 		{
-			wiced_gpio_output_high( WICED_LED1 );
+			wiced_gpio_output_high( WICED_SH_LED1 );
 			led1 = WICED_TRUE;
 		}
 	}
@@ -40,8 +41,6 @@ void ledThread(wiced_thread_arg_t arg)
 
 void application_start( )
 {
-	wiced_thread_t ledThreadHandle;
-
 	wiced_init();	/* Initialize the WICED device */
 
 	/* Setup the semaphore which will be set by the button interrupt */
@@ -51,10 +50,8 @@ void application_start( )
     wiced_rtos_create_thread(&ledThreadHandle, THREAD_PRIORITY, "ledThread", ledThread, THREAD_STACK_SIZE, NULL);
 
 	/* Setup button interrupt */
-	wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL);
+	wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL);
 
-    while ( 1 )
-    {
-		wiced_rtos_delay_milliseconds( 1 ); /* Allow other threads to have a turn */
-    }
+    /* No while(1) here since everything is done by the new thread. */
+
 }

@@ -1,0 +1,651 @@
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"D5_PM.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.D5_Sleep,"ax",%progbits
+  20              		.align	1
+  21              		.global	D5_Sleep
+  22              		.code	16
+  23              		.thumb_func
+  24              		.type	D5_Sleep, %function
+  25              	D5_Sleep:
+  26              	.LFB0:
+  27              		.file 1 "Generated_Source\\PSoC4\\D5_PM.c"
+   1:Generated_Source\PSoC4/D5_PM.c **** /*******************************************************************************
+   2:Generated_Source\PSoC4/D5_PM.c **** * File Name: D5.c  
+   3:Generated_Source\PSoC4/D5_PM.c **** * Version 2.20
+   4:Generated_Source\PSoC4/D5_PM.c **** *
+   5:Generated_Source\PSoC4/D5_PM.c **** * Description:
+   6:Generated_Source\PSoC4/D5_PM.c **** *  This file contains APIs to set up the Pins component for low power modes.
+   7:Generated_Source\PSoC4/D5_PM.c **** *
+   8:Generated_Source\PSoC4/D5_PM.c **** * Note:
+   9:Generated_Source\PSoC4/D5_PM.c **** *
+  10:Generated_Source\PSoC4/D5_PM.c **** ********************************************************************************
+  11:Generated_Source\PSoC4/D5_PM.c **** * Copyright 2015, Cypress Semiconductor Corporation.  All rights reserved.
+  12:Generated_Source\PSoC4/D5_PM.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  13:Generated_Source\PSoC4/D5_PM.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  14:Generated_Source\PSoC4/D5_PM.c **** * the software package with which this file was provided.
+  15:Generated_Source\PSoC4/D5_PM.c **** *******************************************************************************/
+  16:Generated_Source\PSoC4/D5_PM.c **** 
+  17:Generated_Source\PSoC4/D5_PM.c **** #include "cytypes.h"
+  18:Generated_Source\PSoC4/D5_PM.c **** #include "D5.h"
+  19:Generated_Source\PSoC4/D5_PM.c **** 
+  20:Generated_Source\PSoC4/D5_PM.c **** static D5_BACKUP_STRUCT  D5_backup = {0u, 0u, 0u};
+  21:Generated_Source\PSoC4/D5_PM.c **** 
+  22:Generated_Source\PSoC4/D5_PM.c **** 
+  23:Generated_Source\PSoC4/D5_PM.c **** /*******************************************************************************
+  24:Generated_Source\PSoC4/D5_PM.c **** * Function Name: D5_Sleep
+  25:Generated_Source\PSoC4/D5_PM.c **** ****************************************************************************//**
+  26:Generated_Source\PSoC4/D5_PM.c **** *
+  27:Generated_Source\PSoC4/D5_PM.c **** * \brief Stores the pin configuration and prepares the pin for entering chip 
+  28:Generated_Source\PSoC4/D5_PM.c **** *  deep-sleep/hibernate modes. This function applies only to SIO and USBIO pins.
+  29:Generated_Source\PSoC4/D5_PM.c **** *  It should not be called for GPIO or GPIO_OVT pins.
+  30:Generated_Source\PSoC4/D5_PM.c **** *
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 2
+
+
+  31:Generated_Source\PSoC4/D5_PM.c **** * <b>Note</b> This function is available in PSoC 4 only.
+  32:Generated_Source\PSoC4/D5_PM.c **** *
+  33:Generated_Source\PSoC4/D5_PM.c **** * \return 
+  34:Generated_Source\PSoC4/D5_PM.c **** *  None 
+  35:Generated_Source\PSoC4/D5_PM.c **** *  
+  36:Generated_Source\PSoC4/D5_PM.c **** * \sideeffect
+  37:Generated_Source\PSoC4/D5_PM.c **** *  For SIO pins, this function configures the pin input threshold to CMOS and
+  38:Generated_Source\PSoC4/D5_PM.c **** *  drive level to Vddio. This is needed for SIO pins when in device 
+  39:Generated_Source\PSoC4/D5_PM.c **** *  deep-sleep/hibernate modes.
+  40:Generated_Source\PSoC4/D5_PM.c **** *
+  41:Generated_Source\PSoC4/D5_PM.c **** * \funcusage
+  42:Generated_Source\PSoC4/D5_PM.c **** *  \snippet D5_SUT.c usage_D5_Sleep_Wakeup
+  43:Generated_Source\PSoC4/D5_PM.c **** *******************************************************************************/
+  44:Generated_Source\PSoC4/D5_PM.c **** void D5_Sleep(void)
+  45:Generated_Source\PSoC4/D5_PM.c **** {
+  28              		.loc 1 45 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  46:Generated_Source\PSoC4/D5_PM.c ****     #if defined(D5__PC)
+  47:Generated_Source\PSoC4/D5_PM.c ****         D5_backup.pcState = D5_PC;
+  33              		.loc 1 47 0
+  34 0000 024B     		ldr	r3, .L2
+  48:Generated_Source\PSoC4/D5_PM.c ****     #else
+  49:Generated_Source\PSoC4/D5_PM.c ****         #if (CY_PSOC4_4200L)
+  50:Generated_Source\PSoC4/D5_PM.c ****             /* Save the regulator state and put the PHY into suspend mode */
+  51:Generated_Source\PSoC4/D5_PM.c ****             D5_backup.usbState = D5_CR1_REG;
+  52:Generated_Source\PSoC4/D5_PM.c ****             D5_USB_POWER_REG |= D5_USBIO_ENTER_SLEEP;
+  53:Generated_Source\PSoC4/D5_PM.c ****             D5_CR1_REG &= D5_USBIO_CR1_OFF;
+  54:Generated_Source\PSoC4/D5_PM.c ****         #endif
+  55:Generated_Source\PSoC4/D5_PM.c ****     #endif
+  56:Generated_Source\PSoC4/D5_PM.c ****     #if defined(CYIPBLOCK_m0s8ioss_VERSION) && defined(D5__SIO)
+  57:Generated_Source\PSoC4/D5_PM.c ****         D5_backup.sioState = D5_SIO_REG;
+  58:Generated_Source\PSoC4/D5_PM.c ****         /* SIO requires unregulated output buffer and single ended input buffer */
+  59:Generated_Source\PSoC4/D5_PM.c ****         D5_SIO_REG &= (uint32)(~D5_SIO_LPM_MASK);
+  60:Generated_Source\PSoC4/D5_PM.c ****     #endif  
+  61:Generated_Source\PSoC4/D5_PM.c **** }
+  35              		.loc 1 61 0
+  36              		@ sp needed
+  47:Generated_Source\PSoC4/D5_PM.c ****     #else
+  37              		.loc 1 47 0
+  38 0002 1A68     		ldr	r2, [r3]
+  39 0004 024B     		ldr	r3, .L2+4
+  40 0006 1A60     		str	r2, [r3]
+  41              		.loc 1 61 0
+  42 0008 7047     		bx	lr
+  43              	.L3:
+  44 000a C046     		.align	2
+  45              	.L2:
+  46 000c 08010440 		.word	1074004232
+  47 0010 00000000 		.word	.LANCHOR0
+  48              		.cfi_endproc
+  49              	.LFE0:
+  50              		.size	D5_Sleep, .-D5_Sleep
+  51              		.section	.text.D5_Wakeup,"ax",%progbits
+  52              		.align	1
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 3
+
+
+  53              		.global	D5_Wakeup
+  54              		.code	16
+  55              		.thumb_func
+  56              		.type	D5_Wakeup, %function
+  57              	D5_Wakeup:
+  58              	.LFB1:
+  62:Generated_Source\PSoC4/D5_PM.c **** 
+  63:Generated_Source\PSoC4/D5_PM.c **** 
+  64:Generated_Source\PSoC4/D5_PM.c **** /*******************************************************************************
+  65:Generated_Source\PSoC4/D5_PM.c **** * Function Name: D5_Wakeup
+  66:Generated_Source\PSoC4/D5_PM.c **** ****************************************************************************//**
+  67:Generated_Source\PSoC4/D5_PM.c **** *
+  68:Generated_Source\PSoC4/D5_PM.c **** * \brief Restores the pin configuration that was saved during Pin_Sleep(). This 
+  69:Generated_Source\PSoC4/D5_PM.c **** * function applies only to SIO and USBIO pins. It should not be called for
+  70:Generated_Source\PSoC4/D5_PM.c **** * GPIO or GPIO_OVT pins.
+  71:Generated_Source\PSoC4/D5_PM.c **** *
+  72:Generated_Source\PSoC4/D5_PM.c **** * For USBIO pins, the wakeup is only triggered for falling edge interrupts.
+  73:Generated_Source\PSoC4/D5_PM.c **** *
+  74:Generated_Source\PSoC4/D5_PM.c **** * <b>Note</b> This function is available in PSoC 4 only.
+  75:Generated_Source\PSoC4/D5_PM.c **** *
+  76:Generated_Source\PSoC4/D5_PM.c **** * \return 
+  77:Generated_Source\PSoC4/D5_PM.c **** *  None
+  78:Generated_Source\PSoC4/D5_PM.c **** *  
+  79:Generated_Source\PSoC4/D5_PM.c **** * \funcusage
+  80:Generated_Source\PSoC4/D5_PM.c **** *  Refer to D5_Sleep() for an example usage.
+  81:Generated_Source\PSoC4/D5_PM.c **** *******************************************************************************/
+  82:Generated_Source\PSoC4/D5_PM.c **** void D5_Wakeup(void)
+  83:Generated_Source\PSoC4/D5_PM.c **** {
+  59              		.loc 1 83 0
+  60              		.cfi_startproc
+  61              		@ args = 0, pretend = 0, frame = 0
+  62              		@ frame_needed = 0, uses_anonymous_args = 0
+  63              		@ link register save eliminated.
+  84:Generated_Source\PSoC4/D5_PM.c ****     #if defined(D5__PC)
+  85:Generated_Source\PSoC4/D5_PM.c ****         D5_PC = D5_backup.pcState;
+  64              		.loc 1 85 0
+  65 0000 024B     		ldr	r3, .L5
+  86:Generated_Source\PSoC4/D5_PM.c ****     #else
+  87:Generated_Source\PSoC4/D5_PM.c ****         #if (CY_PSOC4_4200L)
+  88:Generated_Source\PSoC4/D5_PM.c ****             /* Restore the regulator state and come out of suspend mode */
+  89:Generated_Source\PSoC4/D5_PM.c ****             D5_USB_POWER_REG &= D5_USBIO_EXIT_SLEEP_PH1;
+  90:Generated_Source\PSoC4/D5_PM.c ****             D5_CR1_REG = D5_backup.usbState;
+  91:Generated_Source\PSoC4/D5_PM.c ****             D5_USB_POWER_REG &= D5_USBIO_EXIT_SLEEP_PH2;
+  92:Generated_Source\PSoC4/D5_PM.c ****         #endif
+  93:Generated_Source\PSoC4/D5_PM.c ****     #endif
+  94:Generated_Source\PSoC4/D5_PM.c ****     #if defined(CYIPBLOCK_m0s8ioss_VERSION) && defined(D5__SIO)
+  95:Generated_Source\PSoC4/D5_PM.c ****         D5_SIO_REG = D5_backup.sioState;
+  96:Generated_Source\PSoC4/D5_PM.c ****     #endif
+  97:Generated_Source\PSoC4/D5_PM.c **** }
+  66              		.loc 1 97 0
+  67              		@ sp needed
+  85:Generated_Source\PSoC4/D5_PM.c ****     #else
+  68              		.loc 1 85 0
+  69 0002 1A68     		ldr	r2, [r3]
+  70 0004 024B     		ldr	r3, .L5+4
+  71 0006 1A60     		str	r2, [r3]
+  72              		.loc 1 97 0
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 4
+
+
+  73 0008 7047     		bx	lr
+  74              	.L6:
+  75 000a C046     		.align	2
+  76              	.L5:
+  77 000c 00000000 		.word	.LANCHOR0
+  78 0010 08010440 		.word	1074004232
+  79              		.cfi_endproc
+  80              	.LFE1:
+  81              		.size	D5_Wakeup, .-D5_Wakeup
+  82              		.bss
+  83              		.align	2
+  84              		.set	.LANCHOR0,. + 0
+  85              		.type	D5_backup, %object
+  86              		.size	D5_backup, 12
+  87              	D5_backup:
+  88 0000 00000000 		.space	12
+  88      00000000 
+  88      00000000 
+  89              		.text
+  90              	.Letext0:
+  91              		.file 2 "Generated_Source\\PSoC4\\cytypes.h"
+  92              		.file 3 "Generated_Source\\PSoC4\\D5.h"
+  93              		.section	.debug_info,"",%progbits
+  94              	.Ldebug_info0:
+  95 0000 05010000 		.4byte	0x105
+  96 0004 0400     		.2byte	0x4
+  97 0006 00000000 		.4byte	.Ldebug_abbrev0
+  98 000a 04       		.byte	0x4
+  99 000b 01       		.uleb128 0x1
+ 100 000c 30010000 		.4byte	.LASF20
+ 101 0010 0C       		.byte	0xc
+ 102 0011 2D000000 		.4byte	.LASF21
+ 103 0015 BA000000 		.4byte	.LASF22
+ 104 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 105 001d 00000000 		.4byte	0
+ 106 0021 00000000 		.4byte	.Ldebug_line0
+ 107 0025 02       		.uleb128 0x2
+ 108 0026 01       		.byte	0x1
+ 109 0027 06       		.byte	0x6
+ 110 0028 1A010000 		.4byte	.LASF0
+ 111 002c 02       		.uleb128 0x2
+ 112 002d 01       		.byte	0x1
+ 113 002e 08       		.byte	0x8
+ 114 002f 1F000000 		.4byte	.LASF1
+ 115 0033 02       		.uleb128 0x2
+ 116 0034 02       		.byte	0x2
+ 117 0035 05       		.byte	0x5
+ 118 0036 FF000000 		.4byte	.LASF2
+ 119 003a 02       		.uleb128 0x2
+ 120 003b 02       		.byte	0x2
+ 121 003c 07       		.byte	0x7
+ 122 003d 5E000000 		.4byte	.LASF3
+ 123 0041 02       		.uleb128 0x2
+ 124 0042 04       		.byte	0x4
+ 125 0043 05       		.byte	0x5
+ 126 0044 11010000 		.4byte	.LASF4
+ 127 0048 02       		.uleb128 0x2
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 5
+
+
+ 128 0049 04       		.byte	0x4
+ 129 004a 07       		.byte	0x7
+ 130 004b 4C000000 		.4byte	.LASF5
+ 131 004f 02       		.uleb128 0x2
+ 132 0050 08       		.byte	0x8
+ 133 0051 05       		.byte	0x5
+ 134 0052 AC000000 		.4byte	.LASF6
+ 135 0056 02       		.uleb128 0x2
+ 136 0057 08       		.byte	0x8
+ 137 0058 07       		.byte	0x7
+ 138 0059 8C000000 		.4byte	.LASF7
+ 139 005d 03       		.uleb128 0x3
+ 140 005e 04       		.byte	0x4
+ 141 005f 05       		.byte	0x5
+ 142 0060 696E7400 		.ascii	"int\000"
+ 143 0064 02       		.uleb128 0x2
+ 144 0065 04       		.byte	0x4
+ 145 0066 07       		.byte	0x7
+ 146 0067 7F000000 		.4byte	.LASF8
+ 147 006b 04       		.uleb128 0x4
+ 148 006c 78000000 		.4byte	.LASF12
+ 149 0070 02       		.byte	0x2
+ 150 0071 D401     		.2byte	0x1d4
+ 151 0073 48000000 		.4byte	0x48
+ 152 0077 02       		.uleb128 0x2
+ 153 0078 04       		.byte	0x4
+ 154 0079 04       		.byte	0x4
+ 155 007a 19000000 		.4byte	.LASF9
+ 156 007e 02       		.uleb128 0x2
+ 157 007f 08       		.byte	0x8
+ 158 0080 04       		.byte	0x4
+ 159 0081 71000000 		.4byte	.LASF10
+ 160 0085 02       		.uleb128 0x2
+ 161 0086 01       		.byte	0x1
+ 162 0087 08       		.byte	0x8
+ 163 0088 F1000000 		.4byte	.LASF11
+ 164 008c 04       		.uleb128 0x4
+ 165 008d 00000000 		.4byte	.LASF13
+ 166 0091 02       		.byte	0x2
+ 167 0092 7E02     		.2byte	0x27e
+ 168 0094 98000000 		.4byte	0x98
+ 169 0098 05       		.uleb128 0x5
+ 170 0099 6B000000 		.4byte	0x6b
+ 171 009d 06       		.uleb128 0x6
+ 172 009e 0C       		.byte	0xc
+ 173 009f 03       		.byte	0x3
+ 174 00a0 21       		.byte	0x21
+ 175 00a1 CA000000 		.4byte	0xca
+ 176 00a5 07       		.uleb128 0x7
+ 177 00a6 09010000 		.4byte	.LASF14
+ 178 00aa 03       		.byte	0x3
+ 179 00ab 23       		.byte	0x23
+ 180 00ac 6B000000 		.4byte	0x6b
+ 181 00b0 00       		.byte	0
+ 182 00b1 07       		.uleb128 0x7
+ 183 00b2 A3000000 		.4byte	.LASF15
+ 184 00b6 03       		.byte	0x3
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 6
+
+
+ 185 00b7 24       		.byte	0x24
+ 186 00b8 6B000000 		.4byte	0x6b
+ 187 00bc 04       		.byte	0x4
+ 188 00bd 07       		.uleb128 0x7
+ 189 00be 06000000 		.4byte	.LASF16
+ 190 00c2 03       		.byte	0x3
+ 191 00c3 25       		.byte	0x25
+ 192 00c4 6B000000 		.4byte	0x6b
+ 193 00c8 08       		.byte	0x8
+ 194 00c9 00       		.byte	0
+ 195 00ca 08       		.uleb128 0x8
+ 196 00cb BE010000 		.4byte	.LASF17
+ 197 00cf 03       		.byte	0x3
+ 198 00d0 26       		.byte	0x26
+ 199 00d1 9D000000 		.4byte	0x9d
+ 200 00d5 09       		.uleb128 0x9
+ 201 00d6 F6000000 		.4byte	.LASF18
+ 202 00da 01       		.byte	0x1
+ 203 00db 2C       		.byte	0x2c
+ 204 00dc 00000000 		.4byte	.LFB0
+ 205 00e0 14000000 		.4byte	.LFE0-.LFB0
+ 206 00e4 01       		.uleb128 0x1
+ 207 00e5 9C       		.byte	0x9c
+ 208 00e6 09       		.uleb128 0x9
+ 209 00e7 0F000000 		.4byte	.LASF19
+ 210 00eb 01       		.byte	0x1
+ 211 00ec 52       		.byte	0x52
+ 212 00ed 00000000 		.4byte	.LFB1
+ 213 00f1 14000000 		.4byte	.LFE1-.LFB1
+ 214 00f5 01       		.uleb128 0x1
+ 215 00f6 9C       		.byte	0x9c
+ 216 00f7 0A       		.uleb128 0xa
+ 217 00f8 26010000 		.4byte	.LASF23
+ 218 00fc 01       		.byte	0x1
+ 219 00fd 14       		.byte	0x14
+ 220 00fe CA000000 		.4byte	0xca
+ 221 0102 05       		.uleb128 0x5
+ 222 0103 03       		.byte	0x3
+ 223 0104 00000000 		.4byte	D5_backup
+ 224 0108 00       		.byte	0
+ 225              		.section	.debug_abbrev,"",%progbits
+ 226              	.Ldebug_abbrev0:
+ 227 0000 01       		.uleb128 0x1
+ 228 0001 11       		.uleb128 0x11
+ 229 0002 01       		.byte	0x1
+ 230 0003 25       		.uleb128 0x25
+ 231 0004 0E       		.uleb128 0xe
+ 232 0005 13       		.uleb128 0x13
+ 233 0006 0B       		.uleb128 0xb
+ 234 0007 03       		.uleb128 0x3
+ 235 0008 0E       		.uleb128 0xe
+ 236 0009 1B       		.uleb128 0x1b
+ 237 000a 0E       		.uleb128 0xe
+ 238 000b 55       		.uleb128 0x55
+ 239 000c 17       		.uleb128 0x17
+ 240 000d 11       		.uleb128 0x11
+ 241 000e 01       		.uleb128 0x1
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 7
+
+
+ 242 000f 10       		.uleb128 0x10
+ 243 0010 17       		.uleb128 0x17
+ 244 0011 00       		.byte	0
+ 245 0012 00       		.byte	0
+ 246 0013 02       		.uleb128 0x2
+ 247 0014 24       		.uleb128 0x24
+ 248 0015 00       		.byte	0
+ 249 0016 0B       		.uleb128 0xb
+ 250 0017 0B       		.uleb128 0xb
+ 251 0018 3E       		.uleb128 0x3e
+ 252 0019 0B       		.uleb128 0xb
+ 253 001a 03       		.uleb128 0x3
+ 254 001b 0E       		.uleb128 0xe
+ 255 001c 00       		.byte	0
+ 256 001d 00       		.byte	0
+ 257 001e 03       		.uleb128 0x3
+ 258 001f 24       		.uleb128 0x24
+ 259 0020 00       		.byte	0
+ 260 0021 0B       		.uleb128 0xb
+ 261 0022 0B       		.uleb128 0xb
+ 262 0023 3E       		.uleb128 0x3e
+ 263 0024 0B       		.uleb128 0xb
+ 264 0025 03       		.uleb128 0x3
+ 265 0026 08       		.uleb128 0x8
+ 266 0027 00       		.byte	0
+ 267 0028 00       		.byte	0
+ 268 0029 04       		.uleb128 0x4
+ 269 002a 16       		.uleb128 0x16
+ 270 002b 00       		.byte	0
+ 271 002c 03       		.uleb128 0x3
+ 272 002d 0E       		.uleb128 0xe
+ 273 002e 3A       		.uleb128 0x3a
+ 274 002f 0B       		.uleb128 0xb
+ 275 0030 3B       		.uleb128 0x3b
+ 276 0031 05       		.uleb128 0x5
+ 277 0032 49       		.uleb128 0x49
+ 278 0033 13       		.uleb128 0x13
+ 279 0034 00       		.byte	0
+ 280 0035 00       		.byte	0
+ 281 0036 05       		.uleb128 0x5
+ 282 0037 35       		.uleb128 0x35
+ 283 0038 00       		.byte	0
+ 284 0039 49       		.uleb128 0x49
+ 285 003a 13       		.uleb128 0x13
+ 286 003b 00       		.byte	0
+ 287 003c 00       		.byte	0
+ 288 003d 06       		.uleb128 0x6
+ 289 003e 13       		.uleb128 0x13
+ 290 003f 01       		.byte	0x1
+ 291 0040 0B       		.uleb128 0xb
+ 292 0041 0B       		.uleb128 0xb
+ 293 0042 3A       		.uleb128 0x3a
+ 294 0043 0B       		.uleb128 0xb
+ 295 0044 3B       		.uleb128 0x3b
+ 296 0045 0B       		.uleb128 0xb
+ 297 0046 01       		.uleb128 0x1
+ 298 0047 13       		.uleb128 0x13
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 8
+
+
+ 299 0048 00       		.byte	0
+ 300 0049 00       		.byte	0
+ 301 004a 07       		.uleb128 0x7
+ 302 004b 0D       		.uleb128 0xd
+ 303 004c 00       		.byte	0
+ 304 004d 03       		.uleb128 0x3
+ 305 004e 0E       		.uleb128 0xe
+ 306 004f 3A       		.uleb128 0x3a
+ 307 0050 0B       		.uleb128 0xb
+ 308 0051 3B       		.uleb128 0x3b
+ 309 0052 0B       		.uleb128 0xb
+ 310 0053 49       		.uleb128 0x49
+ 311 0054 13       		.uleb128 0x13
+ 312 0055 38       		.uleb128 0x38
+ 313 0056 0B       		.uleb128 0xb
+ 314 0057 00       		.byte	0
+ 315 0058 00       		.byte	0
+ 316 0059 08       		.uleb128 0x8
+ 317 005a 16       		.uleb128 0x16
+ 318 005b 00       		.byte	0
+ 319 005c 03       		.uleb128 0x3
+ 320 005d 0E       		.uleb128 0xe
+ 321 005e 3A       		.uleb128 0x3a
+ 322 005f 0B       		.uleb128 0xb
+ 323 0060 3B       		.uleb128 0x3b
+ 324 0061 0B       		.uleb128 0xb
+ 325 0062 49       		.uleb128 0x49
+ 326 0063 13       		.uleb128 0x13
+ 327 0064 00       		.byte	0
+ 328 0065 00       		.byte	0
+ 329 0066 09       		.uleb128 0x9
+ 330 0067 2E       		.uleb128 0x2e
+ 331 0068 00       		.byte	0
+ 332 0069 3F       		.uleb128 0x3f
+ 333 006a 19       		.uleb128 0x19
+ 334 006b 03       		.uleb128 0x3
+ 335 006c 0E       		.uleb128 0xe
+ 336 006d 3A       		.uleb128 0x3a
+ 337 006e 0B       		.uleb128 0xb
+ 338 006f 3B       		.uleb128 0x3b
+ 339 0070 0B       		.uleb128 0xb
+ 340 0071 27       		.uleb128 0x27
+ 341 0072 19       		.uleb128 0x19
+ 342 0073 11       		.uleb128 0x11
+ 343 0074 01       		.uleb128 0x1
+ 344 0075 12       		.uleb128 0x12
+ 345 0076 06       		.uleb128 0x6
+ 346 0077 40       		.uleb128 0x40
+ 347 0078 18       		.uleb128 0x18
+ 348 0079 9742     		.uleb128 0x2117
+ 349 007b 19       		.uleb128 0x19
+ 350 007c 00       		.byte	0
+ 351 007d 00       		.byte	0
+ 352 007e 0A       		.uleb128 0xa
+ 353 007f 34       		.uleb128 0x34
+ 354 0080 00       		.byte	0
+ 355 0081 03       		.uleb128 0x3
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 9
+
+
+ 356 0082 0E       		.uleb128 0xe
+ 357 0083 3A       		.uleb128 0x3a
+ 358 0084 0B       		.uleb128 0xb
+ 359 0085 3B       		.uleb128 0x3b
+ 360 0086 0B       		.uleb128 0xb
+ 361 0087 49       		.uleb128 0x49
+ 362 0088 13       		.uleb128 0x13
+ 363 0089 02       		.uleb128 0x2
+ 364 008a 18       		.uleb128 0x18
+ 365 008b 00       		.byte	0
+ 366 008c 00       		.byte	0
+ 367 008d 00       		.byte	0
+ 368              		.section	.debug_aranges,"",%progbits
+ 369 0000 24000000 		.4byte	0x24
+ 370 0004 0200     		.2byte	0x2
+ 371 0006 00000000 		.4byte	.Ldebug_info0
+ 372 000a 04       		.byte	0x4
+ 373 000b 00       		.byte	0
+ 374 000c 0000     		.2byte	0
+ 375 000e 0000     		.2byte	0
+ 376 0010 00000000 		.4byte	.LFB0
+ 377 0014 14000000 		.4byte	.LFE0-.LFB0
+ 378 0018 00000000 		.4byte	.LFB1
+ 379 001c 14000000 		.4byte	.LFE1-.LFB1
+ 380 0020 00000000 		.4byte	0
+ 381 0024 00000000 		.4byte	0
+ 382              		.section	.debug_ranges,"",%progbits
+ 383              	.Ldebug_ranges0:
+ 384 0000 00000000 		.4byte	.LFB0
+ 385 0004 14000000 		.4byte	.LFE0
+ 386 0008 00000000 		.4byte	.LFB1
+ 387 000c 14000000 		.4byte	.LFE1
+ 388 0010 00000000 		.4byte	0
+ 389 0014 00000000 		.4byte	0
+ 390              		.section	.debug_line,"",%progbits
+ 391              	.Ldebug_line0:
+ 392 0000 83000000 		.section	.debug_str,"MS",%progbits,1
+ 392      02004A00 
+ 392      00000201 
+ 392      FB0E0D00 
+ 392      01010101 
+ 393              	.LASF13:
+ 394 0000 72656733 		.ascii	"reg32\000"
+ 394      3200
+ 395              	.LASF16:
+ 396 0006 75736253 		.ascii	"usbState\000"
+ 396      74617465 
+ 396      00
+ 397              	.LASF19:
+ 398 000f 44355F57 		.ascii	"D5_Wakeup\000"
+ 398      616B6575 
+ 398      7000
+ 399              	.LASF9:
+ 400 0019 666C6F61 		.ascii	"float\000"
+ 400      7400
+ 401              	.LASF1:
+ 402 001f 756E7369 		.ascii	"unsigned char\000"
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 10
+
+
+ 402      676E6564 
+ 402      20636861 
+ 402      7200
+ 403              	.LASF21:
+ 404 002d 47656E65 		.ascii	"Generated_Source\\PSoC4\\D5_PM.c\000"
+ 404      72617465 
+ 404      645F536F 
+ 404      75726365 
+ 404      5C50536F 
+ 405              	.LASF5:
+ 406 004c 6C6F6E67 		.ascii	"long unsigned int\000"
+ 406      20756E73 
+ 406      69676E65 
+ 406      6420696E 
+ 406      7400
+ 407              	.LASF3:
+ 408 005e 73686F72 		.ascii	"short unsigned int\000"
+ 408      7420756E 
+ 408      7369676E 
+ 408      65642069 
+ 408      6E7400
+ 409              	.LASF10:
+ 410 0071 646F7562 		.ascii	"double\000"
+ 410      6C6500
+ 411              	.LASF12:
+ 412 0078 75696E74 		.ascii	"uint32\000"
+ 412      333200
+ 413              	.LASF8:
+ 414 007f 756E7369 		.ascii	"unsigned int\000"
+ 414      676E6564 
+ 414      20696E74 
+ 414      00
+ 415              	.LASF7:
+ 416 008c 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 416      206C6F6E 
+ 416      6720756E 
+ 416      7369676E 
+ 416      65642069 
+ 417              	.LASF15:
+ 418 00a3 73696F53 		.ascii	"sioState\000"
+ 418      74617465 
+ 418      00
+ 419              	.LASF6:
+ 420 00ac 6C6F6E67 		.ascii	"long long int\000"
+ 420      206C6F6E 
+ 420      6720696E 
+ 420      7400
+ 421              	.LASF22:
+ 422 00ba 433A5C47 		.ascii	"C:\\Git\\WA101\\ww101-shield\\firmware\\TestProgram"
+ 422      69745C57 
+ 422      41313031 
+ 422      5C777731 
+ 422      30312D73 
+ 423 00e8 344D2E63 		.ascii	"4M.cydsn\000"
+ 423      7964736E 
+ 423      00
+ 424              	.LASF11:
+ARM GAS  C:\Users\gjl\AppData\Local\Temp\ccZEGOV9.s 			page 11
+
+
+ 425 00f1 63686172 		.ascii	"char\000"
+ 425      00
+ 426              	.LASF18:
+ 427 00f6 44355F53 		.ascii	"D5_Sleep\000"
+ 427      6C656570 
+ 427      00
+ 428              	.LASF2:
+ 429 00ff 73686F72 		.ascii	"short int\000"
+ 429      7420696E 
+ 429      7400
+ 430              	.LASF14:
+ 431 0109 70635374 		.ascii	"pcState\000"
+ 431      61746500 
+ 432              	.LASF4:
+ 433 0111 6C6F6E67 		.ascii	"long int\000"
+ 433      20696E74 
+ 433      00
+ 434              	.LASF0:
+ 435 011a 7369676E 		.ascii	"signed char\000"
+ 435      65642063 
+ 435      68617200 
+ 436              	.LASF23:
+ 437 0126 44355F62 		.ascii	"D5_backup\000"
+ 437      61636B75 
+ 437      7000
+ 438              	.LASF20:
+ 439 0130 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 439      43313120 
+ 439      352E342E 
+ 439      31203230 
+ 439      31363036 
+ 440 0163 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 440      20726576 
+ 440      6973696F 
+ 440      6E203233 
+ 440      37373135 
+ 441 0196 73202D66 		.ascii	"s -ffunction-sections -ffat-lto-objects\000"
+ 441      66756E63 
+ 441      74696F6E 
+ 441      2D736563 
+ 441      74696F6E 
+ 442              	.LASF17:
+ 443 01be 44355F42 		.ascii	"D5_BACKUP_STRUCT\000"
+ 443      41434B55 
+ 443      505F5354 
+ 443      52554354 
+ 443      00
+ 444              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

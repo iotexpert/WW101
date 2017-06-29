@@ -26,14 +26,14 @@
 *   Initial Parameter Constants
 ****************************************/
 
-#define EZI2C_EZI2C_CLOCK_STRETCHING         (1u)
+#define EZI2C_EZI2C_CLOCK_STRETCHING         (0u)
 #define EZI2C_EZI2C_MEDIAN_FILTER_ENABLE     (1u)
 #define EZI2C_EZI2C_NUMBER_OF_ADDRESSES      (0u)
 #define EZI2C_EZI2C_PRIMARY_SLAVE_ADDRESS    (8u)
 #define EZI2C_EZI2C_SECONDARY_SLAVE_ADDRESS  (9u)
 #define EZI2C_EZI2C_SUB_ADDRESS_SIZE         (0u)
 #define EZI2C_EZI2C_WAKE_ENABLE              (0u)
-#define EZI2C_EZI2C_DATA_RATE                (100u)
+#define EZI2C_EZI2C_DATA_RATE                (400u)
 #define EZI2C_EZI2C_SLAVE_ADDRESS_MASK       (254u)
 #define EZI2C_EZI2C_BYTE_MODE_ENABLE         (0u)
 
