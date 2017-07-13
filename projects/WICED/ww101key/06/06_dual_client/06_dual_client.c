@@ -211,7 +211,6 @@ void sendData(int data)
 // This is done as a separate thread to make the code easier to copy to a later program.
 void button0ThreadMain()
 {
-
     // Setup the Semaphore and Button Interrupt
     wiced_rtos_init_semaphore(&button0_semaphore); // the semaphore unlocks when the user presses the button
     wiced_gpio_input_irq_enable(WICED_SH_MB0, IRQ_TRIGGER_FALLING_EDGE, button0_isr, NULL); // call the ISR when the button is pressed
@@ -237,8 +236,6 @@ void button0ThreadMain()
 // This is done as a separate thread to make the code easier to copy to a later program.
 void button1ThreadMain()
 {
-    wiced_result_t result;
-
     // Setup the Semaphore and Button Interrupt
     wiced_rtos_init_semaphore(&button1_semaphore); // the semaphore unlocks when the user presses the button
     wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button1_isr, NULL); // call the ISR when the button is pressed
