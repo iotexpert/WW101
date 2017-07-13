@@ -3,7 +3,7 @@
 //
 // The message sent and the response from the server are echoed to a UART terminal.
 //
-// This version uses TCP Stream APIs instead of TCP Socket APIs which simplifies the firmware.
+// This version can use either the unsecured port or the secure TLS port
 #include "wiced.h"
 #include "wiced_tls.h"
 
@@ -211,7 +211,6 @@ void sendData(int data)
 // This is done as a separate thread to make the code easier to copy to a later program.
 void button0ThreadMain()
 {
-
     // Setup the Semaphore and Button Interrupt
     wiced_rtos_init_semaphore(&button0_semaphore); // the semaphore unlocks when the user presses the button
     wiced_gpio_input_irq_enable(WICED_SH_MB0, IRQ_TRIGGER_FALLING_EDGE, button0_isr, NULL); // call the ISR when the button is pressed
@@ -237,8 +236,6 @@ void button0ThreadMain()
 // This is done as a separate thread to make the code easier to copy to a later program.
 void button1ThreadMain()
 {
-    wiced_result_t result;
-
     // Setup the Semaphore and Button Interrupt
     wiced_rtos_init_semaphore(&button1_semaphore); // the semaphore unlocks when the user presses the button
     wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button1_isr, NULL); // call the ISR when the button is pressed
@@ -287,27 +284,6 @@ void application_start(void)
                  (uint8_t)(GET_IPV4_ADDRESS(serverAddress) >> 0)));
      }
 
-
      wiced_rtos_create_thread(&button0Thread, WICED_DEFAULT_LIBRARY_PRIORITY, "Button 0 Thread", button0ThreadMain, TCP_CLIENT_STACK_SIZE, 0);
      wiced_rtos_create_thread(&button1Thread, WICED_DEFAULT_LIBRARY_PRIORITY, "Button 1 Thread", button1ThreadMain, TCP_CLIENT_STACK_SIZE, 0);
-
-
-    while(1)
-    {
-        char receiveChar;
-        uint32_t expected_data_size=1;
-
-        wiced_uart_receive_bytes( STDIO_UART, &receiveChar, &expected_data_size, WICED_NEVER_TIMEOUT );
-        switch(receiveChar)
-        {
-        case 'b':
-            wiced_rtos_set_semaphore(&button0_semaphore);
-
-            break;
-        case '?':
-            WPRINT_APP_INFO(("b: Set the button semaphore\n"));
-            break;
-
-        }
-    }
 }

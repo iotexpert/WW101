@@ -1,3 +1,8 @@
+// WW101 TCP server that supports a single connection (per port) at a time using WWEP.
+//
+// See WW101 lab manual for more information on the custom protocol WWEP.
+//
+// This version listend on both the nonsecure and the secure TLS port.
 #include "wiced.h"
 #include "linked_list.h" //usr the WICED linked list library (libraries/utilities/linked_list)
 #include <stdlib.h>
@@ -6,27 +11,27 @@
 #include "wiced_tls.h"
 #include "resources.h"
 
-#define TCP_SERVER_INSECURE_LISTEN_PORT              (27708)
-#define TCP_SERVER_INSECURE_STACK_SIZE               (16384)
-#define TCP_SERVER_INSECURE_THREAD_PRIORITY          (WICED_DEFAULT_LIBRARY_PRIORITY)
+#define TCP_SERVER_NONSECURE_LISTEN_PORT            (27708)
+#define TCP_SERVER_NONSECURE_STACK_SIZE             (16384)
+#define TCP_SERVER_NONSECURE_THREAD_PRIORITY        (WICED_DEFAULT_LIBRARY_PRIORITY)
 
-#define TCP_SERVER_SECURE_LISTEN_PORT                (40508)
-#define TCP_SERVER_SECURE_STACK_SIZE               (16384)
-#define TCP_SERVER_SECURE_THREAD_PRIORITY          (WICED_DEFAULT_LIBRARY_PRIORITY)
+#define TCP_SERVER_SECURE_LISTEN_PORT               (40508)
+#define TCP_SERVER_SECURE_STACK_SIZE                (16384)
+#define TCP_SERVER_SECURE_THREAD_PRIORITY           (WICED_DEFAULT_LIBRARY_PRIORITY)
 
-#define PING_THREAD_PRIORITY                         (WICED_DEFAULT_LIBRARY_PRIORITY)
+#define PING_THREAD_PRIORITY                        (WICED_DEFAULT_LIBRARY_PRIORITY)
 
 
 // Globals for the tcp/ip communication system
-static void tcp_server_insecure_thread_main(wiced_thread_arg_t arg);
+static void tcp_server_nonsecure_thread_main(wiced_thread_arg_t arg);
 
 static void tcp_server_secure_thread_main(wiced_thread_arg_t arg);
 
 static void pingAP(wiced_thread_arg_t arg);
 static wiced_thread_t      tcp_secure_thread;
-static wiced_thread_t      tcp_insecure_thread;
+static wiced_thread_t      tcp_nonsecure_thread;
 static wiced_thread_t      ping_thread;
-static int insecureConnectionCount = 0;
+static int nonsecureConnectionCount = 0;
 static int secureConnectionCount = 0;
 
 
@@ -102,7 +107,7 @@ void application_start(void)
     // I created all of the server code in a separate thread to make it easier to put the server
     // and client together in one application.
 
-    wiced_rtos_create_thread(&tcp_insecure_thread, TCP_SERVER_INSECURE_THREAD_PRIORITY, "Server TCP Server", tcp_server_insecure_thread_main, TCP_SERVER_INSECURE_STACK_SIZE, 0);
+    wiced_rtos_create_thread(&tcp_nonsecure_thread, TCP_SERVER_NONSECURE_THREAD_PRIORITY, "Server TCP Server", tcp_server_nonsecure_thread_main, TCP_SERVER_NONSECURE_STACK_SIZE, 0);
     wiced_rtos_create_thread(&tcp_secure_thread, TCP_SERVER_SECURE_THREAD_PRIORITY, "Secure Server TCP Server", tcp_server_secure_thread_main, TCP_SERVER_SECURE_STACK_SIZE, 0);
     wiced_rtos_create_thread(&ping_thread, PING_THREAD_PRIORITY, "Ping", pingAP, 1024, 0);
 
@@ -211,7 +216,7 @@ void processClientCommand(uint8_t *rbuffer, int dataReadCount, char *returnMessa
 // This function formats all of the data and prints it out ... called by the tcp_server
 static void displayResult(wiced_ip_address_t peerAddress, uint16_t    peerPort, char *returnMessage)
 {
-    WPRINT_APP_INFO(("%d\t%d\t",insecureConnectionCount,secureConnectionCount));
+    WPRINT_APP_INFO(("%d\t%d\t",nonsecureConnectionCount,secureConnectionCount));
 
     WPRINT_APP_INFO(("%u.%u.%u.%u",
                            (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 24),
@@ -222,7 +227,7 @@ static void displayResult(wiced_ip_address_t peerAddress, uint16_t    peerPort, 
        WPRINT_APP_INFO(("\t%d\t%s\n",peerPort,returnMessage));
 }
 
-// The insecure server thread
+// The nonsecure server thread
 static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
 {
     wiced_result_t result;
@@ -324,8 +329,8 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
     }
 }
 
-// The insecure server thread
-static void tcp_server_insecure_thread_main(wiced_thread_arg_t arg)
+// The nonsecure server thread
+static void tcp_server_nonsecure_thread_main(wiced_thread_arg_t arg)
 {
     wiced_result_t result;
     wiced_tcp_stream_t stream;                      // The TCP stream
@@ -343,7 +348,7 @@ static void tcp_server_insecure_thread_main(wiced_thread_arg_t arg)
     }
 
 
-    result = wiced_tcp_listen( &socket, TCP_SERVER_INSECURE_LISTEN_PORT );
+    result = wiced_tcp_listen( &socket, TCP_SERVER_NONSECURE_LISTEN_PORT );
     if(WICED_SUCCESS != result)
     {
         WPRINT_APP_INFO(("Listen socket failed\n"));
@@ -366,7 +371,7 @@ static void tcp_server_insecure_thread_main(wiced_thread_arg_t arg)
         if(result != WICED_SUCCESS) // this occurs if the accept times out
             continue;
 
-        insecureConnectionCount += 1;
+        nonsecureConnectionCount += 1;
 
         /// Figure out which client is talking to us... and on which port
         wiced_ip_address_t peerAddress;
