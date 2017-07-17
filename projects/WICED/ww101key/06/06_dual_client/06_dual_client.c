@@ -134,6 +134,8 @@ void sendDataSecure(int data)
     }
 
     // Delete the stream and socket
+    wiced_tls_deinit_context(&tls_context);
+    wiced_tls_deinit_identity(&tls_identity);
     wiced_tcp_stream_deinit(&stream);
     wiced_tcp_delete_socket(&socket);
 }
