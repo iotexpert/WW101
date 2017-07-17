@@ -2,8 +2,6 @@
 // See the WW101 lab manual for more information on WWEP.
 //
 // The message sent and the response from the server are echoed to a UART terminal.
-//
-// This version uses TCP Stream APIs instead of TCP Socket APIs which simplifies the firmware.
 #include "wiced.h"
 
 #define TCP_CLIENT_STACK_SIZE 	(6200)

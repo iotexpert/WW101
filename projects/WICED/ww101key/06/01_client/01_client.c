@@ -1,9 +1,7 @@
 // Client to send information to a server using a custom protocol (WWEP).
 // See the WW101 lab manual for more information on WWEP.
 //
-// The message sent and the response from the server are echoed to a UART terminal.
-//
-// This version uses TCP Stream APIs instead of TCP Socket APIs which simplifies the firmware.
+// The message that is sent is echoed to a UART terminal.
 #include "wiced.h"
 
 #define TCP_CLIENT_STACK_SIZE 	(10000)

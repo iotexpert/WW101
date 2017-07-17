@@ -62,10 +62,10 @@ void application_start()
         wiced_i2c_read(&psoc_i2c, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, &rx_buffer, sizeof(rx_buffer));
 
 		/* Setup Display Strings */
-		sprintf(temp_str,     "Temp:     %.1f", rx_buffer.temp);
-		sprintf(humidity_str, "Humidity: %.1f", rx_buffer.humidity);
-		sprintf(light_str,    "Light:    %.1f", rx_buffer.light);
-		sprintf(pot_str,      "Pot:      %.1f", rx_buffer.pot);
+		snprintf(temp_str,     sizeof(temp_str),     "Temp:     %.1f", rx_buffer.temp);
+		snprintf(humidity_str, sizeof(humidity_str), "Humidity: %.1f", rx_buffer.humidity);
+		snprintf(light_str,    sizeof(light_str),    "Light:    %.1f", rx_buffer.light);
+		snprintf(pot_str,      sizeof(pot_str),      "Pot:      %.1f", rx_buffer.pot);
 
 		/* Send data to the display */
 		u8g_FirstPage(&display);

@@ -3,7 +3,7 @@
 //
 // The message sent and the response from the server are echoed to a UART terminal.
 //
-// This version uses TCP Stream APIs instead of TCP Socket APIs which simplifies the firmware.
+// This version uses TLS secure sockets
 #include "wiced.h"
 #include "wiced_tls.h"
 

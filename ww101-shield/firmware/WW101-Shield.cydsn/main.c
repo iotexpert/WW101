@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 /* Use this to run the tuner. */
+/* The tuner uses I2C address 0x42 and uses a 1 byte I2C address */
 //#define ENABLE_TUNER
 
 /* Button State */
@@ -26,7 +27,7 @@
 
 /* Constants used to calculate humidity */
 /* This is the capacitance of the sensor at 55% RH with 0.1pF resolution */
-#define CAPACITANCE_AT_55_RH        (1800)
+#define CAPACITANCE_AT_55_RH        (1850)
 /* Sensitivity numerator and denominator indicate sensitivity of the sensor */
 #define SENSITIVITY_NUMERATOR       (31)
 #define SENSITIVITY_DENOMINATOR     (100)
@@ -330,14 +331,24 @@ int main(void)
     int16   temp16; /* Temperature expressed as a 16 bit integer in 1/100th of a degree */
     uint8   i;
     // Range of POT for bootloader entry testing
-    uint32 potMin = 0xFFFF;
-    uint32 potMax = 0x0000;
+    float32 potMin = 3.3;
+    float32 potMax = 0.0;
     
     CyGlobalIntEnable; /* Enable global interrupts. */
 
-    CapSense_Start();   
+    CapSense_Start(); 
+    /* Over-ride IDAC values for buttons but keep auto for Prox and Humidity */
+    CapSense_BUTTON0_IDAC_MOD0_VALUE =          7u;
+    CapSense_BUTTON0_SNS0_IDAC_COMP0_VALUE =    6u;
+    CapSense_BUTTON1_IDAC_MOD0_VALUE =          7u;
+    CapSense_BUTTON1_SNS0_IDAC_COMP0_VALUE =    7u;
+    CapSense_BUTTON2_IDAC_MOD0_VALUE =          9u;
+    CapSense_BUTTON2_SNS0_IDAC_COMP0_VALUE =    7u;
+    CapSense_BUTTON3_IDAC_MOD0_VALUE =          9u;
+    CapSense_BUTTON3_SNS0_IDAC_COMP0_VALUE =    8u;
+    /* Setup first widget and run the scan */
     CapSense_SetupWidget(CapSense_BUTTON0_WDGT_ID);
-    CapSense_Scan();       
+    CapSense_Scan();  
     
     EZI2C_Start();
     #ifdef ENABLE_TUNER
