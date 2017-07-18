@@ -33,7 +33,6 @@ void sendData(int data)
 {
     wiced_tcp_socket_t socket;                      // The TCP socket
     wiced_tls_context_t tls_context;
-    wiced_tls_identity_t tls_identity;
     platform_dct_security_t* dct_security = NULL;
 
     wiced_tcp_stream_t stream;						// The TCP stream
@@ -63,16 +62,14 @@ void sendData(int data)
          return;
      }
 
+     result = wiced_tls_init_root_ca_certificates( dct_security->certificate, strlen( dct_security->certificate ) );
+     if ( result != WICED_SUCCESS )
+     {
+         WPRINT_APP_INFO(( "Unable to initialize Root Certificate = [%d]\n", result ));
+         return;
+     }
 
-    result = wiced_tls_init_identity( &tls_identity, dct_security->private_key, strlen( dct_security->private_key ), (uint8_t*) dct_security->certificate, strlen( dct_security->certificate ) );
-    if ( result != WICED_SUCCESS )
-    {
-        WPRINT_APP_INFO(( "Unable to initialize TLS identity. Error = [%d]\n", result ));
-        return;
-    }
-
-
-    result = wiced_tls_init_context( &tls_context, &tls_identity, NULL );
+    result = wiced_tls_init_context( &tls_context, NULL, NULL );
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Unable to initialize Context. Error = [%d]\n", result ));
@@ -122,7 +119,6 @@ void sendData(int data)
 
     // Delete the stream and socket
     wiced_tls_deinit_context(&tls_context);
-    wiced_tls_deinit_identity(&tls_identity);
     wiced_tcp_stream_deinit(&stream);
     wiced_tcp_delete_socket(&socket);
 }
