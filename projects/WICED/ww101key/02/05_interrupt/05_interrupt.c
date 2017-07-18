@@ -26,8 +26,5 @@ void application_start( )
 
     wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL); /* Setup interrupt */
 
-    while ( 1 )
-    {
-    	/* No main loop code required - just wait for interrupt */
-    }
+    /* No main loop code required - the interrupt handles everything */
 }
