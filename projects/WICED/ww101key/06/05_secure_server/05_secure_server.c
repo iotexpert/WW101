@@ -125,11 +125,12 @@ void processClientCommand(uint8_t *rbuffer, int dataReadCount, char *returnMessa
 {
 
     /////////
-    if(dataReadCount > 12) // to many characters reject
+    if(dataReadCount > 12 || dataReadCount == 0) // to many characters reject
     {
         sprintf(returnMessage, "X illegal message length");
         return;
     }
+
 
     dbEntry_t receive;
     char commandId;
@@ -252,6 +253,7 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
         return;
     }
 
+
     /* Setup TLS identity */
     result = wiced_tls_init_identity( &tls_identity, dct_security->private_key, strlen( dct_security->private_key ), (uint8_t*) dct_security->certificate, strlen( dct_security->certificate ) );
     if ( result != WICED_SUCCESS )
@@ -261,6 +263,7 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
     }
 
     result = wiced_tls_init_context( &tls_context, &tls_identity, NULL );
+
     if(result != WICED_SUCCESS)
     {
         WPRINT_APP_INFO(("Init context failed %d",result));
@@ -310,6 +313,8 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
         wiced_tcp_stream_write(&stream,returnMessage,strlen(returnMessage));
         wiced_tcp_stream_flush(&stream);
         wiced_tcp_disconnect(&socket); // disconnect the connection
+
+        wiced_tls_reset_context(&tls_context);
 
         wiced_tcp_stream_deinit(&stream); // clear the stream if any crap left
         wiced_tcp_stream_init(&stream,&socket); // setup for next connection
