@@ -5,4 +5,3 @@ $(NAME)_SOURCES := 03_secure_client.c
 WIFI_CONFIG_DCT_H := wifi_config_dct.h
 
 CERTIFICATE := $(SOURCE_ROOT)resources/certificates/wwep_cert.pem
-PRIVATE_KEY := $(SOURCE_ROOT)resources/certificates/wwep_privkey.pem
