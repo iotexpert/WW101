@@ -55,7 +55,7 @@ void application_start( )
     			pressCount = 0;
     		}
     		printChar = pressCount + '0';
-    		wiced_uart_transmit_bytes(WICED_UART_1, &printChar , 1);
+    		wiced_uart_transmit_bytes(STDIO_UART, &printChar , 1);
     		newPress = WICED_FALSE;	/* Reset for next press */
     	}
     }
