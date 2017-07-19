@@ -64,6 +64,7 @@ void sendDataSecure(int data)
     if(result!=WICED_SUCCESS)
     {
         WPRINT_APP_INFO(("Failed to bind socket %d\n",result));
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -72,6 +73,7 @@ void sendDataSecure(int data)
      if ( result != WICED_SUCCESS )
      {
          WPRINT_APP_INFO(("Unable to lock DCT to read certificate\n"));
+         wiced_tcp_delete_socket(&socket);
          return;
      }
 
@@ -79,6 +81,7 @@ void sendDataSecure(int data)
      if ( result != WICED_SUCCESS )
      {
          WPRINT_APP_INFO(( "Unable to initialize Root Certificate = [%d]\n", result ));
+         wiced_tcp_delete_socket(&socket);
          return;
      }
 
@@ -86,6 +89,7 @@ void sendDataSecure(int data)
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Unable to initialize Context. Error = [%d]\n", result ));
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -93,6 +97,8 @@ void sendDataSecure(int data)
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Start TLS Failed. Error = [%d]\n", result ));
+        wiced_tls_deinit_context(&tls_context);
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -100,15 +106,14 @@ void sendDataSecure(int data)
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Failed connect = [%d]\n", result ));
+        wiced_tls_deinit_context(&tls_context);
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
-
-    // format the data per the specification in section 6
+    // Format the data per the specification in section 6
     sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
     WPRINT_APP_INFO(("Sent Secure Message=%s\n",sendMessage)); // echo the message so that the user can see something
-
-
 
     // Initialize the TCP stream
     wiced_tcp_stream_init(&stream, &socket);
@@ -137,7 +142,6 @@ void sendDataSecure(int data)
 }
 
 
-
 // sendData:
 // This function opens a socket connection to the WWEP server
 // then sends the state of the LED and gets the response
@@ -162,6 +166,7 @@ void sendData(int data)
     if(result!=WICED_SUCCESS)
     {
         WPRINT_APP_INFO(("Failed to bind socket %d\n",result));
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -169,10 +174,11 @@ void sendData(int data)
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Failed connect = [%d]\n", result ));
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
-    // format the data per the specification in section 6
+    // Format the data per the specification in section 6
     sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
     WPRINT_APP_INFO(("Sent Message=%s\n",sendMessage)); // echo the message so that the user can see something
 
