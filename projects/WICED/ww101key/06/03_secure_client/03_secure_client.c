@@ -33,7 +33,6 @@ void sendData(int data)
 {
     wiced_tcp_socket_t socket;                      // The TCP socket
     wiced_tls_context_t tls_context;
-
     wiced_tcp_stream_t stream;						// The TCP stream
     char sendMessage[12];
     wiced_result_t result;
@@ -50,6 +49,7 @@ void sendData(int data)
     if(result!=WICED_SUCCESS)
     {
         WPRINT_APP_INFO(("Failed to bind socket %d\n",result));
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -57,6 +57,7 @@ void sendData(int data)
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Unable to initialize Context. Error = [%d]\n", result ));
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -64,6 +65,8 @@ void sendData(int data)
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Start TLS Failed. Error = [%d]\n", result ));
+        wiced_tls_deinit_context(&tls_context);
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -71,6 +74,8 @@ void sendData(int data)
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Failed connect = [%d]\n", result ));
+        wiced_tls_deinit_context(&tls_context);
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 

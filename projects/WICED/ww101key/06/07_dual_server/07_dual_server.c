@@ -111,7 +111,7 @@ void application_start(void)
     wiced_rtos_create_thread(&ping_thread, PING_THREAD_PRIORITY, "Ping", pingAP, 1024, 0);
 
     // Setup Display
-    WPRINT_APP_INFO(("#\t#\t     IP\t\tPort\tMessage\n"));
+    WPRINT_APP_INFO(("#\t# Secure\tIP\t\tPort\tMessage\n"));
     WPRINT_APP_INFO(("----------------------------------------------------------------------\n"));
 
 

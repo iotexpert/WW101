@@ -29,15 +29,35 @@ void sendData(int data)
 	wiced_tcp_socket_t socket;						// The TCP socket
 	wiced_tcp_stream_t stream;						// The TCP stream
 	char sendMessage[12];
-
-    // format the data per the specification in section 6
-	sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
-	WPRINT_APP_INFO(("Sent Message=%s\n",sendMessage)); // echo the message so that the user can see something
+    wiced_result_t result;
 
 	// Open the connection to the remote server via a socket
-	wiced_tcp_create_socket(&socket, WICED_STA_INTERFACE);
-	wiced_tcp_bind(&socket,WICED_ANY_PORT);
-	wiced_tcp_connect(&socket,&serverAddress,SERVER_PORT,2000); // 2 second timeout
+	result = wiced_tcp_create_socket(&socket, WICED_STA_INTERFACE);
+    if(result!=WICED_SUCCESS)
+    {
+        WPRINT_APP_INFO(("Failed to create socket %d\n",result));
+        return;
+    }
+
+	result = wiced_tcp_bind(&socket,WICED_ANY_PORT);
+    if(result!=WICED_SUCCESS)
+    {
+        WPRINT_APP_INFO(("Failed to bind socket %d\n",result));
+        wiced_tcp_delete_socket(&socket);
+        return;
+    }
+
+	result = wiced_tcp_connect(&socket,&serverAddress,SERVER_PORT,2000); // 2 second timeout
+    if ( result != WICED_SUCCESS )
+    {
+        WPRINT_APP_INFO(( "Failed connect = [%d]\n", result ));
+        wiced_tcp_delete_socket(&socket);
+        return;
+    }
+
+    // Format the data per the specification in section 6
+    sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
+    WPRINT_APP_INFO(("Sent Message=%s\n",sendMessage)); // echo the message so that the user can see something
 
 	// Initialize the TCP stream
 	wiced_tcp_stream_init(&stream, &socket);
