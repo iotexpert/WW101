@@ -15,6 +15,11 @@
 // When I get a write I look through the linked list to find that deviceId/regId combination
 // if yes then overwrite.. otherwise add it to the list
 //
+#define dbMax (400)
+uint32_t dbGetMax()
+{
+    return dbMax ;
+}
 
 
 linked_list_t db;
@@ -63,7 +68,6 @@ dbEntry_t *dbFind(dbEntry_t *find)
 //
 void dbSetValue(dbEntry_t *newValue)
 {
-    wiced_rtos_lock_mutex(&dbMutex);
     dbEntry_t *found = dbFind(newValue);
     if(found) // if it is already in the database
     {
@@ -71,11 +75,14 @@ void dbSetValue(dbEntry_t *newValue)
     }
     else // add it to the linked list
     {
+        wiced_rtos_lock_mutex(&dbMutex);
+
         linked_list_node_t *newNode = (linked_list_node_t *)malloc(sizeof(linked_list_node_t));
         newNode->data = newValue;
         linked_list_insert_node_at_front( &db, newNode );
+        wiced_rtos_unlock_mutex(&dbMutex);
+
     }
-    wiced_rtos_lock_mutex(&dbMutex);
 }
 
 uint32_t dbGetCount()

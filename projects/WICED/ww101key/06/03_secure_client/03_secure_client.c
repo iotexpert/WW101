@@ -33,7 +33,6 @@ void sendData(int data)
 {
     wiced_tcp_socket_t socket;                      // The TCP socket
     wiced_tls_context_t tls_context;
-    platform_dct_security_t* dct_security = NULL;
 
     wiced_tcp_stream_t stream;						// The TCP stream
     char sendMessage[12];
@@ -53,21 +52,6 @@ void sendData(int data)
         WPRINT_APP_INFO(("Failed to bind socket %d\n",result));
         return;
     }
-
-    /* Lock the DCT to allow us to access the certificate and key */
-     result = wiced_dct_read_lock( (void**) &dct_security, WICED_FALSE, DCT_SECURITY_SECTION, 0, sizeof( *dct_security ) );
-     if ( result != WICED_SUCCESS )
-     {
-         WPRINT_APP_INFO(("Unable to lock DCT to read certificate\n"));
-         return;
-     }
-
-     result = wiced_tls_init_root_ca_certificates( dct_security->certificate, strlen( dct_security->certificate ) );
-     if ( result != WICED_SUCCESS )
-     {
-         WPRINT_APP_INFO(( "Unable to initialize Root Certificate = [%d]\n", result ));
-         return;
-     }
 
     result = wiced_tls_init_context( &tls_context, NULL, NULL );
     if ( result != WICED_SUCCESS )
@@ -94,8 +78,6 @@ void sendData(int data)
     // format the data per the specification in section 6
     sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
     WPRINT_APP_INFO(("Sent Message=%s\n",sendMessage)); // echo the message so that the user can see something
-
-
 
     // Initialize the TCP stream
     wiced_tcp_stream_init(&stream, &socket);
@@ -180,8 +162,27 @@ void buttonThreadMain()
 
 void application_start(void)
 {
+    wiced_result_t result;
     wiced_init( );
     wiced_network_up( WICED_STA_INTERFACE, WICED_USE_EXTERNAL_DHCP_SERVER, NULL );
+
+    /* Lock the DCT to allow us to access the certificate and key */
+     platform_dct_security_t* dct_security = NULL;
+
+     result = wiced_dct_read_lock( (void**) &dct_security, WICED_FALSE, DCT_SECURITY_SECTION, 0, sizeof( *dct_security ) );
+     if ( result != WICED_SUCCESS )
+     {
+         WPRINT_APP_INFO(("Unable to lock DCT to read certificate\n"));
+         return;
+     }
+
+     result = wiced_tls_init_root_ca_certificates( dct_security->certificate, strlen( dct_security->certificate ) );
+     if ( result != WICED_SUCCESS )
+     {
+         WPRINT_APP_INFO(( "Unable to initialize Root Certificate = [%d]\n", result ));
+         return;
+     }
+
     wiced_rtos_create_thread(&buttonThread, WICED_DEFAULT_LIBRARY_PRIORITY, "Button Thread", buttonThreadMain, TCP_CLIENT_STACK_SIZE, 0);
     char receiveChar;
     uint32_t expected_data_size=1;

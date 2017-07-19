@@ -88,6 +88,7 @@ void pingAP (wiced_thread_arg_t arg)
 void application_start(void)
 {
     wiced_init( );
+    dbStart();
 
     WPRINT_APP_INFO(("Starting WWEP Server\n"));
 
@@ -219,6 +220,7 @@ static void displayResult(wiced_ip_address_t peerAddress, uint16_t    peerPort, 
 // The secure server thread
 static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
 {
+
     wiced_result_t result;
     wiced_tcp_stream_t stream;                      // The TCP stream
     wiced_tcp_socket_t socket;
@@ -237,12 +239,14 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
     }
 
 
+
     result = wiced_tcp_listen( &socket, TCP_SERVER_SECURE_LISTEN_PORT );
     if(WICED_SUCCESS != result)
     {
         WPRINT_APP_INFO(("Listen socket failed\n"));
         return;
     }
+
 
     /* Lock the DCT to allow us to access the certificate and key */
     WPRINT_APP_INFO(( "Read the certificate Key from DCT\n" ));
@@ -278,6 +282,7 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
         return;
     }
 
+
     wiced_tcp_stream_init(&stream,&socket);
     if(WICED_SUCCESS != result)
     {
@@ -302,7 +307,7 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
         wiced_tcp_server_peer(&socket,&peerAddress,&peerPort);
 
         uint32_t dataReadCount;
-        wiced_tcp_stream_read_with_count(&stream,&rbuffer,MAX_LEGAL_MSG,10,&dataReadCount); // timeout in 10ms
+        wiced_tcp_stream_read_with_count(&stream,&rbuffer,MAX_LEGAL_MSG,100,&dataReadCount); // timeout in 100ms to allow TLS to setup
 
         processClientCommand(rbuffer, dataReadCount ,returnMessage);
 

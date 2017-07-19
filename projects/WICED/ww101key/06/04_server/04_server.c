@@ -83,6 +83,7 @@ void pingAP (wiced_thread_arg_t arg)
 void application_start(void)
 {
     wiced_init( );
+    dbStart();
 
     WPRINT_APP_INFO(("Starting WWEP Server\n"));
 
@@ -258,7 +259,7 @@ static void tcp_server_nonsecure_thread_main(wiced_thread_arg_t arg)
         wiced_tcp_server_peer(&socket,&peerAddress,&peerPort);
 
         uint32_t dataReadCount;
-        wiced_tcp_stream_read_with_count(&stream,&rbuffer,MAX_LEGAL_MSG,10,&dataReadCount); // timeout in 10ms
+        wiced_tcp_stream_read_with_count(&stream,&rbuffer,MAX_LEGAL_MSG,100,&dataReadCount); // timeout in 100 ms
 
         processClientCommand(rbuffer, dataReadCount ,returnMessage);
 
