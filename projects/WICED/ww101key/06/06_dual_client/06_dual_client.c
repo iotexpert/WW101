@@ -38,8 +38,8 @@ void button1_isr(void *arg)
 
 
 
-// sendData:
-// This function opens a socket connection to the WWEP server
+// sendDataSecure:
+// This function opens a TLS socket connection to the WWEP server
 // then sends the state of the LED and gets the response
 // The input data is 0=Off, 1=On
 void sendDataSecure(int data)
@@ -106,7 +106,7 @@ void sendDataSecure(int data)
 
     // format the data per the specification in section 6
     sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
-    WPRINT_APP_INFO(("Sent Message=%s\n",sendMessage)); // echo the message so that the user can see something
+    WPRINT_APP_INFO(("Sent Secure Message=%s\n",sendMessage)); // echo the message so that the user can see something
 
 
 
