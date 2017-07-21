@@ -2,8 +2,6 @@
 // See the WW101 lab manual for more information on WWEP.
 //
 // The message sent and the response from the server are echoed to a UART terminal.
-//
-// This version uses TCP Stream APIs instead of TCP Socket APIs which simplifies the firmware.
 #include "wiced.h"
 
 #define TCP_CLIENT_STACK_SIZE 	(6200)
@@ -33,14 +31,33 @@ void sendData(int data)
 	char sendMessage[12];
 	wiced_result_t result;
 
-    // format the data per the specification in section 6
-	sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
-	WPRINT_APP_INFO(("Sent Message=%s\n",sendMessage)); // echo the message so that the user can see something
-
 	// Open the connection to the remote server via a socket
-	wiced_tcp_create_socket(&socket, WICED_STA_INTERFACE);
-	wiced_tcp_bind(&socket,WICED_ANY_PORT);
-	wiced_tcp_connect(&socket,&serverAddress,SERVER_PORT,2000); // 2 second timeout
+    result = wiced_tcp_create_socket(&socket, WICED_STA_INTERFACE);
+    if(result!=WICED_SUCCESS)
+    {
+        WPRINT_APP_INFO(("Failed to create socket %d\n",result));
+        return;
+    }
+
+    result = wiced_tcp_bind(&socket,WICED_ANY_PORT);
+    if(result!=WICED_SUCCESS)
+    {
+        WPRINT_APP_INFO(("Failed to bind socket %d\n",result));
+        wiced_tcp_delete_socket(&socket);
+        return;
+    }
+
+    result = wiced_tcp_connect(&socket,&serverAddress,SERVER_PORT,2000); // 2 second timeout
+    if ( result != WICED_SUCCESS )
+    {
+        WPRINT_APP_INFO(( "Failed connect = [%d]\n", result ));
+        wiced_tcp_delete_socket(&socket);
+        return;
+    }
+
+    // Format the data per the specification in section 6
+    sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
+    WPRINT_APP_INFO(("Sent Message=%s\n",sendMessage)); // echo the message so that the user can see something
 
 	// Initialize the TCP stream
 	wiced_tcp_stream_init(&stream, &socket);

@@ -1,3 +1,8 @@
+// WW101 TCP server that supports a single connection (per port) at a time using WWEP.
+//
+// See WW101 lab manual for more information on the custom protocol WWEP.
+//
+// This version listend on both the nonsecure and the secure TLS port.
 #include "wiced.h"
 #include "linked_list.h" //usr the WICED linked list library (libraries/utilities/linked_list)
 #include <stdlib.h>
@@ -6,31 +11,30 @@
 #include "wiced_tls.h"
 #include "resources.h"
 
-#define TCP_SERVER_INSECURE_LISTEN_PORT              (27708)
-#define TCP_SERVER_INSECURE_STACK_SIZE               (16384)
-#define TCP_SERVER_INSECURE_THREAD_PRIORITY          (WICED_DEFAULT_LIBRARY_PRIORITY)
+#define TCP_SERVER_NONSECURE_LISTEN_PORT            (27708)
+#define TCP_SERVER_NONSECURE_STACK_SIZE             (16384)
+#define TCP_SERVER_NONSECURE_THREAD_PRIORITY        (WICED_DEFAULT_LIBRARY_PRIORITY)
 
-#define TCP_SERVER_SECURE_LISTEN_PORT                (40508)
-#define TCP_SERVER_SECURE_STACK_SIZE               (16384)
-#define TCP_SERVER_SECURE_THREAD_PRIORITY          (WICED_DEFAULT_LIBRARY_PRIORITY)
+#define TCP_SERVER_SECURE_LISTEN_PORT               (40508)
+#define TCP_SERVER_SECURE_STACK_SIZE                (16384)
+#define TCP_SERVER_SECURE_THREAD_PRIORITY           (WICED_DEFAULT_LIBRARY_PRIORITY)
 
-#define PING_THREAD_PRIORITY                         (WICED_DEFAULT_LIBRARY_PRIORITY)
+#define PING_THREAD_PRIORITY                        (WICED_DEFAULT_LIBRARY_PRIORITY)
 
 
 // Globals for the tcp/ip communication system
-static void tcp_server_insecure_thread_main(wiced_thread_arg_t arg);
+static void tcp_server_thread_main(wiced_thread_arg_t arg);
 
-static void tcp_server_secure_thread_main(wiced_thread_arg_t arg);
 
 static void pingAP(wiced_thread_arg_t arg);
 static wiced_thread_t      tcp_secure_thread;
-static wiced_thread_t      tcp_insecure_thread;
+static wiced_thread_t      tcp_nonsecure_thread;
 static wiced_thread_t      ping_thread;
-static int insecureConnectionCount = 0;
+static int nonsecureConnectionCount = 0;
 static int secureConnectionCount = 0;
 
 
-// Hardcoded IP Address of the WWEP Server
+// Hard coded IP Address of the WWEP Server
 static const wiced_ip_setting_t ip_settings =
 {
         INITIALISER_IPV4_ADDRESS( .ip_address, MAKE_IPV4_ADDRESS( 198,51,  100,  3 ) ),
@@ -94,7 +98,7 @@ void pingAP (wiced_thread_arg_t arg)
 void application_start(void)
 {
     wiced_init( );
-
+    dbStart();
     WPRINT_APP_INFO(("Starting WWEP Server\n"));
 
     while(wiced_network_up( INTERFACE, DHCP_MODE, &ip_settings ) != WICED_SUCCESS); // Keep trying until you get hooked up
@@ -102,12 +106,12 @@ void application_start(void)
     // I created all of the server code in a separate thread to make it easier to put the server
     // and client together in one application.
 
-    wiced_rtos_create_thread(&tcp_insecure_thread, TCP_SERVER_INSECURE_THREAD_PRIORITY, "Server TCP Server", tcp_server_insecure_thread_main, TCP_SERVER_INSECURE_STACK_SIZE, 0);
-    wiced_rtos_create_thread(&tcp_secure_thread, TCP_SERVER_SECURE_THREAD_PRIORITY, "Secure Server TCP Server", tcp_server_secure_thread_main, TCP_SERVER_SECURE_STACK_SIZE, 0);
+    wiced_rtos_create_thread(&tcp_nonsecure_thread, TCP_SERVER_NONSECURE_THREAD_PRIORITY, "Server TCP Server", tcp_server_thread_main, TCP_SERVER_NONSECURE_STACK_SIZE, (void *)WICED_FALSE);
+    wiced_rtos_create_thread(&tcp_secure_thread, TCP_SERVER_SECURE_THREAD_PRIORITY, "Secure Server TCP Server", tcp_server_thread_main, TCP_SERVER_SECURE_STACK_SIZE, (void *)WICED_TRUE);
     wiced_rtos_create_thread(&ping_thread, PING_THREAD_PRIORITY, "Ping", pingAP, 1024, 0);
 
     // Setup Display
-    WPRINT_APP_INFO(("#\t#\t     IP\t\tPort\tMessage\n"));
+    WPRINT_APP_INFO(("#\t# Secure\tIP\t\tPort\tMessage\n"));
     WPRINT_APP_INFO(("----------------------------------------------------------------------\n"));
 
 
@@ -132,7 +136,7 @@ void processClientCommand(uint8_t *rbuffer, int dataReadCount, char *returnMessa
 {
 
     /////////
-    if(dataReadCount > 12) // to many characters reject
+    if(dataReadCount > 12 || dataReadCount == 0) // 0 or too many characters reject
     {
         sprintf(returnMessage, "X illegal message length");
         return;
@@ -211,20 +215,22 @@ void processClientCommand(uint8_t *rbuffer, int dataReadCount, char *returnMessa
 // This function formats all of the data and prints it out ... called by the tcp_server
 static void displayResult(wiced_ip_address_t peerAddress, uint16_t    peerPort, char *returnMessage)
 {
-    WPRINT_APP_INFO(("%d\t%d\t",insecureConnectionCount,secureConnectionCount));
+    WPRINT_APP_INFO(("%d\t%d\t",nonsecureConnectionCount,secureConnectionCount));
 
     WPRINT_APP_INFO(("%u.%u.%u.%u",
-                           (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 24),
-                           (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 16),
-                           (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 8),
-                           (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 0)
-                           ));
-       WPRINT_APP_INFO(("\t%d\t%s\n",peerPort,returnMessage));
+            (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 24),
+            (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 16),
+            (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 8),
+            (uint8_t)(GET_IPV4_ADDRESS(peerAddress) >> 0)
+    ));
+    WPRINT_APP_INFO(("\t%d\t%s\n",peerPort,returnMessage));
 }
 
-// The insecure server thread
-static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
+
+static void tcp_server_thread_main(wiced_thread_arg_t arg)
 {
+    wiced_bool_t wwepSecurity = (wiced_bool_t)arg;
+
     wiced_result_t result;
     wiced_tcp_stream_t stream;                      // The TCP stream
     wiced_tcp_socket_t socket;
@@ -242,46 +248,57 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
         return; // this is a bad outcome
     }
 
+    if(wwepSecurity == WICED_TRUE)
+    {
+        WPRINT_APP_INFO(("Starting secure\n"));
 
-    result = wiced_tcp_listen( &socket, TCP_SERVER_SECURE_LISTEN_PORT );
+    }
+    else
+    {
+        WPRINT_APP_INFO(("Starting non-secure\n"));
+    }
+
+    result = wiced_tcp_listen( &socket, (wwepSecurity == WICED_TRUE)?TCP_SERVER_SECURE_LISTEN_PORT:TCP_SERVER_NONSECURE_LISTEN_PORT );
     if(WICED_SUCCESS != result)
     {
         WPRINT_APP_INFO(("Listen socket failed\n"));
         return;
     }
 
-    /* Lock the DCT to allow us to access the certificate and key */
-    WPRINT_APP_INFO(( "Read the certificate Key from DCT\n" ));
-    result = wiced_dct_read_lock( (void**) &dct_security, WICED_FALSE, DCT_SECURITY_SECTION, 0, sizeof( *dct_security ) );
-    if ( result != WICED_SUCCESS )
+    if(wwepSecurity == WICED_TRUE)
     {
-        WPRINT_APP_INFO(("Unable to lock DCT to read certificate\n"));
-        return;
+        /* Lock the DCT to allow us to access the certificate and key */
+        WPRINT_APP_INFO(( "Read the certificate Key from DCT\n" ));
+        result = wiced_dct_read_lock( (void**) &dct_security, WICED_FALSE, DCT_SECURITY_SECTION, 0, sizeof( *dct_security ) );
+        if ( result != WICED_SUCCESS )
+        {
+            WPRINT_APP_INFO(("Unable to lock DCT to read certificate\n"));
+            return;
+        }
+
+        /* Setup TLS identity */
+        result = wiced_tls_init_identity( &tls_identity, dct_security->private_key, strlen( dct_security->private_key ), (uint8_t*) dct_security->certificate, strlen( dct_security->certificate ) );
+        if ( result != WICED_SUCCESS )
+        {
+            WPRINT_APP_INFO(( "Unable to initialize TLS identity. Error = [%d]\n", result ));
+            return;
+        }
+
+        result = wiced_tls_init_context( &tls_context, &tls_identity, NULL );
+        if(result != WICED_SUCCESS)
+        {
+            WPRINT_APP_INFO(("Init context failed %d",result));
+            return;
+        }
+
+        result = wiced_tcp_enable_tls(&socket,&tls_context);
+
+        if(result != WICED_SUCCESS)
+        {
+            WPRINT_APP_INFO(("Enabling TLS failed %d",result));
+            return;
+        }
     }
-
-    /* Setup TLS identity */
-    result = wiced_tls_init_identity( &tls_identity, dct_security->private_key, strlen( dct_security->private_key ), (uint8_t*) dct_security->certificate, strlen( dct_security->certificate ) );
-    if ( result != WICED_SUCCESS )
-    {
-        WPRINT_APP_INFO(( "Unable to initialize TLS identity. Error = [%d]\n", result ));
-        return;
-    }
-
-    result = wiced_tls_init_context( &tls_context, &tls_identity, NULL );
-    if(result != WICED_SUCCESS)
-    {
-        WPRINT_APP_INFO(("Init context failed %d",result));
-        return;
-    }
-
-    result = wiced_tcp_enable_tls(&socket,&tls_context);
-
-    if(result != WICED_SUCCESS)
-    {
-        WPRINT_APP_INFO(("Enabling TLS failed %d",result));
-        return;
-    }
-
     wiced_tcp_stream_init(&stream,&socket);
     if(WICED_SUCCESS != result)
     {
@@ -298,7 +315,10 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
         if(result != WICED_SUCCESS) // this occurs if the accept times out
             continue;
 
-        secureConnectionCount += 1;
+        if(wwepSecurity == WICED_TRUE)
+            secureConnectionCount += 1;
+        else
+            nonsecureConnectionCount += 1;
 
         /// Figure out which client is talking to us... and on which port
         wiced_ip_address_t peerAddress;
@@ -306,8 +326,7 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
         wiced_tcp_server_peer(&socket,&peerAddress,&peerPort);
 
         uint32_t dataReadCount;
-        wiced_tcp_stream_read_with_count(&stream,&rbuffer,MAX_LEGAL_MSG,10,&dataReadCount); // timeout in 10ms
-
+        wiced_tcp_stream_read_with_count(&stream,&rbuffer,MAX_LEGAL_MSG,100,&dataReadCount); // timeout in 100 ms
         processClientCommand(rbuffer, dataReadCount ,returnMessage);
 
         displayResult(peerAddress,peerPort,returnMessage);
@@ -318,77 +337,13 @@ static void tcp_server_secure_thread_main(wiced_thread_arg_t arg)
         wiced_tcp_stream_flush(&stream);
         wiced_tcp_disconnect(&socket); // disconnect the connection
 
-        wiced_tcp_stream_deinit(&stream); // clear the stream if any crap left
-        wiced_tcp_stream_init(&stream,&socket); // setup for next connection
-
-    }
-}
-
-// The insecure server thread
-static void tcp_server_insecure_thread_main(wiced_thread_arg_t arg)
-{
-    wiced_result_t result;
-    wiced_tcp_stream_t stream;                      // The TCP stream
-    wiced_tcp_socket_t socket;
-
-    uint8_t rbuffer[MAX_LEGAL_MSG];
-
-    char returnMessage[128]; // better use less than 128 bytes
-    // setup the server by creating the socket and hooking it to the correct TCP Port
-    result = wiced_tcp_create_socket(&socket, INTERFACE);
-    if(WICED_SUCCESS != result)
-    {
-        WPRINT_APP_INFO(("Create socket failed\n"));
-        return; // this is a bad outcome
-    }
-
-
-    result = wiced_tcp_listen( &socket, TCP_SERVER_INSECURE_LISTEN_PORT );
-    if(WICED_SUCCESS != result)
-    {
-        WPRINT_APP_INFO(("Listen socket failed\n"));
-        return;
-    }
-
-      wiced_tcp_stream_init(&stream,&socket);
-    if(WICED_SUCCESS != result)
-    {
-        WPRINT_APP_INFO(("Init stream failed\n"));
-        return; // this is a bad outcome
-    }
-
-
-    while (1 )
-    {
-
-        result = wiced_tcp_accept( &socket ); // this halts the thread until there is a connection
-
-        if(result != WICED_SUCCESS) // this occurs if the accept times out
-            continue;
-
-        insecureConnectionCount += 1;
-
-        /// Figure out which client is talking to us... and on which port
-        wiced_ip_address_t peerAddress;
-        uint16_t    peerPort;
-        wiced_tcp_server_peer(&socket,&peerAddress,&peerPort);
-
-        uint32_t dataReadCount;
-        wiced_tcp_stream_read_with_count(&stream,&rbuffer,MAX_LEGAL_MSG,10,&dataReadCount); // timeout in 10ms
-
-        processClientCommand(rbuffer, dataReadCount ,returnMessage);
-
-        displayResult(peerAddress,peerPort,returnMessage);
-
-
-        // send response and close things up
-        wiced_tcp_stream_write(&stream,returnMessage,strlen(returnMessage));
-        wiced_tcp_stream_flush(&stream);
-        wiced_tcp_disconnect(&socket); // disconnect the connection
+        if(wwepSecurity == WICED_TRUE)
+        {
+            wiced_tls_reset_context(&tls_context);
+        }
 
         wiced_tcp_stream_deinit(&stream); // clear the stream if any crap left
         wiced_tcp_stream_init(&stream,&socket); // setup for next connection
 
     }
 }
-

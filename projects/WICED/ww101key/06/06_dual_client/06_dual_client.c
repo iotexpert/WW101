@@ -3,7 +3,7 @@
 //
 // The message sent and the response from the server are echoed to a UART terminal.
 //
-// This version uses TCP Stream APIs instead of TCP Socket APIs which simplifies the firmware.
+// This version can use either the unsecured port or the secure TLS port
 #include "wiced.h"
 #include "wiced_tls.h"
 
@@ -38,15 +38,14 @@ void button1_isr(void *arg)
 
 
 
-// sendData:
-// This function opens a socket connection to the WWEP server
+// sendDataSecure:
+// This function opens a TLS socket connection to the WWEP server
 // then sends the state of the LED and gets the response
 // The input data is 0=Off, 1=On
 void sendDataSecure(int data)
 {
     wiced_tcp_socket_t socket;                      // The TCP socket
     wiced_tls_context_t tls_context;
-    wiced_tls_identity_t tls_identity;
     platform_dct_security_t* dct_security = NULL;
 
     wiced_tcp_stream_t stream;						// The TCP stream
@@ -65,6 +64,7 @@ void sendDataSecure(int data)
     if(result!=WICED_SUCCESS)
     {
         WPRINT_APP_INFO(("Failed to bind socket %d\n",result));
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -73,22 +73,23 @@ void sendDataSecure(int data)
      if ( result != WICED_SUCCESS )
      {
          WPRINT_APP_INFO(("Unable to lock DCT to read certificate\n"));
+         wiced_tcp_delete_socket(&socket);
          return;
      }
 
+     result = wiced_tls_init_root_ca_certificates( dct_security->certificate, strlen( dct_security->certificate ) );
+     if ( result != WICED_SUCCESS )
+     {
+         WPRINT_APP_INFO(( "Unable to initialize Root Certificate = [%d]\n", result ));
+         wiced_tcp_delete_socket(&socket);
+         return;
+     }
 
-    result = wiced_tls_init_identity( &tls_identity, dct_security->private_key, strlen( dct_security->private_key ), (uint8_t*) dct_security->certificate, strlen( dct_security->certificate ) );
-    if ( result != WICED_SUCCESS )
-    {
-        WPRINT_APP_INFO(( "Unable to initialize TLS identity. Error = [%d]\n", result ));
-        return;
-    }
-
-
-    result = wiced_tls_init_context( &tls_context, &tls_identity, NULL );
+     result = wiced_tls_init_context( &tls_context, NULL, NULL );
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Unable to initialize Context. Error = [%d]\n", result ));
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -96,6 +97,8 @@ void sendDataSecure(int data)
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Start TLS Failed. Error = [%d]\n", result ));
+        wiced_tls_deinit_context(&tls_context);
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -103,15 +106,14 @@ void sendDataSecure(int data)
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Failed connect = [%d]\n", result ));
+        wiced_tls_deinit_context(&tls_context);
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
-
-    // format the data per the specification in section 6
+    // Format the data per the specification in section 6
     sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
-    WPRINT_APP_INFO(("Sent Message=%s\n",sendMessage)); // echo the message so that the user can see something
-
-
+    WPRINT_APP_INFO(("Sent Secure Message=%s\n",sendMessage)); // echo the message so that the user can see something
 
     // Initialize the TCP stream
     wiced_tcp_stream_init(&stream, &socket);
@@ -134,10 +136,10 @@ void sendDataSecure(int data)
     }
 
     // Delete the stream and socket
+    wiced_tls_deinit_context(&tls_context);
     wiced_tcp_stream_deinit(&stream);
     wiced_tcp_delete_socket(&socket);
 }
-
 
 
 // sendData:
@@ -164,6 +166,7 @@ void sendData(int data)
     if(result!=WICED_SUCCESS)
     {
         WPRINT_APP_INFO(("Failed to bind socket %d\n",result));
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
@@ -171,10 +174,11 @@ void sendData(int data)
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO(( "Failed connect = [%d]\n", result ));
+        wiced_tcp_delete_socket(&socket);
         return;
     }
 
-    // format the data per the specification in section 6
+    // Format the data per the specification in section 6
     sprintf(sendMessage,"W%04X%02X%04X",myDeviceId,5,data); // 5 is the register from the lab manual
     WPRINT_APP_INFO(("Sent Message=%s\n",sendMessage)); // echo the message so that the user can see something
 
@@ -211,7 +215,6 @@ void sendData(int data)
 // This is done as a separate thread to make the code easier to copy to a later program.
 void button0ThreadMain()
 {
-
     // Setup the Semaphore and Button Interrupt
     wiced_rtos_init_semaphore(&button0_semaphore); // the semaphore unlocks when the user presses the button
     wiced_gpio_input_irq_enable(WICED_SH_MB0, IRQ_TRIGGER_FALLING_EDGE, button0_isr, NULL); // call the ISR when the button is pressed
@@ -237,8 +240,6 @@ void button0ThreadMain()
 // This is done as a separate thread to make the code easier to copy to a later program.
 void button1ThreadMain()
 {
-    wiced_result_t result;
-
     // Setup the Semaphore and Button Interrupt
     wiced_rtos_init_semaphore(&button1_semaphore); // the semaphore unlocks when the user presses the button
     wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button1_isr, NULL); // call the ISR when the button is pressed
@@ -287,27 +288,6 @@ void application_start(void)
                  (uint8_t)(GET_IPV4_ADDRESS(serverAddress) >> 0)));
      }
 
-
      wiced_rtos_create_thread(&button0Thread, WICED_DEFAULT_LIBRARY_PRIORITY, "Button 0 Thread", button0ThreadMain, TCP_CLIENT_STACK_SIZE, 0);
      wiced_rtos_create_thread(&button1Thread, WICED_DEFAULT_LIBRARY_PRIORITY, "Button 1 Thread", button1ThreadMain, TCP_CLIENT_STACK_SIZE, 0);
-
-
-    while(1)
-    {
-        char receiveChar;
-        uint32_t expected_data_size=1;
-
-        wiced_uart_receive_bytes( STDIO_UART, &receiveChar, &expected_data_size, WICED_NEVER_TIMEOUT );
-        switch(receiveChar)
-        {
-        case 'b':
-            wiced_rtos_set_semaphore(&button0_semaphore);
-
-            break;
-        case '?':
-            WPRINT_APP_INFO(("b: Set the button semaphore\n"));
-            break;
-
-        }
-    }
 }
