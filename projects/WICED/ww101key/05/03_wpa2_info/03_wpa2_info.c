@@ -32,7 +32,7 @@ void application_start( )
     if(connectResult == WICED_SUCCESS)
     {
         /* Turn on LED */
-        wiced_gpio_output_high( WICED_SH_LED1 );
+        wiced_gpio_output_high( WICED_LED1 );
 
         /* Print out network info */
         WPRINT_APP_INFO(("NETWORK INFO\r\n"));
@@ -72,12 +72,12 @@ void application_start( )
         {
             if ( led == WICED_TRUE )
             {
-                wiced_gpio_output_low( WICED_SH_LED1 );
+                wiced_gpio_output_low( WICED_LED1 );
                 led = WICED_FALSE;
             }
             else
             {
-                wiced_gpio_output_high( WICED_SH_LED1 );
+                wiced_gpio_output_high( WICED_LED1 );
                 led = WICED_TRUE;
             }
         }

@@ -11,12 +11,12 @@ void button_isr(void* arg)
 	/* Toggle LED1 */
 	if ( led1 == WICED_TRUE )
 	{
-		wiced_gpio_output_low( WICED_SH_LED1 );
+		wiced_gpio_output_low( WICED_LED1 );
 		led1 = WICED_FALSE;
 	}
 	else
 	{
-		wiced_gpio_output_high( WICED_SH_LED1 );
+		wiced_gpio_output_high( WICED_LED1 );
 		led1 = WICED_TRUE;
 	}
 
@@ -31,7 +31,7 @@ void application_start( )
 
 	wiced_init();	/* Initialize the WICED device */
 
-    wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL); /* Setup interrupt */
+    wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL); /* Setup interrupt */
 
     /* Configure and start the UART. */
     /* Note that WICED_DISABLE_STDIO must be defined in the make file for this to work */

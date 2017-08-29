@@ -14,9 +14,9 @@
 
 //
 // This register is the control register for the LEDs that sit above
-// the capsense buttons.  If this register contains 1, the LEDs are
+// the CapSense buttons.  If this register contains 1, the LEDs are
 // controlled by the data registers.  If this register contains 0,
-// the LEDs are controlled by the capsense buttons
+// the LEDs are controlled by the CapSense buttons
 //
 #define PSOC_SENSOR_HUB_LED_CONTROL             (0x05)
 
@@ -56,7 +56,7 @@ const char json_data[] =
 // Data array for writing EZ-I2C formatted data.  The first byte
 // is the address and the second byte is the data.  We initialize
 // this array to write a 1 to address 5 which enables I2C register
-// control of the LEDs instead of the capsense button control which
+// control of the LEDs instead of the CapSense button control which
 // is default.
 //
 uint8_t data[] = { PSOC_SENSOR_HUB_LED_CONTROL, 0x01 } ;
@@ -90,7 +90,7 @@ uint8_t gpioleds = 0 ;
 
 //
 // This function sets the state of the I2C LEDs based on the state value given.  This state
-// value is written directly to the I2C LED state regsiter.  Each of the four lower bits
+// value is written directly to the I2C LED state register.  Each of the four lower bits
 // of this value maps to an LED on the board.
 //
 static void setI2Cleds(uint8_t state)
@@ -115,10 +115,10 @@ static void setI2Cleds(uint8_t state)
 static void setGPIOleds(uint8_t state)
 {
     if (state & 0x01)
-        wiced_gpio_output_high(WICED_SH_LED0) ;
+        wiced_gpio_output_high(WICED_LED1) ;
 
     if (state & 0x02)
-        wiced_gpio_output_high(WICED_SH_LED1) ;
+        wiced_gpio_output_high(WICED_LED2) ;
 }
 
 //

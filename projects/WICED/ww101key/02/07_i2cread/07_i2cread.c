@@ -20,7 +20,7 @@ void application_start( )
 {
 	wiced_init();	/* Initialize the WICED device */
 
-    wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL); /* Setup interrupt */
+    wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL); /* Setup interrupt */
 
     /* Setup I2C master */
     const wiced_i2c_device_t i2cDevice = {

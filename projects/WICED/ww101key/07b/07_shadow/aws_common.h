@@ -12,7 +12,7 @@
  *
  */
 
-#include "../../../ww101key/07b/06_shadow/aws_config.h"
+#include "../../../ww101key/07b/07_shadow/aws_config.h"
 #include "wiced.h"
 #include "mqtt_api.h"
 #include "resources.h"

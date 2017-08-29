@@ -13,9 +13,9 @@ void application_start( )
 
     connectResult = wiced_network_up(WICED_STA_INTERFACE, WICED_USE_EXTERNAL_DHCP_SERVER, NULL);
 
-    if(connectResult == WICED_SUCCESS) /* Turn LED on if connection was sucessful */
+    if(connectResult == WICED_SUCCESS) /* Turn LED on if connection was successful */
     {
-        wiced_gpio_output_high( WICED_SH_LED1 );
+        wiced_gpio_output_high( WICED_LED1 );
     }
 
     while ( 1 )
@@ -25,12 +25,12 @@ void application_start( )
         {
             if ( led == WICED_TRUE )
             {
-                wiced_gpio_output_low( WICED_SH_LED1 );
+                wiced_gpio_output_low( WICED_LED1 );
                 led = WICED_FALSE;
             }
             else
             {
-                wiced_gpio_output_high( WICED_SH_LED1 );
+                wiced_gpio_output_high( WICED_LED1 );
                 led = WICED_TRUE;
             }
         }

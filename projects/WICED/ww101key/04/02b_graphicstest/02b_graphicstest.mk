@@ -30,12 +30,12 @@
  # so agrees to indemnify Cypress against all liability.
 #
 
-NAME := App_WW101KEY_04_02_GraphicsTest
+NAME := App_WW101KEY_04_02b_GraphicsTest
 
 # NOTE: repeated start functionality on BCM4390x only value for I2C_1 bus interface
 #GLOBAL_DEFINES     += U8G_I2C_USE_REPEAT_START
 
-$(NAME)_SOURCES    := 02_graphicstest.c
+$(NAME)_SOURCES    := 02b_graphicstest.c
 
 $(NAME)_COMPONENTS := graphics/u8g
 

@@ -14,26 +14,26 @@
 
 
 static wiced_ip_address_t serverAddress; 		// address of the WWEP server
-static wiced_semaphore_t button0_semaphore;     // Semaphore unlocks sending of data after button presses
 static wiced_semaphore_t button1_semaphore;     // Semaphore unlocks sending of data after button presses
+static wiced_semaphore_t button2_semaphore;     // Semaphore unlocks sending of data after button presses
 
-static wiced_thread_t button0Thread;
 static wiced_thread_t button1Thread;
+static wiced_thread_t button2Thread;
 static uint16_t myDeviceId; 					// A checksum of the MAC address
 static wiced_mac_t myMac;
-
-// This function is called by the RTOS when the button is pressed
-// It just unlocks the button thread semaphore
-void button0_isr(void *arg)
-{
-    wiced_rtos_set_semaphore(&button0_semaphore);
-}
 
 // This function is called by the RTOS when the button is pressed
 // It just unlocks the button thread semaphore
 void button1_isr(void *arg)
 {
     wiced_rtos_set_semaphore(&button1_semaphore);
+}
+
+// This function is called by the RTOS when the button is pressed
+// It just unlocks the button thread semaphore
+void button2_isr(void *arg)
+{
+    wiced_rtos_set_semaphore(&button2_semaphore);
 }
 
 
@@ -213,23 +213,23 @@ void sendData(int data)
 // data via the sendData function
 //
 // This is done as a separate thread to make the code easier to copy to a later program.
-void button0ThreadMain()
+void button1ThreadMain()
 {
     // Setup the Semaphore and Button Interrupt
-    wiced_rtos_init_semaphore(&button0_semaphore); // the semaphore unlocks when the user presses the button
-    wiced_gpio_input_irq_enable(WICED_SH_MB0, IRQ_TRIGGER_FALLING_EDGE, button0_isr, NULL); // call the ISR when the button is pressed
+    wiced_rtos_init_semaphore(&button1_semaphore); // the semaphore unlocks when the user presses the button
+    wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, button1_isr, NULL); // call the ISR when the button is pressed
 
-    WPRINT_APP_INFO(("Starting Button 0 Loop\n"));
+    WPRINT_APP_INFO(("Starting Button 1 Loop\n"));
 
     // Main Loop: wait for semaphore.. then send the data
     while(1)
     {
-        wiced_rtos_get_semaphore(&button0_semaphore,WICED_WAIT_FOREVER);
-        wiced_gpio_output_low( WICED_SH_LED0 );
+        wiced_rtos_get_semaphore(&button1_semaphore,WICED_WAIT_FOREVER);
+        wiced_gpio_output_low( WICED_LED1 );
         sendData(0);
-        wiced_rtos_get_semaphore(&button0_semaphore,WICED_WAIT_FOREVER);
+        wiced_rtos_get_semaphore(&button1_semaphore,WICED_WAIT_FOREVER);
         sendData(1);
-        wiced_gpio_output_high( WICED_SH_LED0 );
+        wiced_gpio_output_high( WICED_LED1 );
     }
 }
 
@@ -238,23 +238,23 @@ void button0ThreadMain()
 // data via the sendData function
 //
 // This is done as a separate thread to make the code easier to copy to a later program.
-void button1ThreadMain()
+void button2ThreadMain()
 {
     // Setup the Semaphore and Button Interrupt
-    wiced_rtos_init_semaphore(&button1_semaphore); // the semaphore unlocks when the user presses the button
-    wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button1_isr, NULL); // call the ISR when the button is pressed
+    wiced_rtos_init_semaphore(&button2_semaphore); // the semaphore unlocks when the user presses the button
+    wiced_gpio_input_irq_enable(WICED_BUTTON2, IRQ_TRIGGER_FALLING_EDGE, button2_isr, NULL); // call the ISR when the button is pressed
 
-    WPRINT_APP_INFO(("Starting Button 1 Loop\n"));
+    WPRINT_APP_INFO(("Starting Button 2 Loop\n"));
 
     // Main Loop: wait for semaphore.. then send the data
     while(1)
     {
-        wiced_rtos_get_semaphore(&button1_semaphore,WICED_WAIT_FOREVER);
-        wiced_gpio_output_low( WICED_SH_LED1 );
+        wiced_rtos_get_semaphore(&button2_semaphore,WICED_WAIT_FOREVER);
+        wiced_gpio_output_low( WICED_LED2 );
         sendDataSecure(0);
-        wiced_rtos_get_semaphore(&button1_semaphore,WICED_WAIT_FOREVER);
+        wiced_rtos_get_semaphore(&button2_semaphore,WICED_WAIT_FOREVER);
         sendDataSecure(1);
-        wiced_gpio_output_high( WICED_SH_LED1 );
+        wiced_gpio_output_high( WICED_LED2 );
     }
 }
 
@@ -288,6 +288,6 @@ void application_start(void)
                  (uint8_t)(GET_IPV4_ADDRESS(serverAddress) >> 0)));
      }
 
-     wiced_rtos_create_thread(&button0Thread, WICED_DEFAULT_LIBRARY_PRIORITY, "Button 0 Thread", button0ThreadMain, TCP_CLIENT_STACK_SIZE, 0);
      wiced_rtos_create_thread(&button1Thread, WICED_DEFAULT_LIBRARY_PRIORITY, "Button 1 Thread", button1ThreadMain, TCP_CLIENT_STACK_SIZE, 0);
+     wiced_rtos_create_thread(&button2Thread, WICED_DEFAULT_LIBRARY_PRIORITY, "Button 2 Thread", button2ThreadMain, TCP_CLIENT_STACK_SIZE, 0);
 }

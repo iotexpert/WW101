@@ -31,35 +31,22 @@ extern "C"
 
 /*
 PSoC AFE Shield Resources:
-+----------------------------------------------------------------------------------------------+
-| WICED_NAME   | WICED Pin Name | Arduino Header | Shield Connection     | Alternate Functions |
-+--------------+----------------+----------------+-----------------------+---------------------+
-|WICED_SH_MB0  | WICED_GPIO_12  | D5             | Button MB0            | WICED_PWM_3         |
-+--------------+----------------+----------------+-----------------------+---------------------+
-|WICED_SH_MB1  | WICED_GPIO_3   | D3             | Button MB1            | WICED_PWM_6         |
-+--------------+----------------+----------------+-----------------------+---------------------+
-|WICED_SH_LED0 | WICED_GPIO_7   | D10            | LED0                  | WICED_PWM_2         |
-+--------------+----------------+----------------+-----------------------+---------------------+
-|WICED_SH_LED1 | WICED_GPIO_17  | D9             | LED1                  | WICED_PWM_5         |
-+--------------+----------------+----------------+-----------------------+---------------------+
-|WICED_ADC_0   | N/A            | A0             | Ambient Light Sensor  | N/A                 |
-+--------------+----------------+----------------+-----------------------+---------------------+
-|WICED_ADC_1   | N/A            | A1             | DAC                   | N/A                 |
-+--------------+----------------+----------------+-----------------------+---------------------+
-|WICED_ADC_2   | N/A            | A2             | POT                   | N/A                 |
-+--------------+----------------+----------------+-----------------------+---------------------+
-
-Base Board Resources:
 +-----------------------------------------------------------------------------------------------+
-| WICED_NAME    | WICED Pin Name | Arduino Header | Baseboard Connection  | Alternate Functions |
+| WICED_NAME    | WICED Pin Name | Arduino Header | Shield Connection     | Alternate Functions |
 +---------------+----------------+----------------+-----------------------+---------------------+
-| WICED_BUTTON1 | WICED_GPIO_18  | N/A            | User_1                | N/A                 |
+|WICED_BUTTON1  | WICED_GPIO_12  | D5             | Button MB0            | WICED_PWM_3         |
 +---------------+----------------+----------------+-----------------------+---------------------+
-| WICED_BUTTON2 | WICED_GPIO_4   | N/A            | User_2                | N/A                 |
+|WICED_BUTTON2  | WICED_GPIO_3   | D3             | Button MB1            | WICED_PWM_6         |
 +---------------+----------------+----------------+-----------------------+---------------------+
-| WICED_LED1    | WICED_GPIO_16  | N/A            | LED_1                 | N/A                 |
+|WICED_LED1     | WICED_GPIO_7   | D10            | LED0                  | WICED_PWM_2         |
 +---------------+----------------+----------------+-----------------------+---------------------+
-| WICED_LED2    | WICED_GPIO_5   | D13            | LED_2                 | N/A                 |
+|WICED_LED2     | WICED_GPIO_17  | D9             | LED1                  | WICED_PWM_5         |
++---------------+----------------+----------------+-----------------------+---------------------+
+|WICED_ADC_1    | N/A            | A0             | Ambient Light Sensor  | N/A                 |
++---------------+----------------+----------------+-----------------------+---------------------+
+|WICED_ADC_2    | N/A            | A1             | DAC                   | N/A                 |
++---------------+----------------+----------------+-----------------------+---------------------+
+|WICED_ADC_3    | N/A            | A2             | POT                   | N/A                 |
 +---------------+----------------+----------------+-----------------------+---------------------+
 
 I2C Slave Information:
@@ -94,7 +81,7 @@ I2C Register Map for PSoC Analog Co-Processor:
 | 0x13           | 4           | Potentiometer Voltage (V)                    |
 +----------------+-------------+----------------------------------------------+
 
-BCM943907AEVAL1F platform pin definitions ...
+BCM943907AEVAL1F platform pin definitions ... Note: buttons and LEDs are re-mapped to the shield so the baseboard peripherals are not enabled.
 +-------------------------------------------------------------------------------------------------------+--------------+-------------------------------|
 | Enum ID       |Pin  |   Pin Name   |  SIP Pin  Name          | SIP |  Module Pin              | Module| Function     | Board Connection              |
 |               | #   |   on 43907   |                         | Pin#|  Name                    | Pin#  |              |                               |
@@ -366,8 +353,6 @@ typedef enum
 {
     PLATFORM_LED_1,
     PLATFORM_LED_2,
-	PLATFORM_SH_LED_0,
-	PLATFORM_SH_LED_1,
     PLATFORM_LED_MAX, /* Denotes the total number of LEDs on the board. Not a valid alias */
 } platform_led_t;
 
@@ -390,22 +375,15 @@ typedef enum
 
 
 
-#define PLATFORM_LED_COUNT           ( 4 )
+#define PLATFORM_LED_COUNT           ( 2 )
 
-#define WICED_PLATFORM_BUTTON_COUNT  ( 4 )
+#define WICED_PLATFORM_BUTTON_COUNT  ( 2 )
 
-/* LEDs and buttons on the base board */
-#define WICED_LED1       ( WICED_GPIO_16 )
-#define WICED_LED2       ( WICED_GPIO_5 )
-#define WICED_BUTTON1    ( WICED_GPIO_18 )
-#define WICED_BUTTON2    ( WICED_GPIO_4 )
 /* LEDs and buttons on the shield */
-#define WICED_SH_LED0       	( WICED_GPIO_7 )
-#define WICED_SH_LED1       	( WICED_GPIO_17 )
-#define WICED_SH_LED0_ON_STATE 	( WICED_ACTIVE_HIGH )
-#define WICED_SH_LED1_ON_STATE 	( WICED_ACTIVE_HIGH )
-#define WICED_SH_MB0 	   		( WICED_GPIO_12 )
-#define WICED_SH_MB1    		( WICED_GPIO_3 )
+#define WICED_LED1       ( WICED_GPIO_7 )
+#define WICED_LED2       ( WICED_GPIO_17 )
+#define WICED_BUTTON1    ( WICED_GPIO_12 )
+#define WICED_BUTTON2    ( WICED_GPIO_3 )
 
 #define WICED_GMAC_PHY_RESET (WICED_GPIO_15)
 

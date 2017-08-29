@@ -30,7 +30,7 @@
  # so agrees to indemnify Cypress against all liability.
 #
 
-NAME := App_WA101_04_04_cjson
+NAME := App_WW101KEY_04_04_cjson
 
 $(NAME)_COMPONENTS := utilities/cJSON
 

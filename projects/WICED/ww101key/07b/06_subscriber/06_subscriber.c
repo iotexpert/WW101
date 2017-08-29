@@ -79,12 +79,12 @@ static wiced_result_t mqtt_connection_event_cb( wiced_mqtt_object_t mqtt_object,
             data[ msg.data_len + 1 ] = '\0';
             if ( !strncmp( data, "LIGHT ON", msg.data_len ) )
             {
-                wiced_gpio_output_high( WICED_SH_LED1 );
+                wiced_gpio_output_high( WICED_LED1 );
                 WPRINT_APP_INFO(( "light on\n" ));
             }
             else
             {
-                wiced_gpio_output_low( WICED_SH_LED1 );
+                wiced_gpio_output_low( WICED_LED1 );
                 WPRINT_APP_INFO(( "light off\n" ));
             }
         }
