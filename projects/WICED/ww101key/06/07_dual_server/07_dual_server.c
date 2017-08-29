@@ -118,9 +118,9 @@ void application_start(void)
     // just blink the led while the whole thing is running
     while(1)
     {
-        wiced_gpio_output_low( WICED_SH_LED1 );
+        wiced_gpio_output_low( WICED_LED1 );
         wiced_rtos_delay_milliseconds( 250 );
-        wiced_gpio_output_high( WICED_SH_LED1 );
+        wiced_gpio_output_high( WICED_LED1 );
         wiced_rtos_delay_milliseconds( 250 );
     }
 }
@@ -134,8 +134,6 @@ void application_start(void)
 #define MAX_LEGAL_MSG (13)
 void processClientCommand(uint8_t *rbuffer, int dataReadCount, char *returnMessage)
 {
-
-    /////////
     if(dataReadCount > 12 || dataReadCount == 0) // 0 or too many characters reject
     {
         sprintf(returnMessage, "X illegal message length");

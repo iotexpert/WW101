@@ -267,28 +267,12 @@ const gpio_button_t platform_gpio_buttons[] =
         .gpio       = WICED_BUTTON2,
         .trigger    = IRQ_TRIGGER_BOTH_EDGES,
     },
-
-    [PLATFORM_SH_MB0] =
-    {
-        .polarity   = WICED_ACTIVE_LOW,
-        .gpio       = WICED_SH_MB0,
-        .trigger    = IRQ_TRIGGER_BOTH_EDGES,
-    },
-
-    [PLATFORM_SH_MB1] =
-    {
-        .polarity   = WICED_ACTIVE_LOW,
-        .gpio       = WICED_SH_MB1,
-        .trigger    = IRQ_TRIGGER_BOTH_EDGES,
-    }
 };
 
 const wiced_gpio_t platform_gpio_leds[PLATFORM_LED_COUNT] =
 {
      [WICED_LED_INDEX_1] = WICED_LED1,
      [WICED_LED_INDEX_2] = WICED_LED2,
-	 [WICED_LED_INDEX_3] = WICED_SH_LED0,
-	 [WICED_LED_INDEX_4] = WICED_SH_LED1,
 };
 
 /* MFI-related variables */
@@ -314,7 +298,7 @@ const platform_mfi_auth_chip_t platform_auth_chip =
  *               Function Definitions
  ******************************************************/
 
-/* LEDs on the base board are active LOW, LEDs on the shield are active high */
+/* LEDs on the shield are active high */
 platform_result_t platform_led_set_state(int led_index, int off_on )
 {
     if ((led_index >= 0) && (led_index < PLATFORM_LED_COUNT))
@@ -322,24 +306,10 @@ platform_result_t platform_led_set_state(int led_index, int off_on )
         switch (off_on)
         {
             case WICED_LED_OFF:
-                if(led_index == PLATFORM_LED_1 || led_index == PLATFORM_LED_2)
-                {
-                    platform_gpio_output_high( &platform_gpio_pins[platform_gpio_leds[led_index]] );
-                }
-                else
-                {
-                    platform_gpio_output_low( &platform_gpio_pins[platform_gpio_leds[led_index]] );
-                }
+                platform_gpio_output_low( &platform_gpio_pins[platform_gpio_leds[led_index]] );
                 break;
             case WICED_LED_ON:
-                if(led_index == PLATFORM_LED_1 || led_index == PLATFORM_LED_2)
-                {
-                    platform_gpio_output_low( &platform_gpio_pins[platform_gpio_leds[led_index]] );
-                }
-                else
-                {
-                    platform_gpio_output_high( &platform_gpio_pins[platform_gpio_leds[led_index]] );
-                }
+                platform_gpio_output_high( &platform_gpio_pins[platform_gpio_leds[led_index]] );
                 break;
         }
         return PLATFORM_SUCCESS;
@@ -352,12 +322,8 @@ void platform_led_init( void )
     /* Initialise LEDs and turn off by default */
     platform_gpio_init( &platform_gpio_pins[WICED_LED1], OUTPUT_PUSH_PULL );
     platform_gpio_init( &platform_gpio_pins[WICED_LED2], OUTPUT_PUSH_PULL );
-    platform_gpio_init( &platform_gpio_pins[WICED_SH_LED0], OUTPUT_PUSH_PULL );
-    platform_gpio_init( &platform_gpio_pins[WICED_SH_LED1], OUTPUT_PUSH_PULL );
-    platform_led_set_state(WICED_LED_INDEX_1, WICED_LED_ON);
+    platform_led_set_state(WICED_LED_INDEX_1, WICED_LED_OFF);
     platform_led_set_state(WICED_LED_INDEX_2, WICED_LED_OFF);
-    platform_gpio_output_low( &platform_gpio_pins[WICED_SH_LED0] );
-    platform_gpio_output_low( &platform_gpio_pins[WICED_SH_LED1] );
  }
 
 void platform_init_external_devices( void )
@@ -368,8 +334,6 @@ void platform_init_external_devices( void )
     /* Initialise buttons to input by default */
     platform_gpio_init( &platform_gpio_pins[WICED_BUTTON2], INPUT_PULL_UP );
     platform_gpio_init( &platform_gpio_pins[WICED_BUTTON1], INPUT_PULL_UP );
-    platform_gpio_init( &platform_gpio_pins[WICED_SH_MB0], INPUT_PULL_UP );
-    platform_gpio_init( &platform_gpio_pins[WICED_SH_MB1], INPUT_PULL_UP );
 
 #ifndef WICED_DISABLE_STDIO
     /* Initialise UART standard I/O */

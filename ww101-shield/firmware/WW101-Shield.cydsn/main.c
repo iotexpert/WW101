@@ -383,7 +383,7 @@ int main(void)
     for(;;)
     {
         /* Look for bootloader entry - both mechanical buttons held down and POT moved by more than 1V */
-        if((MB0_Read() == PRESSED) && (MB1_Read() == PRESSED))
+        if((MB1_Read() == PRESSED) && (MB2_Read() == PRESSED))
         {   
             // Reset pot range checking when buttons are first pressed
             if(pressFlag == false)
@@ -414,14 +414,6 @@ int main(void)
         processCapSense();
         
         /* Read and update mechanical button state */
-        if(MB0_Read() == PRESSED)
-        {
-            LocData.buttonVal |= (BVAL_MB0_MASK);
-        }
-        else
-        {
-            LocData.buttonVal &= (~BVAL_MB0_MASK);
-        }
         if(MB1_Read() == PRESSED)
         {
             LocData.buttonVal |= (BVAL_MB1_MASK);
@@ -429,6 +421,14 @@ int main(void)
         else
         {
             LocData.buttonVal &= (~BVAL_MB1_MASK);
+        }
+        if(MB2_Read() == PRESSED)
+        {
+            LocData.buttonVal |= (BVAL_MB2_MASK);
+        }
+        else
+        {
+            LocData.buttonVal &= (~BVAL_MB2_MASK);
         }
         
         /* Update CapSense buttons if set to base board control */

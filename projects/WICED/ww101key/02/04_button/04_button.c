@@ -7,18 +7,21 @@ void application_start( )
 
     wiced_init();	/* Initialize the WICED device */
 
+    //The button is initialized in platform.c. If it wasn't you would need:
+    //wiced_gpio_init( WICED_BUTTON1, INPUT_PULL_UP );
+
     while ( 1 )
     {
         /* Read the state of Button 1 */
-        button1_pressed = wiced_gpio_input_get( WICED_SH_MB1 ) ? WICED_FALSE : WICED_TRUE;  /* The button has inverse logic */
+        button1_pressed = wiced_gpio_input_get( WICED_BUTTON1 ) ? WICED_FALSE : WICED_TRUE;  /* The button is active low */
 
         if ( button1_pressed == WICED_TRUE )
-        {   /* Turn LED1 on */
-            wiced_gpio_output_high( WICED_SH_LED1 );
+        {   /* Turn LED1 on (off for baseboard) */
+            wiced_gpio_output_high( WICED_LED1 );
         }
         else
-        {   /* Turn LED1 off */
-        	wiced_gpio_output_low( WICED_SH_LED1 );
+        {   /* Turn LED1 off (on for baseboard) */
+        	wiced_gpio_output_low( WICED_LED1 );
         }
     }
 }

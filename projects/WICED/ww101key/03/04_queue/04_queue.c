@@ -46,9 +46,9 @@ void ledThread(wiced_thread_arg_t arg)
 		/* Blink LED1 the specified number of times */
 		for(i=0; i < message; i++)
 		{
-			wiced_gpio_output_high( WICED_SH_LED1 );
+			wiced_gpio_output_high( WICED_LED1 );
 			wiced_rtos_delay_milliseconds(250);
-			wiced_gpio_output_low( WICED_SH_LED1 );
+			wiced_gpio_output_low( WICED_LED1 );
 			wiced_rtos_delay_milliseconds(250);
 		}
 		// Wait 1 second between sets of blinks
@@ -61,7 +61,7 @@ void application_start( )
 	wiced_init();	/* Initialize the WICED device */
 
 	/* Setup button interrupt */
-	wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL);
+	wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL);
 
     /* Initialize the queue */
 	wiced_rtos_init_queue(&queueHandle, "blinkQueue", MESSAGE_SIZE, QUEUE_SIZE); /* Setup the semaphore which will be set by the button interrupt */

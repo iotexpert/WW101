@@ -267,7 +267,7 @@ void application_start( void )
         }
         WPRINT_APP_INFO(("Success\n"));
         /* configure push button to publish a message */
-        wiced_gpio_input_irq_enable( WICED_SH_MB1, IRQ_TRIGGER_RISING_EDGE, publish_callback, NULL );
+        wiced_gpio_input_irq_enable( WICED_BUTTON1, IRQ_TRIGGER_RISING_EDGE, publish_callback, NULL );
 
         while ( 1 )
         {

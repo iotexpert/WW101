@@ -14,9 +14,9 @@
 
 //
 // This register is the control register for the LEDs that sit above
-// the capsense buttons.  If this register contains 1, the LEDs are
+// the CapSense buttons.  If this register contains 1, the LEDs are
 // controlled by the data registers.  If this register contains 0,
-// the LEDs are controlled by the capsense buttons
+// the LEDs are controlled by the CapSense buttons
 //
 #define PSOC_SENSOR_HUB_LED_CONTROL             (0x05)
 
@@ -29,7 +29,7 @@
 #define PSOC_SENSOR_HUB_LED_DATA                (0x04)
 
 //
-// This is the JSON data to parse. Because the 'C' format of the data harder to read with
+// This is the JSON data to parse. Because the 'C' format of the data is harder to read with
 // the embedded quotes and broken over lines, it is replicated here in the comment to be easier
 // to understand.
 //
@@ -56,7 +56,7 @@ const char *json_data =
 // Data array for writing EZ-I2C formatted data.  The first byte
 // is the address and the second byte is the data.  We initialize
 // this array to write a 1 to address 5 which enables I2C register
-// control of the LEDs instead of the capsense button control which
+// control of the LEDs instead of the CapSense button control which
 // is default.
 //
 uint8_t data[] = { PSOC_SENSOR_HUB_LED_CONTROL, 0x01 } ;
@@ -69,7 +69,7 @@ const uint16_t flags = WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG ;
 
 //
 // The data structure used to define a specific I2C target we are addressing.  This
-// is the address for the sensor hub / psoc AFE
+// is the address for the sensor hub / PSoC AFE
 //
 const wiced_i2c_device_t dev = {
         .port = WICED_I2C_2,                                // I2C instance 2 on the WICED device platform
@@ -184,7 +184,7 @@ static uint8_t processGPIO(cJSON *root_p)
 
 //
 // This function sets the state of the I2C LEDs based on the state value given.  This state
-// value is written directly to the I2C LED state regsiter.  Each of the four lower bits
+// value is written directly to the I2C LED state register.  Each of the four lower bits
 // of this value maps to an LED on the board.
 //
 static void setI2Cleds(uint8_t state)
@@ -209,10 +209,10 @@ static void setI2Cleds(uint8_t state)
 static void setGPIOleds(uint8_t state)
 {
     if (state & 0x01)
-        wiced_gpio_output_high(WICED_SH_LED0) ;
+        wiced_gpio_output_high(WICED_LED1) ;
 
     if (state & 0x02)
-        wiced_gpio_output_high(WICED_SH_LED1) ;
+        wiced_gpio_output_high(WICED_LED2) ;
 }
 
 void application_start()
