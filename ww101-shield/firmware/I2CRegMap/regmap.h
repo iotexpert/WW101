@@ -8,8 +8,8 @@
 #define BVAL_B1_MASK      (0x02)
 #define BVAL_B2_MASK      (0x04)
 #define BVAL_B3_MASK      (0x08)
-#define BVAL_MB0_MASK     (0x10)
-#define BVAL_MB1_MASK     (0x20)
+#define BVAL_MB1_MASK     (0x10)
+#define BVAL_MB2_MASK     (0x20)
 #define BVAL_PROX_MASK    (0x40)
 
 #define BVAL_ALL_MASK (BVAL_B0_MASK | BVAL_B1_MASK | BVAL_B2_MASK | BVAL_B3_MASK | BVAL_MB0_MASK | BVAL_MB1_MASK | BVAL_PROX_MASK)

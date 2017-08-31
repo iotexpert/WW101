@@ -1,15 +1,18 @@
 // Use a PWM to adjust the brightness of  LED1
 #include "wiced.h"
 
-#define PWM_PIN WICED_PWM_5
+// Use one of the following defines depending on if you are using the shield board
+#define PWM_PIN WICED_PWM_5 // For shield board
+//#define PWM_PIN WICED_PWM_4 // For base board red LED. Also need to change PWM_4 mux in platform.c from PIN_GPIO_15 to PIN_PWM_3
 
 void application_start( )
 {
-	float duty_cycle = 50.0;
+    float duty_cycle = 50.0;
 
     wiced_init();	/* Initialize the WICED device */
 
-    wiced_gpio_deinit(WICED_SH_LED1); // Need to de-init the GPIO if it is already set to drive the LED
+    wiced_gpio_deinit(WICED_LED1); // For base board red LED
+    wiced_gpio_deinit(WICED_LED2); // For shield
 
     while ( 1 )
     {

@@ -30,7 +30,7 @@
 
 /* Queue configuration */
 #define MESSAGE_SIZE		(4)
-#define QUEUE_SIZE			(25)
+#define QUEUE_SIZE			(50)
 
 /* Thread parameters */
 #define THREAD_BASE_PRIORITY 	(10)
@@ -43,8 +43,8 @@
 #define MQTT_BROKER_ADDRESS                 "amk6m51qrxr2u.iot.us-east-1.amazonaws.com"
 #define CLIENT_ID                           "wiced_weather_aws"
 #define TOPIC_HEAD							"$aws/things/ww101_"
-#define TOPIC_UPDATE						"/shadow/update"
 #define TOPIC_SUBSCRIBE                     "$aws/things/+/shadow/update/documents"
+#define TOPIC_GETSUBSCRIBE                  "$aws/things/+/shadow/get/accepted"
 #define MQTT_REQUEST_TIMEOUT                (5000)
 #define MQTT_DELAY_IN_MILLISECONDS          (1000)
 #define MQTT_MAX_RESOURCE_SIZE              (0x7fffffff)
@@ -58,7 +58,8 @@ typedef enum command {
 	HUMIDITY_CMD,
 	LIGHT_CMD,
 	ALERT_CMD,
-	IP_CMD
+	IP_CMD,
+	GET_CMD,
 } CMD;
 
 /*************** Global Variables *****************/
@@ -258,10 +259,7 @@ void application_start( )
         /* Now that the connection is established, get everything else going */
         WPRINT_APP_INFO(("Success\n"));
 
-        /* Start the publish thread */
-        wiced_rtos_create_thread(&publishThreadHandle, THREAD_BASE_PRIORITY+1, NULL, publishThread, THREAD_STACK_SIZE, NULL);
-
-        /* Subscribe to the shadow/documents topic for all things */
+        /* Subscribe to the update/documents topic for all things using the + wildcard */
         wiced_rtos_lock_mutex(&pubSubMutex);
         WPRINT_APP_INFO(("[MQTT] Subscribing to %s...",TOPIC_SUBSCRIBE));
         do
@@ -279,7 +277,31 @@ void application_start( )
         }
         wiced_rtos_unlock_mutex(&pubSubMutex);
 
-        /* Start command thread last so that help info is displayed at the bottom of the terminal window */
+        /* Subscribe to the get/accepted topic for all things using the + wildcard */
+        wiced_rtos_lock_mutex(&pubSubMutex);
+        WPRINT_APP_INFO(("[MQTT] Subscribing to %s...",TOPIC_GETSUBSCRIBE));
+        do
+        {
+            ret = mqtt_app_subscribe( mqtt_object, TOPIC_GETSUBSCRIBE, WICED_MQTT_QOS_DELIVER_AT_MOST_ONCE );
+            sub_retries++ ;
+        } while ( ( ret != WICED_SUCCESS ) && ( sub_retries < MQTT_SUBSCRIBE_RETRY_COUNT ) );
+        if ( ret != WICED_SUCCESS )
+        {
+            WPRINT_APP_INFO(("Subscribe Failed: Error Code %d\n",ret));
+        }
+        else
+        {
+            WPRINT_APP_INFO(("Subscribe Success\n"));
+        }
+        wiced_rtos_unlock_mutex(&pubSubMutex);
+
+        /* Start the publish thread */
+        /* This has to be done after the subscriptions are done so that we can get an initial state from all things */
+        wiced_rtos_create_thread(&publishThreadHandle, THREAD_BASE_PRIORITY+1, NULL, publishThread, THREAD_STACK_SIZE, NULL);
+
+
+        /* Wait and then start command thread last so that help info is displayed at the bottom of the terminal window */
+        wiced_rtos_delay_milliseconds(5500);
         wiced_rtos_create_thread(&commandThreadHandle, THREAD_BASE_PRIORITY+3, NULL, commandThread, THREAD_STACK_SIZE, NULL);
 
         /* Start timer to publish weather data every 30 seconds */
@@ -287,8 +309,8 @@ void application_start( )
         wiced_rtos_start_timer(&publishTimer);
 
         /* Setup interrupts for the 2 mechanical buttons */
-        wiced_gpio_input_irq_enable(WICED_SH_MB1, IRQ_TRIGGER_FALLING_EDGE, publish_button_isr, NULL);
-        wiced_gpio_input_irq_enable(WICED_SH_MB0, IRQ_TRIGGER_FALLING_EDGE, alert_button_isr, NULL);
+        wiced_gpio_input_irq_enable(WICED_BUTTON2, IRQ_TRIGGER_FALLING_EDGE, publish_button_isr, NULL);
+        wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, alert_button_isr, NULL);
     }
 
     /* No while(1) here since everything is done by the new threads. */
@@ -418,25 +440,47 @@ void getCapSenseThread(wiced_thread_arg_t arg)
                 dispThing = MY_THING;
                 wiced_rtos_set_semaphore(&displaySemaphore);
             }
-            if((CapSenseValues & B1_MASK) == B1_MASK) /* Button 1 scrolls through other thing's screens */
+            if((CapSenseValues & B1_MASK) == B1_MASK) /* Button 1 goes to next thing's screen */
+            {
+                buttonPressed = WICED_TRUE;
+                if(dispThing == 0) /* Handle wrap-around case */
+                {
+                    dispThing = MAX_THING;
+                }
+                else
+                {
+                    dispThing--;
+                }
+                wiced_rtos_set_semaphore(&displaySemaphore);
+            }
+            if((CapSenseValues & B2_MASK) == B2_MASK) /* Button 2 goes to previous thing's screen */
             {
                 buttonPressed = WICED_TRUE;
                 dispThing++;
-                if(dispThing > MAX_THING)
+                if(dispThing > MAX_THING) /* Handle wrap-around case */
                 {
                     dispThing = 0;
-                    wiced_rtos_set_semaphore(&displaySemaphore);
                 }
+                wiced_rtos_set_semaphore(&displaySemaphore);
             }
-            /* Buttons 2 and 3 not used */
-         }
+            if((CapSenseValues & B3_MASK) == B3_MASK) /* Button 3 increments by 10 things */
+            {
+                buttonPressed = WICED_TRUE;
+                dispThing += 10;
+                if(dispThing > MAX_THING) /* Handle wrap-around case */
+                {
+                    dispThing -= (MAX_THING + 1);
+                }
+                wiced_rtos_set_semaphore(&displaySemaphore);
+            }
+        }
         if(((CapSenseValues | ~ALL_MASK) & ALL_MASK) == 0) /* All buttons released */
         {
             buttonPressed = WICED_FALSE;
         }
 
         /* Wait 100 milliseconds */
-        wiced_rtos_delay_milliseconds( 100 );
+        wiced_rtos_delay_milliseconds( 50 );
     }
 }
 
@@ -512,14 +556,13 @@ void commandThread(wiced_thread_arg_t arg)
 
 	char pubCmd[4]; /* Command pushed onto the queue to determine what to publish */
 
-	/* Wait until the firmware connects to the message broker before starting the command interface */
 	WPRINT_APP_INFO(("\n******************************************\n"));
 	WPRINT_APP_INFO(("Enter '?' for a list of available commands\n"));
 	WPRINT_APP_INFO(("******************************************\n"));
 
 	while(1)
 	{
-		if ( wiced_uart_receive_bytes( STDIO_UART, &receiveChar, &expected_data_size, WICED_NEVER_TIMEOUT ) == WICED_SUCCESS )
+	    if ( wiced_uart_receive_bytes( STDIO_UART, &receiveChar, &expected_data_size, WICED_NEVER_TIMEOUT ) == WICED_SUCCESS )
 		{
 			 /* If we get here then a character has been received */
 			switch(receiveChar)
@@ -606,25 +649,37 @@ void commandThread(wiced_thread_arg_t arg)
 /* Thread to publish data to the cloud */
 void publishThread(wiced_thread_arg_t arg)
 {
-    int                   pub_retries = 0;
+    int         pub_retries = 0;
+    uint8_t     thingNumber;
 
 	char json[100] = "TEST";	  /* json message to send */
 
-	char pubCmd[4]; /* Command pushed onto the queue to determine what to publish */
+	uint8_t pubCmd[4]; /* Command pushed ONTO the queue to determine what to publish */
 
-    char command[4]; /* Value popped from the queue to determine what to publish */
+    uint8_t command[4]; /* Value popped FROM the queue to determine what to publish */
 
+    /* Set the default topic to publish updates for my thing. */
     char topic[50];
-	snprintf(topic, sizeof(topic), "%s%02d%s", TOPIC_HEAD,MY_THING,TOPIC_UPDATE);
 
 	/* Publish the IP address to the server one time */
 	pubCmd[0] = IP_CMD;
 	wiced_rtos_push_to_queue(&pubQueue, &pubCmd, WICED_WAIT_FOREVER); /* Push value onto queue*/
 
+	/* Push a shadow/get command to the publish queue for all things to get initial state */
+    for(thingNumber=0; thingNumber <= MAX_THING; thingNumber++)
+    {
+        pubCmd[0] = GET_CMD;
+        pubCmd[1] = thingNumber; /* 2nd byte of the message will be the thing number */
+        wiced_rtos_push_to_queue(&pubQueue, &pubCmd, WICED_WAIT_FOREVER); /* Push value onto queue*/
+    }
+
     while ( 1 )
     {
         /* Wait until a publish is requested */
         wiced_rtos_pop_from_queue(&pubQueue, &command, WICED_WAIT_FOREVER);
+
+        /* Set the topic for an update of my thing */
+        snprintf(topic, sizeof(topic), "%s%02d/shadow/update", TOPIC_HEAD,MY_THING);
 
         /* Setup the JSON message based on the command */
         switch(command[0])
@@ -653,6 +708,11 @@ void publishThread(wiced_thread_arg_t arg)
                 break;
             case IP_CMD:	/* IP address */
                 snprintf(json, sizeof(json), "{\"state\" : {\"reported\" : {\"IPAddress\":\"%s\"} } }", iot_data[MY_THING].ip_str);
+                break;
+            case GET_CMD:   /* Get starting state of other things */
+                snprintf(json, sizeof(json), "{}");
+                /* Override the topic to do a get of the specified thing's shadow */
+                snprintf(topic, sizeof(topic), "%s%02d/shadow/get", TOPIC_HEAD,command[1]);
                 break;
         }
 
@@ -805,6 +865,8 @@ static wiced_result_t mqtt_connection_event_cb( wiced_mqtt_object_t mqtt_object,
 {
     uint thingNumber;           /* The number of the thing that published a message */
     wiced_mqtt_topic_msg_t msg; /* The message from the thing */
+    char topicStr[50] = {0};    /* String to copy the topic into */
+    char pubType[20] =  {0};    /* String to compare to the publish type */
 
     switch ( event->type )
     {
@@ -820,8 +882,31 @@ static wiced_result_t mqtt_connection_event_cb( wiced_mqtt_object_t mqtt_object,
             break;
         case WICED_MQTT_EVENT_TYPE_PUBLISH_MSG_RECEIVED:
             msg = event->data.pub_recvd;
-            /* Scan the topic and see if it is one of the things we are interested in */
-            if(sscanf((char*) msg.topic, "$aws/things/ww101_%u/shadow/update/documents", &thingNumber))
+            /* Copy the message to a null terminated string */
+            memcpy(topicStr, msg.topic, msg.topic_len);
+            topicStr[msg.topic_len+1] = 0; /* Add termination */
+
+            /* Scan the topic to see if it is one of the things we are interested in */
+            sscanf(topicStr, "$aws/things/ww101_%2u/shadow/%19s", &thingNumber, pubType);
+            /* Check to see if it is an initial get of the values of other things */
+            if(strcmp(pubType,"get/accepted") == 0)
+            {
+                if(thingNumber != MY_THING) /* Only do the rest if it isn't the local thing */
+                {
+                    /* Parse JSON message for the weather station data */
+                    cJSON *root = cJSON_Parse((char*) msg.data);
+                    cJSON *state = cJSON_GetObjectItem(root,"state");
+                    cJSON *reported = cJSON_GetObjectItem(state,"reported");
+                    snprintf(iot_data[thingNumber].ip_str, sizeof(iot_data[thingNumber].ip_str), cJSON_GetObjectItem(reported,"IPAddress")->valuestring);
+                    iot_data[thingNumber].temp = (float) cJSON_GetObjectItem(reported,"temperature")->valuedouble;
+                    iot_data[thingNumber].humidity = (float) cJSON_GetObjectItem(reported,"humidity")->valuedouble;
+                    iot_data[thingNumber].light = (float) cJSON_GetObjectItem(reported,"light")->valuedouble;
+                    iot_data[thingNumber].alert = (wiced_bool_t) cJSON_GetObjectItem(reported,"weatherAlert")->type;
+                    cJSON_Delete(root);
+                }
+            }
+            /* Check to see if it is an update published by another thing */
+            if(strcmp(pubType,"update/documents") == 0)
             {
                 if(thingNumber != MY_THING) /* Only do the rest if it isn't the local thing */
                 {

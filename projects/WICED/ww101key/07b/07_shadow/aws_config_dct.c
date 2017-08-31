@@ -12,7 +12,7 @@
  *
  */
 
-#include "../06_shadow/aws_config.h"
+#include "../07_shadow/aws_config.h"
 #include "wiced_framework.h"
 
 
