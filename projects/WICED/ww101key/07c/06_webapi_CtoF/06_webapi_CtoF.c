@@ -3,44 +3,58 @@
 #include "wiced.h"
 #include "wiced_tls.h"
 #include "http_client.h"
+#include "cJSON.h"
+#include "u8g_arm.h"
 
-#define SERVER_HOST        "groker.initialstate.com"
+#define SERVER_HOST        "neutrinoapi.com"
 
 #define SERVER_PORT        ( 443 )
 #define DNS_TIMEOUT_MS     ( 10000 )
 #define CONNECT_TIMEOUT_MS ( 3000 )
 #define TOTAL_REQUESTS     ( 5 )
 
-#define I2C_ADDRESS (0x42)
+#define PSOC_ADDRESS (0x42)
 #define TEMPERATURE_REG 0x07
+#define OLED_ADDRESS (0x3C)
 
 static void  event_handler( http_client_t* client, http_event_t event, http_response_t* response );
 static void  print_data   ( char* data, uint32_t length );
+static void display_temperature(void);
 
 static const char root_ca_certificate[] =
         "-----BEGIN CERTIFICATE-----\n"
-        "MIIEDzCCAvegAwIBAgIBADANBgkqhkiG9w0BAQUFADBoMQswCQYDVQQGEwJVUzEl\n"
-        "MCMGA1UEChMcU3RhcmZpZWxkIFRlY2hub2xvZ2llcywgSW5jLjEyMDAGA1UECxMp\n"
-        "U3RhcmZpZWxkIENsYXNzIDIgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDQw\n"
-        "NjI5MTczOTE2WhcNMzQwNjI5MTczOTE2WjBoMQswCQYDVQQGEwJVUzElMCMGA1UE\n"
-        "ChMcU3RhcmZpZWxkIFRlY2hub2xvZ2llcywgSW5jLjEyMDAGA1UECxMpU3RhcmZp\n"
-        "ZWxkIENsYXNzIDIgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwggEgMA0GCSqGSIb3\n"
-        "DQEBAQUAA4IBDQAwggEIAoIBAQC3Msj+6XGmBIWtDBFk385N78gDGIc/oav7PKaf\n"
-        "8MOh2tTYbitTkPskpD6E8J7oX+zlJ0T1KKY/e97gKvDIr1MvnsoFAZMej2YcOadN\n"
-        "+lq2cwQlZut3f+dZxkqZJRRU6ybH838Z1TBwj6+wRir/resp7defqgSHo9T5iaU0\n"
-        "X9tDkYI22WY8sbi5gv2cOj4QyDvvBmVmepsZGD3/cVE8MC5fvj13c7JdBmzDI1aa\n"
-        "K4UmkhynArPkPw2vCHmCuDY96pzTNbO8acr1zJ3o/WSNF4Azbl5KXZnJHoe0nRrA\n"
-        "1W4TNSNe35tfPe/W93bC6j67eA0cQmdrBNj41tpvi/JEoAGrAgEDo4HFMIHCMB0G\n"
-        "A1UdDgQWBBS/X7fRzt0fhvRbVazc1xDCDqmI5zCBkgYDVR0jBIGKMIGHgBS/X7fR\n"
-        "zt0fhvRbVazc1xDCDqmI56FspGowaDELMAkGA1UEBhMCVVMxJTAjBgNVBAoTHFN0\n"
-        "YXJmaWVsZCBUZWNobm9sb2dpZXMsIEluYy4xMjAwBgNVBAsTKVN0YXJmaWVsZCBD\n"
-        "bGFzcyAyIENlcnRpZmljYXRpb24gQXV0aG9yaXR5ggEAMAwGA1UdEwQFMAMBAf8w\n"
-        "DQYJKoZIhvcNAQEFBQADggEBAAWdP4id0ckaVaGsafPzWdqbAYcaT1epoXkJKtv3\n"
-        "L7IezMdeatiDh6GX70k1PncGQVhiv45YuApnP+yz3SFmH8lU+nLMPUxA2IGvd56D\n"
-        "eruix/U0F47ZEUD0/CwqTRV/p2JdLiXTAAsgGh1o+Re49L2L7ShZ3U0WixeDyLJl\n"
-        "xy16paq8U4Zt3VekyvggQQto8PT7dL5WXXp59fkdheMtlb71cZBDzI0fmgAKhynp\n"
-        "VSJYACPq4xJDKVtHCN2MQWplBqjlIapBtJUhlbl90TSrE9atvNziPTnNvT51cKEY\n"
-        "WQPJIrSPnNVeKtelttQKbfi3QBFGmh95DmK/D5fs4C8fF5Q=\n"
+        "MIIF2DCCA8CgAwIBAgIQTKr5yttjb+Af907YWwOGnTANBgkqhkiG9w0BAQwFADCB\n"
+        "hTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4G\n"
+        "A1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxKzApBgNV\n"
+        "BAMTIkNPTU9ETyBSU0EgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMTAwMTE5\n"
+        "MDAwMDAwWhcNMzgwMTE4MjM1OTU5WjCBhTELMAkGA1UEBhMCR0IxGzAZBgNVBAgT\n"
+        "EkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMR\n"
+        "Q09NT0RPIENBIExpbWl0ZWQxKzApBgNVBAMTIkNPTU9ETyBSU0EgQ2VydGlmaWNh\n"
+        "dGlvbiBBdXRob3JpdHkwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCR\n"
+        "6FSS0gpWsawNJN3Fz0RndJkrN6N9I3AAcbxT38T6KhKPS38QVr2fcHK3YX/JSw8X\n"
+        "pz3jsARh7v8Rl8f0hj4K+j5c+ZPmNHrZFGvnnLOFoIJ6dq9xkNfs/Q36nGz637CC\n"
+        "9BR++b7Epi9Pf5l/tfxnQ3K9DADWietrLNPtj5gcFKt+5eNu/Nio5JIk2kNrYrhV\n"
+        "/erBvGy2i/MOjZrkm2xpmfh4SDBF1a3hDTxFYPwyllEnvGfDyi62a+pGx8cgoLEf\n"
+        "Zd5ICLqkTqnyg0Y3hOvozIFIQ2dOciqbXL1MGyiKXCJ7tKuY2e7gUYPDCUZObT6Z\n"
+        "+pUX2nwzV0E8jVHtC7ZcryxjGt9XyD+86V3Em69FmeKjWiS0uqlWPc9vqv9JWL7w\n"
+        "qP/0uK3pN/u6uPQLOvnoQ0IeidiEyxPx2bvhiWC4jChWrBQdnArncevPDt09qZah\n"
+        "SL0896+1DSJMwBGB7FY79tOi4lu3sgQiUpWAk2nojkxl8ZEDLXB0AuqLZxUpaVIC\n"
+        "u9ffUGpVRr+goyhhf3DQw6KqLCGqR84onAZFdr+CGCe01a60y1Dma/RMhnEw6abf\n"
+        "Fobg2P9A3fvQQoh/ozM6LlweQRGBY84YcWsr7KaKtzFcOmpH4MN5WdYgGq/yapiq\n"
+        "crxXStJLnbsQ/LBMQeXtHT1eKJ2czL+zUdqnR+WEUwIDAQABo0IwQDAdBgNVHQ4E\n"
+        "FgQUu69+Aj36pvE8hI6t7jiY7NkyMtQwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB\n"
+        "/wQFMAMBAf8wDQYJKoZIhvcNAQEMBQADggIBAArx1UaEt65Ru2yyTUEUAJNMnMvl\n"
+        "wFTPoCWOAvn9sKIN9SCYPBMtrFaisNZ+EZLpLrqeLppysb0ZRGxhNaKatBYSaVqM\n"
+        "4dc+pBroLwP0rmEdEBsqpIt6xf4FpuHA1sj+nq6PK7o9mfjYcwlYRm6mnPTXJ9OV\n"
+        "2jeDchzTc+CiR5kDOF3VSXkAKRzH7JsgHAckaVd4sjn8OoSgtZx8jb8uk2Intzna\n"
+        "FxiuvTwJaP+EmzzV1gsD41eeFPfR60/IvYcjt7ZJQ3mFXLrrkguhxuhoqEwWsRqZ\n"
+        "CuhTLJK7oQkYdQxlqHvLI7cawiiFwxv/0Cti76R7CZGYZ4wUAc1oBmpjIXUDgIiK\n"
+        "boHGhfKppC3n9KUkEEeDys30jXlYsQab5xoq2Z0B15R97QNKyvDb6KkBPvVWmcke\n"
+        "jkk9u+UJueBPSZI9FoJAzMxZxuY67RIuaTxslbH9qh17f4a+Hg4yRvv7E491f0yL\n"
+        "S0Zj/gA0QHDBw7mh3aZw4gSzQbzpgJHqZJx64SIDqZxubw5lT2yHh17zbqD5daWb\n"
+        "QOhTsiedSrnAdyGN/4fy3ryM7xfft0kL0fJuMAsaDk527RH89elWsn2/x20Kk4yl\n"
+        "0MC2Hb46TpSi125sC8KKfPog88Tk5c0NqMuRkrF8hey1FGlmDoLnzc7ILaZRfyHB\n"
+        "NVOFBkpdn627G190\n"
         "-----END CERTIFICATE-----\n";
 
 static wiced_semaphore_t httpWait;
@@ -49,9 +63,13 @@ static wiced_semaphore_t buttonWait;
 static http_client_t  client;
 static http_request_t request;
 static http_client_configuration_info_t client_configuration;
-static char json_size[5]; // This holds the size of the JSON message as a decimal value
-static char message[100];  // This holds the JSON message to be sent
-http_header_field_t header[5]; // Array of headers
+static char resourceOptions[200];  // This holds the options string to be sent
+http_header_field_t header[1]; // Array of headers
+
+u8g_t display;
+
+char tempStrC[10];  /* Temperature string to print in C */
+char tempStrF[10];  /* Temperature string to print in F */
 
 /******************************************************
  *               Function Definitions
@@ -72,26 +90,6 @@ void application_start( void )
     header[0].field_length = strlen( HTTP_HEADER_HOST );
     header[0].value        = SERVER_HOST;
     header[0].value_length = strlen( SERVER_HOST );
-
-    /* Header 1 is the BucketKey */
-    header[1].field        =  "X-IS-BucketKey: ";
-    header[1].field_length = strlen( "X-IS-BucketKey: " );
-    header[1].value        = "KDS3L8DG59VP";
-    header[1].value_length = strlen( "KDS3L8DG59VP" );
-
-    /* Header 2 is the AccessKey */
-    header[2].field        =  "X-IS-AccessKey: ";
-    header[2].field_length = strlen( "X-IS-AccessKey: " );
-    header[2].value        = "kyb54q2ocuspmjrPEa3k6MqNlkWaYUo2";
-    header[2].value_length = strlen( "kyb54q2ocuspmjrPEa3k6MqNlkWaYUo2" );
-
-    /* Header 3 is the content type (JSON) */
-    header[3].field        =  HTTP_HEADER_CONTENT_TYPE;
-    header[3].field_length = strlen( HTTP_HEADER_CONTENT_TYPE );
-    header[3].value        = "application/json";
-    header[3].value_length = strlen( "application/json" );
-
-    /* Header 4 is the application content length. This will be set when we need it later since it changes. */
 
     wiced_init( );
 
@@ -124,15 +122,15 @@ void application_start( void )
     client_configuration.max_fragment_length = TLS_FRAGMENT_LENGTH_1024;
     http_client_configure(&client, &client_configuration);
 
-    /* if you set hostname, library will make sure subject name in the server certificate is matching with host name you are trying to connect. pass NULL if you don't want to enable this check */
+    /* If you set hostname, library will make sure subject name in the server certificate is matching with host name you are trying to connect. pass NULL if you don't want to enable this check */
     client.peer_cn = NULL;
 
     wiced_gpio_input_irq_enable(WICED_BUTTON1, IRQ_TRIGGER_FALLING_EDGE, button_isr, NULL); /* Setup interrupt */
 
-    /* Setup I2C master */
+    /* Setup I2C master for reading temperature from PSoC */
     const wiced_i2c_device_t i2cDevice = {
         .port = WICED_I2C_2,
-        .address = I2C_ADDRESS,
+        .address = PSOC_ADDRESS,
         .address_width = I2C_ADDRESS_WIDTH_7BIT,
         .speed_mode = I2C_STANDARD_SPEED_MODE
     };
@@ -142,14 +140,31 @@ void application_start( void )
     /* Tx buffer is used to set the offset */
     uint8_t tx_buffer[] = {TEMPERATURE_REG};
 
-    /* Rx buffer is used to get temperature, humidity, light, and POT data - 4 bytes each */
+    /* Rx buffer is used to get temperature as a float */
     struct {
         float temp;
-        float humidity;
     } rx_buffer;
 
     /* Initialize offset */
     wiced_i2c_write(&i2cDevice, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, tx_buffer, sizeof(tx_buffer));
+
+    /* Setup I2C master to send value to the display */
+    /* Initialize the OLED display */
+    wiced_i2c_device_t display_i2c =
+    {
+        .port          = WICED_I2C_2,
+        .address       = OLED_ADDRESS,
+        .address_width = I2C_ADDRESS_WIDTH_7BIT,
+        .flags         = 0,
+        .speed_mode    = I2C_STANDARD_SPEED_MODE,
+
+    };
+
+    u8g_init_wiced_i2c_device(&display_i2c);
+
+    u8g_InitComFn(&display, &u8g_dev_ssd1306_128x64_i2c, u8g_com_hw_i2c_fn);
+    u8g_SetFont(&display, u8g_font_unifont);
+    u8g_SetFontPosTop(&display);
 
     WPRINT_APP_INFO( ( "Press WICED_BUTTON1 to send Temperature and Humidity Data\n" ) );
 
@@ -158,13 +173,10 @@ void application_start( void )
         /* Wait for a button press */
         wiced_rtos_get_semaphore(&buttonWait, WICED_WAIT_FOREVER);
 
-        /* Read values from shield over I2C */
+        /* Read temperature from shield over I2C */
         wiced_i2c_read(&i2cDevice, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, &rx_buffer, sizeof(rx_buffer));
-        WPRINT_APP_INFO(("Temperature: %.1f\t Humidity: %.1f\n", rx_buffer.temp, rx_buffer.humidity)); /* Print data to terminal */
-
-        /* Setup JSON message */
-        sprintf(message,"[{\"key\":\"Temperature\",\"value\":%.1f} , {\"key\":\"Humidity\",\"value\":%.1f}]",rx_buffer.temp, rx_buffer.humidity);            // set message
-        sprintf(json_size,"%d",strlen(message));
+        WPRINT_APP_INFO(("Temperature: %.1f\n", rx_buffer.temp)); /* Print temperature to terminal */
+        snprintf(tempStrC, sizeof(tempStrC), "C: %.1f",rx_buffer.temp); /* Format temperature in C for the OLED */
 
         /* Connect to the server */
         WPRINT_APP_INFO( ( "Connecting to %s\n", SERVER_HOST ) );
@@ -175,17 +187,13 @@ void application_start( void )
         }
         WPRINT_APP_INFO( ( "Connected\n" ) );
 
-        /* Set header for length of JSON message being sent */
-        header[4].field        =  HTTP_HEADER_CONTENT_LENGTH;
-        header[4].field_length = strlen( HTTP_HEADER_CONTENT_LENGTH );
-        header[4].value        = json_size;
-        header[4].value_length = strlen( json_size );
+        /* Setup options to send to the server including the value to be converted*/
+        sprintf(resourceOptions,"/convert?from-type=C&to-type=F&user-id=wicedwifi101&api-key=kyM2OWa22SZ1B5PGE7DvjSi67sPMXHTNXXENVut8JvmjkjMo&from-value=%.1f", rx_buffer.temp);
 
         /* Setup the POST request */
-        http_request_init( &request, &client, HTTP_POST, "/api/events", HTTP_1_1 );
-        http_request_write_header( &request, &header[0], 5 );
+        http_request_init( &request, &client, HTTP_POST, resourceOptions, HTTP_1_1 );
+        http_request_write_header( &request, &header[0], 1 );
         http_request_write_end_header( &request );
-        http_request_write( &request, (uint8_t*) message, strlen(message));
         http_request_flush( &request );
 
         /* Wait for request to complete */
@@ -230,6 +238,12 @@ static void event_handler( http_client_t* client, http_event_t event, http_respo
                WPRINT_APP_INFO( ("\n------------------ End Response ------------------\n" ) );
                http_request_deinit( (http_request_t*) &(response->request) );
                wiced_rtos_set_semaphore(&httpWait); // Set semaphore to flag that this request is done
+
+               /* Parse temperature value in F from JSON (it is returned as a string) and display on OLED*/
+               cJSON *root =   cJSON_Parse((const char*)response->payload);
+               snprintf(tempStrF, sizeof(tempStrF), "F: %s",cJSON_GetObjectItem(root,"result")->valuestring);
+               cJSON_Delete(root);
+               display_temperature();
             }
             break;
         }
@@ -249,3 +263,14 @@ static void print_data( char* data, uint32_t length )
     }
 }
 
+/* Helper function to display the temperature on the OLED */
+/* The row to show the text at on the display is the argument pos */
+static void display_temperature(void)
+{
+    /* Send data to the display */
+    u8g_FirstPage(&display);
+    do {
+        u8g_DrawStr(&display, 0, 5,  tempStrC);
+        u8g_DrawStr(&display, 0, 20,  tempStrF);
+    } while (u8g_NextPage(&display));
+}
