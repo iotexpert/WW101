@@ -133,14 +133,12 @@ void displayDataScreen0()
     
     sprintf(buff,"A2=%d mV  ",ADC_CountsTo_mVolts(2,A2));
     u8x8_DrawString(&u8x8,0,5,buff);
-   
 }
 
 // This function displays the last read values from the I2C Register Map
 // In addition it displays the current values it is reading from A1(DAC) ,A2 (Pot)
 void displayDataScreen1()
 {
-    
     sprintf(buff,"Temp=%.1f C",pafeDataSet.temperature);
     u8x8_DrawString(&u8x8,0,2,buff);
     
@@ -158,10 +156,7 @@ void displayDataScreen1()
     u8x8_DrawString(&u8x8,0,6,buff);
     
     sprintf(buff,"A1=%.2fV",(float)ADC_CountsTo_mVolts(1,A1) /1000.0);
-    u8x8_DrawString(&u8x8,0,7,buff);
-    
-
-    
+    u8x8_DrawString(&u8x8,0,7,buff);    
 }
 
 // This function displays the I2C Register map variable from the LED and Buttons
@@ -175,8 +170,7 @@ void displayDataScreen2()
     
     
     sprintf(buff,"LED Cntrl=%x",pafeDataSet.ledControl);
-    u8x8_DrawString(&u8x8,0,5,buff);
-    
+    u8x8_DrawString(&u8x8,0,5,buff);    
 }
 
 // This function displays the I2C Register map variable from the LED and Buttons
@@ -199,8 +193,6 @@ void displayTestScreen()
 
     sprintf(buff,"TEMP     =  %s",((success&SUCCESS_TEMP_FLAG)?"Pass":"Fail"));
     u8x8_DrawString(&u8x8,0,7,buff);
-
-    
 }
 
 
@@ -232,8 +224,7 @@ void switchScreen()
     u8x8_DrawString(&u8x8,1,0,"PSoC AFE Shield");
     u8x8_DrawString(&u8x8,offset,1,displayFunctions[currentScreen].title);
    
-    (*displayFunctions[currentScreen].fcn)();
-   
+    (*displayFunctions[currentScreen].fcn)();   
 }
 
 // ISR for base button... it puts the baseboard into "bootloader mode" which actually
@@ -354,6 +345,10 @@ int main(void)
     {
         static int b1Prev=1;
         int b1State;
+        
+        // Look at mechanical button2 from shield and drive LED2
+        // (Button and LED1 are done in hardware)
+        D12_Write(!D11_Read());
         
         // Read the values of the Analog Arduino Pins
         if(ADC_IsEndConversion(ADC_RETURN_STATUS)) // The three Arduino A inputs are connected to the channel 0,1,2
