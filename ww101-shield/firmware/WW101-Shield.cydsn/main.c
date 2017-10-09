@@ -1,10 +1,8 @@
-
 #include "project.h"
 #include "regmap.h"
 #include <stdbool.h>
 
 /* Use this to run the tuner. */
-/* The tuner uses I2C address 0x42 and uses a 1 byte I2C address */
 //#define ENABLE_TUNER
 
 /* Button State */
@@ -21,13 +19,12 @@
 /* CapSense LED mode is defined by bit 1 in the led control register */
 #define CAPLEDMASK (0x01)
 
-
 /* Number of ADC channels */
 #define NUM_CHAN (4)
 
 /* Constants used to calculate humidity */
 /* This is the capacitance of the sensor at 55% RH with 0.1pF resolution */
-#define CAPACITANCE_AT_55_RH        (1850)
+#define CAPACITANCE_AT_55_RH        (1800)
 /* Sensitivity numerator and denominator indicate sensitivity of the sensor */
 #define SENSITIVITY_NUMERATOR       (31)
 #define SENSITIVITY_DENOMINATOR     (100)
@@ -90,31 +87,246 @@ volatile dataSet_t LocData;  /* Local working copy of the data set */
 uint16 capacitance;			    /* Capacitance of the humidity sensor */
 uint16 humidity;			    /* Measured humidity */
 
-uint8 adcState = DONE;          /* The ADC states are: RUNNING, PROCESS and DONE */
-int16 adcResults[NUM_CHAN];     /* Array to hold raw ADC results */
+uint32 adcState = DONE;          /* The ADC states are: RUNNING, PROCESS and DONE */
+int16  adcResults[NUM_CHAN];     /* Array to hold raw ADC results */
 
 bool capLedBase = false;        /* Setting for whether the CapSense LEDs are controlled by CapSense or I2C */
 
+
+/* Function prototypes */
+/* Interrupt Service Routines */
+CY_ISR_PROTO(BL_ISR);
+CY_ISR_PROTO(ADC_ISR_Callback);
+void SysTickISRCallback(void);
+/* Humidity calculation */
+__inline uint16 CalculateCapacitance(uint16 rawCounts, uint16 refsensorCounts);
+__inline uint16 CalculateHumidity(uint16 capacitance);
+/*CapSense */
+void processCapSense(void);
+
+/*******************************************************************************
+* Function Name: int  main( void )
+********************************************************************************/
+int main(void)
+{
+    /* Local variables */
+    bool    BootloadCountFlag = false;
+    uint8   interruptState = 0;   /* Variable to store the status returned by CyEnterCriticalSection() */
+    int32   dacValPrev = 0;
+    float32 dacVal;
+    int32   dacCode;
+    int16   alsCurrent; /* Variable to store ALS current */
+    int16   illum16; /* Illuminance as a 16 bit value (lux) */
+    int16   thermistorResistance; /* Variables for temperature calculation */
+    int16   temp16; /* Temperature expressed as a 16 bit integer in 1/100th of a degree */
+    uint32  i;
+
+    CyGlobalIntEnable; /* Enable global interrupts. */
+
+    BL_INT_StartEx(BL_ISR); /* Interrupt to start the bootloader */ 
+    
+    /* This starts both master and slave but only one will be used at at time */
+
+    EZI2C_Start();
+    #ifdef ENABLE_TUNER
+    EZI2C_EzI2CSetBuffer1(sizeof(CapSense_dsRam), sizeof(CapSense_dsRam),(uint8 *)&CapSense_dsRam);        
+    #else
+    EZI2C_EzI2CSetBuffer1(sizeof(I2Cbuf), RW, (void *) &I2Cbuf);     
+    #endif   
+    
+    SmartIO_Start();    
+    VDAC_Start();
+    PVref_ALS_Start();
+    Opamp_ALS1_Start();
+    Opamp_ALS2_Start();
+    PVref_Therm_Start();
+    Opamp_Therm_Start();    
+    ADC_Start();
+    ADC_IRQ_Enable();
+    
+    CapSense_Start();   
+    CapSense_SetupWidget(CapSense_BUTTON0_WDGT_ID);
+    CapSense_Scan();      
+    
+    /* Start SysTick Timer to give a 1ms interrupt */
+    CySysTickStart();
+    /* Find unused callback slot and assign the callback. */
+    for (i = 0u; i < CY_SYS_SYST_NUM_OF_CALLBACKS; ++i)
+    {
+        if (CySysTickGetCallback(i) == NULL)
+        {
+            /* Set callback */
+            CySysTickSetCallback(i, SysTickISRCallback);
+            break;
+        }
+    }
+    
+    for(;;)
+    {
+        /* Look for bootloader entry - both mechanical buttons held down for 2 seconds */
+        if((MB1_Read() == PRESSED) && (MB2_Read() == PRESSED))
+        {
+            if(BootloadCountFlag == false)
+            {
+                BootloadTimer_Start();
+            }
+            BootloadCountFlag = true;
+        }
+        else if(BootloadCountFlag == true)
+        {
+            BootloadCountFlag = false;
+            BootloadTimer_Stop();
+            BootloadTimer_WriteCounter(0);
+        }
+
+        /* CapSense Scanning */
+        processCapSense();
+        
+        /* Read and update mechanical button state */
+        if(MB1_Read() == PRESSED)
+        {
+            LocData.buttonVal |= (BVAL_MB1_MASK);
+        }
+        else
+        {
+           LocData.buttonVal &= (~BVAL_MB1_MASK);
+        }
+        if(MB1_Read() == PRESSED)
+        {
+            LocData.buttonVal |= (BVAL_MB2_MASK);
+        }
+        else
+        {
+            LocData.buttonVal &= (~BVAL_MB2_MASK);
+        }
+        
+        /* Update CapSense buttons if set to base board control */
+        if(capLedBase == true)
+        {
+            CBLED0_Write(!(LocData.ledVal & BVAL_B0_MASK));
+            CBLED1_Write(!(LocData.ledVal & BVAL_B1_MASK));
+            CBLED2_Write(!(LocData.ledVal & BVAL_B2_MASK));
+            CBLED3_Write(!(LocData.ledVal & BVAL_B3_MASK));
+        }
+ 
+        /* Set VDAC value if it has changed */
+        dacVal = LocData.dacVal;
+        if(dacValPrev != dacVal)
+        {
+            dacValPrev = dacVal;
+            // DAC range is 2.4V, Valid inputs are -4096 to 4094
+            dacCode = (int32)(((dacVal * 8192.0)/2.4) - 4096.0);
+            if (dacCode < -4096)
+            {
+                dacCode = -4096;
+            }
+            VDAC_SetValue(VDAC_SaturateTwosComp(dacCode));
+        }
+        
+        /* Process ADC results that were captured in the interrupt */
+        if(adcState == PROCESS)
+        {
+            /* ALS */
+            /* Calculate the photodiode current */
+			alsCurrent = (adcResults[ALS] * ALS_CURRENT_SCALE_FACTOR_NUMERATOR)/ALS_CURRENT_SCALE_FACTOR_DENOMINATOR; 
+			
+			/* If the calculated current is negative, limit it to zero */
+			if(alsCurrent < 0)
+			{
+				alsCurrent = 0;
+			}
+			
+			/* Calculate the light illuminance */
+            illum16 = (alsCurrent * ALS_LIGHT_SCALE_FACTOR_NUMERATOR)/ALS_LIGHT_SCALE_FACTOR_DENOMINATOR;
+			LocData.illuminance = (float32)(illum16);
+            
+            /* Thermistor */
+            /* Calculate thermistor resistance */
+            thermistorResistance = Thermistor_GetResistance(adcResults[THERM_REF], adcResults[THERM]);           
+                           
+            /* Calculate temperature in degree Celsius using the Component API */
+            temp16 = Thermistor_GetTemperature(thermistorResistance);
+            /* Convert tempearture to a float */
+            LocData.temperature = ((float32)(temp16))/100.0;
+            
+            /* POT */
+            LocData.potVal = ADC_CountsTo_Volts(POT, adcResults[POT]);
+            
+            adcState = DONE;
+        }
+        
+        /* Update I2C registers to/from local copy if it isn't busy */
+        /* Enter critical section to check if I2C bus is busy or not */
+        interruptState = CyEnterCriticalSection();
+        if(!(EZI2C_EzI2CGetActivity() & EZI2C_EZI2C_STATUS_BUSY))
+        {
+            /* Get values that are written by the master */
+            LocData.dacVal = I2Cbuf.dacVal;
+            LocData.ledVal = I2Cbuf.ledVal;
+            LocData.ledControl = I2Cbuf.ledControl;
+            capLedBase = LocData.ledControl & CAPLEDMASK;
+            /* Send values that are updated by the slave */
+            I2Cbuf.buttonVal = LocData.buttonVal;
+            I2Cbuf.temperature = LocData.temperature;
+            I2Cbuf.humidity = LocData.humidity;
+            I2Cbuf.illuminance = LocData.illuminance;
+            I2Cbuf.potVal = LocData.potVal;
+        }
+        CyExitCriticalSection(interruptState); 
+        
+    } /* End of main infinite loop */
+} /* End of main */
+
+/*******************************************************************************
+* Function Name: void BL_ISR( void )
+********************************************************************************/
+/* ISR for the bootloader timer */
+/* If we get here it is time to launch the bootloader */
+CY_ISR(BL_ISR)
+{
+    BootloadTimer_ClearInterrupt(BootloadTimer_INTR_MASK_TC);
+    Bootloadable_Load();
+}
+
+/*******************************************************************************
+* Function Name: void SysTick( void )
+********************************************************************************/
 /* 1ms SysTick ISR */
-/* This is used to start a new ADC conversion every 100ms */
+/* This is used to start a new ADC conversion every 100ms
+   and to turn off the CapSense interrupt line */
 void SysTickISRCallback(void)
 {
-    static uint8 counter = 0;
+    static uint8 ADCcounter = 0;
+    static uint8 CScounter = 0;
     
-    counter++;
-    if(counter > 99)
+    ADCcounter++;
+    if(ADCcounter > 99)
     {
-        counter = 0;
+        ADCcounter = 0;
         if(adcState == DONE)
         {
             ADC_StartConvert();
             adcState = RUNNING;
         }
     }
+    
+    /* Read CS Interrupt pin state and turn off after 2nd tick */
+    if(CSINTR_Read() == 1)
+    {
+        CScounter++;
+        if(CScounter > 1)
+        {
+            CSINTR_Write(0);
+            CScounter = 0;
+        }
+    }
 }
 
+/*******************************************************************************
+* Function Name: void ADC_ISR_Callback( void )
+********************************************************************************/
 /* ADC converstion is done - capture all ADC values */
-void ADC_ISR_Callback( void )
+CY_ISR(ADC_ISR_Callback)
 {
     uint8 i;
     
@@ -123,62 +335,6 @@ void ADC_ISR_Callback( void )
         adcResults[i] = ADC_GetResult16(i);        
     }
     adcState = PROCESS;    /* Set ADC state to process results */
-}
-
-/*******************************************************************************
-* Function Name: __inline uint16 CalculateCapacitance(uint16 RawCounts, uint16 RefsensorCounts)
-********************************************************************************
-*
-* Summary:
-*  This function calculates capacitance from raw count.
-*
-* Parameters:
-*  uint16 RawCounts - Raw count corresponding to Humidity sensor
-*  uint16 RefsensorCounts - Raw count corresponding to Reference capacitor
-*
-* Return:
-*  Capacitance of the Humidity sensor
-*
-* Side Effects:
-*   None
-*******************************************************************************/
-__inline uint16 CalculateCapacitance(uint16 rawCounts, uint16 refsensorCounts)
-{
-    return (uint16)((float32)(rawCounts - OFFSETCOUNT) * (CREF - COFFSET) / (float32)(refsensorCounts - OFFSETCOUNT));   
-}
-
-/*******************************************************************************
-* Function Name: __inline uint16 CalculateHumidity(uint16 Capacitance)
-********************************************************************************
-*
-* Summary:
-*  This function calculates humidity from capacitance
-
-* Parameters:
-*  uint16 Capacitance - Capacitance of the humidity sensor
-*
-* Return:
-*  Calculated Humidity value
-*
-* Side Effects:
-*   None
-*******************************************************************************/
-__inline uint16 CalculateHumidity(uint16 capacitance)
-{
-    int16 humidity;
-    int16 delta;
-    
-    /* Find capacitance difference from nominal capacitance at 55% RH */
-    delta = capacitance - CAPACITANCE_AT_55_RH;
-    
-    /* Calculate humidity from capacitance difference and sensor sensitivity */
-    humidity = ((delta * SENSITIVITY_DENOMINATOR) / SENSITIVITY_NUMERATOR) + NOMINAL_HUMIDITY;
-    
-    /* If humidity is less than zero, limit it to 0; If humidity is greater than 1000 (100%), limit to 1000 */
-    humidity = (humidity < HUMIDITY_0_PERCENT) ? HUMIDITY_0_PERCENT : (humidity > HUMIDITY_100_PERCENT) ? HUMIDITY_100_PERCENT : humidity;
-    
-    /* Return Humidity value */
-    return humidity;
 }
 
 /*******************************************************************************
@@ -193,10 +349,11 @@ __inline uint16 CalculateHumidity(uint16 capacitance)
 *******************************************************************************/
 void processCapSense(void)
 {
-    static uint8 state = B0;
-    static uint16 humidityRawCounts;    /* Raw count from CapSense Component for the humidity sensor */
-    static uint16 humidityRefRawCounts; /* Raw count from CapSense Component for the Reference capacitor */
-        
+    static uint8  state = B0;               /* CapSense sensor state machine to cycle through sensors */
+    static uint16 humidityRawCounts;        /* Raw count from CapSense Component for the humidity sensor */
+    static uint16 humidityRefRawCounts;     /* Raw count from CapSense Component for the Reference capacitor */
+    static uint8  buttonValPrev = 0x00;     /* Previous CapSense button state */
+    
     if(!CapSense_IsBusy())
     {
         switch(state) {
@@ -283,6 +440,15 @@ void processCapSense(void)
                     }
                     LocData.buttonVal &= (~BVAL_B3_MASK);
                 }
+                
+                /* Now that butons have all been processed, set interrupt state */
+                if(LocData.buttonVal != buttonValPrev) /* At least 1 button state changed */
+                {
+                    CSINTR_Write(1);
+                    buttonValPrev = LocData.buttonVal;
+                }
+                
+                /* Setup Proximity scan */
                 CapSense_SetupWidget(CapSense_PROXIMITY0_WDGT_ID);
                 state++;
                 break;      
@@ -290,10 +456,12 @@ void processCapSense(void)
                 CapSense_ProcessWidget(CapSense_PROXIMITY0_WDGT_ID);
                 if(CapSense_IsWidgetActive(CapSense_PROXIMITY0_WDGT_ID))
                 {
+                    PROXLED_Write(LEDON);
                     LocData.buttonVal |= (BVAL_PROX_MASK);
                 }
                 else
                 {
+                    PROXLED_Write(LEDOFF);
                     LocData.buttonVal &= (~BVAL_PROX_MASK);
                 }
                 CapSense_SetupWidget(CapSense_HUMIDITY_WDGT_ID);
@@ -305,12 +473,12 @@ void processCapSense(void)
                 /* Convert raw counts to capacitance */
                 capacitance = CalculateCapacitance(humidityRawCounts, humidityRefRawCounts);
                 /* Calculate humidity */
-                humidity = CalculateHumidity(capacitance);                             
+                humidity = CalculateHumidity(capacitance); 
                 LocData.humidity = ((float32)(humidity))/10.0;
                 CapSense_SetupWidget(CapSense_BUTTON0_WDGT_ID);
                 state=0;
                 break;
-        }
+        } /* End of CapSense Switch statement */
         #ifdef ENABLE_TUNER
         CapSense_RunTuner();
         #endif
@@ -318,192 +486,60 @@ void processCapSense(void)
     }
 }
 
-int main(void)
+/*******************************************************************************
+* Function Name: __inline uint16 CalculateCapacitance(uint16 RawCounts, uint16 RefsensorCounts)
+********************************************************************************
+*
+* Summary:
+*  This function calculates capacitance from raw count.
+*
+* Parameters:
+*  uint16 RawCounts - Raw count corresponding to Humidity sensor
+*  uint16 RefsensorCounts - Raw count corresponding to Reference capacitor
+*
+* Return:
+*  Capacitance of the Humidity sensor
+*
+* Side Effects:
+*   None
+*******************************************************************************/
+__inline uint16 CalculateCapacitance(uint16 rawCounts, uint16 refsensorCounts)
 {
-    /* Local variables */
-    bool    pressFlag = false;
-    uint8   interruptState = 0;   /* Variable to store the status returned by CyEnterCriticalSection() */
-    int32   dacValPrev = 0;
-    float32 dacVal;
-    int32   dacCode;
-    int16   alsCurrent; /* Variable to store ALS current */
-    int16   thermistorResistance; /* Variables for temperature calculation */
-    int16   temp16; /* Temperature expressed as a 16 bit integer in 1/100th of a degree */
-    uint8   i;
-    // Range of POT for bootloader entry testing
-    float32 potMin = 3.3;
-    float32 potMax = 0.0;
-    
-    CyGlobalIntEnable; /* Enable global interrupts. */
+    return (uint16)((float32)(rawCounts - OFFSETCOUNT) * (CREF - COFFSET) / (float32)(refsensorCounts - OFFSETCOUNT));   
+}
 
-    CapSense_Start(); 
-    /* Over-ride IDAC values for buttons but keep auto for Prox and Humidity */
-    CapSense_BUTTON0_IDAC_MOD0_VALUE =          7u;
-    CapSense_BUTTON0_SNS0_IDAC_COMP0_VALUE =    6u;
-    CapSense_BUTTON1_IDAC_MOD0_VALUE =          7u;
-    CapSense_BUTTON1_SNS0_IDAC_COMP0_VALUE =    7u;
-    CapSense_BUTTON2_IDAC_MOD0_VALUE =          9u;
-    CapSense_BUTTON2_SNS0_IDAC_COMP0_VALUE =    7u;
-    CapSense_BUTTON3_IDAC_MOD0_VALUE =          9u;
-    CapSense_BUTTON3_SNS0_IDAC_COMP0_VALUE =    8u;
-    /* Setup first widget and run the scan */
-    CapSense_SetupWidget(CapSense_BUTTON0_WDGT_ID);
-    CapSense_Scan();  
-    
-    EZI2C_Start();
-    #ifdef ENABLE_TUNER
-    EZI2C_EzI2CSetBuffer1(sizeof(CapSense_dsRam), sizeof(CapSense_dsRam),(uint8 *)&CapSense_dsRam);        
-    #else
-    EZI2C_EzI2CSetBuffer1(sizeof(I2Cbuf), RW, (void *) &I2Cbuf);     
-    #endif   
- 
-    SmartIO_Start();    
-    VDAC_Start();
-    PVref_ALS_Start();
-    Opamp_ALS1_Start();
-    Opamp_ALS2_Start();
-    PVref_Therm_Start();
-    Opamp_Therm_Start();    
-    ADC_Start();
-    ADC_IRQ_Enable();
-    
-    /* Start SysTick Timer to give a 1ms interrupt */
-    CySysTickStart();
-    /* Find unused callback slot and assign the callback. */
-    for (i = 0u; i < CY_SYS_SYST_NUM_OF_CALLBACKS; ++i)
-    {
-        if (CySysTickGetCallback(i) == NULL)
-        {
-            /* Set callback */
-            CySysTickSetCallback(i, SysTickISRCallback);
-            break;
-        }
-    }
-    
-    for(;;)
-    {
-        /* Look for bootloader entry - both mechanical buttons held down and POT moved by more than 1V */
-        if((MB1_Read() == PRESSED) && (MB2_Read() == PRESSED))
-        {   
-            // Reset pot range checking when buttons are first pressed
-            if(pressFlag == false)
-            {
-                pressFlag = true;
-                potMin = LocData.potVal;
-                potMax = LocData.potVal;
-            }
-            if(LocData.potVal < potMin)
-            {
-                potMin = LocData.potVal;
-            }
-            else if(LocData.potVal > potMax)
-            {
-                potMax = LocData.potVal;
-            }
-            if((potMax - potMin) > 1.0) /* Pot moved more than 1V, time to bootload */
-            {
-                Bootloadable_Load();
-            }
-        }
-        else /* Button not pressed */
-        {
-            pressFlag = false;
-        }
-        
-        /* CapSense Scanning */
-        processCapSense();
-        
-        /* Read and update mechanical button state */
-        if(MB1_Read() == PRESSED)
-        {
-            LocData.buttonVal |= (BVAL_MB1_MASK);
-        }
-        else
-        {
-            LocData.buttonVal &= (~BVAL_MB1_MASK);
-        }
-        if(MB2_Read() == PRESSED)
-        {
-            LocData.buttonVal |= (BVAL_MB2_MASK);
-        }
-        else
-        {
-            LocData.buttonVal &= (~BVAL_MB2_MASK);
-        }
-        
-        /* Update CapSense buttons if set to base board control */
-        if(capLedBase == true)
-        {
-            CBLED0_Write(!(LocData.ledVal & BVAL_B0_MASK));
-            CBLED1_Write(!(LocData.ledVal & BVAL_B1_MASK));
-            CBLED2_Write(!(LocData.ledVal & BVAL_B2_MASK));
-            CBLED3_Write(!(LocData.ledVal & BVAL_B3_MASK));
-        }
- 
-        /* Set VDAC value if it has changed */
-        dacVal = LocData.dacVal;
-        if(dacValPrev != dacVal)
-        {
-            dacValPrev = dacVal;
-            // DAC range is 2.4V, Valid inputs are -4096 to 4094
-            dacCode = (int32)(((dacVal * 8192.0)/2.4) - 4096.0);
-            if (dacCode < -4096)
-            {
-                dacCode = -4096;
-            }
-            VDAC_SetValue(VDAC_SaturateTwosComp(dacCode));
-        }
-        
-        /* Process ADC results that were captured in the interrupt */
-        if(adcState == PROCESS)
-        {
-            /* ALS */
-            /* Calculate the photodiode current */
-			alsCurrent = (adcResults[ALS] * ALS_CURRENT_SCALE_FACTOR_NUMERATOR)/ALS_CURRENT_SCALE_FACTOR_DENOMINATOR; 
-			
-			/* If the calculated current is negative, limit it to zero */
-			if(alsCurrent < 0)
-			{
-				alsCurrent = 0;
-			}
-			
-			/* Calculate the light illuminance */
-			LocData.illuminance = (float32)((alsCurrent * ALS_LIGHT_SCALE_FACTOR_NUMERATOR)/ALS_LIGHT_SCALE_FACTOR_DENOMINATOR);
+/*******************************************************************************
+* Function Name: __inline uint16 CalculateHumidity(uint16 Capacitance)
+********************************************************************************
+*
+* Summary:
+*  This function calculates humidity from capacitance
 
-            /* Thermistor */
-            /* Calculate thermistor resistance */
-            thermistorResistance = Thermistor_GetResistance(adcResults[THERM_REF], adcResults[THERM]);           
-                           
-            /* Calculate temperature in degree Celsius using the Component API */
-            temp16 = Thermistor_GetTemperature(thermistorResistance);
-            /* Convert tempearture to a float */
-            LocData.temperature = ((float32)(temp16))/100.0;
-
-            /* POT */
-            LocData.potVal = ADC_CountsTo_Volts(POT, adcResults[POT]);
-
-            adcState = DONE;
-        }
-        
-        /* Update I2C registers to/from local copy if it isn't busy */
-        /* Enter critical section to check if I2C bus is busy or not */
-        interruptState = CyEnterCriticalSection();
-        if(!(EZI2C_EzI2CGetActivity() & EZI2C_EZI2C_STATUS_BUSY))
-        {
-            /* Get values that are written by the master */
-            LocData.dacVal = I2Cbuf.dacVal;
-            LocData.ledVal = I2Cbuf.ledVal;
-            LocData.ledControl = I2Cbuf.ledControl;
-            capLedBase = LocData.ledControl & CAPLEDMASK;
-            /* Send values that are updated by the slave */
-            I2Cbuf.buttonVal = LocData.buttonVal;
-            I2Cbuf.temperature = LocData.temperature;
-            I2Cbuf.humidity = LocData.humidity;
-            I2Cbuf.illuminance = LocData.illuminance;
-            I2Cbuf.potVal = LocData.potVal;
-        }
-        CyExitCriticalSection(interruptState); 
-    }  
+* Parameters:
+*  uint16 Capacitance - Capacitance of the humidity sensor
+*
+* Return:
+*  Calculated Humidity value
+*
+* Side Effects:
+*   None
+*******************************************************************************/
+__inline uint16 CalculateHumidity(uint16 capacitance)
+{
+    int16 humidity;
+    int16 delta;
+    
+    /* Find capacitance difference from nominal capacitance at 55% RH */
+    delta = capacitance - CAPACITANCE_AT_55_RH;
+    
+    /* Calculate humidity from capacitance difference and sensor sensitivity */
+    humidity = ((delta * SENSITIVITY_DENOMINATOR) / SENSITIVITY_NUMERATOR) + NOMINAL_HUMIDITY;
+    
+    /* If humidity is less than zero, limit it to 0; If humidity is greater than 1000 (100%), limit to 1000 */
+    humidity = (humidity < HUMIDITY_0_PERCENT) ? HUMIDITY_0_PERCENT : (humidity > HUMIDITY_100_PERCENT) ? HUMIDITY_100_PERCENT : humidity;
+    
+    /* Return Humidity value */
+    return humidity;
 }
 
 /* [] END OF FILE */
