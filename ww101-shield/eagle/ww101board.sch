@@ -75,71 +75,71 @@
 <layer number="95" name="Names" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="96" name="Values" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="97" name="Info" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="98" name="Guide" color="6" fill="1" visible="yes" active="yes"/>
+<layer number="98" name="Guide" color="6" fill="1" visible="no" active="yes"/>
 <layer number="99" name="SpiceOrder" color="7" fill="1" visible="no" active="no"/>
 <layer number="100" name="Muster" color="7" fill="1" visible="no" active="no"/>
-<layer number="101" name="Patch_Top" color="12" fill="4" visible="yes" active="yes"/>
-<layer number="102" name="Vscore" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="103" name="tMap" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="104" name="Name" color="16" fill="1" visible="yes" active="yes"/>
-<layer number="105" name="tPlate" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="106" name="bPlate" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="107" name="Crop" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="108" name="tplace-old" color="10" fill="1" visible="yes" active="yes"/>
-<layer number="109" name="ref-old" color="11" fill="1" visible="yes" active="yes"/>
-<layer number="110" name="fp0" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="111" name="LPC17xx" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="112" name="tSilk" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="113" name="IDFDebug" color="4" fill="1" visible="yes" active="yes"/>
+<layer number="101" name="Patch_Top" color="12" fill="4" visible="no" active="yes"/>
+<layer number="102" name="Vscore" color="7" fill="1" visible="no" active="yes"/>
+<layer number="103" name="tMap" color="7" fill="1" visible="no" active="yes"/>
+<layer number="104" name="Name" color="16" fill="1" visible="no" active="yes"/>
+<layer number="105" name="tPlate" color="7" fill="1" visible="no" active="yes"/>
+<layer number="106" name="bPlate" color="7" fill="1" visible="no" active="yes"/>
+<layer number="107" name="Crop" color="7" fill="1" visible="no" active="yes"/>
+<layer number="108" name="tplace-old" color="10" fill="1" visible="no" active="yes"/>
+<layer number="109" name="ref-old" color="11" fill="1" visible="no" active="yes"/>
+<layer number="110" name="fp0" color="7" fill="1" visible="no" active="yes"/>
+<layer number="111" name="LPC17xx" color="7" fill="1" visible="no" active="yes"/>
+<layer number="112" name="tSilk" color="7" fill="1" visible="no" active="yes"/>
+<layer number="113" name="IDFDebug" color="4" fill="1" visible="no" active="yes"/>
 <layer number="114" name="FRNTMAAT1" color="7" fill="1" visible="no" active="yes"/>
 <layer number="115" name="FRNTMAAT2" color="7" fill="1" visible="no" active="yes"/>
-<layer number="116" name="Patch_BOT" color="9" fill="4" visible="yes" active="yes"/>
+<layer number="116" name="Patch_BOT" color="9" fill="4" visible="no" active="yes"/>
 <layer number="117" name="BACKMAAT1" color="7" fill="1" visible="no" active="yes"/>
 <layer number="118" name="Rect_Pads" color="7" fill="1" visible="no" active="no"/>
 <layer number="119" name="KAP_TEKEN" color="7" fill="1" visible="no" active="yes"/>
 <layer number="120" name="Descript" color="7" fill="1" visible="no" active="yes"/>
-<layer number="121" name="_tsilk" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="122" name="_bsilk" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="123" name="tTestmark" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="124" name="bTestmark" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="125" name="_tNames" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="126" name="_bNames" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="127" name="_tValues" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="128" name="_bValues" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="121" name="_tsilk" color="7" fill="1" visible="no" active="yes"/>
+<layer number="122" name="_bsilk" color="7" fill="1" visible="no" active="yes"/>
+<layer number="123" name="tTestmark" color="7" fill="1" visible="no" active="yes"/>
+<layer number="124" name="bTestmark" color="7" fill="1" visible="no" active="yes"/>
+<layer number="125" name="_tNames" color="7" fill="1" visible="no" active="yes"/>
+<layer number="126" name="_bNames" color="7" fill="1" visible="no" active="yes"/>
+<layer number="127" name="_tValues" color="7" fill="1" visible="no" active="yes"/>
+<layer number="128" name="_bValues" color="7" fill="1" visible="no" active="yes"/>
 <layer number="129" name="Mask" color="7" fill="1" visible="no" active="yes"/>
 <layer number="130" name="SMDSTROOK" color="7" fill="1" visible="no" active="yes"/>
-<layer number="131" name="tAdjust" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="132" name="bAdjust" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="144" name="Drill_legend" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="145" name="DrillLegend_01-02" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="146" name="DrillLegend_01-15" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="147" name="DrillLegend_01-16" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="148" name="DrillLegend_01-20" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="149" name="DrillLegend_02-15" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="150" name="Notes" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="151" name="HeatSink" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="152" name="_bDocu" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="153" name="FabDoc1" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="154" name="FabDoc2" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="155" name="FabDoc3" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="199" name="Contour" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="200" name="200bmp" color="1" fill="10" visible="yes" active="yes"/>
-<layer number="201" name="201bmp" color="2" fill="10" visible="yes" active="yes"/>
-<layer number="202" name="202bmp" color="3" fill="10" visible="yes" active="yes"/>
-<layer number="203" name="203bmp" color="4" fill="10" visible="yes" active="yes"/>
-<layer number="204" name="204bmp" color="5" fill="10" visible="yes" active="yes"/>
-<layer number="205" name="205bmp" color="6" fill="10" visible="yes" active="yes"/>
-<layer number="206" name="206bmp" color="7" fill="10" visible="yes" active="yes"/>
-<layer number="207" name="207bmp" color="8" fill="10" visible="yes" active="yes"/>
-<layer number="208" name="208bmp" color="9" fill="10" visible="yes" active="yes"/>
-<layer number="209" name="209bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="210" name="210bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="211" name="211bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="212" name="212bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="213" name="213bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="214" name="214bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="215" name="215bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="216" name="216bmp" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="131" name="tAdjust" color="7" fill="1" visible="no" active="yes"/>
+<layer number="132" name="bAdjust" color="7" fill="1" visible="no" active="yes"/>
+<layer number="144" name="Drill_legend" color="7" fill="1" visible="no" active="yes"/>
+<layer number="145" name="DrillLegend_01-02" color="7" fill="1" visible="no" active="yes"/>
+<layer number="146" name="DrillLegend_01-15" color="7" fill="1" visible="no" active="yes"/>
+<layer number="147" name="DrillLegend_01-16" color="7" fill="1" visible="no" active="yes"/>
+<layer number="148" name="DrillLegend_01-20" color="7" fill="1" visible="no" active="yes"/>
+<layer number="149" name="DrillLegend_02-15" color="7" fill="1" visible="no" active="yes"/>
+<layer number="150" name="Notes" color="7" fill="1" visible="no" active="yes"/>
+<layer number="151" name="HeatSink" color="7" fill="1" visible="no" active="yes"/>
+<layer number="152" name="_bDocu" color="7" fill="1" visible="no" active="yes"/>
+<layer number="153" name="FabDoc1" color="7" fill="1" visible="no" active="yes"/>
+<layer number="154" name="FabDoc2" color="7" fill="1" visible="no" active="yes"/>
+<layer number="155" name="FabDoc3" color="7" fill="1" visible="no" active="yes"/>
+<layer number="199" name="Contour" color="7" fill="1" visible="no" active="yes"/>
+<layer number="200" name="200bmp" color="1" fill="10" visible="no" active="yes"/>
+<layer number="201" name="201bmp" color="2" fill="10" visible="no" active="yes"/>
+<layer number="202" name="202bmp" color="3" fill="10" visible="no" active="yes"/>
+<layer number="203" name="203bmp" color="4" fill="10" visible="no" active="yes"/>
+<layer number="204" name="204bmp" color="5" fill="10" visible="no" active="yes"/>
+<layer number="205" name="205bmp" color="6" fill="10" visible="no" active="yes"/>
+<layer number="206" name="206bmp" color="7" fill="10" visible="no" active="yes"/>
+<layer number="207" name="207bmp" color="8" fill="10" visible="no" active="yes"/>
+<layer number="208" name="208bmp" color="9" fill="10" visible="no" active="yes"/>
+<layer number="209" name="209bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="210" name="210bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="211" name="211bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="212" name="212bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="213" name="213bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="214" name="214bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="215" name="215bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="216" name="216bmp" color="7" fill="1" visible="no" active="yes"/>
 <layer number="217" name="217bmp" color="18" fill="1" visible="no" active="no"/>
 <layer number="218" name="218bmp" color="19" fill="1" visible="no" active="no"/>
 <layer number="219" name="219bmp" color="20" fill="1" visible="no" active="no"/>
@@ -157,11 +157,11 @@
 <layer number="231" name="Eagle3D_PG1" color="7" fill="1" visible="no" active="no"/>
 <layer number="232" name="Eagle3D_PG2" color="7" fill="1" visible="no" active="no"/>
 <layer number="233" name="Eagle3D_PG3" color="7" fill="1" visible="no" active="no"/>
-<layer number="248" name="Housing" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="249" name="Edge" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="248" name="Housing" color="7" fill="1" visible="no" active="yes"/>
+<layer number="249" name="Edge" color="7" fill="1" visible="no" active="yes"/>
 <layer number="250" name="Descript" color="3" fill="1" visible="no" active="no"/>
 <layer number="251" name="SMDround" color="12" fill="11" visible="no" active="no"/>
-<layer number="254" name="cooling" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="254" name="cooling" color="7" fill="1" visible="no" active="yes"/>
 <layer number="255" name="routoute" color="7" fill="1" visible="no" active="yes"/>
 </layers>
 <schematic xreflabel="%F%N/%S.%C%R" xrefpart="/%S.%C%R">
@@ -15286,7 +15286,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <part name="J6" library="ww101board" deviceset="U8G-096-OLED" device=""/>
 <part name="MB2" library="ww101board" deviceset="EVQPE1" device=""/>
 <part name="MB1" library="ww101board" deviceset="EVQPE1" device=""/>
-<part name="U$7" library="ww101board" deviceset="CY8C4A45-48" device=""/>
+<part name="U7" library="ww101board" deviceset="CY8C4A45-48" device=""/>
 <part name="C1" library="ww101board" deviceset="CAP" device="0603-CAP" value="1uF"/>
 <part name="C2" library="ww101board" deviceset="CAP" device="0603-CAP" value="0.1uF"/>
 <part name="C3" library="ww101board" deviceset="CAP" device="0603-CAP" value="1uF"/>
@@ -15380,7 +15380,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <part name="C15" library="ww101board" deviceset="CAP" device="0603-CAP" value="0.1uF"/>
 <part name="C16" library="ww101board" deviceset="CAP" device="0603-CAP" value="0.1uF"/>
 <part name="R25" library="ww101board" deviceset="RESISTOR" device="0603" value="0R"/>
-<part name="C17" library="ww101board" deviceset="CAP" device="0603-CAP" value="0.1uF"/>
+<part name="C17" library="ww101board" deviceset="CAP" device="0603-CAP" value="10uF"/>
 <part name="SUPPLY12" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="SUPPLY13" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="U$1" library="ww101board" deviceset="ARDUINO_R3_SHIELD" device="NOLABELS"/>
@@ -15888,10 +15888,10 @@ them on the bottom of the board!!</text>
 <text x="-20.32" y="144.78" size="1.778" layer="97">SDAT</text>
 <text x="68.58" y="5.08" size="4.826" layer="97">PSoC Analog CoProcessor</text>
 <text x="157.48" y="-15.24" size="1.778" layer="97">2.1</text>
-<text x="25.4" y="66.04" size="1.778" layer="97">CY8C4247AZI-M485</text>
+<text x="27.94" y="66.04" size="1.778" layer="97">CY8C4247AZI-M485</text>
 </plain>
 <instances>
-<instance part="U$7" gate="G$1" x="12.7" y="73.66"/>
+<instance part="U7" gate="G$1" x="12.7" y="73.66"/>
 <instance part="C1" gate="G$1" x="-17.78" y="58.42" smashed="yes" rot="R90">
 <attribute name="NAME" x="-21.844" y="55.499" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="-14.224" y="55.499" size="1.778" layer="96" rot="R180"/>
@@ -15967,7 +15967,7 @@ them on the bottom of the board!!</text>
 <nets>
 <net name="XRES" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="XRES"/>
+<pinref part="U7" gate="G$1" pin="XRES"/>
 <wire x1="71.12" y1="78.74" x2="83.82" y2="78.74" width="0.1524" layer="91"/>
 <label x="76.2" y="78.74" size="1.778" layer="95"/>
 </segment>
@@ -15988,19 +15988,19 @@ them on the bottom of the board!!</text>
 </net>
 <net name="THERM-MID" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P3[5]"/>
+<pinref part="U7" gate="G$1" pin="P3[5]"/>
 <wire x1="71.12" y1="50.8" x2="83.82" y2="50.8" width="0.1524" layer="91"/>
 <label x="76.2" y="50.8" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="THERM-REF-HIGH" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P1[3]"/>
+<pinref part="U7" gate="G$1" pin="P1[3]"/>
 <wire x1="7.62" y1="73.66" x2="-15.24" y2="73.66" width="0.1524" layer="91"/>
 <label x="-15.24" y="73.66" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U$7" gate="G$1" pin="P3[6]"/>
+<pinref part="U7" gate="G$1" pin="P3[6]"/>
 <wire x1="71.12" y1="53.34" x2="83.82" y2="53.34" width="0.1524" layer="91"/>
 <label x="76.2" y="53.34" size="1.778" layer="95"/>
 </segment>
@@ -16012,77 +16012,77 @@ them on the bottom of the board!!</text>
 <label x="-35.56" y="144.78" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U$7" gate="G$1" pin="P0[0]"/>
+<pinref part="U7" gate="G$1" pin="P0[0]"/>
 <wire x1="71.12" y1="58.42" x2="83.82" y2="58.42" width="0.1524" layer="91"/>
 <label x="76.2" y="58.42" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="D12" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P0[2]"/>
+<pinref part="U7" gate="G$1" pin="P0[2]"/>
 <wire x1="71.12" y1="63.5" x2="83.82" y2="63.5" width="0.1524" layer="91"/>
 <label x="76.2" y="63.5" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="D5" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P0[5]"/>
+<pinref part="U7" gate="G$1" pin="P0[5]"/>
 <wire x1="71.12" y1="71.12" x2="83.82" y2="71.12" width="0.1524" layer="91"/>
 <label x="76.2" y="71.12" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="LED2" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P0[4]"/>
+<pinref part="U7" gate="G$1" pin="P0[4]"/>
 <wire x1="71.12" y1="68.58" x2="83.82" y2="68.58" width="0.1524" layer="91"/>
 <label x="76.2" y="68.58" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="D4" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P0[3]"/>
+<pinref part="U7" gate="G$1" pin="P0[3]"/>
 <wire x1="71.12" y1="66.04" x2="83.82" y2="66.04" width="0.1524" layer="91"/>
 <label x="76.2" y="66.04" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="UARTTX" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P1[0]"/>
+<pinref part="U7" gate="G$1" pin="P1[0]"/>
 <wire x1="25.4" y1="88.9" x2="25.4" y2="99.06" width="0.1524" layer="91"/>
 <label x="25.4" y="91.44" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="CB1" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P5[1]"/>
+<pinref part="U7" gate="G$1" pin="P5[1]"/>
 <wire x1="45.72" y1="88.9" x2="45.72" y2="99.06" width="0.1524" layer="91"/>
 <label x="45.72" y="91.44" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="SDA" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P4[1]"/>
+<pinref part="U7" gate="G$1" pin="P4[1]"/>
 <wire x1="50.8" y1="88.9" x2="50.8" y2="99.06" width="0.1524" layer="91"/>
 <label x="50.8" y="91.44" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="SCL" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P4[0]"/>
+<pinref part="U7" gate="G$1" pin="P4[0]"/>
 <wire x1="53.34" y1="88.9" x2="53.34" y2="99.06" width="0.1524" layer="91"/>
 <label x="53.34" y="91.44" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="HUMIDITY" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P2[3]"/>
+<pinref part="U7" gate="G$1" pin="P2[3]"/>
 <wire x1="25.4" y1="40.64" x2="25.4" y2="30.48" width="0.1524" layer="91"/>
 <label x="25.4" y="27.94" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="H-REF-CAP" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P2[4]"/>
+<pinref part="U7" gate="G$1" pin="P2[4]"/>
 <wire x1="27.94" y1="40.64" x2="27.94" y2="30.48" width="0.1524" layer="91"/>
 <label x="27.94" y="25.4" size="1.778" layer="95" rot="R90"/>
 </segment>
@@ -16096,14 +16096,14 @@ them on the bottom of the board!!</text>
 </net>
 <net name="CBLED3" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P2[6]"/>
+<pinref part="U7" gate="G$1" pin="P2[6]"/>
 <wire x1="33.02" y1="40.64" x2="33.02" y2="30.48" width="0.1524" layer="91"/>
 <label x="33.02" y="30.48" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="CSHIELD" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P3[3]"/>
+<pinref part="U7" gate="G$1" pin="P3[3]"/>
 <wire x1="50.8" y1="40.64" x2="50.8" y2="22.86" width="0.1524" layer="91"/>
 <label x="50.8" y="27.94" size="1.778" layer="95" rot="R90"/>
 <pinref part="R24" gate="R" pin="2"/>
@@ -16112,64 +16112,64 @@ them on the bottom of the board!!</text>
 </net>
 <net name="POT" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P3[4]"/>
+<pinref part="U7" gate="G$1" pin="P3[4]"/>
 <wire x1="53.34" y1="40.64" x2="53.34" y2="30.48" width="0.1524" layer="91"/>
 <label x="53.34" y="30.48" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="UARTRX" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P1[1]"/>
+<pinref part="U7" gate="G$1" pin="P1[1]"/>
 <wire x1="7.62" y1="78.74" x2="-5.08" y2="78.74" width="0.1524" layer="91"/>
 <label x="-2.54" y="78.74" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CB3" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P1[4]"/>
+<pinref part="U7" gate="G$1" pin="P1[4]"/>
 <wire x1="7.62" y1="71.12" x2="-5.08" y2="71.12" width="0.1524" layer="91"/>
 <label x="-2.54" y="71.12" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CBLED1" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P1[5]"/>
+<pinref part="U7" gate="G$1" pin="P1[5]"/>
 <wire x1="7.62" y1="68.58" x2="-5.08" y2="68.58" width="0.1524" layer="91"/>
 <label x="-2.54" y="68.58" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CBLED0" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P1[6]"/>
+<pinref part="U7" gate="G$1" pin="P1[6]"/>
 <wire x1="7.62" y1="66.04" x2="-5.08" y2="66.04" width="0.1524" layer="91"/>
 <label x="-2.54" y="66.04" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CB2" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P1[7]"/>
+<pinref part="U7" gate="G$1" pin="P1[7]"/>
 <wire x1="7.62" y1="63.5" x2="-5.08" y2="63.5" width="0.1524" layer="91"/>
 <label x="-2.54" y="63.5" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="GND" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="VSSA1"/>
+<pinref part="U7" gate="G$1" pin="VSSA1"/>
 <wire x1="7.62" y1="58.42" x2="-5.08" y2="58.42" width="0.1524" layer="91"/>
 <pinref part="SUPPLY22" gate="GND" pin="GND"/>
 </segment>
 <segment>
-<pinref part="U$7" gate="G$1" pin="VSSA2"/>
+<pinref part="U7" gate="G$1" pin="VSSA2"/>
 <wire x1="38.1" y1="40.64" x2="38.1" y2="30.48" width="0.1524" layer="91"/>
 <pinref part="SUPPLY29" gate="GND" pin="GND"/>
 </segment>
 <segment>
-<pinref part="U$7" gate="G$1" pin="VSSA3"/>
+<pinref part="U7" gate="G$1" pin="VSSA3"/>
 <wire x1="35.56" y1="88.9" x2="35.56" y2="96.52" width="0.1524" layer="91"/>
 <pinref part="SUPPLY25" gate="GND" pin="GND"/>
 </segment>
 <segment>
-<pinref part="U$7" gate="G$1" pin="VSSD"/>
+<pinref part="U7" gate="G$1" pin="VSSD"/>
 <wire x1="30.48" y1="88.9" x2="30.48" y2="99.06" width="0.1524" layer="91"/>
 <pinref part="SUPPLY24" gate="GND" pin="GND"/>
 </segment>
@@ -16233,28 +16233,28 @@ them on the bottom of the board!!</text>
 <junction x="35.56" y="-2.54"/>
 </segment>
 <segment>
-<pinref part="U$7" gate="G$1" pin="P3[7]"/>
+<pinref part="U7" gate="G$1" pin="P3[7]"/>
 <wire x1="71.12" y1="55.88" x2="83.82" y2="55.88" width="0.1524" layer="91"/>
 <label x="76.2" y="55.88" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CBLED2" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P2[0]"/>
+<pinref part="U7" gate="G$1" pin="P2[0]"/>
 <wire x1="7.62" y1="55.88" x2="-5.08" y2="55.88" width="0.1524" layer="91"/>
 <label x="-2.54" y="55.88" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="TIA_IN" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P2[1]"/>
+<pinref part="U7" gate="G$1" pin="P2[1]"/>
 <wire x1="7.62" y1="53.34" x2="-5.08" y2="53.34" width="0.1524" layer="91"/>
-<label x="-2.54" y="53.34" size="1.778" layer="95"/>
+<label x="-5.08" y="53.34" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$20" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="VCCD"/>
+<pinref part="U7" gate="G$1" pin="VCCD"/>
 <wire x1="33.02" y1="88.9" x2="33.02" y2="106.68" width="0.1524" layer="91"/>
 <pinref part="C7" gate="G$1" pin="2"/>
 </segment>
@@ -16269,7 +16269,7 @@ them on the bottom of the board!!</text>
 <pinref part="C3" gate="G$1" pin="2"/>
 <pinref part="C4" gate="G$1" pin="2"/>
 <wire x1="22.86" y1="106.68" x2="27.94" y2="106.68" width="0.1524" layer="91"/>
-<pinref part="U$7" gate="G$1" pin="VDDD"/>
+<pinref part="U7" gate="G$1" pin="VDDD"/>
 <wire x1="27.94" y1="88.9" x2="27.94" y2="104.14" width="0.1524" layer="91"/>
 <junction x="27.94" y="106.68"/>
 <pinref part="SUPPLY27" gate="G$1" pin="VCC"/>
@@ -16281,7 +16281,7 @@ them on the bottom of the board!!</text>
 <pinref part="C9" gate="G$1" pin="2"/>
 <wire x1="33.02" y1="132.08" x2="38.1" y2="132.08" width="0.1524" layer="91"/>
 <wire x1="38.1" y1="88.9" x2="38.1" y2="116.84" width="0.1524" layer="91"/>
-<pinref part="U$7" gate="G$1" pin="VDDA3"/>
+<pinref part="U7" gate="G$1" pin="VDDA3"/>
 <junction x="38.1" y="132.08"/>
 <pinref part="SUPPLY26" gate="G$1" pin="VCC"/>
 <wire x1="38.1" y1="116.84" x2="38.1" y2="132.08" width="0.1524" layer="91"/>
@@ -16291,7 +16291,7 @@ them on the bottom of the board!!</text>
 <pinref part="C2" gate="G$1" pin="2"/>
 <pinref part="C1" gate="G$1" pin="2"/>
 <wire x1="-15.24" y1="63.5" x2="-15.24" y2="60.96" width="0.1524" layer="91"/>
-<pinref part="U$7" gate="G$1" pin="VDDA1"/>
+<pinref part="U7" gate="G$1" pin="VDDA1"/>
 <wire x1="-15.24" y1="60.96" x2="-15.24" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="7.62" y1="60.96" x2="-10.16" y2="60.96" width="0.1524" layer="91"/>
 <junction x="-15.24" y="60.96"/>
@@ -16303,7 +16303,7 @@ them on the bottom of the board!!</text>
 <pinref part="C5" gate="G$1" pin="1"/>
 <pinref part="C6" gate="G$1" pin="1"/>
 <wire x1="35.56" y1="12.7" x2="40.64" y2="12.7" width="0.1524" layer="91"/>
-<pinref part="U$7" gate="G$1" pin="VDDA2"/>
+<pinref part="U7" gate="G$1" pin="VDDA2"/>
 <wire x1="40.64" y1="40.64" x2="40.64" y2="17.78" width="0.1524" layer="91"/>
 <junction x="40.64" y="12.7"/>
 <pinref part="SUPPLY30" gate="G$1" pin="VCC"/>
@@ -16329,7 +16329,7 @@ them on the bottom of the board!!</text>
 <label x="-35.56" y="132.08" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U$7" gate="G$1" pin="P5[2]"/>
+<pinref part="U7" gate="G$1" pin="P5[2]"/>
 <wire x1="43.18" y1="88.9" x2="43.18" y2="99.06" width="0.1524" layer="91"/>
 <label x="43.18" y="91.44" size="1.778" layer="95" rot="R90"/>
 </segment>
@@ -16342,35 +16342,35 @@ them on the bottom of the board!!</text>
 <label x="-25.4" y="132.08" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U$7" gate="G$1" pin="P2[7]"/>
+<pinref part="U7" gate="G$1" pin="P2[7]"/>
 <wire x1="35.56" y1="40.64" x2="35.56" y2="30.48" width="0.1524" layer="91"/>
 <label x="35.56" y="30.48" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="TIA_OUT" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P2[2]"/>
+<pinref part="U7" gate="G$1" pin="P2[2]"/>
 <wire x1="7.62" y1="50.8" x2="-5.08" y2="50.8" width="0.1524" layer="91"/>
-<label x="-2.54" y="50.8" size="1.778" layer="95"/>
+<label x="-5.08" y="50.8" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="VDAC" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P1[2]"/>
+<pinref part="U7" gate="G$1" pin="P1[2]"/>
 <wire x1="7.62" y1="76.2" x2="-5.08" y2="76.2" width="0.1524" layer="91"/>
 <label x="-2.54" y="76.2" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CB0" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P5[0]"/>
+<pinref part="U7" gate="G$1" pin="P5[0]"/>
 <wire x1="48.26" y1="88.9" x2="48.26" y2="99.06" width="0.1524" layer="91"/>
 <label x="48.26" y="91.44" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="CTANK" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P5[3]"/>
+<pinref part="U7" gate="G$1" pin="P5[3]"/>
 <wire x1="40.64" y1="88.9" x2="40.64" y2="96.52" width="0.1524" layer="91"/>
 <label x="40.64" y="91.44" size="1.778" layer="95" rot="R90"/>
 </segment>
@@ -16383,42 +16383,42 @@ them on the bottom of the board!!</text>
 </net>
 <net name="PROXLED" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P3[0]"/>
+<pinref part="U7" gate="G$1" pin="P3[0]"/>
 <wire x1="43.18" y1="40.64" x2="43.18" y2="30.48" width="0.1524" layer="91"/>
 <label x="43.18" y="27.94" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="D13" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P3[1]"/>
+<pinref part="U7" gate="G$1" pin="P3[1]"/>
 <wire x1="45.72" y1="40.64" x2="45.72" y2="30.48" width="0.1524" layer="91"/>
 <label x="45.72" y="30.48" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="FUTUREARD" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P3[2]"/>
+<pinref part="U7" gate="G$1" pin="P3[2]"/>
 <wire x1="48.26" y1="40.64" x2="48.26" y2="30.48" width="0.1524" layer="91"/>
 <label x="48.26" y="25.4" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="LED1" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P0[6]"/>
+<pinref part="U7" gate="G$1" pin="P0[6]"/>
 <wire x1="71.12" y1="73.66" x2="83.82" y2="73.66" width="0.1524" layer="91"/>
 <label x="76.2" y="73.66" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="D11" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P0[7]"/>
+<pinref part="U7" gate="G$1" pin="P0[7]"/>
 <wire x1="71.12" y1="76.2" x2="83.82" y2="76.2" width="0.1524" layer="91"/>
 <label x="76.2" y="76.2" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="MB2" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P0[1]"/>
+<pinref part="U7" gate="G$1" pin="P0[1]"/>
 <wire x1="71.12" y1="60.96" x2="83.82" y2="60.96" width="0.1524" layer="91"/>
 <label x="76.2" y="60.96" size="1.778" layer="95"/>
 </segment>
@@ -16437,7 +16437,7 @@ them on the bottom of the board!!</text>
 </net>
 <net name="CAP-PSOC" class="0">
 <segment>
-<pinref part="U$7" gate="G$1" pin="P2[5]"/>
+<pinref part="U7" gate="G$1" pin="P2[5]"/>
 <wire x1="30.48" y1="40.64" x2="30.48" y2="17.78" width="0.1524" layer="91"/>
 <label x="30.48" y="25.4" size="1.778" layer="95" rot="R90"/>
 <pinref part="R25" gate="R" pin="2"/>
@@ -16460,7 +16460,7 @@ and forth between v50 and v33
 If that is required they will hand solder
 a header into the board and remove
 the 0ohm resistor from R32</text>
-<text x="99.06" y="142.24" size="1.778" layer="97">R32 is a 0 OHM resistor used to selec
+<text x="99.06" y="142.24" size="1.778" layer="97">R32 is a 0 OHM resistor used to select
 the power supply
 
 Please solder a 0 ohm into the 3.3V
