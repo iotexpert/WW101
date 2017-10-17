@@ -34638,13 +34638,12 @@ no I2C resitors preinstalled on I2C</text>
 <text x="30.48" y="15.24" size="1.778" layer="97">The OLED Screen vendors sometimes
 have gnd/power and sometimes have
 power/gnd.  R30 &amp; R31 are 0 Ohm
-resistors on the top of the board let 
-you select the screen type
+resistors on the top of the board that 
+let you select the screen type
 
 When assembling make sure you put
 them in the right place or they will be
-hard to fix!!  If there is any doubt put
-them on the bottom of the board!!</text>
+hard to fix!! </text>
 <text x="269.24" y="10.16" size="1.778" layer="97">2.1</text>
 <text x="76.2" y="45.72" size="1.778" layer="97">J6</text>
 <text x="236.22" y="30.48" size="3.81" layer="97">CY8CKIT-032</text>
@@ -35131,6 +35130,8 @@ them on the bottom of the board!!</text>
 <text x="157.48" y="-15.24" size="1.778" layer="97">2.1</text>
 <text x="27.94" y="66.04" size="1.778" layer="97">CY8C4247AZI-M485</text>
 <text x="121.92" y="5.08" size="3.81" layer="97">CY8CKIT-032</text>
+<text x="91.44" y="58.42" size="1.778" layer="97">P37 should be a direct path to thermistor
+ground</text>
 </plain>
 <instances>
 <instance part="U7" gate="G$1" x="12.7" y="73.66"/>
@@ -35778,7 +35779,6 @@ default position</text>
 <text x="43.18" y="149.86" size="1.778" layer="95" rot="R90">1% </text>
 <text x="170.18" y="5.08" size="5.08" layer="97">Sensors</text>
 <text x="104.14" y="93.98" size="1.778" layer="97" rot="R90">10K</text>
-<text x="134.62" y="71.12" size="1.778" layer="97" rot="R180">2.1</text>
 <text x="220.98" y="7.62" size="1.778" layer="97" rot="R180">2.1</text>
 <text x="180.34" y="25.4" size="3.81" layer="97">CY8CKIT-032</text>
 </plain>
