@@ -17,7 +17,7 @@
 static void  event_handler( http_client_t* client, http_event_t event, http_response_t* response );
 static void  print_data   ( char* data, uint32_t length );
 
-static const char httpbin_root_ca_certificate[] =
+static const char root_ca_certificate[] =
         "-----BEGIN CERTIFICATE-----\n"
         "MIIEDzCCAvegAwIBAgIBADANBgkqhkiG9w0BAQUFADBoMQswCQYDVQQGEwJVUzEl\n"
         "MCMGA1UEChMcU3RhcmZpZWxkIFRlY2hub2xvZ2llcywgSW5jLjEyMDAGA1UECxMp\n"
@@ -109,7 +109,7 @@ void application_start( void )
                                                  (uint8_t)(GET_IPV4_ADDRESS(ip_address) >> 0) ) );
 
     /* Initialize the root CA certificate */
-    result = wiced_tls_init_root_ca_certificates( httpbin_root_ca_certificate, strlen(httpbin_root_ca_certificate) );
+    result = wiced_tls_init_root_ca_certificates( root_ca_certificate, strlen(root_ca_certificate) );
     if ( result != WICED_SUCCESS )
     {
         WPRINT_APP_INFO( ( "Error: Root CA certificate failed to initialize: %u\n", result) );
