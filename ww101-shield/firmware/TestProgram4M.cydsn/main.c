@@ -4,18 +4,18 @@
 #include "testlimits.h"
 #include <stdio.h>
 
-
-dataSet_t pafeDataSet;
-#define PSOC_AFE_I2C (0x42)
-// How often in MS to update the screen
+dataSet_t pafeDataSet;      /* Data from PSoC 4 on shield read over I2C */
+#define PSOC_AFE_I2C (0x42) /* I2C address for PSoC 4 on shield */
+// How often to update the screen in milliseconds
 #define UPDATE_INTERVAL 200
-int updateData=0; // this flag is set by the systick timer ISR
-u8x8_t u8x8;
-int16 A0,A1,A2; // hold the ADC values for the 3 ADC channels
-char buff[64];  // a global scratch buffer to hold sprintfs
-int bootloaderMode = 0; // the baseboard button toggles this flag
 
-// success = all buttons + dacValue + potMin <0.2 && potMax > 2.0 + alsMin < x && alsMax > x && humidity && temp
+int updateData=0;       /* Flag set by the systick timer ISR */
+u8x8_t u8x8;            /* Structure for the OLED display */
+int16 A0,A1,A2;         /* ADC values for the 3 ADC channels */
+char buff[64];          /* Global scratch buffer to hold sprintfs values for the OLED */
+int bootloaderMode = 0; /* the baseboard button toggles bootloader mode */
+
+/* Success = all buttons + dacValue + (potMin <0.2 && potMax > 2.0) + (alsMin < x && alsMax > y) && humidity && temp */
 #define SUCCESS_BUTTON_FLAG (1<<0)
 #define SUCCESS_DAC_FLAG (1<<1)
 #define SUCCESS_POT_FLAG (1<<2)

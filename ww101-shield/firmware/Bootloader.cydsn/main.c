@@ -18,8 +18,9 @@ int main()
     CyGlobalIntEnable;
 
     /* Blink LEDs */
+    SmartIO_Start();
     PWM_1_Start();
-
+    
     /* Start bootloader communication */
     Bootloader_Start();
 
