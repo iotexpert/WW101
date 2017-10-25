@@ -1955,6 +1955,7 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 <vertex x="0" y="-6.35" curve="90"/>
 <vertex x="6.35" y="0" curve="90"/>
 </polygon>
+<rectangle x1="-6.1722" y1="-0.3302" x2="-5.2324" y2="0.254" layer="41"/>
 </package>
 <package name="BUTTON_PASSIVE_8MM">
 <description>&lt;b&gt;Button, Capacitive/Touch Sensing, Passive Sensing, 8mm Pad&lt;/b&gt;
@@ -11160,9 +11161,9 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <wire x1="-1.27" y1="-1.016" x2="-1.016" y2="-1.016" width="0.2032" layer="21"/>
 <wire x1="1.27" y1="-1.016" x2="-0.381" y2="-1.016" width="0.2032" layer="21"/>
 <wire x1="1.27" y1="1.016" x2="-0.381" y2="1.016" width="0.2032" layer="21"/>
-<smd name="1" x="-0.8128" y="0" dx="0.508" dy="1.27" layer="1" cream="no"/>
-<smd name="2" x="0" y="0" dx="0.508" dy="1.27" layer="1" cream="no"/>
-<smd name="3" x="0.8128" y="0" dx="0.508" dy="1.27" layer="1" cream="no"/>
+<smd name="1" x="-0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="2" x="0" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="3" x="0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
 <text x="-1.27" y="1.27" size="0.6096" layer="25" font="vector" ratio="15">&gt;NAME</text>
 <text x="-0.9891" y="0" size="0.02" layer="27">&gt;VALUE</text>
 <text x="-1.27" y="-1.905" size="0.6096" layer="27" font="vector" ratio="15">&gt;VALUE</text>
@@ -11209,9 +11210,9 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <wire x1="-1.27" y1="-1.016" x2="-1.016" y2="-1.016" width="0.2032" layer="21"/>
 <wire x1="1.27" y1="1.016" x2="-0.381" y2="1.016" width="0.2032" layer="21"/>
 <wire x1="1.27" y1="-1.016" x2="-0.381" y2="-1.016" width="0.2032" layer="21"/>
-<smd name="1" x="-0.8128" y="0" dx="0.508" dy="1.27" layer="1" cream="no"/>
-<smd name="2" x="0" y="0" dx="0.508" dy="1.27" layer="1" cream="no"/>
-<smd name="3" x="0.8128" y="0" dx="0.508" dy="1.27" layer="1" cream="no"/>
+<smd name="1" x="-0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="2" x="0" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="3" x="0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
 <text x="-1.27" y="1.27" size="0.6096" layer="25" font="vector" ratio="15">&gt;NAME</text>
 <text x="-0.1001" y="0" size="0.02" layer="27">&gt;VALUE</text>
 <text x="-1.27" y="-1.905" size="0.6096" layer="27" font="vector" ratio="15">&gt;VALUE</text>
@@ -11950,9 +11951,9 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <wire x1="-1.524" y1="-0.762" x2="-1.524" y2="0.762" width="0.1524" layer="21"/>
 <wire x1="1.27" y1="1.016" x2="-1.27" y2="1.016" width="0.127" layer="21"/>
 <wire x1="1.27" y1="-1.016" x2="-1.27" y2="-1.016" width="0.1524" layer="21"/>
-<smd name="1" x="-0.8128" y="0" dx="0.508" dy="1.27" layer="1" cream="no"/>
-<smd name="2" x="0" y="0" dx="0.508" dy="1.27" layer="1" cream="no"/>
-<smd name="3" x="0.8128" y="0" dx="0.508" dy="1.27" layer="1" cream="no"/>
+<smd name="1" x="-0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="2" x="0" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="3" x="0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
 <text x="-1.27" y="1.27" size="0.6096" layer="25" font="vector" ratio="15">&gt;NAME</text>
 <text x="-1.27" y="-1.905" size="0.6096" layer="27" font="vector" ratio="15">&gt;VALUE</text>
 <text x="-1.143" y="-0.381" size="0.8128" layer="51" font="vector" ratio="15">1</text>
@@ -21700,7 +21701,6 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <wire x1="-0.254" y1="-1.016" x2="0.254" y2="-1.016" width="0.508" layer="94" curve="-180" cap="flat"/>
 <wire x1="0.254" y1="1.016" x2="-0.254" y2="1.016" width="0.508" layer="94" curve="-180" cap="flat"/>
 <wire x1="0.254" y1="-1.524" x2="-0.254" y2="-1.524" width="0.508" layer="94" curve="-180" cap="flat"/>
-<wire x1="0" y1="2.54" x2="0" y2="0" width="0.254" layer="94"/>
 <pin name="1" x="0" y="2.54" visible="off" length="point" direction="pas" rot="R270"/>
 <pin name="2" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
 <pin name="3" x="0" y="-2.54" visible="off" length="point" direction="pas" rot="R90"/>
@@ -21739,7 +21739,6 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <wire x1="-0.254" y1="-1.016" x2="0.254" y2="-1.016" width="0.508" layer="94" curve="-180" cap="flat"/>
 <wire x1="0.254" y1="1.016" x2="-0.254" y2="1.016" width="0.508" layer="94" curve="-180" cap="flat"/>
 <wire x1="0.254" y1="-1.524" x2="-0.254" y2="-1.524" width="0.508" layer="94" curve="-180" cap="flat"/>
-<wire x1="0" y1="-2.54" x2="0" y2="0" width="0.254" layer="94"/>
 <pin name="1" x="0" y="2.54" visible="off" length="point" direction="pas" rot="R270"/>
 <pin name="2" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
 <pin name="3" x="0" y="-2.54" visible="off" length="point" direction="pas" rot="R90"/>
@@ -21987,7 +21986,6 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <wire x1="-0.254" y1="-1.016" x2="0.254" y2="-1.016" width="0.508" layer="94" curve="-180" cap="flat"/>
 <wire x1="0.254" y1="1.016" x2="-0.254" y2="1.016" width="0.508" layer="94" curve="-180" cap="flat"/>
 <wire x1="0.254" y1="-1.524" x2="-0.254" y2="-1.524" width="0.508" layer="94" curve="-180" cap="flat"/>
-<wire x1="0" y1="-2.54" x2="0" y2="0" width="0.254" layer="94"/>
 <pin name="1" x="0" y="2.54" visible="off" length="point" direction="pas" rot="R270"/>
 <pin name="2" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
 <pin name="3" x="0" y="-2.54" visible="off" length="point" direction="pas" rot="R90"/>
@@ -35132,6 +35130,7 @@ hard to fix!! </text>
 <text x="121.92" y="5.08" size="3.81" layer="97">CY8CKIT-032</text>
 <text x="91.44" y="58.42" size="1.778" layer="97">P37 should be a direct path to thermistor
 ground</text>
+<text x="38.1" y="60.96" size="1.778" layer="97">U7</text>
 </plain>
 <instances>
 <instance part="U7" gate="G$1" x="12.7" y="73.66"/>
@@ -35292,9 +35291,9 @@ ground</text>
 </net>
 <net name="UARTTX" class="0">
 <segment>
-<pinref part="U7" gate="G$1" pin="P1[0]"/>
-<wire x1="25.4" y1="88.9" x2="25.4" y2="99.06" width="0.1524" layer="91"/>
-<label x="25.4" y="91.44" size="1.778" layer="95" rot="R90"/>
+<pinref part="U7" gate="G$1" pin="P1[1]"/>
+<wire x1="7.62" y1="78.74" x2="-5.08" y2="78.74" width="0.1524" layer="91"/>
+<label x="-2.54" y="78.74" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CB1" class="0">
@@ -35360,13 +35359,6 @@ ground</text>
 <pinref part="U7" gate="G$1" pin="P3[4]"/>
 <wire x1="53.34" y1="40.64" x2="53.34" y2="30.48" width="0.1524" layer="91"/>
 <label x="53.34" y="30.48" size="1.778" layer="95" rot="R90"/>
-</segment>
-</net>
-<net name="UARTRX" class="0">
-<segment>
-<pinref part="U7" gate="G$1" pin="P1[1]"/>
-<wire x1="7.62" y1="78.74" x2="-5.08" y2="78.74" width="0.1524" layer="91"/>
-<label x="-2.54" y="78.74" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CB3" class="0">
@@ -35687,6 +35679,13 @@ ground</text>
 <label x="30.48" y="25.4" size="1.778" layer="95" rot="R90"/>
 <pinref part="R25" gate="R" pin="2"/>
 <wire x1="30.48" y1="17.78" x2="27.94" y2="17.78" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="UARTRX" class="0">
+<segment>
+<pinref part="U7" gate="G$1" pin="P1[0]"/>
+<wire x1="25.4" y1="88.9" x2="25.4" y2="99.06" width="0.1524" layer="91"/>
+<label x="25.4" y="91.44" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 </nets>
