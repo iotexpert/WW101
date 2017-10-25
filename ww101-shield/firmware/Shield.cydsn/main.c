@@ -1,8 +1,19 @@
+/*
+* This is the default program for the PSoC 4 on the shield. It monitors CapSense, reads analog sensors,
+* and stores values in I2C registers so that they can be read from a baseboard. It sets a DAC output
+* voltage based on an I2C register value. It also maps the mechanical buttons and LEDs to Arduino 
+* pins using the SmartIO component.
+*
+* A bootloader is included. Bootloader mode is entered by holding both mechanical buttons while
+* turning the POT by at least 1V.
+*
+* See the CY8CKIT-032 kit guide for details.
+*/
 #include "project.h"
 #include "regmap.h"
 #include <stdbool.h>
 
-/* Use this to run the tuner. */
+/* Uncomment this to run the CapSense tuner. */
 //#define ENABLE_TUNER
 
 /* Button State */
