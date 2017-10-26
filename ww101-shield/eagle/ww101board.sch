@@ -34623,6 +34623,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <part name="U$5" library="ww101board" deviceset="CYLOGO" device=""/>
 <part name="U$6" library="ww101board" deviceset="CYLOGO" device=""/>
 <part name="U$7" library="ww101board" deviceset="CYLOGO-SILK" device=""/>
+<part name="R26" library="ww101board" deviceset="RESISTOR" device="0603" value="50K"/>
+<part name="R27" library="ww101board" deviceset="RESISTOR" device="0603" value="50K"/>
+<part name="SUPPLY23" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
+<part name="SUPPLY33" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -34645,6 +34649,7 @@ hard to fix!! </text>
 <text x="269.24" y="10.16" size="1.778" layer="97">2.1</text>
 <text x="76.2" y="45.72" size="1.778" layer="97">J6</text>
 <text x="236.22" y="30.48" size="3.81" layer="97">CY8CKIT-032</text>
+<text x="71.12" y="167.64" size="1.778" layer="95">R26/R27 make this look like a "real" LED</text>
 </plain>
 <instances>
 <instance part="J6" gate="G$1" x="91.44" y="43.18"/>
@@ -34652,28 +34657,28 @@ hard to fix!! </text>
 <instance part="MB1" gate="G$1" x="124.46" y="88.9"/>
 <instance part="LED1" gate="G$1" x="187.96" y="88.9" rot="R90"/>
 <instance part="LED2" gate="G$1" x="187.96" y="76.2" rot="R90"/>
-<instance part="CLED0" gate="G$1" x="190.5" y="198.12" rot="R90"/>
-<instance part="CLED1" gate="G$1" x="190.5" y="172.72" rot="R90"/>
-<instance part="CLED2" gate="G$1" x="190.5" y="144.78" rot="R90"/>
-<instance part="CLED3" gate="G$1" x="187.96" y="121.92" rot="R90"/>
-<instance part="R3" gate="R" x="200.66" y="198.12" rot="R180"/>
-<instance part="R4" gate="R" x="200.66" y="172.72" rot="R180"/>
-<instance part="R5" gate="R" x="200.66" y="144.78" rot="R180"/>
-<instance part="R6" gate="R" x="198.12" y="121.92" rot="R180"/>
+<instance part="CLED0" gate="G$1" x="243.84" y="198.12" rot="R90"/>
+<instance part="CLED1" gate="G$1" x="243.84" y="172.72" rot="R90"/>
+<instance part="CLED2" gate="G$1" x="243.84" y="144.78" rot="R90"/>
+<instance part="CLED3" gate="G$1" x="241.3" y="121.92" rot="R90"/>
+<instance part="R3" gate="R" x="254" y="198.12" rot="R180"/>
+<instance part="R4" gate="R" x="254" y="172.72" rot="R180"/>
+<instance part="R5" gate="R" x="254" y="144.78" rot="R180"/>
+<instance part="R6" gate="R" x="251.46" y="121.92" rot="R180"/>
 <instance part="R7" gate="R" x="198.12" y="88.9" rot="R180"/>
 <instance part="R8" gate="R" x="198.12" y="76.2" rot="R180"/>
 <instance part="R9" gate="R" x="154.94" y="78.74" rot="R180"/>
 <instance part="R10" gate="R" x="154.94" y="88.9" rot="R180"/>
 <instance part="R30" gate="G$1" x="33.02" y="66.04" rot="MR270"/>
 <instance part="R31" gate="JMP" x="50.8" y="66.04" rot="MR270"/>
-<instance part="R13" gate="R" x="137.16" y="198.12" rot="R180"/>
-<instance part="R14" gate="R" x="137.16" y="172.72" rot="R180"/>
-<instance part="R15" gate="R" x="137.16" y="147.32" rot="R180"/>
-<instance part="R16" gate="R" x="137.16" y="121.92" rot="R180"/>
-<instance part="B0" gate="B1" x="111.76" y="198.12"/>
-<instance part="B1" gate="B1" x="111.76" y="172.72"/>
-<instance part="B2" gate="B1" x="111.76" y="147.32"/>
-<instance part="B3" gate="B1" x="111.76" y="121.92"/>
+<instance part="R13" gate="R" x="190.5" y="198.12" rot="R180"/>
+<instance part="R14" gate="R" x="190.5" y="172.72" rot="R180"/>
+<instance part="R15" gate="R" x="190.5" y="147.32" rot="R180"/>
+<instance part="R16" gate="R" x="190.5" y="121.92" rot="R180"/>
+<instance part="B0" gate="B1" x="165.1" y="198.12"/>
+<instance part="B1" gate="B1" x="165.1" y="172.72"/>
+<instance part="B2" gate="B1" x="165.1" y="147.32"/>
+<instance part="B3" gate="B1" x="165.1" y="121.92"/>
 <instance part="R18" gate="R" x="58.42" y="124.46" rot="R180"/>
 <instance part="R19" gate="R" x="58.42" y="116.84" rot="R180"/>
 <instance part="R20" gate="R" x="58.42" y="109.22" rot="R180"/>
@@ -34685,7 +34690,7 @@ hard to fix!! </text>
 <instance part="SUPPLY3" gate="G$1" x="175.26" y="58.42"/>
 <instance part="SUPPLY5" gate="G$1" x="167.64" y="91.44"/>
 <instance part="SUPPLY6" gate="G$1" x="45.72" y="127"/>
-<instance part="SUPPLY7" gate="G$1" x="182.88" y="200.66"/>
+<instance part="SUPPLY7" gate="G$1" x="236.22" y="200.66"/>
 <instance part="SUPPLY9" gate="GND" x="43.18" y="63.5"/>
 <instance part="SUPPLY10" gate="G$1" x="50.8" y="73.66"/>
 <instance part="SUPPLY11" gate="GND" x="17.78" y="157.48"/>
@@ -34694,6 +34699,10 @@ hard to fix!! </text>
 <instance part="SUPPLY13" gate="GND" x="83.82" y="152.4" rot="R90"/>
 <instance part="U$1" gate="G$1" x="50.8" y="172.72"/>
 <instance part="U$2" gate="G$1" x="190.5" y="25.4"/>
+<instance part="R26" gate="R" x="81.28" y="177.8" rot="R180"/>
+<instance part="R27" gate="R" x="86.36" y="160.02" rot="R180"/>
+<instance part="SUPPLY23" gate="GND" x="93.98" y="160.02" rot="R90"/>
+<instance part="SUPPLY33" gate="GND" x="88.9" y="177.8" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -34725,20 +34734,20 @@ hard to fix!! </text>
 <net name="VCC" class="0">
 <segment>
 <pinref part="CLED3" gate="G$1" pin="A"/>
-<wire x1="185.42" y1="121.92" x2="182.88" y2="121.92" width="0.1524" layer="91"/>
-<wire x1="182.88" y1="121.92" x2="182.88" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="238.76" y1="121.92" x2="236.22" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="236.22" y1="121.92" x2="236.22" y2="144.78" width="0.1524" layer="91"/>
 <pinref part="CLED0" gate="G$1" pin="A"/>
-<wire x1="182.88" y1="144.78" x2="182.88" y2="172.72" width="0.1524" layer="91"/>
-<wire x1="182.88" y1="172.72" x2="182.88" y2="198.12" width="0.1524" layer="91"/>
-<wire x1="182.88" y1="198.12" x2="187.96" y2="198.12" width="0.1524" layer="91"/>
+<wire x1="236.22" y1="144.78" x2="236.22" y2="172.72" width="0.1524" layer="91"/>
+<wire x1="236.22" y1="172.72" x2="236.22" y2="198.12" width="0.1524" layer="91"/>
+<wire x1="236.22" y1="198.12" x2="241.3" y2="198.12" width="0.1524" layer="91"/>
 <pinref part="CLED1" gate="G$1" pin="A"/>
-<wire x1="187.96" y1="172.72" x2="182.88" y2="172.72" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="172.72" x2="236.22" y2="172.72" width="0.1524" layer="91"/>
 <pinref part="CLED2" gate="G$1" pin="A"/>
-<wire x1="187.96" y1="144.78" x2="182.88" y2="144.78" width="0.1524" layer="91"/>
-<junction x="182.88" y="172.72"/>
-<junction x="182.88" y="144.78"/>
+<wire x1="241.3" y1="144.78" x2="236.22" y2="144.78" width="0.1524" layer="91"/>
+<junction x="236.22" y="172.72"/>
+<junction x="236.22" y="144.78"/>
 <pinref part="SUPPLY7" gate="G$1" pin="VCC"/>
-<junction x="182.88" y="198.12"/>
+<junction x="236.22" y="198.12"/>
 </segment>
 <segment>
 <wire x1="185.42" y1="76.2" x2="185.42" y2="83.82" width="0.1524" layer="91"/>
@@ -34794,29 +34803,29 @@ hard to fix!! </text>
 <net name="CBLED3" class="0">
 <segment>
 <pinref part="R6" gate="R" pin="1"/>
-<wire x1="203.2" y1="121.92" x2="215.9" y2="121.92" width="0.1524" layer="91"/>
-<label x="205.74" y="121.92" size="1.778" layer="95"/>
+<wire x1="256.54" y1="121.92" x2="269.24" y2="121.92" width="0.1524" layer="91"/>
+<label x="259.08" y="121.92" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CBLED2" class="0">
 <segment>
 <pinref part="R5" gate="R" pin="1"/>
-<wire x1="205.74" y1="144.78" x2="215.9" y2="144.78" width="0.1524" layer="91"/>
-<label x="205.74" y="144.78" size="1.778" layer="95"/>
+<wire x1="259.08" y1="144.78" x2="269.24" y2="144.78" width="0.1524" layer="91"/>
+<label x="259.08" y="144.78" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CBLED1" class="0">
 <segment>
 <pinref part="R4" gate="R" pin="1"/>
-<wire x1="205.74" y1="172.72" x2="215.9" y2="172.72" width="0.1524" layer="91"/>
-<label x="205.74" y="172.72" size="1.778" layer="95"/>
+<wire x1="259.08" y1="172.72" x2="269.24" y2="172.72" width="0.1524" layer="91"/>
+<label x="259.08" y="172.72" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CBLED0" class="0">
 <segment>
 <pinref part="R3" gate="R" pin="1"/>
-<wire x1="205.74" y1="198.12" x2="215.9" y2="198.12" width="0.1524" layer="91"/>
-<label x="205.74" y="198.12" size="1.778" layer="95"/>
+<wire x1="259.08" y1="198.12" x2="269.24" y2="198.12" width="0.1524" layer="91"/>
+<label x="259.08" y="198.12" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -34850,6 +34859,14 @@ hard to fix!! </text>
 <junction x="17.78" y="160.02"/>
 <pinref part="U$1" gate="G$1" pin="GND@1"/>
 <pinref part="U$1" gate="G$1" pin="GND@0"/>
+</segment>
+<segment>
+<pinref part="R27" gate="R" pin="1"/>
+<pinref part="SUPPLY23" gate="GND" pin="GND"/>
+</segment>
+<segment>
+<pinref part="R26" gate="R" pin="1"/>
+<pinref part="SUPPLY33" gate="GND" pin="GND"/>
 </segment>
 </net>
 <net name="N$12" class="0">
@@ -34930,57 +34947,57 @@ hard to fix!! </text>
 <net name="CB3" class="0">
 <segment>
 <pinref part="R16" gate="R" pin="1"/>
-<wire x1="142.24" y1="121.92" x2="157.48" y2="121.92" width="0.1524" layer="91"/>
-<label x="144.78" y="121.92" size="1.778" layer="95"/>
+<wire x1="195.58" y1="121.92" x2="210.82" y2="121.92" width="0.1524" layer="91"/>
+<label x="198.12" y="121.92" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CB2" class="0">
 <segment>
 <pinref part="R15" gate="R" pin="1"/>
-<wire x1="142.24" y1="147.32" x2="154.94" y2="147.32" width="0.1524" layer="91"/>
-<label x="144.78" y="147.32" size="1.778" layer="95"/>
+<wire x1="195.58" y1="147.32" x2="208.28" y2="147.32" width="0.1524" layer="91"/>
+<label x="198.12" y="147.32" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CB0" class="0">
 <segment>
 <pinref part="R13" gate="R" pin="1"/>
-<wire x1="142.24" y1="198.12" x2="157.48" y2="198.12" width="0.1524" layer="91"/>
-<label x="144.78" y="198.12" size="1.778" layer="95"/>
+<wire x1="195.58" y1="198.12" x2="210.82" y2="198.12" width="0.1524" layer="91"/>
+<label x="198.12" y="198.12" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CB1" class="0">
 <segment>
 <pinref part="R14" gate="R" pin="1"/>
-<wire x1="142.24" y1="172.72" x2="157.48" y2="172.72" width="0.1524" layer="91"/>
-<label x="144.78" y="172.72" size="1.778" layer="95"/>
+<wire x1="195.58" y1="172.72" x2="210.82" y2="172.72" width="0.1524" layer="91"/>
+<label x="198.12" y="172.72" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$2" class="0">
 <segment>
 <pinref part="R13" gate="R" pin="2"/>
 <pinref part="B0" gate="B1" pin="BUTTON"/>
-<wire x1="127" y1="198.12" x2="132.08" y2="198.12" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="198.12" x2="185.42" y2="198.12" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$5" class="0">
 <segment>
 <pinref part="R14" gate="R" pin="2"/>
 <pinref part="B1" gate="B1" pin="BUTTON"/>
-<wire x1="127" y1="172.72" x2="132.08" y2="172.72" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="172.72" x2="185.42" y2="172.72" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$7" class="0">
 <segment>
 <pinref part="R15" gate="R" pin="2"/>
 <pinref part="B2" gate="B1" pin="BUTTON"/>
-<wire x1="127" y1="147.32" x2="132.08" y2="147.32" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="147.32" x2="185.42" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$15" class="0">
 <segment>
 <pinref part="R16" gate="R" pin="2"/>
 <pinref part="B3" gate="B1" pin="BUTTON"/>
-<wire x1="127" y1="121.92" x2="132.08" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="121.92" x2="185.42" y2="121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -35080,6 +35097,7 @@ hard to fix!! </text>
 <wire x1="63.5" y1="177.8" x2="76.2" y2="177.8" width="0.1524" layer="91"/>
 <label x="63.5" y="177.8" size="1.778" layer="95"/>
 <pinref part="U$1" gate="G$1" pin="*D5"/>
+<pinref part="R26" gate="R" pin="2"/>
 </segment>
 </net>
 <net name="D4" class="0">
@@ -35094,6 +35112,7 @@ hard to fix!! </text>
 <wire x1="63.5" y1="160.02" x2="81.28" y2="160.02" width="0.1524" layer="91"/>
 <label x="68.58" y="160.02" size="1.778" layer="95"/>
 <pinref part="U$1" gate="G$1" pin="*D11"/>
+<pinref part="R27" gate="R" pin="2"/>
 </segment>
 </net>
 <net name="D12" class="0">
