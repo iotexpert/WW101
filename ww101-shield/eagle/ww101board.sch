@@ -11161,9 +11161,9 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <wire x1="-1.27" y1="-1.016" x2="-1.016" y2="-1.016" width="0.2032" layer="21"/>
 <wire x1="1.27" y1="-1.016" x2="-0.381" y2="-1.016" width="0.2032" layer="21"/>
 <wire x1="1.27" y1="1.016" x2="-0.381" y2="1.016" width="0.2032" layer="21"/>
-<smd name="1" x="-0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="1" x="-0.8509" y="0" dx="0.508" dy="1.27" layer="1"/>
 <smd name="2" x="0" y="0" dx="0.508" dy="1.27" layer="1"/>
-<smd name="3" x="0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="3" x="0.8509" y="0" dx="0.508" dy="1.27" layer="1"/>
 <text x="-1.27" y="1.27" size="0.6096" layer="25" font="vector" ratio="15">&gt;NAME</text>
 <text x="-0.9891" y="0" size="0.02" layer="27">&gt;VALUE</text>
 <text x="-1.27" y="-1.905" size="0.6096" layer="27" font="vector" ratio="15">&gt;VALUE</text>
@@ -11210,9 +11210,9 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <wire x1="-1.27" y1="-1.016" x2="-1.016" y2="-1.016" width="0.2032" layer="21"/>
 <wire x1="1.27" y1="1.016" x2="-0.381" y2="1.016" width="0.2032" layer="21"/>
 <wire x1="1.27" y1="-1.016" x2="-0.381" y2="-1.016" width="0.2032" layer="21"/>
-<smd name="1" x="-0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="1" x="-0.8509" y="0" dx="0.508" dy="1.27" layer="1"/>
 <smd name="2" x="0" y="0" dx="0.508" dy="1.27" layer="1"/>
-<smd name="3" x="0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="3" x="0.8509" y="0" dx="0.508" dy="1.27" layer="1"/>
 <text x="-1.27" y="1.27" size="0.6096" layer="25" font="vector" ratio="15">&gt;NAME</text>
 <text x="-0.1001" y="0" size="0.02" layer="27">&gt;VALUE</text>
 <text x="-1.27" y="-1.905" size="0.6096" layer="27" font="vector" ratio="15">&gt;VALUE</text>
@@ -11951,9 +11951,9 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <wire x1="-1.524" y1="-0.762" x2="-1.524" y2="0.762" width="0.1524" layer="21"/>
 <wire x1="1.27" y1="1.016" x2="-1.27" y2="1.016" width="0.127" layer="21"/>
 <wire x1="1.27" y1="-1.016" x2="-1.27" y2="-1.016" width="0.1524" layer="21"/>
-<smd name="1" x="-0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="1" x="-0.8509" y="0" dx="0.508" dy="1.27" layer="1"/>
 <smd name="2" x="0" y="0" dx="0.508" dy="1.27" layer="1"/>
-<smd name="3" x="0.8128" y="0" dx="0.508" dy="1.27" layer="1"/>
+<smd name="3" x="0.8509" y="0" dx="0.508" dy="1.27" layer="1"/>
 <text x="-1.27" y="1.27" size="0.6096" layer="25" font="vector" ratio="15">&gt;NAME</text>
 <text x="-1.27" y="-1.905" size="0.6096" layer="27" font="vector" ratio="15">&gt;VALUE</text>
 <text x="-1.143" y="-0.381" size="0.8128" layer="51" font="vector" ratio="15">1</text>
