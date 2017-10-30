@@ -30,46 +30,21 @@
  # so agrees to indemnify Cypress against all liability.
 #
 
-PLATFORM_NAME            := CYW943907AEVAL1F
-WLAN_CHIP                := 43909
-WLAN_CHIP_REVISION       := B0
-WLAN_CHIP_FAMILY         := 4390x
-HOST_MCU_FAMILY          := BCM4390x
-HOST_MCU_VARIANT         := BCM43907
-HOST_MCU_PART_NUMBER     := BCM43907WLCSPR
+#If OTA2 is enabled, use OTA2_IMAGE_APP0_XIP_AREA_BASE from ota2_image_defines.mk
+ifeq (1,$(OTA2_SUPPORT))
+include platforms/$(PLATFORM)/ota2_image_defines.mk
 
-DEFAULT_BOARD_REVISION   := P103
-BOARDS_WITH_B1_CHIP      := P103
-SUPPORTED_BOARD_REVISION := $(BOARDS_WITH_B1_CHIP)
-BOARD_REVISION_DIR       := board_revision
-#if no board revision specified in build string
-ifeq ($(BOARD_REVISION),)
-BOARD_REVISION           := $(DEFAULT_BOARD_REVISION)
-endif
+ifeq (,$(OTA2_IMAGE_APP0_XIP_AREA_BASE))
+$(error OTA2_IMAGE_APP0_XIP_AREA_BASE is not defined!)
+endif # ifeq (,$(OTA2_IMAGE_APP0_XIP_AREA_BASE))
 
-ifneq ($(filter $(BOARD_REVISION), $(BOARDS_WITH_B0_CHIP)),)
-APPS_CHIP_REVISION       := B0
-else ifneq ($(filter $(BOARD_REVISION), $(BOARDS_WITH_B1_CHIP) $(BOARDS_WITH_B2_CHIP) ),)
-APPS_CHIP_REVISION       := B1
-endif
+XIP_LOAD_ADDRESS             := $(OTA2_IMAGE_APP0_XIP_AREA_BASE)
+else
+XIP_LOAD_ADDRESS             := 0x400000
+endif #ifeq (1,$(OTA2_SUPPORT))
 
-NAME                     := Platform_$(PLATFORM_NAME)_$(BOARD_REVISION)_$(APPS_CHIP_REVISION)
-
-PLATFORM_SUPPORTS_BUTTONS := 1
-
-WICED_USB_SUPPORT    := yes
-PLATFORM_NO_DDR      := 1
-
-GLOBAL_DEFINES += SFLASH_SUPPORT_MACRONIX_PARTS
-GLOBAL_DEFINES += USING_EXTERNAL_ADC
-
-ifneq (,$(findstring USING_EXTERNAL_ADC, $(GLOBAL_DEFINES)))
-$(NAME)_COMPONENTS += drivers/adc/MAX11615
-endif
-
-PLATFORM_SOURCES := $(SOURCE_ROOT)platforms/$(PLATFORM_DIRECTORY)/
-
-$(NAME)_SOURCES := platform.c
-
-GLOBAL_INCLUDES := . \
-                   ./$(BOARD_REVISION_DIR)/$(BOARD_REVISION)
+SFLASH_BASE_ADDRESS			 := 0x14000000
+#Link start address = 0x14000000 + $(XIP_LOAD_ADDRESS)
+XIP_LINK_START_ADDRESS       = $(shell $(PERL) -le 'print sprintf("0x%X", $(SFLASH_BASE_ADDRESS) + $(XIP_LOAD_ADDRESS))')
+#The region length used in generated app_without_rom_xip.ld:  2M
+XIP_REGION_LENGTH			 := 0x200000
