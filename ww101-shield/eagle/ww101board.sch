@@ -11418,10 +11418,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <wire x1="27.3" y1="27.3" x2="27.3" y2="0" width="0.127" layer="21"/>
 <wire x1="27.3" y1="0" x2="0" y2="0" width="0.127" layer="21"/>
 <wire x1="0" y1="0" x2="0" y2="27.3" width="0.127" layer="21"/>
-<pad name="GND" x="9.8" y="25.6" drill="0.8" diameter="1.6764"/>
-<pad name="SCL" x="14.88" y="25.6" drill="0.8" diameter="1.6764"/>
-<pad name="SDA" x="17.42" y="25.6" drill="0.8" diameter="1.6764"/>
-<pad name="VDD" x="12.34" y="25.6" drill="0.8" diameter="1.6764"/>
+<pad name="GND" x="9.8" y="25.6" drill="1.016" diameter="1.8796"/>
+<pad name="SCL" x="14.88" y="25.6" drill="1.016" diameter="1.8796"/>
+<pad name="SDA" x="17.42" y="25.6" drill="1.016" diameter="1.8796"/>
+<pad name="VDD" x="12.34" y="25.6" drill="1.016" diameter="1.8796"/>
 <text x="10.515" y="20.8682" size="1.27" layer="27" font="vector" ratio="15" rot="R90">GND</text>
 <text x="13.2074" y="20.792" size="1.27" layer="27" font="vector" ratio="15" rot="R90">VDD</text>
 <text x="18.4144" y="20.6904" size="1.27" layer="27" font="vector" ratio="15" rot="R90">SDA</text>
@@ -11824,8 +11824,8 @@ THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS "AS IS" AND WITHOUT ANY EXPRESS OR
 </package>
 <package name="HUMIDITY">
 <circle x="2.55" y="0" radius="5" width="0.127" layer="21"/>
-<pad name="P$1" x="0" y="0" drill="0.45"/>
-<pad name="P$2" x="5.1" y="0" drill="0.45"/>
+<pad name="P$1" x="0" y="0" drill="1.016" diameter="1.8796"/>
+<pad name="P$2" x="5.1" y="0" drill="1.016" diameter="1.8796"/>
 </package>
 <package name="R-5">
 <description>&lt;b&gt;VARISTOR&lt;/b&gt;</description>
@@ -34627,6 +34627,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 <part name="R27" library="ww101board" deviceset="RESISTOR" device="0603" value="50K"/>
 <part name="SUPPLY23" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 <part name="SUPPLY33" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
+<part name="SUPPLY37" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -35224,6 +35225,7 @@ ground</text>
 <instance part="R25" gate="R" x="22.86" y="17.78"/>
 <instance part="U$4" gate="G$1" x="73.66" y="0"/>
 <instance part="U$7" gate="G$1" x="111.76" y="167.64"/>
+<instance part="SUPPLY37" gate="GND" x="86.36" y="114.3" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -35493,6 +35495,11 @@ ground</text>
 <wire x1="71.12" y1="55.88" x2="83.82" y2="55.88" width="0.1524" layer="91"/>
 <label x="76.2" y="55.88" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="C15" gate="G$1" pin="1"/>
+<wire x1="78.74" y1="114.3" x2="83.82" y2="114.3" width="0.1524" layer="91"/>
+<pinref part="SUPPLY37" gate="GND" pin="GND"/>
+</segment>
 </net>
 <net name="CBLED2" class="0">
 <segment>
@@ -35568,13 +35575,8 @@ ground</text>
 </segment>
 <segment>
 <pinref part="R22" gate="R" pin="1"/>
-<wire x1="78.74" y1="121.92" x2="83.82" y2="121.92" width="0.1524" layer="91"/>
 <pinref part="SUPPLY17" gate="G$1" pin="VCC"/>
-<pinref part="C15" gate="G$1" pin="1"/>
-<wire x1="83.82" y1="121.92" x2="91.44" y2="121.92" width="0.1524" layer="91"/>
-<wire x1="78.74" y1="114.3" x2="83.82" y2="114.3" width="0.1524" layer="91"/>
-<wire x1="83.82" y1="114.3" x2="83.82" y2="121.92" width="0.1524" layer="91"/>
-<junction x="83.82" y="121.92"/>
+<wire x1="78.74" y1="121.92" x2="91.44" y2="121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="CMOD" class="0">
