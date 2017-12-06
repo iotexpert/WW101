@@ -2,6 +2,9 @@
 WW101_2_CYW943907AEVAL1F - README
 --------------------------------------------
 
+This platform is for the combination of the CYW943907AEVAL1F and version 2.*
+of the CY8CKIT-032 PSoC AFE Shield.
+
 Provider    : Cypress
 Website     : http://www.cypress.com/products/wireless-connectivity
 Description : Combo of Cypress CYW943907AEVAL1F and PSoC AFE Sheild V2.*
