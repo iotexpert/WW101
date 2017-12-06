@@ -4,7 +4,7 @@
 * There are four display screens tha are used to test various parts of the shield. 
 * The user button on the baseboard is used to switch between screens.
 *
-* On the main scrreen, each test will show Pass once the test passes. To perform the tests, the
+* On the main screen, each test will show Pass once the test passes. To perform the tests, the
 * user must:
 *   1. Touch each CapSense button and press each mechanical button.
 *   2. Turn the POT across its full range.
@@ -101,7 +101,7 @@ uint8_t u8x8_byte_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_p
 *
 * Summary:
 *  This is a callback function used by the u8x8 library. It is used to add
-*  a delay using the avaialable PSoC delay functions.
+*  a delay using the available PSoC delay functions.
 *
 *  The delay can be a specified number of milliseconds, 10 microseconds, or 100 nanoseconds
 *
