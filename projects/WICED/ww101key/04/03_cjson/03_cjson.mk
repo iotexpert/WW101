@@ -1,5 +1,5 @@
 #
-# Copyright 2018, Cypress Semiconductor Corporation or a subsidiary of 
+# Copyright 2017, Cypress Semiconductor Corporation or a subsidiary of 
  # Cypress Semiconductor Corporation. All Rights Reserved.
  # This software, including source code, documentation and related
  # materials ("Software"), is owned by Cypress Semiconductor Corporation
@@ -18,7 +18,7 @@
  #
  # Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
  # EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
- # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
+ # WARRANTIES OF MERCHANTABILITY AND FITNESS NFOR A PARTICULAR PURPOSE. Cypress
  # reserves the right to make changes to the Software without notice. Cypress
  # does not assume any liability arising out of the application or use of the
  # Software or any product or circuit described in the Software. Cypress does
@@ -30,40 +30,9 @@
  # so agrees to indemnify Cypress against all liability.
 #
 
-NAME := App_WW101KEY_07c_06_subcriber
+NAME := App_WW101KEY_04_03_cjson
 
-$(NAME)_SOURCES := 06_subscriber.c
+$(NAME)_COMPONENTS := utilities/cJSON
 
-$(NAME)_COMPONENTS := protocols/MQTT
+$(NAME)_SOURCES := 03_cjson.c
 
-WIFI_CONFIG_DCT_H := wifi_config_dct.h
-
-$(NAME)_RESOURCES  := apps/aws_iot/rootca.cer \
-                      apps/aws_iot/client.cer \
-                      apps/aws_iot/privkey.cer
-
-# To support Low memory platforms, disabling components which are not required
-GLOBAL_DEFINES += WICED_CONFIG_DISABLE_SSL_SERVER \
-                  WICED_CONFIG_DISABLE_DTLS \
-                  WICED_CONFIG_DISABLE_ENTERPRISE_SECURITY \
-                  WICED_CONFIG_DISABLE_DES \
-                  WICED_CONFIG_DISABLE_ADVANCED_SECURITY_CURVES
-
-VALID_PLATFORMS := BCM943362WCD4 \
-                   BCM943362WCD6 \
-                   BCM943362WCD8 \
-                   BCM943364WCD1 \
-                   BCM94343WWCD1 \
-                   BCM943438WCD1 \
-                   BCM94343WWCD2 \
-                   CY8CKIT_062 \
-                   NEB1DX* \
-                   CYW9MCU7X9N364 \
-                   CYW943907AEVAL1F \
-                   CYW9WCD2REFAD* \
-                   WW101_*
-
-ifeq ($(PLATFORM),$(filter $(PLATFORM), CYW9MCU7X9N364))
-GLOBAL_DEFINES += PLATFORM_HEAP_SIZE=34*1024
-USE_LIBC_PRINTF     := 0
-endif

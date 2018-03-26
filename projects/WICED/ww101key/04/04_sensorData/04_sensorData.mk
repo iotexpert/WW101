@@ -1,5 +1,5 @@
 #
-# Copyright 2018, Cypress Semiconductor Corporation or a subsidiary of 
+# Copyright 2017, Cypress Semiconductor Corporation or a subsidiary of 
  # Cypress Semiconductor Corporation. All Rights Reserved.
  # This software, including source code, documentation and related
  # materials ("Software"), is owned by Cypress Semiconductor Corporation
@@ -30,40 +30,8 @@
  # so agrees to indemnify Cypress against all liability.
 #
 
-NAME := App_WW101KEY_07c_06_subcriber
+NAME := App_WW101KEY_04_04_sensorData
 
-$(NAME)_SOURCES := 06_subscriber.c
+$(NAME)_SOURCES    := 04_sensorData.c
 
-$(NAME)_COMPONENTS := protocols/MQTT
-
-WIFI_CONFIG_DCT_H := wifi_config_dct.h
-
-$(NAME)_RESOURCES  := apps/aws_iot/rootca.cer \
-                      apps/aws_iot/client.cer \
-                      apps/aws_iot/privkey.cer
-
-# To support Low memory platforms, disabling components which are not required
-GLOBAL_DEFINES += WICED_CONFIG_DISABLE_SSL_SERVER \
-                  WICED_CONFIG_DISABLE_DTLS \
-                  WICED_CONFIG_DISABLE_ENTERPRISE_SECURITY \
-                  WICED_CONFIG_DISABLE_DES \
-                  WICED_CONFIG_DISABLE_ADVANCED_SECURITY_CURVES
-
-VALID_PLATFORMS := BCM943362WCD4 \
-                   BCM943362WCD6 \
-                   BCM943362WCD8 \
-                   BCM943364WCD1 \
-                   BCM94343WWCD1 \
-                   BCM943438WCD1 \
-                   BCM94343WWCD2 \
-                   CY8CKIT_062 \
-                   NEB1DX* \
-                   CYW9MCU7X9N364 \
-                   CYW943907AEVAL1F \
-                   CYW9WCD2REFAD* \
-                   WW101_*
-
-ifeq ($(PLATFORM),$(filter $(PLATFORM), CYW9MCU7X9N364))
-GLOBAL_DEFINES += PLATFORM_HEAP_SIZE=34*1024
-USE_LIBC_PRINTF     := 0
-endif
+$(NAME)_COMPONENTS := graphics/u8g
