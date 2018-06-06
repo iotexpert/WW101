@@ -25,8 +25,11 @@
 #include <stdio.h>
 
 volatile dataSet_t pafeDataSet;      /* Data from PSoC 4 on shield read over I2C */
-#define PSOC_AFE_I2C (0x42) /* I2C address for PSoC 4 on shield */
-// How often to update the screen in milliseconds
+/* I2C address for PSoC 4 on shield */
+#define PSOC_AFE_I2C (0x42)
+/* I2C Timeout in ms */
+#define TIMEOUT 1000
+/* How often to update the screen in milliseconds */
 #define UPDATE_INTERVAL 200
 
 int updateData=0;       /* Flag set by the systick timer ISR */
@@ -74,7 +77,7 @@ uint8_t u8x8_byte_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_p
             data = (uint8_t *)arg_ptr;
             while( arg_int > 0 )
             {
-                (void)I2C_I2CMasterWriteByte(*data);
+                (void)I2C_I2CMasterWriteByte(*data, TIMEOUT);
   	            data++;
 	            arg_int--;
             }
@@ -84,10 +87,10 @@ uint8_t u8x8_byte_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_p
         case U8X8_MSG_BYTE_SET_DC:
             break;
         case U8X8_MSG_BYTE_START_TRANSFER: // Send an I2C start
-            (void)I2C_I2CMasterSendStart(u8x8_GetI2CAddress(u8x8)>>1,I2C_I2C_WRITE_XFER_MODE);
+            (void)I2C_I2CMasterSendStart(u8x8_GetI2CAddress(u8x8)>>1,I2C_I2C_WRITE_XFER_MODE, TIMEOUT);
             break;
         case U8X8_MSG_BYTE_END_TRANSFER:   // Send an I2C stop
-            (void)I2C_I2CMasterSendStop();
+            (void)I2C_I2CMasterSendStop(TIMEOUT);
             break;
         default:
             return 0;
@@ -467,9 +470,9 @@ int main(void)
     sendBuff.dacValue = TEST_LIMIT_DAC_MIN; // Start the DAC at the minimum of the range
    
     // Set the PSoC AFE EZI2C Read Pointer to 0
-    I2C_I2CMasterSendStart(PSOC_AFE_I2C,I2C_I2C_WRITE_XFER_MODE);
-    I2C_I2CMasterWriteByte(0x00);
-    I2C_I2CMasterSendStop();
+    I2C_I2CMasterSendStart(PSOC_AFE_I2C,I2C_I2C_WRITE_XFER_MODE, TIMEOUT);
+    I2C_I2CMasterWriteByte(0x00, TIMEOUT);
+    I2C_I2CMasterSendStop(TIMEOUT);
         
     switchScreen(); // Display the screen for the first time - this will display the main test screen
     
