@@ -145,15 +145,15 @@ int main(void)
     ADC_IRQ_Enable();
     
     CapSense_Start();   
-    /* Over-ride IDAC values for buttons but keep auto for Prox and Humidity */
-    CapSense_BUTTON0_IDAC_MOD0_VALUE =          7u;
-    CapSense_BUTTON0_SNS0_IDAC_COMP0_VALUE =    6u;
-    CapSense_BUTTON1_IDAC_MOD0_VALUE =          7u;
-    CapSense_BUTTON1_SNS0_IDAC_COMP0_VALUE =    7u;
-    CapSense_BUTTON2_IDAC_MOD0_VALUE =          9u;
-    CapSense_BUTTON2_SNS0_IDAC_COMP0_VALUE =    7u;
-    CapSense_BUTTON3_IDAC_MOD0_VALUE =          9u;
-    CapSense_BUTTON3_SNS0_IDAC_COMP0_VALUE =    8u;
+    /* The following can be used to over-ride auto IDAC values for specific sensors */
+    //CapSense_BUTTON0_IDAC_MOD0_VALUE =          21u;
+    //CapSense_BUTTON0_SNS0_IDAC_COMP0_VALUE =    18u;
+    //CapSense_BUTTON1_IDAC_MOD0_VALUE =          21u;
+    //CapSense_BUTTON1_SNS0_IDAC_COMP0_VALUE =    18u;
+    //CapSense_BUTTON2_IDAC_MOD0_VALUE =          14u;
+    //CapSense_BUTTON2_SNS0_IDAC_COMP0_VALUE =    12u;
+    //CapSense_BUTTON3_IDAC_MOD0_VALUE =          16u;
+    //CapSense_BUTTON3_SNS0_IDAC_COMP0_VALUE =    14u; 
     /* Setup first widget and run the scan */    
     CapSense_SetupWidget(CapSense_BUTTON0_WDGT_ID);
     CapSense_Scan();      
