@@ -1,5 +1,5 @@
 /*
- * Broadcom Proprietary and Confidential. Copyright 2016 Broadcom
+ * Cypress Proprietary and Confidential. Copyright 2017 Cypress
  * All Rights Reserved.
  *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
@@ -10,25 +10,12 @@
 
 /** @file
  *
- * A rudimentary AWS IOT publisher application which demonstrates how to connect to
- * AWS IOT cloud (MQTT Broker) and publish MQTT messages for a given topic.
+ * This is used to reset shadows for the WW101_** things on the WW-101 class AWS broker.
  *
- * This application publishes "LIGHT ON" or "LIGHT OFF" message for each button press
- * to topic "WICED_BULB" with QOS1. Button used is WICED_BUTTON1 on the WICED board.
- * If we press the button first time it publishes "LIGHT OFF" and if we press next the same button
- * it will publish "LIGHT ON".
- *
- * To run the app, work through the following steps.
- *  1. Modify Wi-Fi configuration settings CLIENT_AP_SSID and CLIENT_AP_PASSPHRASE in wifi_config_dct.h to match your router settings.
- *  2. Update the AWS MQTT broker address (MQTT_BROKER_ADDRESS) if needed.
- *  3. Make sure AWS Root Certifcate 'resources/apps/aws_iot/rootca.cer' is up to date while building the app.
- *  4. Copy client certificate and private key for the given AWS IOT user in resources/apps/aws_iot folder.
- *     Ensure that valid client certificates and private keys are provided for the AWS IOT user in resources/apps/aws_iot folder.
- *  5. Build and run this application.
- *  6. Run another application which subscribes to the same topic.
- *  7. Press button WICED_BUTTON1 to publish the messages "LIGHT ON" or LIGHT OFF" alternatively and check if
- *     it reaches subscriber app running on the other WICED board (which can be anywhere but connected to internet)
- *
+ * To use:
+ * Open a UART terminal (115200 baud).
+ * Enter a 2 digit value on for the thing to be reset.
+ * Enter ** to reset all thing shadows.
  */
 
 #include "wiced.h"
@@ -50,7 +37,7 @@
 #define MQTT_DELAY_IN_MILLISECONDS          (1000)
 #define MQTT_MAX_RESOURCE_SIZE              (0x7fffffff)
 #define MQTT_PUBLISH_RETRY_COUNT            (3)
-#define MSG_SHADOW                          "{\"state\" : {\"reported\" : {\"temperature\":0.0,\"humidity\":0.0,\"weatherAlert\":false,\"IPAddress\":\"0.0.0.0\"} } }"
+#define MSG_SHADOW                          "{\"state\" : {\"reported\" : {\"temperature\":0.0,\"humidity\":0.0,\"light\":0.0,\"weatherAlert\":false,\"IPAddress\":\"0.0.0.0\"} } }"
 /* The queue messages will be 4 bytes each (a 32 bit integer) */
 #define MESSAGE_SIZE		(4)
 #define QUEUE_SIZE			(100)
@@ -96,7 +83,7 @@ static void uartThread( wiced_thread_arg_t arg )
 				if(bytesReceived[0] == '*' && bytesReceived[1] == '*')
 				{
 					// Reset all - fill queue with all things
-					for(uint8_t i=0; i <= 4 ; i++)
+					for(uint8_t i=0; i <= 3 ; i++)
 					{
 						for(uint8_t j=0; j <= 9 ; j++)
 						{
@@ -285,7 +272,7 @@ void application_start( void )
     }
 
     WPRINT_APP_INFO( ( "Resolving IP address of MQTT broker...\n" ) );
-    ret = wiced_hostname_lookup( MQTT_BROKER_ADDRESS, &broker_address, 10000 );
+    ret = wiced_hostname_lookup( MQTT_BROKER_ADDRESS, &broker_address, 10000, WICED_STA_INTERFACE);
     WPRINT_APP_INFO(("Resolved Broker IP: %u.%u.%u.%u\n\n", (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 24),
                     (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 16),
                     (uint8_t)(GET_IPV4_ADDRESS(broker_address) >> 8),
@@ -320,8 +307,6 @@ void application_start( void )
         WPRINT_APP_INFO(("Success\n"));
 
         WPRINT_APP_INFO(("Enter 2-digit number of the thing shadow to reset or ** to reset all\n"));
-        /* configure push button to publish a message */
-        //GJL wiced_gpio_input_irq_enable( WICED_BUTTON1, IRQ_TRIGGER_RISING_EDGE, publish_callback, NULL );
 
         while ( 1 )
         {
