@@ -1,4 +1,4 @@
-NAME := App_WW101KEY_00_shadow_reset
+NAME := App_WW101UTILITIES_00_shadow_reset
 
 $(NAME)_SOURCES := 00_shadow_reset.c
 
